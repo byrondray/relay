@@ -3,7 +3,6 @@ import { StyleSheet, Image, Platform, View, Text } from 'react-native';
 import { gql, useQuery } from '@apollo/client';
 import client from '@/graphql/client';
 import { Collapsible } from '@/components/Collapsible';
-import { ExternalLink } from '@/components/ExternalLink';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
@@ -15,7 +14,6 @@ type User = {
   email: string;
 };
 
-// Define the GraphQL query to get users
 const GET_USERS = gql`
   query GetUsers {
     getUsers {
@@ -27,10 +25,14 @@ const GET_USERS = gql`
 `;
 
 export default function TabTwoScreen() {
-  // Execute the query and get loading, error, and data states
-  const { loading, error, data } = useQuery(GET_USERS, { client });
+  const { loading, error, data } = useQuery<GetUserQuery, { error: Error }>(
+    GET_USERS,
+    { client }
+  );
 
-  // Log the results to the console
+  if (loading) return <Text>Loading...</Text>;
+  if (error) return <Text>Error :(</Text>;
+
   console.log('Loading:', loading);
   console.log('Error:', error);
   console.log('Data:', data);
@@ -49,13 +51,12 @@ export default function TabTwoScreen() {
         This app includes example code to help you get started.
       </ThemedText>
 
-      {/* Check if the query is loading */}
       {loading && <ThemedText>Loading users...</ThemedText>}
 
-      {/* Display an error message if the query failed */}
-      {error && <ThemedText>Error loading users: {error.message}</ThemedText>}
+      {error && (
+        <ThemedText>Error loading users: {(error as Error).message}</ThemedText>
+      )}
 
-      {/* Display the users if data is available */}
       {data && (
         <View>
           {data.getUsers.map((user: U) => (
@@ -66,7 +67,6 @@ export default function TabTwoScreen() {
         </View>
       )}
 
-      {/* Other collapsible content */}
       <Collapsible title='File-based routing'>
         <ThemedText>
           This app has two screens:
@@ -77,7 +77,6 @@ export default function TabTwoScreen() {
           <ThemedText type='defaultSemiBold'>app/(tabs)/explore.tsx</ThemedText>
         </ThemedText>
       </Collapsible>
-      {/* Other collapsible content */}
     </ParallaxScrollView>
   );
 }
