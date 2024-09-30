@@ -12,19 +12,17 @@ const AuthScreen: React.FC = () => {
   const [error, setError] = useState<string>("");
   const [user, setUser] = useState<any>(null);
 
-  const handleSignUp = async () => {
-    try {
-      const userCredential = await createUserWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
-      setUser(userCredential.user);
-      setError("");
-    } catch (err: any) {
-      setError(err.message);
-    }
-  };
+const handleSignUp = async () => {
+  try {
+    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    console.log(userCredential.user); 
+    setUser(userCredential.user);
+    setError("");
+  } catch (err: any) {
+    console.error(err); 
+    setError(err.message);
+  }
+};
 
   const handleSignIn = async () => {
     try {
