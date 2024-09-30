@@ -1,12 +1,16 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { StyleSheet, View, Text } from 'react-native';
-import { gql, useQuery } from '@apollo/client';
+import { gql, useQuery, useMutation } from '@apollo/client';
 import client from '@/graphql/client';
 import { Collapsible } from '@/components/Collapsible';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
-import { GetUserQuery, User as U } from '@/graphql/generated';
+import {
+  CreateUserMutation,
+  GetUserQuery,
+  User as U,
+} from '@/graphql/generated';
 
 const GET_USERS = gql`
   query GetUsers {
@@ -18,18 +22,36 @@ const GET_USERS = gql`
   }
 `;
 
+const CREATE_USER = gql`
+  mutation CreateUser($name: String!, $email: String!) {
+    createUser(name: $name, email: $email) {
+      id
+      name
+      email
+    }
+  }
+`;
+
 export default function TabTwoScreen() {
-  const { loading, error, data } = useQuery<GetUserQuery, { error: Error }>(
-    GET_USERS,
-    { client }
-  );
+  const {
+    loading: queryLoading,
+    error: queryError,
+    data: queryData,
+  } = useQuery<GetUserQuery, { error: Error }>(GET_USERS, { client });
 
-  if (loading) return <Text>Loading...</Text>;
-  if (error) return <Text>Error :(</Text>;
+  const [
+    createUser,
+    { data: mutationData, loading: mutationLoading, error: mutationError },
+  ] = useMutation<CreateUserMutation, { error: Error }>(CREATE_USER, {
+    client,
+  });
 
-  console.log('Loading:', loading);
-  console.log('Error:', error);
-  console.log('Data:', data);
+  if (queryLoading) return <Text>Loading...</Text>;
+  if (queryError) return <Text>Error :(</Text>;
+
+  console.log('Loading:', queryLoading);
+  console.log('Error:', queryError);
+  console.log('Data:', queryData);
 
   return (
     <ParallaxScrollView
@@ -45,15 +67,17 @@ export default function TabTwoScreen() {
         This app includes example code to help you get started.
       </ThemedText>
 
-      {loading && <ThemedText>Loading users...</ThemedText>}
+      {queryLoading && <ThemedText>Loading users...</ThemedText>}
 
-      {error && (
-        <ThemedText>Error loading users: {(error as Error).message}</ThemedText>
+      {queryError && (
+        <ThemedText>
+          Error loading users: {(queryError as Error).message}
+        </ThemedText>
       )}
 
-      {data && (
+      {queryData && (
         <View>
-          {data.getUsers.map((user: U) => (
+          {queryData.getUsers.map((user: U) => (
             <Text key={user.id}>
               {user.name} ({user.email})
             </Text>
