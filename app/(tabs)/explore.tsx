@@ -1,5 +1,5 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { StyleSheet, Image, Platform, View, Text } from 'react-native';
+import { StyleSheet, View, Text } from 'react-native';
 import { gql, useQuery } from '@apollo/client';
 import client from '@/graphql/client';
 import { Collapsible } from '@/components/Collapsible';
@@ -7,12 +7,6 @@ import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { GetUserQuery, User as U } from '@/graphql/generated';
-
-type User = {
-  id: string;
-  name: string;
-  email: string;
-};
 
 const GET_USERS = gql`
   query GetUsers {

@@ -25,7 +25,7 @@ export default function HomeScreen() {
 
   const googleMapsApiKey =
     Constants.expoConfig?.extra?.googleMapsApiKey ||
-    '';
+    'AIzaSyBQ92jAHUBxg2Z1nVYjyXQ1rcibkda7hjg';
 
   const handleGetDirections = async () => {
     if (origin && destination) {
