@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "relayndefined",
-    "slug": "relayndefined",
+    "name": "relay",
+    "slug": "relay",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
