@@ -53,7 +53,9 @@ export type GetUserQueryVariables = Exact<{
 }>;
 
 
-export type GetUserQuery = { __typename?: 'Query', getUser?: { __typename?: 'User', id: string, name: string, email: string } | null };
+export type GetUserQuery = {
+  getUsers: any; __typename?: 'Query', getUser?: { __typename?: 'User', id: string, name: string, email: string } | null 
+};
 
 export type CreateUserMutationVariables = Exact<{
   name: Scalars['String']['input'];
