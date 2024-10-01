@@ -1,14 +1,15 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { StyleSheet, View, Text } from 'react-native';
+import { StyleSheet, View, Text, TextInput, Button } from 'react-native';
 import { gql, useQuery, useMutation } from '@apollo/client';
 import client from '@/graphql/client';
 import { Collapsible } from '@/components/Collapsible';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
+import { useState } from 'react';
 import {
   CreateUserMutation,
-  GetUserQuery,
+  GetUsersQuery,
   User as U,
 } from '@/graphql/generated';
 
@@ -33,25 +34,25 @@ const CREATE_USER = gql`
 `;
 
 export default function TabTwoScreen() {
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+
   const {
     loading: queryLoading,
     error: queryError,
     data: queryData,
-  } = useQuery<GetUserQuery, { error: Error }>(GET_USERS, { client });
+  } = useQuery<GetUsersQuery>(GET_USERS, { client });
 
   const [
     createUser,
     { data: mutationData, loading: mutationLoading, error: mutationError },
-  ] = useMutation<CreateUserMutation, { error: Error }>(CREATE_USER, {
+  ] = useMutation<CreateUserMutation>(CREATE_USER, {
     client,
+    refetchQueries: [{ query: GET_USERS }],
   });
 
   if (queryLoading) return <Text>Loading...</Text>;
   if (queryError) return <Text>Error :(</Text>;
-
-  console.log('Loading:', queryLoading);
-  console.log('Error:', queryError);
-  console.log('Data:', queryData);
 
   return (
     <ParallaxScrollView
@@ -67,13 +68,31 @@ export default function TabTwoScreen() {
         This app includes example code to help you get started.
       </ThemedText>
 
-      {queryLoading && <ThemedText>Loading users...</ThemedText>}
-
-      {queryError && (
-        <ThemedText>
-          Error loading users: {(queryError as Error).message}
-        </ThemedText>
+      {mutationLoading && <Text>Creating user...</Text>}
+      {mutationError && (
+        <Text>Error creating user: {mutationError.message}</Text>
       )}
+
+      <TextInput
+        placeholder='Name'
+        value={name}
+        onChangeText={(text) => setName(text)}
+        style={{ borderColor: 'gray', borderWidth: 1, marginBottom: 10 }}
+      />
+      <TextInput
+        placeholder='Email'
+        value={email}
+        onChangeText={(text) => setEmail(text)}
+        style={{ borderColor: 'gray', borderWidth: 1, marginBottom: 10 }}
+      />
+      <Button
+        title='Create User'
+        onPress={() => {
+          createUser({ variables: { name, email } });
+          setName('');
+          setEmail('');
+        }}
+      />
 
       {queryData && (
         <View>
