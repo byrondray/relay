@@ -31,7 +31,16 @@ export default function TabLayout() {
             <TabBarIcon name={focused ? 'code-slash' : 'code-slash-outline'} color={color} />
           ),
         }}
-      />
+      />,
+        <Tabs.Screen
+        name="authScreen"
+        options={{
+          title: 'LogIn',
+          tabBarIcon: ({ color, focused }) => (
+            <TabBarIcon name={focused ? 'code-slash' : 'code-slash-outline'} color={color} />
+          ),
+        }}
+        />
     </Tabs>
   );
 }
