@@ -1,27 +1,9 @@
 import React, { useState } from 'react';
 import { View, TextInput, Button, Text } from 'react-native';
-import {
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-} from 'firebase/auth';
-import { auth } from '@/firebaseConfig';
-import { gql, useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client';
 import { CreateUserMutation } from '@/graphql/generated';
 import client from '@/graphql/client';
-
-const CREATE_USER = gql`
-  mutation CreateUser(
-    $name: String!
-    $email: String!
-    $firebaseUserId: String!
-  ) {
-    createUser(name: $name, email: $email, firebaseUserId: $firebaseUserId) {
-      id
-      name
-      email
-    }
-  }
-`;
+import { CREATE_USER } from '@/graphql/queries';
 
 export default function AuthScreen(): JSX.Element {
   const [email, setEmail] = useState<string>('');
@@ -29,53 +11,39 @@ export default function AuthScreen(): JSX.Element {
   const [name, setName] = useState<string>('');
   const [error, setError] = useState<string>('');
   const [user, setUser] = useState<any>(null);
+
   const [
     createUser,
     { data: mutationData, loading: mutationLoading, error: mutationError },
-  ] = useMutation<CreateUserMutation, { error: Error }>(CREATE_USER, {
+  ] = useMutation<
+    CreateUserMutation,
+    { name: string; email: string; password: string }
+  >(CREATE_USER, {
     client,
   });
 
   const handleSignUp = async () => {
     try {
-      const userCredential = await createUserWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
-      const firebaseUser = userCredential.user;
-      setUser(firebaseUser);
-
-      await createUser({
+      console.log('Submitting mutation with:', { name, email, password });
+      const result = await createUser({
         variables: {
           name,
-          email: firebaseUser.email,
-          firebaseUserId: firebaseUser.uid,
+          email,
+          password,
         },
       });
-      setError('');
-    } catch (err: any) {
-      console.error(err);
-      setError(err.message);
-    }
-  };
 
-  const handleSignIn = async () => {
-    try {
-      const userCredential = await signInWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
-      setUser(userCredential.user);
+      console.log('Mutation result:', result);
+      setUser(result.data?.createUser || null);
       setError('');
     } catch (err: any) {
+      console.error('Error occurred:', err);
       setError(err.message);
     }
   };
 
   return (
-    <View style={{ padding: 20 }}>
+    <View style={{ padding: 20, marginTop: 60 }}>
       {user ? (
         <Text>Welcome {user.email}</Text>
       ) : (
@@ -84,24 +52,38 @@ export default function AuthScreen(): JSX.Element {
             placeholder='Name'
             value={name}
             onChangeText={setName}
-            style={{ borderWidth: 1, padding: 10, marginBottom: 10 }}
+            style={{
+              borderWidth: 1,
+              padding: 10,
+              marginBottom: 10,
+              color: 'black',
+            }}
           />
           <TextInput
             placeholder='Email'
             value={email}
             onChangeText={setEmail}
-            style={{ borderWidth: 1, padding: 10, marginBottom: 10 }}
+            style={{
+              borderWidth: 1,
+              padding: 10,
+              marginBottom: 10,
+              color: 'black',
+            }}
           />
           <TextInput
             placeholder='Password'
             value={password}
             onChangeText={setPassword}
             secureTextEntry
-            style={{ borderWidth: 1, padding: 10, marginBottom: 10 }}
+            style={{
+              borderWidth: 1,
+              padding: 10,
+              marginBottom: 10,
+              color: 'black',
+            }}
           />
           {error ? <Text style={{ color: 'red' }}>{error}</Text> : null}
           <Button title='Sign Up' onPress={handleSignUp} />
-          <Button title='Sign In' onPress={handleSignIn} />
         </View>
       )}
     </View>

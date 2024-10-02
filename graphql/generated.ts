@@ -23,6 +23,7 @@ export type Mutation = {
 export type MutationCreateUserArgs = {
   email: Scalars['String']['input'];
   name: Scalars['String']['input'];
+  password: Scalars['String']['input'];
 };
 
 export type Query = {
@@ -53,13 +54,12 @@ export type GetUserQueryVariables = Exact<{
 }>;
 
 
-export type GetUserQuery = {
-  getUsers: any; __typename?: 'Query', getUser?: { __typename?: 'User', id: string, name: string, email: string } | null 
-};
+export type GetUserQuery = { __typename?: 'Query', getUser?: { __typename?: 'User', id: string, name: string, email: string } | null };
 
 export type CreateUserMutationVariables = Exact<{
   name: Scalars['String']['input'];
   email: Scalars['String']['input'];
+  password: Scalars['String']['input'];
 }>;
 
 

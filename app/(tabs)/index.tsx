@@ -9,7 +9,6 @@ import {
   Alert,
 } from 'react-native';
 import MapView, { Marker, Polyline } from 'react-native-maps';
-import Constants from 'expo-constants';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
 export default function HomeScreen() {
@@ -23,9 +22,7 @@ export default function HomeScreen() {
   >([]);
   const [predictedTime, setPredictedTime] = useState('');
 
-  const googleMapsApiKey =
-    Constants.expoConfig?.extra?.googleMapsApiKey ||
-    'AIzaSyBQ92jAHUBxg2Z1nVYjyXQ1rcibkda7hjg';
+  const googleMapsApiKey = 'AIzaSyBQ92jAHUBxg2Z1nVYjyXQ1rcibkda7hjg';
 
   const handleGetDirections = async () => {
     if (origin && destination) {
