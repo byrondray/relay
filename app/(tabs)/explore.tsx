@@ -11,6 +11,7 @@ import {
   GetUserQuery,
   User as U,
 } from "@/graphql/generated";
+import React from "react";
 
 const GET_USERS = gql`
   query GetUsers {
