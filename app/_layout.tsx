@@ -13,7 +13,10 @@ export default function RootLayout() {
   const colorScheme = useColorScheme();
 
   return (
-    <ApplicationProvider {...eva} theme={eva.light}>
+    <ApplicationProvider
+      {...eva}
+      theme={colorScheme === 'dark' ? eva.dark : eva.light}
+    >
       <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
         <Stack>
           <Stack.Screen name='(tabs)' options={{ headerShown: false }} />

@@ -167,11 +167,9 @@ export default function HomeScreen() {
         </View>
       ) : null}
 
-      <Link href={{ pathname: '/explore' }}>
-        <Pressable>
-          <Text>Go to Sandbox</Text>
-        </Pressable>
-      </Link>
+      <Pressable onPress={() => router.push('/(tabs)/sandbox/sandbox')}>
+        <Text>Go to Sandbox</Text>
+      </Pressable>
 
       <MapView
         style={styles.map}

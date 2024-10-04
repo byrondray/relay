@@ -39,7 +39,13 @@ export default function TabLayout() {
           ),
         }}
       />
-      <Tabs.Screen name='sandbox' options={{ title: 'Sandbox' }} />
+      <Tabs.Screen
+        name='sandbox/sandbox'
+        options={{
+          title: 'Sandbox',
+          tabBarButton: () => null,
+        }}
+      />
     </Tabs>
   );
 }
