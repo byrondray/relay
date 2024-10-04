@@ -7,9 +7,12 @@ import {
   Platform,
   Text,
   Alert,
+  Pressable,
 } from 'react-native';
 import MapView, { Marker, Polyline } from 'react-native-maps';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import { Link } from 'expo-router';
+import { router } from 'expo-router';
 
 export default function HomeScreen() {
   const [origin, setOrigin] = useState('');
@@ -163,6 +166,12 @@ export default function HomeScreen() {
           <Text>Predicted Total Travel Time with Traffic: {predictedTime}</Text>
         </View>
       ) : null}
+
+      <Link href={{ pathname: '/explore' }}>
+        <Pressable>
+          <Text>Go to Sandbox</Text>
+        </Pressable>
+      </Link>
 
       <MapView
         style={styles.map}
