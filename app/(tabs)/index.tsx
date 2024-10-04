@@ -4,14 +4,13 @@ import {
   TextInput,
   Button,
   StyleSheet,
-  Platform,
   Text,
   Alert,
   Pressable,
+  useColorScheme,
 } from 'react-native';
 import MapView, { Marker, Polyline } from 'react-native-maps';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { Link } from 'expo-router';
 import { router } from 'expo-router';
 
 export default function HomeScreen() {
@@ -24,6 +23,10 @@ export default function HomeScreen() {
     { latitude: number; longitude: number }[]
   >([]);
   const [predictedTime, setPredictedTime] = useState('');
+
+  const colorScheme = useColorScheme();
+
+  const styles = getStyles(colorScheme === 'dark');
 
   const googleMapsApiKey = 'AIzaSyBQ92jAHUBxg2Z1nVYjyXQ1rcibkda7hjg';
 
@@ -123,21 +126,21 @@ export default function HomeScreen() {
         value={origin}
         onChangeText={setOrigin}
         placeholder='Enter Origin'
-        placeholderTextColor='gray'
+        placeholderTextColor={colorScheme === 'dark' ? 'lightgray' : 'gray'}
       />
       <TextInput
         style={styles.input}
         value={destination}
         onChangeText={setDestination}
         placeholder='Enter Destination'
-        placeholderTextColor='gray'
+        placeholderTextColor={colorScheme === 'dark' ? 'lightgray' : 'gray'}
       />
       <TextInput
         style={styles.input}
         value={waypoints}
         onChangeText={setWaypoints}
         placeholder='Enter Waypoints (comma-separated)'
-        placeholderTextColor='gray'
+        placeholderTextColor={colorScheme === 'dark' ? 'lightgray' : 'gray'}
       />
       <Button
         title='Select Departure Time'
@@ -163,12 +166,14 @@ export default function HomeScreen() {
 
       {predictedTime ? (
         <View style={styles.predictedTimeContainer}>
-          <Text>Predicted Total Travel Time with Traffic: {predictedTime}</Text>
+          <Text style={styles.text}>
+            Predicted Total Travel Time with Traffic: {predictedTime}
+          </Text>
         </View>
       ) : null}
 
       <Pressable onPress={() => router.push('/(tabs)/sandbox/sandbox')}>
-        <Text>Go to Sandbox</Text>
+        <Text style={styles.text}>Go to Sandbox</Text>
       </Pressable>
 
       <MapView
@@ -199,30 +204,35 @@ export default function HomeScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 16,
-    marginTop: Platform.OS === 'ios' ? 50 : 0,
-  },
-  input: {
-    height: 40,
-    borderColor: 'gray',
-    borderWidth: 1,
-    marginBottom: 8,
-    paddingHorizontal: 8,
-    color: 'white',
-  },
-  selectedTime: {
-    marginVertical: 8,
-    fontSize: 16,
-  },
-  predictedTimeContainer: {
-    padding: 8,
-    backgroundColor: '#eee',
-    marginVertical: 8,
-  },
-  map: {
-    flex: 1,
-  },
-});
+const getStyles = (isDarkMode: boolean) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      padding: 16,
+      backgroundColor: isDarkMode ? '#000' : '#fff',
+    },
+    input: {
+      height: 40,
+      borderColor: isDarkMode ? 'lightgray' : 'gray',
+      borderWidth: 1,
+      marginBottom: 8,
+      paddingHorizontal: 8,
+      color: isDarkMode ? '#fff' : '#000',
+    },
+    selectedTime: {
+      marginVertical: 8,
+      fontSize: 16,
+      color: isDarkMode ? '#fff' : '#000',
+    },
+    predictedTimeContainer: {
+      padding: 8,
+      backgroundColor: isDarkMode ? '#333' : '#eee',
+      marginVertical: 8,
+    },
+    text: {
+      color: isDarkMode ? '#fff' : '#000',
+    },
+    map: {
+      flex: 1,
+    },
+  });
