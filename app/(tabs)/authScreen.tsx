@@ -1,15 +1,16 @@
-import React, { useState } from 'react';
-import { View, TextInput, Button, Text } from 'react-native';
-import { useMutation } from '@apollo/client';
-import { CreateUserMutation } from '@/graphql/generated';
-import client from '@/graphql/client';
-import { CREATE_USER } from '@/graphql/queries';
+import React, { useState } from "react";
+import { View, TextInput, Button, Text } from "react-native";
+import { useMutation } from "@apollo/client";
+import { CreateUserMutation } from "@/graphql/generated";
+import client from "@/graphql/client";
+import { CREATE_USER } from "@/graphql/queries";
+import { SimpleButton } from "@/components/test/button";
 
 export default function AuthScreen(): JSX.Element {
-  const [email, setEmail] = useState<string>('');
-  const [password, setPassword] = useState<string>('');
-  const [name, setName] = useState<string>('');
-  const [error, setError] = useState<string>('');
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [name, setName] = useState<string>("");
+  const [error, setError] = useState<string>("");
   const [user, setUser] = useState<any>(null);
 
   const [
@@ -24,7 +25,7 @@ export default function AuthScreen(): JSX.Element {
 
   const handleSignUp = async () => {
     try {
-      console.log('Submitting mutation with:', { name, email, password });
+      console.log("Submitting mutation with:", { name, email, password });
       const result = await createUser({
         variables: {
           name,
@@ -33,11 +34,11 @@ export default function AuthScreen(): JSX.Element {
         },
       });
 
-      console.log('Mutation result:', result);
+      console.log("Mutation result:", result);
       setUser(result.data?.createUser || null);
-      setError('');
+      setError("");
     } catch (err: any) {
-      console.error('Error occurred:', err);
+      console.error("Error occurred:", err);
       setError(err.message);
     }
   };
@@ -49,29 +50,29 @@ export default function AuthScreen(): JSX.Element {
       ) : (
         <View>
           <TextInput
-            placeholder='Name'
+            placeholder="Name"
             value={name}
             onChangeText={setName}
             style={{
               borderWidth: 1,
               padding: 10,
               marginBottom: 10,
-              color: 'black',
+              color: "black",
             }}
           />
           <TextInput
-            placeholder='Email'
+            placeholder="Email"
             value={email}
             onChangeText={setEmail}
             style={{
               borderWidth: 1,
               padding: 10,
               marginBottom: 10,
-              color: 'black',
+              color: "black",
             }}
           />
           <TextInput
-            placeholder='Password'
+            placeholder="Password"
             value={password}
             onChangeText={setPassword}
             secureTextEntry
@@ -79,11 +80,12 @@ export default function AuthScreen(): JSX.Element {
               borderWidth: 1,
               padding: 10,
               marginBottom: 10,
-              color: 'black',
+              color: "black",
             }}
           />
-          {error ? <Text style={{ color: 'red' }}>{error}</Text> : null}
-          <Button title='Sign Up' onPress={handleSignUp} />
+          {error ? <Text style={{ color: "red" }}>{error}</Text> : null}
+          <Button title="Sign Up" onPress={handleSignUp} />
+          <SimpleButton />
         </View>
       )}
     </View>
