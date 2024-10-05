@@ -7,12 +7,11 @@ import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import {
-  CreateUserMutation,
   GetUsersQuery,
   User as U,
 } from '@/graphql/generated';
 import React from 'react';
-import { GET_USERS, CREATE_USER } from '@/graphql/queries';
+import { GET_USERS } from '@/graphql/queries';
 
 export default function TabTwoScreen() {
   const {
@@ -21,15 +20,8 @@ export default function TabTwoScreen() {
     data: queryData,
   } = useQuery<GetUsersQuery, { error: Error }>(GET_USERS, { client });
 
-  const [
-    createUser,
-    { data: mutationData, loading: mutationLoading, error: mutationError },
-  ] = useMutation<CreateUserMutation, { error: Error }>(CREATE_USER, {
-    client,
-  });
-
   if (queryLoading) return <Text>Loading...</Text>;
-  if (queryError) return <Text>Error :(</Text>;
+  if (queryError) return <Text>Error :</Text>;
 
   console.log('Loading:', queryLoading);
   console.log('Error:', queryError);
@@ -72,7 +64,7 @@ export default function TabTwoScreen() {
           This app has two screens:
           <ThemedText type='defaultSemiBold'>
             app/(tabs)/index.tsx
-          </ThemedText>{' '}
+          </ThemedText>
           and
           <ThemedText type='defaultSemiBold'>app/(tabs)/explore.tsx</ThemedText>
         </ThemedText>

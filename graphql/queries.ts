@@ -1,4 +1,3 @@
-// src/graphql/queries.ts
 import { gql } from '@apollo/client';
 
 export const GET_USERS = gql`
@@ -22,11 +21,23 @@ export const GET_USER = gql`
 `;
 
 export const CREATE_USER = gql`
-  mutation CreateUser($name: String!, $email: String!, $password: String!) {
-    createUser(name: $name, email: $email, password: $password) {
+  mutation CreateUser($name: String!, $email: String!, $firebaseId: String!) {
+    createUser(name: $name, email: $email, firebaseId: $firebaseId) {
       id
       name
       email
+      sessionId
+    }
+  }
+`;
+
+export const LOGIN = gql`
+  mutation Login($email: String!, $firebaseId: String!) {
+    login(email: $email, firebaseId: $firebaseId) {
+      id
+      name
+      email
+      sessionId
     }
   }
 `;

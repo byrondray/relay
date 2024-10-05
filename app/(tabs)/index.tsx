@@ -12,8 +12,9 @@ import {
 import MapView, { Marker, Polyline } from 'react-native-maps';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { router } from 'expo-router';
+import withAuthCheck from '../../components/WithAuthCheck';
 
-export default function HomeScreen() {
+function HomeScreen() {
   const [origin, setOrigin] = useState('');
   const [destination, setDestination] = useState('');
   const [waypoints, setWaypoints] = useState('');
@@ -27,8 +28,6 @@ export default function HomeScreen() {
   const colorScheme = useColorScheme();
 
   const styles = getStyles(colorScheme === 'dark');
-
-  const googleMapsApiKey = 'AIzaSyBQ92jAHUBxg2Z1nVYjyXQ1rcibkda7hjg';
 
   const handleGetDirections = async () => {
     if (origin && destination) {
@@ -49,7 +48,7 @@ export default function HomeScreen() {
           `&departure_time=${departureTimestamp}` +
           `&traffic_model=best_guess` +
           `&mode=driving` +
-          `&key=${googleMapsApiKey}`;
+          `&key=${process.env.PUBLIC_EXPO_GOOGLE_MAPS_API_KEY}`;
 
         console.log('Request URL:', url);
 
@@ -118,7 +117,7 @@ export default function HomeScreen() {
     }
     return points;
   };
-
+  // clearStorage();
   return (
     <View style={styles.container}>
       <TextInput
@@ -204,12 +203,15 @@ export default function HomeScreen() {
   );
 }
 
+export default withAuthCheck(HomeScreen);
+
 const getStyles = (isDarkMode: boolean) =>
   StyleSheet.create({
     container: {
       flex: 1,
       padding: 16,
       backgroundColor: isDarkMode ? '#000' : '#fff',
+      marginTop: 80,
     },
     input: {
       height: 40,

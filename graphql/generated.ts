@@ -14,16 +14,31 @@ export type Scalars = {
   Float: { input: number; output: number; }
 };
 
+export type AuthPayload = {
+  __typename?: 'AuthPayload';
+  email: Scalars['String']['output'];
+  id: Scalars['ID']['output'];
+  name: Scalars['String']['output'];
+  sessionId: Scalars['String']['output'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
-  createUser: User;
+  createUser: AuthPayload;
+  login: AuthPayload;
 };
 
 
 export type MutationCreateUserArgs = {
   email: Scalars['String']['input'];
+  firebaseId: Scalars['String']['input'];
   name: Scalars['String']['input'];
-  password: Scalars['String']['input'];
+};
+
+
+export type MutationLoginArgs = {
+  email: Scalars['String']['input'];
+  firebaseId: Scalars['String']['input'];
 };
 
 export type Query = {
@@ -59,8 +74,16 @@ export type GetUserQuery = { __typename?: 'Query', getUser?: { __typename?: 'Use
 export type CreateUserMutationVariables = Exact<{
   name: Scalars['String']['input'];
   email: Scalars['String']['input'];
-  password: Scalars['String']['input'];
+  firebaseId: Scalars['String']['input'];
 }>;
 
 
-export type CreateUserMutation = { __typename?: 'Mutation', createUser: { __typename?: 'User', id: string, name: string, email: string } };
+export type CreateUserMutation = { __typename?: 'Mutation', createUser: { __typename?: 'AuthPayload', id: string, name: string, email: string, sessionId: string } };
+
+export type LoginMutationVariables = Exact<{
+  email: Scalars['String']['input'];
+  firebaseId: Scalars['String']['input'];
+}>;
+
+
+export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'AuthPayload', id: string, name: string, email: string, sessionId: string } };

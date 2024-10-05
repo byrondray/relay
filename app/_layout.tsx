@@ -1,3 +1,5 @@
+import { ApolloProvider } from '@apollo/client';
+import client from '../graphql/client';
 import {
   DarkTheme,
   DefaultTheme,
@@ -7,34 +9,37 @@ import { Stack } from 'expo-router';
 import React from 'react';
 import { ApplicationProvider } from '@ui-kitten/components';
 import * as eva from '@eva-design/eva';
-import { StyleSheet, useColorScheme, View } from 'react-native'; // Correct import
+import { StyleSheet, useColorScheme, View } from 'react-native';
 
 export default function RootLayout() {
-  // If testing dark mode manually, use the following:
   const colorScheme = 'dark';
 
-  // const colorScheme = useColorScheme(); // Automatically detects the system theme
-
   return (
-    <ApplicationProvider
-      {...eva}
-      theme={colorScheme === 'dark' ? eva.dark : eva.light}
-    >
-      <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-        <View
-          style={
-            colorScheme === 'dark'
-              ? styles.darkContainer
-              : styles.lightContainer
-          }
+    <ApolloProvider client={client}>
+      <ApplicationProvider
+        {...eva}
+        theme={colorScheme === 'dark' ? eva.dark : eva.light}
+      >
+        <ThemeProvider
+          value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}
         >
-          <Stack>
-            <Stack.Screen name='(tabs)' options={{ headerShown: false }} />
-            <Stack.Screen name='+not-found' />
-          </Stack>
-        </View>
-      </ThemeProvider>
-    </ApplicationProvider>
+          <View
+            style={
+              colorScheme === 'dark'
+                ? styles.darkContainer
+                : styles.lightContainer
+            }
+          >
+            <Stack>
+              <Stack.Screen name='(tabs)' options={{ headerShown: false }} />
+              <Stack.Screen name='Login/login' />
+              <Stack.Screen name='Register/register' />
+              <Stack.Screen name='+not-found' />
+            </Stack>
+          </View>
+        </ThemeProvider>
+      </ApplicationProvider>
+    </ApolloProvider>
   );
 }
 
