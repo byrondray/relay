@@ -12,8 +12,8 @@ import * as eva from '@eva-design/eva';
 import { StyleSheet, useColorScheme, View } from 'react-native';
 
 export default function RootLayout() {
-  const colorScheme = 'dark';
-
+  // const colorScheme = 'dark';
+  const colorScheme = useColorScheme();
   return (
     <ApolloProvider client={client}>
       <ApplicationProvider

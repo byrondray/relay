@@ -4,7 +4,14 @@
     "jsx": "react",
     "paths": {
       "@/*": ["./*"]
-    }
+    },
+    "module": "es2020",
+    "target": "es2020",
+    "lib": ["dom", "es2020"],
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true
   },
   "include": [
     "**/*.ts",

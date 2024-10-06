@@ -1,5 +1,8 @@
 {
   "name": "relay",
+  "slug": "relay",
+  "scheme": "myapp",
+  "owner": "byrondray",
   "main": "expo-router/entry",
   "version": "1.0.0",
   "scripts": {
