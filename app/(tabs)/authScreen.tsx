@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { View, TextInput, Button, Text } from "react-native";
+import { View, TextInput, Text } from "react-native";
+import { Button, SearchBar } from "@rneui/themed";
 import { useMutation } from "@apollo/client";
 import { CreateUserMutation } from "@/graphql/generated";
 import client from "@/graphql/client";
@@ -12,6 +13,7 @@ export default function AuthScreen(): JSX.Element {
   const [name, setName] = useState<string>("");
   const [error, setError] = useState<string>("");
   const [user, setUser] = useState<any>(null);
+  const [search, setSearch] = useState<string>("");
 
   const [
     createUser,
@@ -43,8 +45,17 @@ export default function AuthScreen(): JSX.Element {
     }
   };
 
+  const updateSearch = (search: string) => {
+    setSearch(search);
+  }
+
   return (
     <View style={{ padding: 20, marginTop: 60 }}>
+      <SearchBar
+        placeholder="Type Here..."
+        onChangeText={updateSearch}
+        value={search}
+      />
       {user ? (
         <Text>Welcome {user.email}</Text>
       ) : (
