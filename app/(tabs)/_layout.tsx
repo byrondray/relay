@@ -34,6 +34,18 @@ export default function TabLayout() {
           tabBarButton: () => null,
         }}
       />
+      <Tabs.Screen
+        name='authScreen'
+        options={{
+          title: 'Register',
+          tabBarIcon: ({ color, focused }) => (
+            <TabBarIcon
+              name={focused ? 'person' : 'person-outline'}
+              color={color}
+            />
+          ),
+        }}
+      />
     </Tabs>
   );
 }
