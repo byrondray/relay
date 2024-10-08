@@ -1,4 +1,3 @@
-// Transition.tsx
 import React, { ReactNode } from 'react';
 import { motion } from 'framer-motion';
 
