@@ -1,3 +1,10 @@
 {
-  "urlRandomness": "SwLlVW4"
+  "urlRandomness": "SwLlVW4",
+  "dev": true,
+  "minify": false,
+  "https": false,
+  "scheme": null,
+  "hostType": "lan",
+  "lanType": "ip",
+  "devClient": false
 }
