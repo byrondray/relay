@@ -6,13 +6,12 @@ import {
   Text,
   useColorScheme,
   StyleSheet,
-  TouchableOpacity,
   ActivityIndicator,
 } from 'react-native';
-import { useAuthRequest } from 'expo-auth-session';
 import {
   GoogleAuthProvider,
   signInWithEmailAndPassword,
+  onAuthStateChanged,
   signInWithPopup,
 } from 'firebase/auth';
 import { auth } from '@/firebaseConfig';
@@ -20,7 +19,7 @@ import { Link, router } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { LOGIN } from '@/graphql/queries';
 import { useMutation } from '@apollo/client';
-import { googleProvider } from '../../firebaseConfig';
+import { useAuthRequest } from 'expo-auth-session';
 
 const EXPO_PUBLIC_GOOGLE_CLIENT_ID = process.env.EXPO_PUBLIC_GOOGLE_CLIENT_ID;
 
@@ -28,8 +27,8 @@ export default function LoginScreen(): JSX.Element {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [error, setError] = useState<string>('');
-  const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(false);
+  const [user, setUser] = useState<any>(null);
   const [login] = useMutation(LOGIN);
 
   const colorScheme = useColorScheme();
@@ -43,16 +42,40 @@ export default function LoginScreen(): JSX.Element {
   const [request, response, promptAsync] = useAuthRequest(
     {
       clientId: EXPO_PUBLIC_GOOGLE_CLIENT_ID || '',
-      redirectUri: 'myapp://redirect',
+      redirectUri: 'https://auth.expo.io/@byrondray/relay',
       scopes: ['openid', 'profile', 'email'],
     },
     discovery
   );
 
   useEffect(() => {
+    const checkAuthStatus = async () => {
+      try {
+        setLoading(true);
+        const token = await AsyncStorage.getItem('firebaseToken');
+        if (token) {
+          onAuthStateChanged(auth, (firebaseUser) => {
+            if (firebaseUser) {
+              router.replace('/(tabs)/');
+            } else {
+              setLoading(false);
+            }
+          });
+        } else {
+          setLoading(false);
+        }
+      } catch (error) {
+        console.error('Error checking auth status:', error);
+        setLoading(false);
+      }
+    };
+
+    checkAuthStatus();
+  }, []);
+
+  useEffect(() => {
     if (response?.type === 'success') {
       const { id_token } = response.params;
-      console.log('Google Sign-In Response:', response);
       const credential = GoogleAuthProvider.credential(id_token);
       setLoading(true);
       signInWithPopup(auth, credential)
@@ -60,8 +83,9 @@ export default function LoginScreen(): JSX.Element {
           const firebaseUser = result.user;
           const token = await firebaseUser.getIdToken();
           await AsyncStorage.setItem('firebaseToken', token);
-          setUser(firebaseUser);
           setLoading(false);
+          setUser(firebaseUser);
+          router.replace('/(tabs)/');
         })
         .catch((err) => {
           setLoading(false);
@@ -78,11 +102,9 @@ export default function LoginScreen(): JSX.Element {
       const firebaseUser = result.user;
       const token = await firebaseUser.getIdToken();
       await AsyncStorage.setItem('firebaseToken', token);
-      setUser(firebaseUser);
       await login({ variables: { email, firebaseId: firebaseUser.uid } });
-      console.log('User signed in with email/password:', firebaseUser.email);
       setLoading(false);
-      router.push('/(tabs)/');
+      router.replace('/(tabs)/');
     } catch (err) {
       setLoading(false);
       setError('Email/Password sign-in failed. Please try again.');
@@ -90,18 +112,10 @@ export default function LoginScreen(): JSX.Element {
     }
   };
 
-  const handleGoogleSignIn = () => {
-    promptAsync();
-  };
-
   return (
     <View style={{ padding: 20, marginTop: 60 }}>
       {loading ? (
         <ActivityIndicator size='large' color='#0000ff' />
-      ) : user ? (
-        <Text style={{ color: isDarkMode ? '#fff' : '#000' }}>
-          Welcome back {user.email}
-        </Text>
       ) : (
         <View>
           <TextInput
@@ -146,16 +160,6 @@ export default function LoginScreen(): JSX.Element {
             Don't have an account? Register
           </Link>
           {error ? <Text style={{ color: 'red' }}>{error}</Text> : null}
-
-          {/* <TouchableOpacity
-            style={[
-              styles.googleButton,
-              isDarkMode ? styles.buttonDark : styles.buttonLight,
-            ]}
-            onPress={handleGoogleSignIn}
-          >
-            <Text style={styles.buttonText}>Sign in with Google</Text>
-          </TouchableOpacity> */}
         </View>
       )}
     </View>
@@ -172,21 +176,5 @@ const styles = StyleSheet.create({
   },
   linkDark: {
     color: 'lightblue',
-  },
-  googleButton: {
-    padding: 12,
-    borderRadius: 5,
-    marginTop: 10,
-    alignItems: 'center',
-  },
-  buttonLight: {
-    backgroundColor: '#4285F4',
-  },
-  buttonDark: {
-    backgroundColor: '#357ae8',
-  },
-  buttonText: {
-    color: '#fff',
-    fontWeight: 'bold',
   },
 });

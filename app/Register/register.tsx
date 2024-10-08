@@ -5,13 +5,13 @@ import {
   Button,
   Text,
   useColorScheme,
-  TouchableOpacity,
   ActivityIndicator,
 } from 'react-native';
 import {
   createUserWithEmailAndPassword,
   GoogleAuthProvider,
   signInWithCredential,
+  onAuthStateChanged,
 } from 'firebase/auth';
 import { useAuthRequest, makeRedirectUri } from 'expo-auth-session';
 import { auth } from '../../firebaseConfig';
@@ -53,9 +53,34 @@ export default function AuthScreen(): JSX.Element {
   );
 
   useEffect(() => {
+    const checkAuthStatus = async () => {
+      try {
+        setLoading(true);
+        const token = await AsyncStorage.getItem('firebaseToken');
+        if (token) {
+          onAuthStateChanged(auth, (firebaseUser) => {
+            if (firebaseUser) {
+              setUser(firebaseUser);
+              router.replace('/(tabs)/');
+            } else {
+              setLoading(false);
+            }
+          });
+        } else {
+          setLoading(false);
+        }
+      } catch (error) {
+        console.error('Error checking auth status:', error);
+        setLoading(false);
+      }
+    };
+
+    checkAuthStatus();
+  }, []);
+
+  useEffect(() => {
     if (response?.type === 'success') {
       const { id_token } = response.params;
-
       setLoading(true);
 
       const credential = GoogleAuthProvider.credential(id_token);
