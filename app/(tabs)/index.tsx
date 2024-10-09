@@ -175,6 +175,10 @@ function HomeScreen() {
         <Text style={styles.text}>Go to Sandbox</Text>
       </Pressable>
 
+      <Pressable onPress={() => router.push('/FirstPage')}>
+        <Text style={styles.text}>Go to FirstPage</Text>
+      </Pressable>
+
       <MapView
         style={styles.map}
         initialRegion={{

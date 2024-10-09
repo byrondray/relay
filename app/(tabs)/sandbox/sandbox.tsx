@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Calendar, Text, Layout } from '@ui-kitten/components';
 import { ActivityIndicator } from 'react-native';
+import { SimpleButton } from '@/components/test/button';
+import { ScrollView } from 'react-native';
+import { View } from 'react-native';
 
 export default function Sandbox() {
   const [date, setDate] = useState(new Date());
@@ -29,21 +32,31 @@ export default function Sandbox() {
   }
 
   return (
-    <Layout
-      style={{
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginTop: 80,
-      }}
-    >
-      <Text category='h6' style={{ marginBottom: 16 }}>
-        Selected date: {date.toLocaleDateString()}
-      </Text>
+    <ScrollView>
+      <Layout
+        style={{
+          flex: 1,
+          justifyContent: 'center',
+          alignItems: 'center',
+          padding: 16,
+        }}
+      >
+        <Text category='h6' style={{ marginBottom: 16 }}>
+          Selected date: {date.toLocaleDateString()}
+        </Text>
 
-      <Calendar date={date} onSelect={(nextDate) => setDate(nextDate)} />
+        <Calendar
+          date={date}
+          onSelect={(nextDate) => setDate(nextDate)}
+          style={{ marginBottom: 20 }}
+        />
 
-      {CardAccessoriesShowcase && <CardAccessoriesShowcase />}
-    </Layout>
+        <View style={{ marginBottom: 20, flex: 1, justifyContent: 'center' }}>
+          {CardAccessoriesShowcase && <CardAccessoriesShowcase />}
+        </View>
+
+        <SimpleButton />
+      </Layout>
+    </ScrollView>
   );
 }

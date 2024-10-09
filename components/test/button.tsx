@@ -1,50 +1,60 @@
-import React from "react";
-import { Button, Text, View } from "react-native";
-import { createTheme, ThemeProvider } from "@rneui/themed";
-import { ThemedText } from "../ThemedText";
+import React from 'react';
+import { Button, Text, View } from 'react-native';
+import { createTheme, ThemeProvider } from '@rneui/themed';
+import { ThemedText } from '../ThemedText';
 
 const theme = createTheme({
   lightColors: {
-    primary: "red",
-    background: "white",
+    primary: 'black',
+    background: 'white',
   },
   darkColors: {
-    primary: "blue",
-    background: "black",
+    primary: 'white',
+    background: 'black',
   },
   components: {
     Button: {
       titleStyle: {
-        color: "white",
+        color: 'white',
       },
       buttonStyle: {
-        backgroundColor: "yellow",
+        backgroundColor: 'yellow',
       },
     },
     Text: {
       style: {
         fontSize: 20,
-        fontFamily: "Arial",
+        fontFamily: 'Arial',
       },
     },
   },
 });
 
 export function SimpleButton() {
-  const [mode, setMode] = React.useState<"light" | "dark">("light");
+  const [mode, setMode] = React.useState<'light' | 'dark'>('light');
 
   const toggleMode = () => {
-    setMode((prev) => (prev === "light" ? "dark" : "light"));
+    setMode((prev) => (prev === 'light' ? 'dark' : 'light'));
   };
 
   return (
     <ThemeProvider theme={theme}>
-      <View style={{ padding: 20, backgroundColor: mode === "light" ? theme.lightColors?.background : theme.darkColors?.background }}>
+      <View
+        style={{
+          padding: 20,
+          flex: 1,
+          width: '100%',
+          backgroundColor:
+            mode === 'light'
+              ? theme.lightColors?.background
+              : theme.darkColors?.background,
+        }}
+      >
         <ThemedText
           style={{
             marginBottom: 20,
             color:
-              mode === "light"
+              mode === 'light'
                 ? theme.lightColors?.primary
                 : theme.darkColors?.primary,
           }}
@@ -52,16 +62,24 @@ export function SimpleButton() {
           Hello
         </ThemedText>
         <Button
-          title="Press Me"
+          title='Press Me'
           onPress={toggleMode}
           color={
-            mode === "light"
+            mode === 'light'
               ? theme.lightColors?.primary
               : theme.darkColors?.primary
           }
         />
-        <Text style={{ marginTop: 20, color: mode === "light" ? theme.lightColors?.primary : theme.darkColors?.primary }}>
-          Current mode: {mode === "light" ? "Light" : "Dark"}
+        <Text
+          style={{
+            marginTop: 20,
+            color:
+              mode === 'light'
+                ? theme.lightColors?.primary
+                : theme.darkColors?.primary,
+          }}
+        >
+          Current mode: {mode === 'light' ? 'Light' : 'Dark'}
         </Text>
       </View>
     </ThemeProvider>
