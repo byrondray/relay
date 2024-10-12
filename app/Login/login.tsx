@@ -7,6 +7,7 @@ import {
   useColorScheme,
   StyleSheet,
   ActivityIndicator,
+  Alert,
 } from 'react-native';
 import {
   GoogleAuthProvider,
@@ -14,6 +15,8 @@ import {
   onAuthStateChanged,
   signInWithPopup,
 } from 'firebase/auth';
+import * as Notifications from 'expo-notifications';
+import * as Device from 'expo-device';
 import { auth } from '@/firebaseConfig';
 import { Link, router } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -47,6 +50,29 @@ export default function LoginScreen(): JSX.Element {
     },
     discovery
   );
+
+  const registerForPushNotificationsAsync = async () => {
+    let token;
+    const { status: existingStatus } =
+      await Notifications.getPermissionsAsync();
+    let finalStatus = existingStatus;
+    if (existingStatus !== 'granted') {
+      const { status } = await Notifications.requestPermissionsAsync();
+      finalStatus = status;
+    }
+    if (finalStatus !== 'granted') {
+      Alert.alert('Failed to get push token for push notifications!');
+      return;
+    }
+    token = (
+      await Notifications.getExpoPushTokenAsync({
+        projectId: '2999c675-2322-4719-814c-9b1f58cb15af', // Add this line
+      })
+    ).data;
+    console.log('Expo Push Token:', token);
+
+    return token;
+  };
 
   useEffect(() => {
     const checkAuthStatus = async () => {
@@ -82,9 +108,21 @@ export default function LoginScreen(): JSX.Element {
         .then(async (result) => {
           const firebaseUser = result.user;
           const token = await firebaseUser.getIdToken();
+
+          const expoPushToken = await registerForPushNotificationsAsync(); // Get Expo Push Token
+
           await AsyncStorage.setItem('firebaseToken', token);
           setLoading(false);
           setUser(firebaseUser);
+
+          await login({
+            variables: {
+              email: firebaseUser.email,
+              firebaseId: firebaseUser.uid,
+              expoPushToken: expoPushToken, // Store Expo Push Token
+            },
+          });
+
           router.replace('/(tabs)/');
         })
         .catch((err) => {
@@ -101,8 +139,17 @@ export default function LoginScreen(): JSX.Element {
       const result = await signInWithEmailAndPassword(auth, email, password);
       const firebaseUser = result.user;
       const token = await firebaseUser.getIdToken();
+
+      const expoPushToken = await registerForPushNotificationsAsync(); // Get Expo Push Token
+
       await AsyncStorage.setItem('firebaseToken', token);
-      await login({ variables: { email, firebaseId: firebaseUser.uid } });
+      await login({
+        variables: {
+          email,
+          firebaseId: firebaseUser.uid,
+          expoPushToken: expoPushToken,
+        }, // Pass Expo Push Token
+      });
       setLoading(false);
       router.replace('/(tabs)/');
     } catch (err) {

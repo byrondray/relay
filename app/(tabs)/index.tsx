@@ -13,6 +13,8 @@ import MapView, { Marker, Polyline } from 'react-native-maps';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { router } from 'expo-router';
 import withAuthCheck from '../../components/WithAuthCheck';
+import { useMutation } from '@apollo/client';
+import { TEST_NOTIFICATION } from '@/graphql/queries';
 
 function HomeScreen() {
   const [origin, setOrigin] = useState('');
@@ -25,9 +27,38 @@ function HomeScreen() {
   >([]);
   const [predictedTime, setPredictedTime] = useState('');
 
+  const [sendTestNotification] = useMutation(TEST_NOTIFICATION);
+
   const colorScheme = useColorScheme();
 
   const styles = getStyles(colorScheme === 'dark');
+
+  const sendTestNotificationFNC = async () => {
+    try {
+      const recipientId = 'hkdSMSsaZIg4tJE8q4fC8ejp1hO2'; // Replace this with the actual recipient ID
+      const messageText =
+        'This is a test notification from the GraphQL function!';
+
+      const { data } = await sendTestNotification({
+        variables: {
+          recipientId,
+          messageText,
+        },
+      });
+
+      if (data?.testNotification?.success) {
+        Alert.alert(
+          'Notification Sent',
+          'Test notification sent successfully!'
+        );
+      } else {
+        Alert.alert('Notification Failed', 'Failed to send notification.');
+      }
+    } catch (error) {
+      console.error('Error sending test notification:', error);
+      Alert.alert('Error', 'An error occurred while sending the notification.');
+    }
+  };
 
   const handleGetDirections = async () => {
     if (origin && destination) {
@@ -117,7 +148,7 @@ function HomeScreen() {
     }
     return points;
   };
-  // clearStorage();
+
   return (
     <View style={styles.container}>
       <TextInput
@@ -178,6 +209,11 @@ function HomeScreen() {
       <Pressable onPress={() => router.push('/FirstPage')}>
         <Text style={styles.text}>Go to FirstPage</Text>
       </Pressable>
+
+      <Button
+        title='Send Test Notification'
+        onPress={sendTestNotificationFNC}
+      />
 
       <MapView
         style={styles.map}

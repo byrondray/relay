@@ -6,6 +6,7 @@ import {
   Text,
   useColorScheme,
   ActivityIndicator,
+  Alert,
 } from 'react-native';
 import {
   createUserWithEmailAndPassword,
@@ -14,11 +15,13 @@ import {
   onAuthStateChanged,
 } from 'firebase/auth';
 import { useAuthRequest, makeRedirectUri } from 'expo-auth-session';
-import { auth } from '../../firebaseConfig';
+import { auth } from '@/firebaseConfig';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useMutation } from '@apollo/client';
 import { CREATE_USER } from '@/graphql/queries';
 import { router } from 'expo-router';
+import * as Notifications from 'expo-notifications';
+import * as Device from 'expo-device';
 
 const EXPO_PUBLIC_GOOGLE_CLIENT_ID = process.env.EXPO_PUBLIC_GOOGLE_CLIENT_ID;
 
@@ -27,8 +30,8 @@ export default function AuthScreen(): JSX.Element {
   const [password, setPassword] = useState<string>('');
   const [name, setName] = useState<string>('');
   const [error, setError] = useState<string>('');
-  const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(false);
+  const [user, setUser] = useState<any>(null);
 
   const colorScheme = useColorScheme();
   const isDarkMode = colorScheme === 'dark';
@@ -51,6 +54,33 @@ export default function AuthScreen(): JSX.Element {
     },
     discovery
   );
+
+  const registerForPushNotificationsAsync = async () => {
+    let token;
+    if (Device.isDevice) {
+      const { status: existingStatus } =
+        await Notifications.getPermissionsAsync();
+      let finalStatus = existingStatus;
+      if (existingStatus !== 'granted') {
+        const { status } = await Notifications.requestPermissionsAsync();
+        finalStatus = status;
+      }
+      if (finalStatus !== 'granted') {
+        Alert.alert('Failed to get push token for push notifications!');
+        return;
+      }
+      token = (
+        await Notifications.getExpoPushTokenAsync({
+          projectId: '2999c675-2322-4719-814c-9b1f58cb15af',
+        })
+      ).data;
+      console.log('Expo Push Token:', token);
+    } else {
+      Alert.alert('Must use physical device for Push Notifications');
+    }
+
+    return token;
+  };
 
   useEffect(() => {
     const checkAuthStatus = async () => {
@@ -91,11 +121,14 @@ export default function AuthScreen(): JSX.Element {
           const token = await firebaseUser.getIdToken();
           await AsyncStorage.setItem('firebaseToken', token);
 
+          const expoPushToken = await registerForPushNotificationsAsync();
+
           const { data } = await createUser({
             variables: {
               name: firebaseUser.displayName || '',
               email: firebaseUser.email,
               firebaseId,
+              expoPushToken: expoPushToken,
             },
           });
 
@@ -123,11 +156,14 @@ export default function AuthScreen(): JSX.Element {
       const firebaseUser = result.user;
       const firebaseId = firebaseUser.uid;
 
+      const expoPushToken = await registerForPushNotificationsAsync();
+
       const { data } = await createUser({
         variables: {
           name,
           email,
           firebaseId,
+          expoPushToken: expoPushToken,
         },
       });
 
@@ -207,20 +243,7 @@ export default function AuthScreen(): JSX.Element {
           {error ? <Text style={{ color: 'red' }}>{error}</Text> : null}
           <Button title='Sign Up with Email' onPress={handleSignUp} />
 
-          {/* <TouchableOpacity
-            style={{
-              padding: 12,
-              backgroundColor: '#4285F4',
-              borderRadius: 5,
-              marginTop: 10,
-              alignItems: 'center',
-            }}
-            onPress={handleGoogleSignIn}
-          >
-            <Text style={{ color: '#fff', fontWeight: 'bold' }}>
-              Sign Up with Google
-            </Text>
-          </TouchableOpacity> */}
+          {/* <Button title='Sign Up with Google' onPress={handleGoogleSignIn} /> */}
         </View>
       )}
     </View>

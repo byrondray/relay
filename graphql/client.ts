@@ -2,8 +2,12 @@ import { ApolloClient, InMemoryCache, createHttpLink } from '@apollo/client';
 import { setContext } from '@apollo/client/link/context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+const url = process.env.EXPO_PUBLIC_IS_DEV
+  ? `http://${process.env.EXPO_PUBLIC_IP_ADDRESS}:4000/graphql`
+  : `${process.env.EXPO_PUBLIC_API_URL}/graphql`;
+
 const httpLink = createHttpLink({
-  uri: `http://${process.env.EXPO_PUBLIC_IP_ADDRESS}:4000/graphql`, // this needs to be your ip
+  uri: url,
 });
 
 const authLink = setContext(async (_, { headers }) => {

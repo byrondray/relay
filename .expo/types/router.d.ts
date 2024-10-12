@@ -6,9 +6,9 @@ export * from 'expo-router';
 declare module 'expo-router' {
   export namespace ExpoRouter {
     export interface __routes<T extends string = string> extends Record<string, unknown> {
-      StaticRoutes: `/` | `/(tabs)` | `/(tabs)/` | `/(tabs)/authScreen` | `/(tabs)/explore` | `/(tabs)/sandbox/card` | `/(tabs)/sandbox/sandbox` | `/FirstPage` | `/Login/login` | `/Register/register` | `/SecondPage` | `/_sitemap` | `/authScreen` | `/explore` | `/sandbox/card` | `/sandbox/sandbox`;
-      DynamicRoutes: never;
-      DynamicRouteTemplate: never;
+      StaticRoutes: `/` | `/(tabs)` | `/(tabs)/` | `/(tabs)/authScreen` | `/(tabs)/explore` | `/(tabs)/messages` | `/(tabs)/sandbox/card` | `/(tabs)/sandbox/sandbox` | `/FirstPage` | `/Login/login` | `/Register/register` | `/SecondPage` | `/_sitemap` | `/authScreen` | `/explore` | `/messages` | `/sandbox/card` | `/sandbox/sandbox`;
+      DynamicRoutes: `/(tabs)/messages/${Router.SingleRoutePart<T>}` | `/messages/${Router.SingleRoutePart<T>}`;
+      DynamicRouteTemplate: `/(tabs)/messages/[userId]` | `/messages/[userId]`;
     }
   }
 }
