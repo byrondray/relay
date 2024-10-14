@@ -25,23 +25,13 @@ export default function RootLayout() {
   const isLoading = useFirebaseAuth();
 
   useEffect(() => {
-    console.log('useEffect triggered');
-
     const requestUserPermission = async () => {
-      console.log('Requesting user permission for notifications...');
-
       try {
         const { status } = await Notifications.getPermissionsAsync();
-        console.log('Current notification permission status:', status);
-
         if (status !== 'granted') {
-          console.log('Permission not granted, requesting permission...');
           const { status: finalStatus } =
             await Notifications.requestPermissionsAsync();
-          console.log('Final notification permission status:', finalStatus);
-
           if (finalStatus !== 'granted') {
-            console.log('Failed to get push token for push notification!');
             return;
           }
         }
@@ -51,7 +41,6 @@ export default function RootLayout() {
             projectId: '2999c675-2322-4719-814c-9b1f58cb15af',
           })
         ).data;
-        console.log('Expo Push Token:', token);
       } catch (error) {
         console.error('Error getting Expo Push Token:', error);
       }

@@ -1,7 +1,5 @@
 import { gql } from '@apollo/client';
 
-// USER QUERIES AND MUTATIONS
-
 // Query to get all users
 export const GET_USERS = gql`
   query GetUsers {
@@ -123,6 +121,7 @@ export const TEST_NOTIFICATION = gql`
   }
 `;
 
+// Subscription to listen for new messages
 export const MESSAGE_SENT_SUBSCRIPTION = gql`
   subscription OnMessageSent($recipientId: String!) {
     messageSent(recipientId: $recipientId) {

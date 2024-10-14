@@ -1,20 +1,15 @@
 import React, { useState } from 'react';
-import {
-  View,
-  TextInput,
-  Button,
-  StyleSheet,
-  Text,
-  Alert,
-  Pressable,
-  useColorScheme,
-} from 'react-native';
-import MapView, { Marker, Polyline } from 'react-native-maps';
+import { Button, StyleSheet, Text, Alert, Pressable } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { router } from 'expo-router';
 import withAuthCheck from '../../components/WithAuthCheck';
 import { useMutation } from '@apollo/client';
 import { TEST_NOTIFICATION } from '@/graphql/queries';
+import MapComponent from '../../components/MapComponent';
+import { decodePolyline } from '../../components/MapUtils';
+import { ThemedAddressCompletionInput } from '@/components/ThemedAddressCompletionInput';
+import { ThemedView } from '@/components/ThemedView';
+import { ThemedText } from '@/components/ThemedText';
 
 function HomeScreen() {
   const [origin, setOrigin] = useState('');
@@ -25,17 +20,19 @@ function HomeScreen() {
   const [coordinates, setCoordinates] = useState<
     { latitude: number; longitude: number }[]
   >([]);
+  const [mapRegion, setMapRegion] = useState({
+    latitude: 37.4220936,
+    longitude: -122.083922,
+    latitudeDelta: 0.01,
+    longitudeDelta: 0.01,
+  });
   const [predictedTime, setPredictedTime] = useState('');
 
   const [sendTestNotification] = useMutation(TEST_NOTIFICATION);
 
-  const colorScheme = useColorScheme();
-
-  const styles = getStyles(colorScheme === 'dark');
-
   const sendTestNotificationFNC = async () => {
     try {
-      const recipientId = 'hkdSMSsaZIg4tJE8q4fC8ejp1hO2'; // Replace this with the actual recipient ID
+      const recipientId = 'hkdSMSsaZIg4tJE8q4fC8ejp1hO2';
       const messageText =
         'This is a test notification from the GraphQL function!';
 
@@ -79,14 +76,10 @@ function HomeScreen() {
           `&departure_time=${departureTimestamp}` +
           `&traffic_model=best_guess` +
           `&mode=driving` +
-          `&key=${process.env.PUBLIC_EXPO_GOOGLE_MAPS_API_KEY}`;
-
-        console.log('Request URL:', url);
+          `&key=${process.env.EXPO_PUBLIC_GOOGlE_MAPS_API}`;
 
         const response = await fetch(url);
         const json = await response.json();
-
-        console.log('API Response:', json);
 
         if (json.status === 'OK') {
           const points = json.routes[0].overview_polyline.points;
@@ -96,6 +89,22 @@ function HomeScreen() {
           const leg = json.routes[0].legs[0];
           const durationInTraffic = leg.duration_in_traffic.text;
           setPredictedTime(durationInTraffic);
+
+          const bounds = getRouteBounds(coords);
+          const center = {
+            latitude: (bounds.minLat + bounds.maxLat) / 2,
+            longitude: (bounds.minLng + bounds.maxLng) / 2,
+          };
+
+          const latitudeDelta = bounds.maxLat - bounds.minLat;
+          const longitudeDelta = bounds.maxLng - bounds.minLng;
+
+          setMapRegion({
+            latitude: center.latitude,
+            longitude: center.longitude,
+            latitudeDelta: latitudeDelta * 1.5,
+            longitudeDelta: longitudeDelta * 1.5,
+          });
         } else {
           console.error(`Error fetching directions: ${json.status}`);
           Alert.alert(
@@ -115,62 +124,43 @@ function HomeScreen() {
     }
   };
 
-  const decodePolyline = (t: string) => {
-    let points = [];
-    let index = 0,
-      len = t.length;
-    let lat = 0,
-      lng = 0;
+  const getRouteBounds = (
+    coordinates: { latitude: number; longitude: number }[]
+  ) => {
+    let minLat = coordinates[0].latitude;
+    let maxLat = coordinates[0].latitude;
+    let minLng = coordinates[0].longitude;
+    let maxLng = coordinates[0].longitude;
 
-    while (index < len) {
-      let b,
-        shift = 0,
-        result = 0;
-      do {
-        b = t.charCodeAt(index++) - 63;
-        result |= (b & 0x1f) << shift;
-        shift += 5;
-      } while (b >= 0x20);
-      let dlat = result & 1 ? ~(result >> 1) : result >> 1;
-      lat += dlat;
+    coordinates.forEach((coord) => {
+      if (coord.latitude < minLat) minLat = coord.latitude;
+      if (coord.latitude > maxLat) maxLat = coord.latitude;
+      if (coord.longitude < minLng) minLng = coord.longitude;
+      if (coord.longitude > maxLng) maxLng = coord.longitude;
+    });
 
-      shift = 0;
-      result = 0;
-      do {
-        b = t.charCodeAt(index++) - 63;
-        result |= (b & 0x1f) << shift;
-        shift += 5;
-      } while (b >= 0x20);
-      let dlng = result & 1 ? ~(result >> 1) : result >> 1;
-      lng += dlng;
-
-      points.push({ latitude: lat / 1e5, longitude: lng / 1e5 });
-    }
-    return points;
+    return { minLat, maxLat, minLng, maxLng };
   };
 
   return (
-    <View style={styles.container}>
-      <TextInput
-        style={styles.input}
+    <ThemedView style={styles.container}>
+      <ThemedAddressCompletionInput
         value={origin}
         onChangeText={setOrigin}
+        onSuggestionSelect={setOrigin}
         placeholder='Enter Origin'
-        placeholderTextColor={colorScheme === 'dark' ? 'lightgray' : 'gray'}
       />
-      <TextInput
-        style={styles.input}
+      <ThemedAddressCompletionInput
         value={destination}
         onChangeText={setDestination}
+        onSuggestionSelect={setDestination}
         placeholder='Enter Destination'
-        placeholderTextColor={colorScheme === 'dark' ? 'lightgray' : 'gray'}
       />
-      <TextInput
-        style={styles.input}
+      <ThemedAddressCompletionInput
         value={waypoints}
         onChangeText={setWaypoints}
+        onSuggestionSelect={setWaypoints}
         placeholder='Enter Waypoints (comma-separated)'
-        placeholderTextColor={colorScheme === 'dark' ? 'lightgray' : 'gray'}
       />
       <Button
         title='Select Departure Time'
@@ -189,25 +179,25 @@ function HomeScreen() {
           }}
         />
       )}
-      <Text style={styles.selectedTime}>
+      <ThemedText style={styles.selectedTime}>
         Selected Departure Time: {departureTime.toLocaleString()}
-      </Text>
+      </ThemedText>
       <Button title='Get Directions' onPress={handleGetDirections} />
 
       {predictedTime ? (
-        <View style={styles.predictedTimeContainer}>
-          <Text style={styles.text}>
+        <ThemedView style={styles.predictedTimeContainer}>
+          <ThemedText>
             Predicted Total Travel Time with Traffic: {predictedTime}
-          </Text>
-        </View>
+          </ThemedText>
+        </ThemedView>
       ) : null}
 
       <Pressable onPress={() => router.push('/(tabs)/sandbox/sandbox')}>
-        <Text style={styles.text}>Go to Sandbox</Text>
+        <Text>Go to Sandbox</Text>
       </Pressable>
 
       <Pressable onPress={() => router.push('/FirstPage')}>
-        <Text style={styles.text}>Go to FirstPage</Text>
+        <Text>Go to FirstPage</Text>
       </Pressable>
 
       <Button
@@ -215,66 +205,25 @@ function HomeScreen() {
         onPress={sendTestNotificationFNC}
       />
 
-      <MapView
-        style={styles.map}
-        initialRegion={{
-          latitude: coordinates[0]?.latitude || 49.2827,
-          longitude: coordinates[0]?.longitude || -123.1207,
-          latitudeDelta: 0.0922,
-          longitudeDelta: 0.0421,
-        }}
-      >
-        {coordinates.length > 0 && (
-          <>
-            <Polyline
-              coordinates={coordinates}
-              strokeWidth={5}
-              strokeColor='red'
-            />
-            <Marker coordinate={coordinates[0]} title='Origin' />
-            <Marker
-              coordinate={coordinates[coordinates.length - 1]}
-              title='Destination'
-            />
-          </>
-        )}
-      </MapView>
-    </View>
+      <MapComponent coordinates={coordinates} mapRegion={mapRegion} />
+    </ThemedView>
   );
 }
 
 export default withAuthCheck(HomeScreen);
 
-const getStyles = (isDarkMode: boolean) =>
-  StyleSheet.create({
-    container: {
-      flex: 1,
-      padding: 16,
-      backgroundColor: isDarkMode ? '#000' : '#fff',
-      marginTop: 80,
-    },
-    input: {
-      height: 40,
-      borderColor: isDarkMode ? 'lightgray' : 'gray',
-      borderWidth: 1,
-      marginBottom: 8,
-      paddingHorizontal: 8,
-      color: isDarkMode ? '#fff' : '#000',
-    },
-    selectedTime: {
-      marginVertical: 8,
-      fontSize: 16,
-      color: isDarkMode ? '#fff' : '#000',
-    },
-    predictedTimeContainer: {
-      padding: 8,
-      backgroundColor: isDarkMode ? '#333' : '#eee',
-      marginVertical: 8,
-    },
-    text: {
-      color: isDarkMode ? '#fff' : '#000',
-    },
-    map: {
-      flex: 1,
-    },
-  });
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 16,
+    marginTop: 80,
+  },
+  selectedTime: {
+    marginVertical: 8,
+    fontSize: 16,
+  },
+  predictedTimeContainer: {
+    padding: 8,
+    marginVertical: 8,
+  },
+});

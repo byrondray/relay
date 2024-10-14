@@ -27,7 +27,6 @@ export default function AuthScreen(): JSX.Element {
 
   const handleSignUp = async () => {
     try {
-      console.log("Submitting mutation with:", { name, email, password });
       const result = await createUser({
         variables: {
           name,
@@ -36,7 +35,6 @@ export default function AuthScreen(): JSX.Element {
         },
       });
 
-      console.log("Mutation result:", result);
       setUser(result.data?.createUser || null);
       setError("");
     } catch (err: any) {

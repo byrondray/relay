@@ -25,32 +25,33 @@ const googleProvider = new GoogleAuthProvider();
 
 const restoreAuthState = async () => {
   const token = await AsyncStorage.getItem('firebaseToken');
+
+  const user = auth.currentUser;
+
+  if (user) {
+    console.log('User is already authenticated');
+    return;
+  }
+
   if (token) {
     try {
       const credential = GoogleAuthProvider.credential(token);
       await signInWithCredential(auth, credential);
-      console.log('User signed in with stored token.');
     } catch (error) {
       console.error('Failed to restore user authentication:', error);
       await AsyncStorage.removeItem('firebaseToken');
     }
-  } else {
-    console.log('No stored token found.');
   }
 };
 
-const persistAuthState = async (router: Router) => {
+const persistAuthState = async (router: any) => {
   onAuthStateChanged(auth, async (user) => {
     if (user) {
       const token = await user.getIdToken();
       await AsyncStorage.setItem('firebaseToken', token);
-      console.log('User authenticated, token stored.');
-
       router.replace('/(tabs)');
     } else {
       await AsyncStorage.removeItem('firebaseToken');
-      console.log('User signed out, token removed.');
-
       router.replace('/Login/login');
     }
   });
@@ -63,6 +64,7 @@ export const useFirebaseAuth = () => {
   useEffect(() => {
     const initializeAuth = async () => {
       await restoreAuthState();
+
       persistAuthState(router);
       setIsLoading(false);
     };

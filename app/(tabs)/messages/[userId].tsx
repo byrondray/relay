@@ -9,69 +9,41 @@ import {
   Alert,
 } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
-import { useQuery, useMutation, useSubscription } from '@apollo/client';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Notifications from 'expo-notifications';
-import {
-  GET_PRIVATE_MESSAGE_CONVERSATION,
-  CREATE_MESSAGE,
-} from '@/graphql/queries';
-import { MESSAGE_SENT_SUBSCRIPTION } from '@/graphql/queries';
 import { auth } from '@/firebaseConfig';
+import {
+  useFetchMessages,
+  useSendMessage,
+  useMessageSubscription,
+} from '../../../hooks/messages/useMessages';
+import { Message } from '@/graphql/generated';
 
 export default function MessageScreen() {
-  const [messages, setMessages] = useState<any[]>([]);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState('');
   const [user, setUser] = useState<null | any>(null);
   const { userId } = useLocalSearchParams();
+  const userIdString = Array.isArray(userId) ? userId[0] : userId;
 
   const router = useRouter();
   const senderId = auth.currentUser?.uid || '';
 
-  const { data, loading, error, refetch } = useQuery(
-    GET_PRIVATE_MESSAGE_CONVERSATION,
-    {
-      variables: { senderId, recipientId: userId },
-      skip: !senderId || !userId,
-      onCompleted: async (data) => {
-        const fetchedMessages = data.getPrivateMessageConversation;
-        setMessages(fetchedMessages);
-        await AsyncStorage.setItem(
-          `messages_${userId}`,
-          JSON.stringify(fetchedMessages)
-        );
-      },
-      onError: async () => {
-        const cachedMessages = await AsyncStorage.getItem(`messages_${userId}`);
-        if (cachedMessages) {
-          setMessages(JSON.parse(cachedMessages));
-          Alert.alert('Offline Mode', 'Loaded messages from cache.');
-        } else {
-          Alert.alert('Error', 'Failed to load messages.');
-        }
-      },
-    }
+  const { loading, error, refetch } = useFetchMessages(
+    userIdString,
+    userIdString,
+    setMessages
   );
 
-  const [createMessage] = useMutation(CREATE_MESSAGE);
-
-  // Use the subscription to listen for new messages
-  const { data: subscriptionData } = useSubscription(
-    MESSAGE_SENT_SUBSCRIPTION,
-    {
-      variables: { recipientId: userId },
-      onSubscriptionData: ({ subscriptionData }) => {
-        const newMessage = subscriptionData.data.messageSent;
-        setMessages((prevMessages) => [...prevMessages, newMessage]);
-
-        // Store the updated messages in AsyncStorage
-        AsyncStorage.setItem(
-          `messages_${userId}`,
-          JSON.stringify([...messages, newMessage])
-        );
-      },
-    }
+  const { sendMessage } = useSendMessage(
+    setMessages,
+    userIdString,
+    messages,
+    newMessage,
+    setNewMessage
   );
+
+  useMessageSubscription(userIdString, setMessages, messages);
 
   useEffect(() => {
     const loadUser = async () => {
@@ -94,7 +66,6 @@ export default function MessageScreen() {
       }
     };
 
-    // Listen for foreground notifications
     const handleForegroundNotification =
       Notifications.addNotificationReceivedListener((notification) => {
         const data = notification.request.content.data;
@@ -107,10 +78,11 @@ export default function MessageScreen() {
               text,
               senderId: messageSenderId,
               id: new Date().getTime().toString(),
+              createdAt: new Date().toISOString(),
+              recipientId: userIdString,
             },
           ]);
 
-          // Store in AsyncStorage
           AsyncStorage.setItem(
             `messages_${userId}`,
             JSON.stringify([...messages, { text, senderId: messageSenderId }])
@@ -129,28 +101,6 @@ export default function MessageScreen() {
     };
   }, [userId, messages]);
 
-  const sendMessage = async () => {
-    if (newMessage.trim()) {
-      const messageData = {
-        senderId,
-        recipientId: userId,
-        text: newMessage,
-      };
-
-      try {
-        const result = await createMessage({ variables: messageData });
-        setMessages([...messages, result.data.createMessage]);
-        await AsyncStorage.setItem(
-          `messages_${userId}`,
-          JSON.stringify([...messages, result.data.createMessage])
-        );
-        setNewMessage('');
-      } catch (error) {
-        Alert.alert('Error', 'Failed to send message.');
-      }
-    }
-  };
-
   return (
     <View style={styles.container}>
       <FlatList
@@ -166,7 +116,7 @@ export default function MessageScreen() {
         style={styles.input}
         placeholder='Type a message...'
       />
-      <Button title='Send' onPress={sendMessage} />
+      <Button title='Send' onPress={() => sendMessage(senderId)} />
     </View>
   );
 }
