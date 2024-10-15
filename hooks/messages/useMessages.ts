@@ -19,8 +19,10 @@ export const useFetchMessages = (
     {
       variables: { senderId, recipientId },
       skip: !senderId || !recipientId,
+      fetchPolicy: 'network-only',
       onCompleted: async (data) => {
         const fetchedMessages = data.getPrivateMessageConversation;
+        console.log('Fetched messages:', fetchedMessages);
         setMessages(fetchedMessages);
 
         await AsyncStorage.setItem(
@@ -88,9 +90,13 @@ export const useSendMessage = (
 };
 
 export const useMessageSubscription = (
-recipientId: string, setMessages: (
-  messages: Message[] | ((prevMessages: Message[]) => Message[])
-) => void, messages: Message[], isMessageSent: boolean) => {
+  recipientId: string,
+  setMessages: (
+    messages: Message[] | ((prevMessages: Message[]) => Message[])
+  ) => void,
+  messages: Message[],
+  isMessageSent: boolean
+) => {
   const { data, error } = useSubscription(MESSAGE_SENT_SUBSCRIPTION, {
     variables: { recipientId },
     skip: !recipientId,

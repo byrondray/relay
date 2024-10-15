@@ -23,17 +23,18 @@ export default function MessageScreen() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState('');
   const [user, setUser] = useState<null | any>(null);
-  const { userId } = useLocalSearchParams();
+  const { userId, recipientId } = useLocalSearchParams();
   const userIdString = Array.isArray(userId) ? userId[0] : userId;
 
   const [isMessageSent, setIsMessageSent] = useState(false);
 
   const router = useRouter();
   const senderId = auth.currentUser?.uid || '';
+  const recipientIdString = recipientId;
 
   const { loading, error, refetch } = useFetchMessages(
     userIdString,
-    userIdString,
+    recipientId as string,
     setMessages
   );
 

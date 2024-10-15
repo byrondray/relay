@@ -9,7 +9,9 @@ import { ThemedView } from '@/components/ThemedView';
 import { GetUsersQuery, User as U } from '@/graphql/generated';
 import React from 'react';
 import { GET_USERS } from '@/graphql/queries';
-import { Link, router } from 'expo-router';
+import { router } from 'expo-router';
+import { auth } from '@/firebaseConfig';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function TabTwoScreen() {
   const {
@@ -17,6 +19,8 @@ export default function TabTwoScreen() {
     error: queryError,
     data: queryData,
   } = useQuery<GetUsersQuery, { error: Error }>(GET_USERS, { client });
+
+  const currentUser = auth.currentUser;
 
   if (queryLoading) {
     return (
@@ -50,7 +54,7 @@ export default function TabTwoScreen() {
               onPress={() =>
                 router.push({
                   pathname: '/(tabs)/messages/[userId]',
-                  params: { userId: user.id },
+                  params: { userId: currentUser!.uid, recipientId: user.id },
                 })
               }
             >

@@ -36,19 +36,6 @@ export default function TabLayout() {
       />
 
       <Tabs.Screen
-        name='messages/index'
-        options={{
-          title: 'Messages',
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon
-              name={focused ? 'chatbubble' : 'chatbubble-outline'}
-              color={color}
-            />
-          ),
-        }}
-      />
-
-      <Tabs.Screen
         name='messages/[userId]'
         options={{
           title: 'Message',
