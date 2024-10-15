@@ -26,7 +26,7 @@ export default function MessageScreen() {
   const { userId } = useLocalSearchParams();
   const userIdString = Array.isArray(userId) ? userId[0] : userId;
 
-  const [isMessageSent, setIsMessageSent] = useState(false); 
+  const [isMessageSent, setIsMessageSent] = useState(false);
 
   const router = useRouter();
   const senderId = auth.currentUser?.uid || '';

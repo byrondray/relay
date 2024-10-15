@@ -1,8 +1,4 @@
-import {
-  useQuery,
-  useMutation,
-  useSubscription,
-} from '@apollo/client';
+import { useQuery, useMutation, useSubscription } from '@apollo/client';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   GET_PRIVATE_MESSAGE_CONVERSATION,
@@ -55,9 +51,15 @@ export const useFetchMessages = (
 };
 
 export const useSendMessage = (
-setMessages: (
-  messages: Message[] | ((prevMessages: Message[]) => Message[])
-) => void, recipientId: string, messages: Message[], newMessage: string, setNewMessage: (message: string) => void, setIsMessageSent: (status: boolean) => void) => {
+  setMessages: (
+    messages: Message[] | ((prevMessages: Message[]) => Message[])
+  ) => void,
+  recipientId: string,
+  messages: Message[],
+  newMessage: string,
+  setNewMessage: (message: string) => void,
+  setIsMessageSent: (status: boolean) => void
+) => {
   const [createMessage] = useMutation(CREATE_MESSAGE);
 
   const sendMessage = async (senderId: string) => {
@@ -86,16 +88,12 @@ setMessages: (
 };
 
 export const useMessageSubscription = (
-  recipientId: string,
-  setMessages: (
-    messages: Message[] | ((prevMessages: Message[]) => Message[])
-  ) => void,
-  messages: Message[],
-  isMessageSent: boolean
-) => {
+recipientId: string, setMessages: (
+  messages: Message[] | ((prevMessages: Message[]) => Message[])
+) => void, messages: Message[], isMessageSent: boolean) => {
   const { data, error } = useSubscription(MESSAGE_SENT_SUBSCRIPTION, {
     variables: { recipientId },
-    skip: !isMessageSent,
+    skip: !recipientId,
   });
 
   useEffect(() => {

@@ -16,7 +16,12 @@ const httpUrl = process.env.EXPO_PUBLIC_IS_DEV
 
 const wsUrl = process.env.EXPO_PUBLIC_IS_DEV
   ? `ws://${process.env.EXPO_PUBLIC_IP_ADDRESS}:4000/subscriptions`
-  : `wss://${process.env.EXPO_PUBLIC_API_URL}/subscriptions`;
+  : `wss://${(process.env.EXPO_PUBLIC_API_URL as string).replace(
+      /^https?:\/\//,
+      ''
+    )}/subscriptions`;
+
+console.log(httpUrl, wsUrl, 'httpUrl, wsUrl');
 
 const httpLink = createHttpLink({
   uri: httpUrl,
