@@ -1,4 +1,8 @@
-import { useQuery, useMutation, useSubscription } from '@apollo/client';
+import {
+  useQuery,
+  useMutation,
+  useSubscription,
+} from '@apollo/client';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   GET_PRIVATE_MESSAGE_CONVERSATION,
@@ -6,8 +10,8 @@ import {
 } from '@/graphql/queries';
 import { MESSAGE_SENT_SUBSCRIPTION } from '@/graphql/queries';
 import { Alert } from 'react-native';
-import { CreateMessageMutation, Message } from '@/graphql/generated';
-import { SubscriptionMessageSentArgs } from '@/graphql/generated';
+import { Message } from '@/graphql/generated';
+import { useEffect } from 'react';
 
 export const useFetchMessages = (
   senderId: string,
@@ -22,12 +26,15 @@ export const useFetchMessages = (
       onCompleted: async (data) => {
         const fetchedMessages = data.getPrivateMessageConversation;
         setMessages(fetchedMessages);
+
         await AsyncStorage.setItem(
           `messages_${recipientId}`,
           JSON.stringify(fetchedMessages)
-        );
+        ).then(() => console.log('Messages saved successfully'));
       },
-      onError: async () => {
+      onError: async (error) => {
+        console.error('Failed to fetch messages:', error);
+
         const cachedMessages = await AsyncStorage.getItem(
           `messages_${recipientId}`
         );
@@ -35,7 +42,10 @@ export const useFetchMessages = (
           setMessages(JSON.parse(cachedMessages));
           Alert.alert('Offline Mode', 'Loaded messages from cache.');
         } else {
-          Alert.alert('Error', 'Failed to load messages.');
+          Alert.alert(
+            'Error',
+            'Failed to load messages. Please check your network.'
+          );
         }
       },
     }
@@ -45,18 +55,13 @@ export const useFetchMessages = (
 };
 
 export const useSendMessage = (
-  setMessages: (
-    messages: Message[] | ((prevMessages: Message[]) => Message[])
-  ) => void,
-  recipientId: string,
-  messages: Message[],
-  newMessage: string,
-  setNewMessage: (message: string) => void
-) => {
+setMessages: (
+  messages: Message[] | ((prevMessages: Message[]) => Message[])
+) => void, recipientId: string, messages: Message[], newMessage: string, setNewMessage: (message: string) => void, setIsMessageSent: (status: boolean) => void) => {
   const [createMessage] = useMutation(CREATE_MESSAGE);
 
   const sendMessage = async (senderId: string) => {
-    if (newMessage.trim()) {
+    if (newMessage) {
       const messageData = {
         senderId,
         recipientId,
@@ -64,15 +69,15 @@ export const useSendMessage = (
       };
 
       try {
-        const result = await createMessage({ variables: messageData });
-        setMessages([...messages, result.data.createMessage]);
-        await AsyncStorage.setItem(
-          `messages_${recipientId}`,
-          JSON.stringify([...messages, result.data.createMessage])
-        );
+        await createMessage({ variables: messageData });
         setNewMessage('');
+        setIsMessageSent(true);
       } catch (error) {
-        Alert.alert('Error', 'Failed to send message.');
+        console.error('Send message error:', error);
+        Alert.alert(
+          'Error',
+          (error as Error).message || 'Failed to send message.'
+        );
       }
     }
   };
@@ -82,24 +87,33 @@ export const useSendMessage = (
 
 export const useMessageSubscription = (
   recipientId: string,
-  setMessages: (messages: Message[]) => void,
-  messages: Message[]
+  setMessages: (
+    messages: Message[] | ((prevMessages: Message[]) => Message[])
+  ) => void,
+  messages: Message[],
+  isMessageSent: boolean
 ) => {
-  const { data } = useSubscription(MESSAGE_SENT_SUBSCRIPTION, {
+  const { data, error } = useSubscription(MESSAGE_SENT_SUBSCRIPTION, {
     variables: { recipientId },
-    onSubscriptionData: ({ subscriptionData }) => {
-      if (subscriptionData.data) {
-        const newMessage: Message = subscriptionData.data.messageSent;
-
-        setMessages([...messages, newMessage]);
-
-        AsyncStorage.setItem(
-          `messages_${recipientId}`,
-          JSON.stringify([...messages, newMessage])
-        );
-      }
-    },
+    skip: !isMessageSent,
   });
+
+  useEffect(() => {
+    if (data?.messageSent) {
+      setMessages((prevMessages: Message[]) => [
+        ...prevMessages,
+        data.messageSent,
+      ]);
+      AsyncStorage.setItem(
+        `messages_${recipientId}`,
+        JSON.stringify([...messages, data.messageSent])
+      ).then(() => console.log('New message added to AsyncStorage'));
+    }
+  }, [data]);
+
+  if (error) {
+    console.error('Subscription error:', error);
+  }
 
   return { data };
 };

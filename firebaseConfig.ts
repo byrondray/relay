@@ -8,7 +8,6 @@ import {
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'expo-router';
-import { Router } from 'expo-router';
 
 const firebaseConfig = {
   apiKey: process.env.EXPO_PUBLIC_FIREBASE_API_KEY,

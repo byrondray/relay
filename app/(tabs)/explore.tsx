@@ -9,6 +9,7 @@ import { ThemedView } from '@/components/ThemedView';
 import { GetUsersQuery, User as U } from '@/graphql/generated';
 import React from 'react';
 import { GET_USERS } from '@/graphql/queries';
+import { Link, router } from 'expo-router';
 
 export default function TabTwoScreen() {
   const {
@@ -44,7 +45,15 @@ export default function TabTwoScreen() {
       {queryData && (
         <View>
           {queryData.getUsers.map((user: U) => (
-            <Text key={user.id}>
+            <Text
+              key={user.id}
+              onPress={() =>
+                router.push({
+                  pathname: '/(tabs)/messages/[userId]',
+                  params: { userId: user.id },
+                })
+              }
+            >
               {user.name} ({user.email})
             </Text>
           ))}

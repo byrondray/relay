@@ -182,3 +182,10 @@ export type TestNotificationMutationVariables = Exact<{
 
 
 export type TestNotificationMutation = { __typename?: 'Mutation', testNotification?: { __typename?: 'TestNotificationResponse', success: boolean, message: string } | null };
+
+export type OnMessageSentSubscriptionVariables = Exact<{
+  recipientId: Scalars['String']['input'];
+}>;
+
+
+export type OnMessageSentSubscription = { __typename?: 'Subscription', messageSent: { __typename?: 'Message', id: string, senderId: string, recipientId: string, text: string, createdAt: string } };

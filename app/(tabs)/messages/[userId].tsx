@@ -26,6 +26,8 @@ export default function MessageScreen() {
   const { userId } = useLocalSearchParams();
   const userIdString = Array.isArray(userId) ? userId[0] : userId;
 
+  const [isMessageSent, setIsMessageSent] = useState(false); 
+
   const router = useRouter();
   const senderId = auth.currentUser?.uid || '';
 
@@ -40,10 +42,11 @@ export default function MessageScreen() {
     userIdString,
     messages,
     newMessage,
-    setNewMessage
+    setNewMessage,
+    setIsMessageSent
   );
 
-  useMessageSubscription(userIdString, setMessages, messages);
+  useMessageSubscription(userIdString, setMessages, messages, isMessageSent);
 
   useEffect(() => {
     const loadUser = async () => {
@@ -86,6 +89,8 @@ export default function MessageScreen() {
           AsyncStorage.setItem(
             `messages_${userId}`,
             JSON.stringify([...messages, { text, senderId: messageSenderId }])
+          ).then(() =>
+            console.log('Notification message saved to AsyncStorage')
           );
         } else {
           Alert.alert('New Message', `Message from another user: ${text}`);
