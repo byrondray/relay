@@ -233,7 +233,3 @@ notes.md
 
 expo-env.d.ts
 # @end expo-cli
-
-eas.json
-google-services.json
-GoogleService-Info.plist

@@ -11,6 +11,7 @@ import { ThemedAddressCompletionInput } from '@/components/ThemedAddressCompleti
 import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
 
+
 function HomeScreen() {
   const [origin, setOrigin] = useState('');
   const [destination, setDestination] = useState('');

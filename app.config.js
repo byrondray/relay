@@ -1,10 +1,63 @@
+import "dotenv/config";
+import appJson from "./app.json"; // Import the static app.json content
+
 export default ({ config }) => {
   return {
-    ...config,
+    ...appJson.expo, // Spread the static content from app.json
+    extra: {
+      ...appJson.expo.extra, // Include any static extra content from app.json
+      isDev: process.env.EXPO_PUBLIC_IS_DEV === "true",
+      ipAddress: process.env.EXPO_PUBLIC_IP_ADDRESS,
+
+      // Production Environment
+      apiUrl: process.env.EXPO_PUBLIC_API_URL,
+      googleMapsApiKey: process.env.EXPO_PUBLIC_GOOGLE_MAPS_API,
+
+      // Firebase Config
+      firebaseApiKey: process.env.EXPO_PUBLIC_FIREBASE_API_KEY,
+      firebaseAuthDomain: process.env.EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN,
+      firebaseProjectId: process.env.EXPO_PUBLIC_FIREBASE_PROJECT_ID,
+      firebaseStorageBucket: process.env.EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET,
+      firebaseMessagingSenderId:
+        process.env.EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+      firebaseAppId: process.env.EXPO_PUBLIC_FIREBASE_APP_ID,
+      firebaseMeasurementId: process.env.EXPO_PUBLIC_FIREBASE_MEASUREMENT_ID,
+
+      // Google Auth Config
+      googleClientId: process.env.EXPO_PUBLIC_GOOGLE_CLIENT_ID,
+      googleClientSecret: process.env.EXPO_PUBLIC_GOOGLE_CLIENT_SECRET,
+
+      // Google Service Plist Config
+      clientId: process.env.EXPO_PUBLIC_CLIENT_ID,
+      reversedClientId: process.env.EXPO_PUBLIC_REVERSED_CLIENT_ID,
+      apiKey: process.env.EXPO_PUBLIC_API_KEY,
+      gcmSenderId: process.env.EXPO_PUBLIC_GCM_SENDER_ID,
+      plistVersion: process.env.EXPO_PUBLIC_PLIST_VERSION,
+      bundleId: process.env.EXPO_PUBLIC_BUNDLE_ID,
+      projectId: process.env.EXPO_PUBLIC_PROJECT_ID,
+      storageBucket: process.env.EXPO_PUBLIC_STORAGE_BUCKET,
+      isAdsEnabled: process.env.EXPO_PUBLIC_IS_ADS_ENABLED === "true",
+      isAnalyticsEnabled:
+        process.env.EXPO_PUBLIC_IS_ANALYTICS_ENABLED === "true",
+      isAppInviteEnabled:
+        process.env.EXPO_PUBLIC_IS_APPINVITE_ENABLED === "true",
+      isGcmEnabled: process.env.EXPO_PUBLIC_IS_GCM_ENABLED === "true",
+      isSignInEnabled: process.env.EXPO_PUBLIC_IS_SIGNIN_ENABLED === "true",
+      googleAppId: process.env.EXPO_PUBLIC_GOOGLE_APP_ID,
+      databaseUrl: process.env.EXPO_PUBLIC_DATABASE_URL,
+    },
     ios: {
-      ...config.ios,
+      ...appJson.expo.ios,
       googleServicesFile:
-        process.env.GOOGLE_SERVICE_INFO_PLIST || './GoogleService-Info.plist',
+        process.env.GOOGLE_SERVICE_INFO_PLIST || "./GoogleService-Info.plist",
+    },
+    android: {
+      ...appJson.expo.android,
+      googleServicesFile:
+        process.env.GOOGLE_SERVICE_JSON || "./google-services.json",
+    },
+    eas: {
+      projectId: appJson.expo.extra.eas.projectId,
     },
   };
 };

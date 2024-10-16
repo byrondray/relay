@@ -1,13 +1,13 @@
-import { getApp, getApps, initializeApp } from 'firebase/app';
+import { getApp, getApps, initializeApp } from "firebase/app";
 import {
   getAuth,
   GoogleAuthProvider,
   onAuthStateChanged,
   signInWithCredential,
-} from 'firebase/auth';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useEffect, useState } from 'react';
-import { useRouter } from 'expo-router';
+} from "firebase/auth";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useEffect, useState } from "react";
+import { useRouter } from "expo-router";
 
 const firebaseConfig = {
   apiKey: process.env.EXPO_PUBLIC_FIREBASE_API_KEY,
@@ -23,12 +23,12 @@ const auth = getAuth(app);
 const googleProvider = new GoogleAuthProvider();
 
 const restoreAuthState = async () => {
-  const token = await AsyncStorage.getItem('firebaseToken');
+  const token = await AsyncStorage.getItem("firebaseToken");
 
   const user = auth.currentUser;
 
   if (user) {
-    console.log('User is already authenticated');
+    console.log("User is already authenticated");
     return;
   }
 
@@ -37,8 +37,8 @@ const restoreAuthState = async () => {
       const credential = GoogleAuthProvider.credential(token);
       await signInWithCredential(auth, credential);
     } catch (error) {
-      console.error('Failed to restore user authentication:', error);
-      await AsyncStorage.removeItem('firebaseToken');
+      console.error("Failed to restore user authentication:", error);
+      await AsyncStorage.removeItem("firebaseToken");
     }
   }
 };
@@ -47,11 +47,11 @@ const persistAuthState = async (router: any) => {
   onAuthStateChanged(auth, async (user) => {
     if (user) {
       const token = await user.getIdToken();
-      await AsyncStorage.setItem('firebaseToken', token);
-      router.replace('/(tabs)');
+      await AsyncStorage.setItem("firebaseToken", token);
+      router.replace("/(tabs)");
     } else {
-      await AsyncStorage.removeItem('firebaseToken');
-      router.replace('/Login/login');
+      await AsyncStorage.removeItem("firebaseToken");
+      router.replace("/Login/login");
     }
   });
 };
