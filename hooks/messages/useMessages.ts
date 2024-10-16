@@ -5,6 +5,7 @@ import {
   CREATE_MESSAGE,
 } from '@/graphql/queries';
 import { MESSAGE_SENT_SUBSCRIPTION } from '@/graphql/queries';
+import { GET_USER } from '@/graphql/queries';
 import { Alert } from 'react-native';
 import { Message } from '@/graphql/generated';
 import { useEffect } from 'react';
@@ -22,13 +23,18 @@ export const useFetchMessages = (
       fetchPolicy: 'network-only',
       onCompleted: async (data) => {
         const fetchedMessages = data.getPrivateMessageConversation;
-        console.log('Fetched messages:', fetchedMessages);
-        setMessages(fetchedMessages);
+
+        const prevMessages: Message[] = [];
+        const combinedMessages = [...prevMessages, ...fetchedMessages];
+        const uniqueMessages = Array.from(
+          new Map(combinedMessages.map((msg) => [msg.id, msg])).values()
+        );
+        setMessages(uniqueMessages);
 
         await AsyncStorage.setItem(
           `messages_${recipientId}`,
           JSON.stringify(fetchedMessages)
-        ).then(() => console.log('Messages saved successfully'));
+        );
       },
       onError: async (error) => {
         console.error('Failed to fetch messages:', error);
@@ -37,7 +43,18 @@ export const useFetchMessages = (
           `messages_${recipientId}`
         );
         if (cachedMessages) {
-          setMessages(JSON.parse(cachedMessages));
+          const cachedMessagesParsed: Message[] = JSON.parse(cachedMessages);
+          const prevMessages: Message[] = []; // Define prevMessages here
+          const combinedMessages: Message[] = [
+            ...prevMessages,
+            ...cachedMessagesParsed,
+          ];
+          const uniqueMessages: Message[] = Array.from(
+            new Map(
+              combinedMessages.map((msg: Message) => [msg.id, msg])
+            ).values()
+          );
+          setMessages(uniqueMessages);
           Alert.alert('Offline Mode', 'Loaded messages from cache.');
         } else {
           Alert.alert(
@@ -52,11 +69,26 @@ export const useFetchMessages = (
   return { data, loading, error, refetch };
 };
 
+export const useFetchUser = (userId: string) => {
+  const { data, loading, error } = useQuery(GET_USER, {
+    variables: { id: userId },
+    skip: !userId,
+    fetchPolicy: 'network-only',
+    onError: (error) => {
+      console.error('Failed to fetch user:', error);
+      Alert.alert('Error', 'Failed to load user information.');
+    },
+  });
+
+  return { data, loading, error };
+};
+
 export const useSendMessage = (
+  senderId: string,
+  recipientId: string,
   setMessages: (
     messages: Message[] | ((prevMessages: Message[]) => Message[])
   ) => void,
-  recipientId: string,
   messages: Message[],
   newMessage: string,
   setNewMessage: (message: string) => void,
@@ -64,7 +96,7 @@ export const useSendMessage = (
 ) => {
   const [createMessage] = useMutation(CREATE_MESSAGE);
 
-  const sendMessage = async (senderId: string) => {
+  const sendMessage = async () => {
     if (newMessage) {
       const messageData = {
         senderId,
@@ -76,6 +108,16 @@ export const useSendMessage = (
         await createMessage({ variables: messageData });
         setNewMessage('');
         setIsMessageSent(true);
+        setMessages((prevMessages) => [
+          ...prevMessages,
+          {
+            id: new Date().getTime().toString(),
+            senderId,
+            recipientId,
+            text: newMessage,
+            createdAt: new Date().toISOString(),
+          },
+        ]);
       } catch (error) {
         console.error('Send message error:', error);
         Alert.alert(
@@ -111,7 +153,7 @@ export const useMessageSubscription = (
       AsyncStorage.setItem(
         `messages_${recipientId}`,
         JSON.stringify([...messages, data.messageSent])
-      ).then(() => console.log('New message added to AsyncStorage'));
+      );
     }
   }, [data]);
 

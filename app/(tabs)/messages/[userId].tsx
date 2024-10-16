@@ -16,6 +16,7 @@ import {
   useFetchMessages,
   useSendMessage,
   useMessageSubscription,
+  useFetchUser,
 } from '../../../hooks/messages/useMessages';
 import { Message } from '@/graphql/generated';
 
@@ -25,22 +26,28 @@ export default function MessageScreen() {
   const [user, setUser] = useState<null | any>(null);
   const { userId, recipientId } = useLocalSearchParams();
   const userIdString = Array.isArray(userId) ? userId[0] : userId;
+  const recipientIdString = Array.isArray(recipientId)
+    ? recipientId[0]
+    : recipientId;
 
   const [isMessageSent, setIsMessageSent] = useState(false);
 
   const router = useRouter();
   const senderId = auth.currentUser?.uid || '';
-  const recipientIdString = recipientId;
+
+  const { data: recipientData, loading: recipientLoading } =
+    useFetchUser(recipientIdString);
 
   const { loading, error, refetch } = useFetchMessages(
     userIdString,
-    recipientId as string,
+    recipientIdString,
     setMessages
   );
 
   const { sendMessage } = useSendMessage(
+    senderId,
+    recipientIdString,
     setMessages,
-    userIdString,
     messages,
     newMessage,
     setNewMessage,
@@ -90,8 +97,6 @@ export default function MessageScreen() {
           AsyncStorage.setItem(
             `messages_${userId}`,
             JSON.stringify([...messages, { text, senderId: messageSenderId }])
-          ).then(() =>
-            console.log('Notification message saved to AsyncStorage')
           );
         } else {
           Alert.alert('New Message', `Message from another user: ${text}`);
@@ -107,22 +112,46 @@ export default function MessageScreen() {
     };
   }, [userId, messages]);
 
+  if (recipientLoading) {
+    return (
+      <View style={styles.container}>
+        <Text>Loading recipient information...</Text>
+      </View>
+    );
+  }
+
   return (
     <View style={styles.container}>
+      {recipientData && (
+        <Text style={styles.recipientName}>
+          Chat with {recipientData.getUser.name.split(' ')[0]}
+        </Text>
+      )}
+
       <FlatList
         data={messages}
         keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <Text style={styles.message}>{item.text}</Text>
-        )}
+        renderItem={({ item }) => {
+          return (
+            <View
+              style={[
+                styles.message,
+                item.senderId === userIdString && styles.otherMessage,
+              ]}
+            >
+              <Text style={styles.messageText}>{item.text}</Text>
+            </View>
+          );
+        }}
       />
+
       <TextInput
         value={newMessage}
         onChangeText={setNewMessage}
         style={styles.input}
         placeholder='Type a message...'
       />
-      <Button title='Send' onPress={() => sendMessage(senderId)} />
+      <Button title='Send' onPress={() => sendMessage()} />
     </View>
   );
 }
@@ -132,12 +161,24 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 10,
     backgroundColor: '#fff',
+    paddingHorizontal: 10,
+  },
+  recipientName: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 10,
   },
   message: {
     padding: 10,
     marginVertical: 5,
     backgroundColor: '#f1f1f1',
     borderRadius: 5,
+  },
+  otherMessage: {
+    backgroundColor: '#e1f5fe',
+  },
+  messageText: {
+    fontSize: 16,
   },
   input: {
     borderWidth: 1,

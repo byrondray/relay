@@ -21,8 +21,6 @@ const wsUrl = process.env.EXPO_PUBLIC_IS_DEV
       ''
     )}/subscriptions`;
 
-console.log(httpUrl, wsUrl, 'httpUrl, wsUrl');
-
 const httpLink = createHttpLink({
   uri: httpUrl,
 });

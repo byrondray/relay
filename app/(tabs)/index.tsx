@@ -216,7 +216,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
-    marginTop: 80,
+    marginTop: 0,
   },
   selectedTime: {
     marginVertical: 8,
