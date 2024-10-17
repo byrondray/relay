@@ -3,7 +3,8 @@
     "strict": true,
     "jsx": "react",
     "paths": {
-      "@/*": ["./*"]
+      "@/*": ["./*"],
+      "@firebase/auth": ["./node_modules/@firebase/auth/dist/index.rn.d.ts"]
     },
     "module": "es2020",
     "target": "es2020",

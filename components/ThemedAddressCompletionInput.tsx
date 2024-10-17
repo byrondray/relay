@@ -25,7 +25,7 @@ export function ThemedAddressCompletionInput({
     if (!input) return;
 
     try {
-      const apiKey = process.env.EXPO_PUBLIC_GOOGlE_MAPS_API;
+      const apiKey = process.env.EXPO_PUBLIC_GOOGLE_MAPS_API;
       const url = `https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${encodeURIComponent(
         input
       )}&key=${apiKey}`;

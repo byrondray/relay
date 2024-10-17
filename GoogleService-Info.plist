@@ -19,15 +19,15 @@
     <key>STORAGE_BUCKET</key>
     <string>${EXPO_PUBLIC_STORAGE_BUCKET}</string>
     <key>IS_ADS_ENABLED</key>
-    <${EXPO_PUBLIC_IS_ADS_ENABLED}></${EXPO_PUBLIC_IS_ADS_ENABLED}>
+    <false/> 
     <key>IS_ANALYTICS_ENABLED</key>
-    <${EXPO_PUBLIC_IS_ANALYTICS_ENABLED}></${EXPO_PUBLIC_IS_ANALYTICS_ENABLED}>
+    <false/> 
     <key>IS_APPINVITE_ENABLED</key>
-    <${EXPO_PUBLIC_IS_APPINVITE_ENABLED}></${EXPO_PUBLIC_IS_APPINVITE_ENABLED}>
+    <true/> 
     <key>IS_GCM_ENABLED</key>
-    <${EXPO_PUBLIC_IS_GCM_ENABLED}></${EXPO_PUBLIC_IS_GCM_ENABLED}>
+    <true/> 
     <key>IS_SIGNIN_ENABLED</key>
-    <${EXPO_PUBLIC_IS_SIGNIN_ENABLED}></${EXPO_PUBLIC_IS_SIGNIN_ENABLED}>
+    <true/> 
     <key>GOOGLE_APP_ID</key>
     <string>${EXPO_PUBLIC_GOOGLE_APP_ID}</string>
     <key>DATABASE_URL</key>

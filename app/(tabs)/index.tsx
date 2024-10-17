@@ -1,21 +1,22 @@
-import React, { useState } from 'react';
-import { Button, StyleSheet, Text, Alert, Pressable } from 'react-native';
-import DateTimePicker from '@react-native-community/datetimepicker';
-import { router } from 'expo-router';
-import withAuthCheck from '../../components/WithAuthCheck';
-import { useMutation } from '@apollo/client';
-import { TEST_NOTIFICATION } from '@/graphql/queries';
-import MapComponent from '../../components/MapComponent';
-import { decodePolyline } from '../../components/MapUtils';
-import { ThemedAddressCompletionInput } from '@/components/ThemedAddressCompletionInput';
-import { ThemedView } from '@/components/ThemedView';
-import { ThemedText } from '@/components/ThemedText';
-
+import React, { useState } from "react";
+import { Button, StyleSheet, Text, Alert, Pressable } from "react-native";
+import DateTimePicker from "@react-native-community/datetimepicker";
+import { router } from "expo-router";
+import withAuthCheck from "../../components/WithAuthCheck";
+import { useMutation } from "@apollo/client";
+import { TEST_NOTIFICATION } from "@/graphql/queries";
+import MapComponent from "../../components/MapComponent";
+import { decodePolyline } from "../../components/MapUtils";
+import { ThemedAddressCompletionInput } from "@/components/ThemedAddressCompletionInput";
+import { ThemedView } from "@/components/ThemedView";
+import { ThemedText } from "@/components/ThemedText";
+import "react-native-fetch-api";
+// import "react-native-polyfill-globals/abort-controller";
 
 function HomeScreen() {
-  const [origin, setOrigin] = useState('');
-  const [destination, setDestination] = useState('');
-  const [waypoints, setWaypoints] = useState('');
+  const [origin, setOrigin] = useState("");
+  const [destination, setDestination] = useState("");
+  const [waypoints, setWaypoints] = useState("");
   const [departureTime, setDepartureTime] = useState(new Date());
   const [showPicker, setShowPicker] = useState(false);
   const [coordinates, setCoordinates] = useState<
@@ -27,15 +28,15 @@ function HomeScreen() {
     latitudeDelta: 0.01,
     longitudeDelta: 0.01,
   });
-  const [predictedTime, setPredictedTime] = useState('');
+  const [predictedTime, setPredictedTime] = useState("");
 
   const [sendTestNotification] = useMutation(TEST_NOTIFICATION);
 
   const sendTestNotificationFNC = async () => {
     try {
-      const recipientId = 'hkdSMSsaZIg4tJE8q4fC8ejp1hO2';
+      const recipientId = "hkdSMSsaZIg4tJE8q4fC8ejp1hO2";
       const messageText =
-        'This is a test notification from the GraphQL function!';
+        "This is a test notification from the GraphQL function!";
 
       const { data } = await sendTestNotification({
         variables: {
@@ -46,15 +47,15 @@ function HomeScreen() {
 
       if (data?.testNotification?.success) {
         Alert.alert(
-          'Notification Sent',
-          'Test notification sent successfully!'
+          "Notification Sent",
+          "Test notification sent successfully!"
         );
       } else {
-        Alert.alert('Notification Failed', 'Failed to send notification.');
+        Alert.alert("Notification Failed", "Failed to send notification.");
       }
     } catch (error) {
-      console.error('Error sending test notification:', error);
-      Alert.alert('Error', 'An error occurred while sending the notification.');
+      console.error("Error sending test notification:", error);
+      Alert.alert("Error", "An error occurred while sending the notification.");
     }
   };
 
@@ -65,7 +66,7 @@ function HomeScreen() {
         const destinationEncoded = encodeURIComponent(destination);
         const waypointsEncoded = waypoints
           ? `&waypoints=${encodeURIComponent(waypoints)}`
-          : '';
+          : "";
 
         const departureTimestamp = Math.floor(departureTime.getTime() / 1000);
 
@@ -77,12 +78,12 @@ function HomeScreen() {
           `&departure_time=${departureTimestamp}` +
           `&traffic_model=best_guess` +
           `&mode=driving` +
-          `&key=${process.env.EXPO_PUBLIC_GOOGlE_MAPS_API}`;
+          `&key=${process.env.EXPO_PUBLIC_GOOGLE_MAPS_API}`;
 
         const response = await fetch(url);
         const json = await response.json();
 
-        if (json.status === 'OK') {
+        if (json.status === "OK") {
           const points = json.routes[0].overview_polyline.points;
           const coords = decodePolyline(points);
           setCoordinates(coords);
@@ -109,18 +110,18 @@ function HomeScreen() {
         } else {
           console.error(`Error fetching directions: ${json.status}`);
           Alert.alert(
-            'Error',
-            `No route found: ${json.status}. ${json.error_message || ''}`
+            "Error",
+            `No route found: ${json.status}. ${json.error_message || ""}`
           );
         }
       } catch (error) {
-        console.error('Error:', error);
-        Alert.alert('Error', 'An error occurred while fetching directions.');
+        console.error("Error:", error);
+        Alert.alert("Error", "An error occurred while fetching directions.");
       }
     } else {
       Alert.alert(
-        'Input Required',
-        'Please enter both origin and destination.'
+        "Input Required",
+        "Please enter both origin and destination."
       );
     }
   };
@@ -149,29 +150,29 @@ function HomeScreen() {
         value={origin}
         onChangeText={setOrigin}
         onSuggestionSelect={setOrigin}
-        placeholder='Enter Origin'
+        placeholder="Enter Origin"
       />
       <ThemedAddressCompletionInput
         value={destination}
         onChangeText={setDestination}
         onSuggestionSelect={setDestination}
-        placeholder='Enter Destination'
+        placeholder="Enter Destination"
       />
       <ThemedAddressCompletionInput
         value={waypoints}
         onChangeText={setWaypoints}
         onSuggestionSelect={setWaypoints}
-        placeholder='Enter Waypoints (comma-separated)'
+        placeholder="Enter Waypoints (comma-separated)"
       />
       <Button
-        title='Select Departure Time'
+        title="Select Departure Time"
         onPress={() => setShowPicker(true)}
       />
       {showPicker && (
         <DateTimePicker
           value={departureTime}
-          mode='datetime'
-          display='default'
+          mode="datetime"
+          display="default"
           onChange={(event, selectedDate) => {
             setShowPicker(false);
             if (selectedDate) {
@@ -183,7 +184,7 @@ function HomeScreen() {
       <ThemedText style={styles.selectedTime}>
         Selected Departure Time: {departureTime.toLocaleString()}
       </ThemedText>
-      <Button title='Get Directions' onPress={handleGetDirections} />
+      <Button title="Get Directions" onPress={handleGetDirections} />
 
       {predictedTime ? (
         <ThemedView style={styles.predictedTimeContainer}>
@@ -193,16 +194,16 @@ function HomeScreen() {
         </ThemedView>
       ) : null}
 
-      <Pressable onPress={() => router.push('/(tabs)/sandbox/sandbox')}>
+      <Pressable onPress={() => router.push("/(tabs)/sandbox/sandbox")}>
         <Text>Go to Sandbox</Text>
       </Pressable>
 
-      <Pressable onPress={() => router.push('/FirstPage')}>
+      <Pressable onPress={() => router.push("/FirstPage")}>
         <Text>Go to FirstPage</Text>
       </Pressable>
 
       <Button
-        title='Send Test Notification'
+        title="Send Test Notification"
         onPress={sendTestNotificationFNC}
       />
 

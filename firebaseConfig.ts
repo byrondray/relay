@@ -4,10 +4,12 @@ import {
   GoogleAuthProvider,
   onAuthStateChanged,
   signInWithCredential,
+  initializeAuth,
+  getReactNativePersistence,
 } from "firebase/auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useEffect, useState } from "react";
-import { useRouter } from "expo-router";
+import { useRouter, type Router } from "expo-router";
 
 const firebaseConfig = {
   apiKey: process.env.EXPO_PUBLIC_FIREBASE_API_KEY,
@@ -18,13 +20,18 @@ const firebaseConfig = {
   appId: process.env.EXPO_PUBLIC_FIREBASE_APP_ID,
 };
 
+// Initialize Firebase app
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
-const auth = getAuth(app);
+
+// Initialize Firebase Auth with AsyncStorage persistence
+const auth = initializeAuth(app, {
+  persistence: getReactNativePersistence(AsyncStorage),
+});
+
 const googleProvider = new GoogleAuthProvider();
 
 const restoreAuthState = async () => {
   const token = await AsyncStorage.getItem("firebaseToken");
-
   const user = auth.currentUser;
 
   if (user) {
@@ -37,13 +44,13 @@ const restoreAuthState = async () => {
       const credential = GoogleAuthProvider.credential(token);
       await signInWithCredential(auth, credential);
     } catch (error) {
-      console.error("Failed to restore user authentication:", error);
       await AsyncStorage.removeItem("firebaseToken");
+      console.error("Error signing in with token:", error);
     }
   }
 };
 
-const persistAuthState = async (router: any) => {
+const persistAuthState = async (router: Router) => {
   onAuthStateChanged(auth, async (user) => {
     if (user) {
       const token = await user.getIdToken();
@@ -61,14 +68,13 @@ export const useFirebaseAuth = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const initializeAuth = async () => {
+    const initializeAuthState = async () => {
       await restoreAuthState();
-
       persistAuthState(router);
       setIsLoading(false);
     };
 
-    initializeAuth();
+    initializeAuthState();
   }, []);
 
   return isLoading;
