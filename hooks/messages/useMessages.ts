@@ -1,14 +1,19 @@
-import { useQuery, useMutation, useSubscription } from '@apollo/client';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import {
+  useQuery,
+  useMutation,
+  useSubscription,
+  ApolloError,
+} from "@apollo/client";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   GET_PRIVATE_MESSAGE_CONVERSATION,
   CREATE_MESSAGE,
-} from '@/graphql/queries';
-import { MESSAGE_SENT_SUBSCRIPTION } from '@/graphql/queries';
-import { GET_USER } from '@/graphql/queries';
-import { Alert } from 'react-native';
-import { Message } from '@/graphql/generated';
-import { useEffect } from 'react';
+} from "@/graphql/queries";
+import { MESSAGE_SENT_SUBSCRIPTION } from "@/graphql/queries";
+import { GET_USER } from "@/graphql/queries";
+import { Alert } from "react-native";
+import { Message } from "@/graphql/generated";
+import { useEffect } from "react";
 
 export const useFetchMessages = (
   senderId: string,
@@ -20,8 +25,10 @@ export const useFetchMessages = (
     {
       variables: { senderId, recipientId },
       skip: !senderId || !recipientId,
-      fetchPolicy: 'network-only',
-      onCompleted: async (data) => {
+      fetchPolicy: "network-only",
+      onCompleted: async (data: {
+        getPrivateMessageConversation: Message[];
+      }) => {
         const fetchedMessages = data.getPrivateMessageConversation;
 
         const prevMessages: Message[] = [];
@@ -36,15 +43,15 @@ export const useFetchMessages = (
           JSON.stringify(fetchedMessages)
         );
       },
-      onError: async (error) => {
-        console.error('Failed to fetch messages:', error);
+      onError: async (error: ApolloError) => {
+        console.error("Failed to fetch messages:", error);
 
         const cachedMessages = await AsyncStorage.getItem(
           `messages_${recipientId}`
         );
         if (cachedMessages) {
           const cachedMessagesParsed: Message[] = JSON.parse(cachedMessages);
-          const prevMessages: Message[] = []; // Define prevMessages here
+          const prevMessages: Message[] = [];
           const combinedMessages: Message[] = [
             ...prevMessages,
             ...cachedMessagesParsed,
@@ -55,11 +62,11 @@ export const useFetchMessages = (
             ).values()
           );
           setMessages(uniqueMessages);
-          Alert.alert('Offline Mode', 'Loaded messages from cache.');
+          Alert.alert("Offline Mode", "Loaded messages from cache.");
         } else {
           Alert.alert(
-            'Error',
-            'Failed to load messages. Please check your network.'
+            "Error",
+            "Failed to load messages. Please check your network."
           );
         }
       },
@@ -73,10 +80,10 @@ export const useFetchUser = (userId: string) => {
   const { data, loading, error } = useQuery(GET_USER, {
     variables: { id: userId },
     skip: !userId,
-    fetchPolicy: 'network-only',
+    fetchPolicy: "network-only",
     onError: (error) => {
-      console.error('Failed to fetch user:', error);
-      Alert.alert('Error', 'Failed to load user information.');
+      console.error("Failed to fetch user:", error);
+      Alert.alert("Error", "Failed to load user information.");
     },
   });
 
@@ -106,7 +113,7 @@ export const useSendMessage = (
 
       try {
         await createMessage({ variables: messageData });
-        setNewMessage('');
+        setNewMessage("");
         setIsMessageSent(true);
         setMessages((prevMessages) => [
           ...prevMessages,
@@ -119,10 +126,10 @@ export const useSendMessage = (
           },
         ]);
       } catch (error) {
-        console.error('Send message error:', error);
+        console.error("Send message error:", error);
         Alert.alert(
-          'Error',
-          (error as Error).message || 'Failed to send message.'
+          "Error",
+          (error as Error).message || "Failed to send message."
         );
       }
     }
@@ -158,7 +165,7 @@ export const useMessageSubscription = (
   }, [data]);
 
   if (error) {
-    console.error('Subscription error:', error);
+    console.error("Subscription error:", error);
   }
 
   return { data };
