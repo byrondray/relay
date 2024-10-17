@@ -2,7 +2,7 @@
   "urlRandomness": "SwLlVW4",
   "dev": true,
   "minify": false,
-  "https": false,
+  "https": true,
   "scheme": null,
   "hostType": "lan",
   "lanType": "ip",

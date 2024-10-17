@@ -13,7 +13,7 @@ export default function Sandbox() {
 
   useEffect(() => {
     const loadComponent = async () => {
-      const component = await import('./card');
+      const component = await import('../../../components/card');
       setCardAccessoriesShowcase(() => component.CardAccessoriesShowcase);
       setLoading(false);
     };

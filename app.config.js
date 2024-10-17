@@ -55,11 +55,6 @@ export default ({ config }) => ({
     googleServicesFile:
       process.env.GOOGLE_SERVICE_JSON || "./google-services.json",
   },
-  eas: {
-    projectId:
-      process.env.EXPO_PUBLIC_EAS_PROJECT_ID ||
-      appJson.expo.extra.eas.projectId,
-  },
   plugins: [
     ...appJson.expo.plugins,
     [

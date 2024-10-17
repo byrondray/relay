@@ -2,6 +2,7 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+    <!-- Firebase Configuration -->
     <key>CLIENT_ID</key>
     <string>${EXPO_PUBLIC_CLIENT_ID}</string>
     <key>REVERSED_CLIENT_ID</key>
@@ -19,18 +20,55 @@
     <key>STORAGE_BUCKET</key>
     <string>${EXPO_PUBLIC_STORAGE_BUCKET}</string>
     <key>IS_ADS_ENABLED</key>
-    <false/> 
+    <false/>
     <key>IS_ANALYTICS_ENABLED</key>
-    <false/> 
+    <false/>
     <key>IS_APPINVITE_ENABLED</key>
-    <true/> 
+    <true/>
     <key>IS_GCM_ENABLED</key>
-    <true/> 
+    <true/>
     <key>IS_SIGNIN_ENABLED</key>
-    <true/> 
+    <true/>
     <key>GOOGLE_APP_ID</key>
     <string>${EXPO_PUBLIC_GOOGLE_APP_ID}</string>
     <key>DATABASE_URL</key>
     <string>${EXPO_PUBLIC_DATABASE_URL}</string>
+
+    <key>NSAppTransportSecurity</key>
+    <dict>
+        <key>NSAllowsArbitraryLoads</key>
+        <true/>
+        <key>NSExceptionDomains</key>
+        <dict>
+            <key>relay-api-ibel.onrender.com</key>
+            <dict>
+                <key>NSIncludesSubdomains</key>
+                <true/>
+                <key>NSExceptionAllowsInsecureHTTPLoads</key>
+                <false/>
+                <key>NSExceptionRequiresForwardSecrecy</key>
+                <true/>
+            </dict>
+        </dict>
+    </dict>
+    
+    <key>UIBackgroundModes</key>
+    <array>
+        <string>fetch</string>
+        <string>remote-notification</string>
+        <string>processing</string>
+        <string>location</string>
+    </array>
+
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>We need your location to provide services while the app is running in the background.</string>
+    <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+    <string>This app needs location access to function correctly even when the app is not active.</string>
+    <key>NSLocationAlwaysUsageDescription</key>
+    <string>This app needs location access even when running in the background.</string>
+
+    <!-- Bluetooth permission (if needed) -->
+    <key>NSBluetoothPeripheralUsageDescription</key>
+    <string>This app needs access to Bluetooth to interact with devices.</string>
 </dict>
 </plist>

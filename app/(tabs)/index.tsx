@@ -10,7 +10,7 @@ import { decodePolyline } from "../../components/MapUtils";
 import { ThemedAddressCompletionInput } from "@/components/ThemedAddressCompletionInput";
 import { ThemedView } from "@/components/ThemedView";
 import { ThemedText } from "@/components/ThemedText";
-import "react-native-fetch-api";
+// import "react-native-fetch-api";
 // import "react-native-polyfill-globals/abort-controller";
 
 function HomeScreen() {

@@ -1,24 +1,21 @@
-import type { CodegenConfig } from '@graphql-codegen/cli';
+import type { CodegenConfig } from "@graphql-codegen/cli";
 
-const isDev = process.env.EXPO_PUBLIC_IS_DEV === 'true';
+const isDev = process.env.EXPO_PUBLIC_IS_DEV === "true";
 
 const httpUrl = isDev
   ? `http://${process.env.EXPO_PUBLIC_IP_ADDRESS}:4000/graphql`
-  : `${process.env.EXPO_PUBLIC_API_URL}/graphql`;
+  : `https://relay-api-ibel.onrender.com/graphql`;
 
 const config: CodegenConfig = {
   overwrite: true,
   schema: httpUrl,
-  documents: 'graphql/**/*.ts', 
+  documents: "graphql/**/*.ts",
   generates: {
-    './graphql/generated.ts': {
-      plugins: [
-        'typescript', 
-        'typescript-operations', 
-      ],
+    "./graphql/generated.ts": {
+      plugins: ["typescript", "typescript-operations"],
     },
-    './graphql.schema.json': {
-      plugins: ['introspection'], 
+    "./graphql.schema.json": {
+      plugins: ["introspection"],
     },
   },
 };

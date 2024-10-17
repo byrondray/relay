@@ -2,7 +2,7 @@
   "expo": {
     "name": "relay-rideshare",
     "slug": "relay",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "myapp",
@@ -16,10 +16,29 @@
       "supportsTablet": true,
       "googleServicesFile": "./GoogleService-Info.plist",
       "bundleIdentifier": "com.byron.relay",
-      "config": {
-        "usesNonExemptEncryption": false,
-        "googleSignIn": true
-      }
+      "infoPlist": {
+        "NSAppTransportSecurity": {
+          "NSAllowsArbitraryLoads": true,
+          "NSExceptionDomains": {
+            "relay-api-ibel.onrender.com": {
+              "NSIncludesSubdomains": true,
+              "NSExceptionAllowsInsecureHTTPLoads": false,
+              "NSExceptionRequiresForwardSecrecy": true
+            }
+          }
+        },
+        "UIBackgroundModes": [
+          "fetch",
+          "remote-notification",
+          "processing",
+          "location"
+        ],
+        "NSLocationWhenInUseUsageDescription": "We need your location to provide services while the app is running in the background.",
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "This app needs location access to function correctly even when the app is not active.",
+        "NSLocationAlwaysUsageDescription": "This app needs location access even when running in the background.",
+        "NSBluetoothPeripheralUsageDescription": "This app needs access to Bluetooth to interact with devices."
+      },
+      "buildNumber": "1.0.1"
     },
     "android": {
       "package": "com.byron.relay",
@@ -27,7 +46,16 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "permissions": [
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_COARSE_LOCATION",
+        "FOREGROUND_SERVICE",
+        "BACKGROUND_LOCATION",
+        "INTERNET",
+        "RECEIVE_BOOT_COMPLETED"
+      ],
+      "versionCode": 2
     },
     "web": {
       "output": "static",
@@ -46,9 +74,7 @@
       "router": {
         "origin": false
       },
-      "eas": {
-        "projectId": "7db478ea-0f98-4fbc-9616-bbe019afe063"
-      }
+      "projectId": "7db478ea-0f98-4fbc-9616-bbe019afe063"
     }
   }
 }
