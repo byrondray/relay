@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import {
   View,
   TextInput,
@@ -7,9 +7,13 @@ import {
   ActivityIndicator,
   useColorScheme,
   StyleSheet,
-} from 'react-native';
-import { Link } from 'expo-router';
-import { useLoginHooks } from '../../hooks/auth/useLogin';
+} from "react-native";
+import { Link } from "expo-router";
+import { useLoginHooks } from "../../hooks/auth/useLogin";
+import * as WebBrowser from "expo-web-browser";
+// import { onGoogleButtonPress } from "../../hooks/auth/useLogin";
+
+WebBrowser.maybeCompleteAuthSession();
 
 export default function LoginScreen(): JSX.Element {
   const {
@@ -24,29 +28,29 @@ export default function LoginScreen(): JSX.Element {
   } = useLoginHooks();
 
   const colorScheme = useColorScheme();
-  const isDarkMode = colorScheme === 'dark';
+  const isDarkMode = colorScheme === "dark";
 
   return (
     <View style={{ padding: 20, marginTop: 60 }}>
       {loading ? (
-        <ActivityIndicator size='large' color='#0000ff' />
+        <ActivityIndicator size="large" color="#0000ff" />
       ) : (
         <View>
           <TextInput
-            placeholder='Email'
+            placeholder="Email"
             value={email}
             onChangeText={setEmail}
             style={{
               borderWidth: 1,
               padding: 10,
               marginBottom: 10,
-              color: isDarkMode ? '#fff' : '#000',
-              borderColor: isDarkMode ? 'lightgray' : 'gray',
+              color: isDarkMode ? "#fff" : "#000",
+              borderColor: isDarkMode ? "lightgray" : "gray",
             }}
-            placeholderTextColor={isDarkMode ? 'lightgray' : 'gray'}
+            placeholderTextColor={isDarkMode ? "lightgray" : "gray"}
           />
           <TextInput
-            placeholder='Password'
+            placeholder="Password"
             value={password}
             onChangeText={setPassword}
             secureTextEntry
@@ -54,19 +58,19 @@ export default function LoginScreen(): JSX.Element {
               borderWidth: 1,
               padding: 10,
               marginBottom: 10,
-              color: isDarkMode ? '#fff' : '#000',
-              borderColor: isDarkMode ? 'lightgray' : 'gray',
+              color: isDarkMode ? "#fff" : "#000",
+              borderColor: isDarkMode ? "lightgray" : "gray",
             }}
-            placeholderTextColor={isDarkMode ? 'lightgray' : 'gray'}
+            placeholderTextColor={isDarkMode ? "lightgray" : "gray"}
           />
           <Button
-            title='Sign in with Email'
+            title="Sign in with Email"
             onPress={handleEmailPasswordSignIn}
           />
-          {/* <Button title='Sign in with Google' onPress={() => promptAsync()} /> */}
+          {/* <Button title="Sign in with Google" onPress={() => promptAsync()} /> */}
 
           <Link
-            href='/Register/register'
+            href="/Register/register"
             style={[
               styles.link,
               isDarkMode ? styles.linkDark : styles.linkLight,
@@ -74,7 +78,7 @@ export default function LoginScreen(): JSX.Element {
           >
             Don't have an account? Register
           </Link>
-          {error ? <Text style={{ color: 'red' }}>{error}</Text> : null}
+          {error ? <Text style={{ color: "red" }}>{error}</Text> : null}
         </View>
       )}
     </View>
@@ -83,13 +87,13 @@ export default function LoginScreen(): JSX.Element {
 
 const styles = StyleSheet.create({
   link: {
-    textDecorationLine: 'underline',
+    textDecorationLine: "underline",
     marginBottom: 10,
   },
   linkLight: {
-    color: 'blue',
+    color: "blue",
   },
   linkDark: {
-    color: 'lightblue',
+    color: "lightblue",
   },
 });

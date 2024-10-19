@@ -233,3 +233,11 @@ notes.md
 
 expo-env.d.ts
 # @end expo-cli
+
+# Ignore the google-services.json and GoogleService-Info.plist files
+/google-services.json
+/GoogleService-Info.plist
+
+# Ignore the entire android and ios folders
+/android/
+/ios/

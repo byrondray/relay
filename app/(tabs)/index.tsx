@@ -8,12 +8,14 @@ import { ThemedText } from "@/components/ThemedText";
 import { useLocationAndCommunityCenters } from "@/hooks/map/useMap";
 import { useDirections } from "@/hooks/map/useDirections";
 import { CommunityCenter } from "@/graphql/generated";
+import { useLogout } from "@/hooks/auth/useLogout";
 
 function HomeScreen() {
   const [origin, setOrigin] = useState("");
   const [destination, setDestination] = useState("");
   const [waypoints, setWaypoints] = useState("");
   const [departureTime, setDepartureTime] = useState(new Date());
+  const { logout, loading } = useLogout();
 
   const { userLocation, mapRegion, communityCentersData, setMapRegion } =
     useLocationAndCommunityCenters();
@@ -46,6 +48,8 @@ function HomeScreen() {
           getDirections(origin, destination, waypoints, departureTime)
         }
       />
+
+      <Button title="Logout" onPress={() => logout()} />
 
       {predictedTime ? (
         <ThemedView style={styles.predictedTimeContainer}>

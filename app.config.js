@@ -69,5 +69,12 @@ export default ({ config }) => ({
         },
       },
     ],
+    [
+      "@react-native-google-signin/google-signin",
+      {
+        iosUrlScheme:
+          "com.googleusercontent.apps.282407202899-qum38oc4b66oe3b2lg3jpvo3r1d8hidb",
+      },
+    ],
   ],
 });
