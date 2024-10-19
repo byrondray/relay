@@ -1,4 +1,4 @@
-import { gql } from '@apollo/client';
+import { gql } from "@apollo/client";
 
 // Query to get all users
 export const GET_USERS = gql`
@@ -64,6 +64,17 @@ export const LOGIN = gql`
   }
 `;
 
+export const UPDATE_EXPO_PUSH_TOKEN = gql`
+  mutation UpdateExpoPushToken($userId: String!, $expoPushToken: String!) {
+    updateExpoPushToken(userId: $userId, expoPushToken: $expoPushToken) {
+      id
+      name
+      email
+      expoPushToken
+    }
+  }
+`;
+
 // MESSAGE QUERIES AND MUTATIONS
 
 // Query to get all conversations for a user
@@ -112,15 +123,6 @@ export const CREATE_MESSAGE = gql`
   }
 `;
 
-export const TEST_NOTIFICATION = gql`
-  mutation TestNotification($recipientId: String!, $messageText: String!) {
-    testNotification(recipientId: $recipientId, messageText: $messageText) {
-      success
-      message
-    }
-  }
-`;
-
 // Subscription to listen for new messages
 export const MESSAGE_SENT_SUBSCRIPTION = gql`
   subscription OnMessageSent($recipientId: String!) {
@@ -130,6 +132,33 @@ export const MESSAGE_SENT_SUBSCRIPTION = gql`
       recipientId
       text
       createdAt
+    }
+  }
+`;
+
+// Query to get 5 closes community centers
+export const GET_COMMUNITY_CENTERS = gql`
+  query GetCommunityCenters($lat: Float!, $lon: Float!) {
+    getCommunityCenters(lat: $lat, lon: $lon) {
+      id
+      name
+      address
+      lat
+      lon
+      distance
+    }
+  }
+`;
+
+// Query to filter schools by name
+export const FILTER_SCHOOLS_BY_NAME = gql`
+  query FilterSchoolsByName($name: String!) {
+    filterSchoolsByName(name: $name) {
+      id
+      districtNumber
+      name
+      address
+      city
     }
   }
 `;

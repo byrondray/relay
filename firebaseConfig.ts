@@ -4,11 +4,13 @@ import {
   onAuthStateChanged,
   signInWithCredential,
   initializeAuth,
+  // @ts-ignore
   getReactNativePersistence,
 } from "firebase/auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useEffect, useState } from "react";
 import { useRouter, type Router } from "expo-router";
+import { router } from "expo-router";
 
 const firebaseConfig = {
   apiKey: process.env.EXPO_PUBLIC_FIREBASE_API_KEY,
@@ -42,7 +44,6 @@ const restoreAuthState = async () => {
       await signInWithCredential(auth, credential);
     } catch (error) {
       await AsyncStorage.removeItem("firebaseToken");
-      console.error("Error signing in with token:", error);
     }
   }
 };

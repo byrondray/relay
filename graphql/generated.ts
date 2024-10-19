@@ -22,6 +22,16 @@ export type AuthPayload = {
   sessionId: Scalars['String']['output'];
 };
 
+export type CommunityCenter = {
+  __typename?: 'CommunityCenter';
+  address: Scalars['String']['output'];
+  distance: Scalars['Float']['output'];
+  id: Scalars['ID']['output'];
+  lat: Scalars['Float']['output'];
+  lon: Scalars['Float']['output'];
+  name: Scalars['String']['output'];
+};
+
 export type Conversation = {
   __typename?: 'Conversation';
   messages: Scalars['String']['output'];
@@ -42,7 +52,7 @@ export type Mutation = {
   createMessage: Message;
   createUser: AuthPayload;
   login: AuthPayload;
-  testNotification?: Maybe<TestNotificationResponse>;
+  updateExpoPushToken: User;
 };
 
 
@@ -68,17 +78,30 @@ export type MutationLoginArgs = {
 };
 
 
-export type MutationTestNotificationArgs = {
-  messageText: Scalars['String']['input'];
-  recipientId: Scalars['String']['input'];
+export type MutationUpdateExpoPushTokenArgs = {
+  expoPushToken: Scalars['String']['input'];
+  userId: Scalars['String']['input'];
 };
 
 export type Query = {
   __typename?: 'Query';
+  filterSchoolsByName: Array<School>;
+  getCommunityCenters: Array<CommunityCenter>;
   getConversationsForUser: Array<Conversation>;
   getPrivateMessageConversation: Array<Message>;
   getUser?: Maybe<User>;
   getUsers: Array<User>;
+};
+
+
+export type QueryFilterSchoolsByNameArgs = {
+  name: Scalars['String']['input'];
+};
+
+
+export type QueryGetCommunityCentersArgs = {
+  lat: Scalars['Float']['input'];
+  lon: Scalars['Float']['input'];
 };
 
 
@@ -97,6 +120,15 @@ export type QueryGetUserArgs = {
   id: Scalars['ID']['input'];
 };
 
+export type School = {
+  __typename?: 'School';
+  address: Scalars['String']['output'];
+  city: Scalars['String']['output'];
+  districtNumber: Scalars['Int']['output'];
+  id: Scalars['ID']['output'];
+  name: Scalars['String']['output'];
+};
+
 export type Subscription = {
   __typename?: 'Subscription';
   messageSent: Message;
@@ -107,15 +139,10 @@ export type SubscriptionMessageSentArgs = {
   recipientId: Scalars['String']['input'];
 };
 
-export type TestNotificationResponse = {
-  __typename?: 'TestNotificationResponse';
-  message: Scalars['String']['output'];
-  success: Scalars['Boolean']['output'];
-};
-
 export type User = {
   __typename?: 'User';
   email: Scalars['String']['output'];
+  expoPushToken: Scalars['String']['output'];
   id: Scalars['ID']['output'];
   name: Scalars['String']['output'];
 };
@@ -151,6 +178,14 @@ export type LoginMutationVariables = Exact<{
 
 export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'AuthPayload', id: string, name: string, email: string, sessionId: string } };
 
+export type UpdateExpoPushTokenMutationVariables = Exact<{
+  userId: Scalars['String']['input'];
+  expoPushToken: Scalars['String']['input'];
+}>;
+
+
+export type UpdateExpoPushTokenMutation = { __typename?: 'Mutation', updateExpoPushToken: { __typename?: 'User', id: string, name: string, email: string, expoPushToken: string } };
+
 export type GetConversationsForUserQueryVariables = Exact<{
   userId: Scalars['String']['input'];
 }>;
@@ -175,17 +210,24 @@ export type CreateMessageMutationVariables = Exact<{
 
 export type CreateMessageMutation = { __typename?: 'Mutation', createMessage: { __typename?: 'Message', id: string, senderId: string, recipientId: string, text: string, createdAt: string } };
 
-export type TestNotificationMutationVariables = Exact<{
-  recipientId: Scalars['String']['input'];
-  messageText: Scalars['String']['input'];
-}>;
-
-
-export type TestNotificationMutation = { __typename?: 'Mutation', testNotification?: { __typename?: 'TestNotificationResponse', success: boolean, message: string } | null };
-
 export type OnMessageSentSubscriptionVariables = Exact<{
   recipientId: Scalars['String']['input'];
 }>;
 
 
 export type OnMessageSentSubscription = { __typename?: 'Subscription', messageSent: { __typename?: 'Message', id: string, senderId: string, recipientId: string, text: string, createdAt: string } };
+
+export type GetCommunityCentersQueryVariables = Exact<{
+  lat: Scalars['Float']['input'];
+  lon: Scalars['Float']['input'];
+}>;
+
+
+export type GetCommunityCentersQuery = { __typename?: 'Query', getCommunityCenters: Array<{ __typename?: 'CommunityCenter', id: string, name: string, address: string, lat: number, lon: number, distance: number }> };
+
+export type FilterSchoolsByNameQueryVariables = Exact<{
+  name: Scalars['String']['input'];
+}>;
+
+
+export type FilterSchoolsByNameQuery = { __typename?: 'Query', filterSchoolsByName: Array<{ __typename?: 'School', id: string, districtNumber: number, name: string, address: string, city: string }> };

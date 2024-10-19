@@ -1,4 +1,7 @@
 import type { CodegenConfig } from "@graphql-codegen/cli";
+import { config as dotenvConfig } from "dotenv";
+
+dotenvConfig();
 
 const isDev = process.env.EXPO_PUBLIC_IS_DEV === "true";
 
@@ -6,7 +9,7 @@ const httpUrl = isDev
   ? `http://${process.env.EXPO_PUBLIC_IP_ADDRESS}:4000/graphql`
   : `https://relay-api-ibel.onrender.com/graphql`;
 
-const config: CodegenConfig = {
+const codegenConfig: CodegenConfig = {
   overwrite: true,
   schema: httpUrl,
   documents: "graphql/**/*.ts",
@@ -20,4 +23,4 @@ const config: CodegenConfig = {
   },
 };
 
-export default config;
+export default codegenConfig;

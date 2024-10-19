@@ -6,6 +6,10 @@ export default ({ config }) => ({
   ...appJson.expo,
   extra: {
     ...appJson.expo.extra,
+
+    isDev: process.env.EXPO_PUBLIC_IS_DEV === "true",
+    localIp: process.env.EXPO_PUBLIC_IP_ADDRESS,
+
     apiUrl: process.env.EXPO_PUBLIC_API_URL,
     googleMapsApiKey: process.env.EXPO_PUBLIC_GOOGLE_MAPS_API,
 

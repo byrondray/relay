@@ -18,6 +18,8 @@ const wsUrl = process.env.EXPO_PUBLIC_IS_DEV
   ? `ws://${process.env.EXPO_PUBLIC_IP_ADDRESS}:4000/subscriptions`
   : `wss://relay-api-ibel.onrender.com/subscriptions`;
 
+console.log("httpUrl", httpUrl);
+
 const httpLink = createHttpLink({
   uri: httpUrl,
 });

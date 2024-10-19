@@ -143,8 +143,7 @@ export const useMessageSubscription = (
   setMessages: (
     messages: Message[] | ((prevMessages: Message[]) => Message[])
   ) => void,
-  messages: Message[],
-  isMessageSent: boolean
+  messages: Message[]
 ) => {
   const { data, error } = useSubscription(MESSAGE_SENT_SUBSCRIPTION, {
     variables: { recipientId },
