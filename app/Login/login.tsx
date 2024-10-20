@@ -2,18 +2,16 @@ import React from "react";
 import {
   View,
   TextInput,
-  Button,
   Text,
   ActivityIndicator,
-  useColorScheme,
   StyleSheet,
+  ImageBackground,
+  Image,
 } from "react-native";
 import { Link } from "expo-router";
+import { LinearGradient } from "expo-linear-gradient";
 import { useLoginHooks } from "../../hooks/auth/useLogin";
-import * as WebBrowser from "expo-web-browser";
-// import { onGoogleButtonPress } from "../../hooks/auth/useLogin";
-
-WebBrowser.maybeCompleteAuthSession();
+import { TouchableOpacity } from "react-native-gesture-handler";
 
 export default function LoginScreen(): JSX.Element {
   const {
@@ -24,76 +22,205 @@ export default function LoginScreen(): JSX.Element {
     error,
     loading,
     handleEmailPasswordSignIn,
-    promptAsync,
   } = useLoginHooks();
 
-  const colorScheme = useColorScheme();
-  const isDarkMode = colorScheme === "dark";
-
   return (
-    <View style={{ padding: 20, marginTop: 60 }}>
-      {loading ? (
-        <ActivityIndicator size="large" color="#0000ff" />
-      ) : (
-        <View>
-          <TextInput
-            placeholder="Email"
-            value={email}
-            onChangeText={setEmail}
-            style={{
-              borderWidth: 1,
-              padding: 10,
-              marginBottom: 10,
-              color: isDarkMode ? "#fff" : "#000",
-              borderColor: isDarkMode ? "lightgray" : "gray",
-            }}
-            placeholderTextColor={isDarkMode ? "lightgray" : "gray"}
+    <ImageBackground
+      source={require("../../assets/images/bg_video.png")}
+      style={styles.background}
+      resizeMode="cover"
+    >
+      <LinearGradient
+        colors={["rgba(43,38,51,0.6)", "rgba(226, 74, 74 ,0.6)"]}
+        style={styles.gradient}
+      >
+        <View style={styles.container}>
+          <Image
+            source={require("../../assets/images/relay_logo.png")}
+            style={styles.logo}
           />
-          <TextInput
-            placeholder="Password"
-            value={password}
-            onChangeText={setPassword}
-            secureTextEntry
-            style={{
-              borderWidth: 1,
-              padding: 10,
-              marginBottom: 10,
-              color: isDarkMode ? "#fff" : "#000",
-              borderColor: isDarkMode ? "lightgray" : "gray",
-            }}
-            placeholderTextColor={isDarkMode ? "lightgray" : "gray"}
-          />
-          <Button
-            title="Sign in with Email"
-            onPress={handleEmailPasswordSignIn}
-          />
-          {/* <Button title="Sign in with Google" onPress={() => promptAsync()} /> */}
+          {loading ? (
+            <ActivityIndicator size="large" color="#0000ff" />
+          ) : (
+            <View style={styles.form}>
+              {/* Email Input */}
+              <Text
+                style={{
+                  color: "white",
+                  alignSelf: "flex-start",
+                  marginBottom: 5,
+                  marginLeft: 10,
+                }}
+              >
+                Email
+              </Text>
+              <TextInput
+                placeholder="Email"
+                value={email}
+                onChangeText={setEmail}
+                style={[styles.input, { marginBottom: 10 }]}
+                placeholderTextColor="#b0b0b0"
+              />
 
-          <Link
-            href="/Register/register"
-            style={[
-              styles.link,
-              isDarkMode ? styles.linkDark : styles.linkLight,
-            ]}
-          >
-            Don't have an account? Register
-          </Link>
-          {error ? <Text style={{ color: "red" }}>{error}</Text> : null}
+              <Text
+                style={{
+                  color: "white",
+                  alignSelf: "flex-start",
+                  marginBottom: 5,
+                  marginLeft: 10,
+                }}
+              >
+                Password
+              </Text>
+
+              {/* Password Input */}
+              <TextInput
+                placeholder="Password"
+                value={password}
+                onChangeText={setPassword}
+                secureTextEntry
+                style={styles.input}
+                placeholderTextColor="#b0b0b0"
+              />
+
+              <Text
+                style={{
+                  alignSelf: "flex-end",
+                  marginRight: 10,
+                  color: "#F4C542",
+                  marginBottom: 12,
+                }}
+              >
+                Forgot Password?
+              </Text>
+
+              {/* Sign In Button */}
+              <TouchableOpacity
+                onPress={handleEmailPasswordSignIn}
+                style={styles.button}
+              >
+                <Text style={styles.buttonText}>Sign In</Text>
+              </TouchableOpacity>
+              <View style={{ flex: 1, flexDirection: "row", width: "100%" }}>
+                <View
+                  style={{
+                    flex: 1,
+                    height: 1,
+                    backgroundColor: "#fff",
+                    marginHorizontal: 10,
+                  }}
+                />
+                <Text style={{ color: "white" }}>Or Sign In With</Text>
+                <View
+                  style={{
+                    flex: 1,
+                    height: 1,
+                    backgroundColor: "#fff",
+                    marginHorizontal: 10,
+                  }}
+                />
+              </View>
+              <View
+                style={{ flex: 1, flexDirection: "row", marginVertical: 20, marginLeft: 60 }}
+              >
+                <TouchableOpacity style={{}}>
+                  <Image
+                    source={require("../../assets/images/google_signin.png")}
+                    style={{ width: 200, height: 45, resizeMode: "contain", marginLeft: 40 }}
+                  />
+                </TouchableOpacity>
+
+                <TouchableOpacity style={{}}>
+                  <Image
+                    source={require("../../assets/images/fb_signin.png")}
+                    style={{ width: 200, height: 45, resizeMode: "contain", marginRight: 100 }}
+                  />
+                </TouchableOpacity>
+              </View>
+              <Link
+                href="/Register/register"
+                style={[styles.link, { color: "#FFCB8A", marginTop: 40 }]}
+              >
+                Don't have an account? Sign Up
+              </Link>
+
+              {error ? <Text style={{ color: "red" }}>{error}</Text> : null}
+            </View>
+          )}
+
+          {/* Social Buttons */}
         </View>
-      )}
-    </View>
+      </LinearGradient>
+    </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
+  background: {
+    flex: 1,
+    justifyContent: "center",
+  },
+  gradient: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 20,
+  },
+  container: {
+    width: "85%",
+    alignItems: "center",
+  },
+  logo: {
+    width: 170,
+    height: 170,
+    marginBottom: 20,
+    resizeMode: "contain",
+  },
+  form: {
+    width: "100%",
+    alignItems: "center",
+    marginTop: 40,
+  },
+  input: {
+    width: 300,
+    height: 45,
+    borderWidth: 1,
+    padding: 15,
+    marginBottom: 15,
+    borderColor: "#D3D3D3",
+    borderRadius: 25,
+    backgroundColor: "#FFFFFF",
+  },
+  button: {
+    width: 300, // Ensure button takes up full width
+    height: 45, // Match button height with input height
+    backgroundColor: "#F4C542",
+    borderRadius: 25,
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 20,
+  },
+  buttonText: {
+    color: "black",
+    fontSize: 16,
+  },
   link: {
     textDecorationLine: "underline",
     marginBottom: 10,
   },
-  linkLight: {
+  linkText: {
     color: "blue",
   },
-  linkDark: {
-    color: "lightblue",
+  socialButtons: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: "100%",
+    marginTop: 10,
+  },
+
+  socialButtonImage: {
+    width: "100%",
+    height: "100%",
+    resizeMode: "cover",
   },
 });

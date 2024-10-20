@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from "react";
 import { ApolloProvider, useMutation, useQuery } from "@apollo/client";
 import client from "../graphql/client";
 import {
@@ -6,9 +7,6 @@ import {
   ThemeProvider,
 } from "@react-navigation/native";
 import { router, Stack } from "expo-router";
-import React, { useEffect, useState } from "react";
-import { ApplicationProvider } from "@ui-kitten/components";
-import * as eva from "@eva-design/eva";
 import {
   StyleSheet,
   useColorScheme,
@@ -17,8 +15,11 @@ import {
   Alert,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useFirebaseAuth } from "@/firebaseConfig";
+import { ApplicationProvider } from "@ui-kitten/components";
+import * as eva from "@eva-design/eva";
 import * as Notifications from "expo-notifications";
+import { GestureHandlerRootView } from "react-native-gesture-handler"; // Import this
+import { useFirebaseAuth } from "@/firebaseConfig";
 import { GET_USER, UPDATE_EXPO_PUSH_TOKEN } from "@/graphql/queries";
 import { auth } from "@/firebaseConfig";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -27,7 +28,6 @@ export default function RootLayout() {
   const colorScheme = useColorScheme();
   const isLoading = useFirebaseAuth();
   const [expoPushToken, setExpoPushToken] = useState<string | null>(null);
-
   const user = auth.currentUser;
   const userId = user?.uid;
 
@@ -120,35 +120,47 @@ export default function RootLayout() {
   }
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <ApolloProvider client={client}>
-        <ApplicationProvider
-          {...eva}
-          theme={colorScheme === "dark" ? eva.dark : eva.light}
-        >
-          <ThemeProvider
-            value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      {/* Wrap everything here */}
+      <SafeAreaView style={{ flex: 1 }}>
+        <ApolloProvider client={client}>
+          <ApplicationProvider
+            {...eva}
+            theme={colorScheme === "dark" ? eva.dark : eva.light}
           >
-            <View
-              style={
-                colorScheme === "dark"
-                  ? styles.darkContainer
-                  : styles.lightContainer
-              }
+            <ThemeProvider
+              value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
             >
-              <Stack>
-                <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-                <Stack.Screen name="Login/login" />
-                <Stack.Screen name="Register/register" />
-                <Stack.Screen name="FirstPage" />
-                <Stack.Screen name="SecondPage" />
-                <Stack.Screen name="+not-found" />
-              </Stack>
-            </View>
-          </ThemeProvider>
-        </ApplicationProvider>
-      </ApolloProvider>
-    </SafeAreaView>
+              <View
+                style={
+                  colorScheme === "dark"
+                    ? styles.darkContainer
+                    : styles.lightContainer
+                }
+              >
+                <Stack>
+                  <Stack.Screen
+                    name="(tabs)"
+                    options={{ headerShown: false }}
+                  />
+                  <Stack.Screen
+                    name="Login/login"
+                    options={{ headerShown: false }}
+                  />
+                  <Stack.Screen
+                    name="Register/register"
+                    options={{ headerShown: false }}
+                  />
+                  <Stack.Screen name="FirstPage" />
+                  <Stack.Screen name="SecondPage" />
+                  <Stack.Screen name="+not-found" />
+                </Stack>
+              </View>
+            </ThemeProvider>
+          </ApplicationProvider>
+        </ApolloProvider>
+      </SafeAreaView>
+    </GestureHandlerRootView>
   );
 }
 
