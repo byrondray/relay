@@ -18,7 +18,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { ApplicationProvider } from "@ui-kitten/components";
 import * as eva from "@eva-design/eva";
 import * as Notifications from "expo-notifications";
-import { GestureHandlerRootView } from "react-native-gesture-handler"; // Import this
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { useFirebaseAuth } from "@/firebaseConfig";
 import { GET_USER, UPDATE_EXPO_PUSH_TOKEN } from "@/graphql/queries";
 import { auth } from "@/firebaseConfig";
@@ -151,8 +151,6 @@ export default function RootLayout() {
                     name="Register/register"
                     options={{ headerShown: false }}
                   />
-                  <Stack.Screen name="FirstPage" />
-                  <Stack.Screen name="SecondPage" />
                   <Stack.Screen name="+not-found" />
                 </Stack>
               </View>
