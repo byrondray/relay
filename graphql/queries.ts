@@ -5,7 +5,8 @@ export const GET_USERS = gql`
   query GetUsers {
     getUsers {
       id
-      name
+      firstName
+      lastName
       email
     }
   }
@@ -16,7 +17,8 @@ export const GET_USER = gql`
   query GetUser($id: ID!) {
     getUser(id: $id) {
       id
-      name
+      firstName
+      lastName
       email
     }
   }
@@ -25,19 +27,22 @@ export const GET_USER = gql`
 // Mutation to create a new user
 export const CREATE_USER = gql`
   mutation CreateUser(
-    $name: String!
+    $firstName: String!
+    $lastName: String
     $email: String!
     $firebaseId: String!
     $expoPushToken: String!
   ) {
     createUser(
-      name: $name
+      firstName: $firstName
+      lastName: $lastName
       email: $email
       firebaseId: $firebaseId
       expoPushToken: $expoPushToken
     ) {
       id
-      name
+      firstName
+      lastName
       email
       sessionId
     }
@@ -57,7 +62,8 @@ export const LOGIN = gql`
       expoPushToken: $expoPushToken
     ) {
       id
-      name
+      firstName
+      lastName
       email
       sessionId
     }
@@ -68,7 +74,8 @@ export const UPDATE_EXPO_PUSH_TOKEN = gql`
   mutation UpdateExpoPushToken($userId: String!, $expoPushToken: String!) {
     updateExpoPushToken(userId: $userId, expoPushToken: $expoPushToken) {
       id
-      name
+      firstName
+      lastName
       email
       expoPushToken
     }
@@ -82,7 +89,13 @@ export const GET_CONVERSATIONS_FOR_USER = gql`
   query GetConversationsForUser($userId: String!) {
     getConversationsForUser(userId: $userId) {
       recipientName
-      messages
+      messages {
+        id
+        senderId
+        recipientId
+        text
+        createdAt
+      }
     }
   }
 `;
@@ -159,6 +172,212 @@ export const FILTER_SCHOOLS_BY_NAME = gql`
       name
       address
       city
+    }
+  }
+`;
+
+// Query to get a vehicle by ID
+export const GET_VEHICLE = gql`
+  query GetVehicle($id: ID!) {
+    getVehicle(id: $id) {
+      id
+      userId
+      make
+      model
+      year
+      licensePlate
+      color
+    }
+  }
+`;
+
+// Query to get all vehicles for a user
+export const GET_VEHICLE_FOR_USER = gql`
+  query GetVehicleForUser($userId: String!) {
+    getVehicleForUser(userId: $userId) {
+      id
+      userId
+      make
+      model
+      year
+      licensePlate
+      color
+    }
+  }
+`;
+
+// Mutation to create a vehicle
+export const CREATE_VEHICLE = gql`
+  mutation CreateVehicle(
+    $make: String!
+    $model: String!
+    $year: String!
+    $licensePlate: String!
+    $color: String!
+  ) {
+    createVehicle(
+      make: $make
+      model: $model
+      year: $year
+      licensePlate: $licensePlate
+      color: $color
+    ) {
+      id
+      userId
+      make
+      model
+      year
+      licensePlate
+      color
+    }
+  }
+`;
+
+// Query to get a group by ID
+export const GET_GROUP = gql`
+  query GetGroup($id: ID!) {
+    getGroup(id: $id) {
+      id
+      name
+    }
+  }
+`;
+
+// Query to get all groups
+export const GET_GROUPS = gql`
+  query GetGroups {
+    getGroups {
+      id
+      name
+    }
+  }
+`;
+
+// Query to get a group with its members
+export const GET_GROUP_WITH_USERS = gql`
+  query GetGroupWithUsers($id: ID!) {
+    getGroupWithUsers(id: $id) {
+      id
+      name
+      members {
+        id
+        firstName
+        lastName
+      }
+    }
+  }
+`;
+
+// Mutation to create a group
+export const CREATE_GROUP = gql`
+  mutation CreateGroup($name: String!) {
+    createGroup(name: $name) {
+      id
+      name
+    }
+  }
+`;
+
+// Mutation to add a member to a group
+export const ADD_MEMBER_TO_GROUP = gql`
+  mutation AddMemberToGroup($groupId: String!, $userId: String!) {
+    addMemberToGroup(groupId: $groupId, userId: $userId)
+  }
+`;
+
+// Mutation to remove a member from a group
+export const DELETE_MEMBER_FROM_GROUP = gql`
+  mutation DeleteMemberFromGroup($groupId: String!, $userId: String!) {
+    deleteMemberFromGroup(groupId: $groupId, userId: $userId)
+  }
+`;
+
+// Query to get all group messages by groupId
+export const GET_GROUP_MESSAGES = gql`
+  query GetGroupMessages($groupId: String!) {
+    getGroupMessages(groupId: $groupId) {
+      id
+      groupId
+      userId
+      message
+      createdAt
+    }
+  }
+`;
+
+// Mutation to create a group message
+export const CREATE_GROUP_MESSAGE = gql`
+  mutation CreateGroupMessage($groupId: String!, $message: String!) {
+    createGroupMessage(groupId: $groupId, message: $message) {
+      id
+      groupId
+      userId
+      message
+      createdAt
+    }
+  }
+`;
+
+// Query to get a child by ID
+export const GET_CHILD = gql`
+  query GetChild($id: ID!) {
+    getChild(id: $id) {
+      id
+      userId
+      firstName
+      schoolId
+      schoolEmailAddress
+      createdAt
+    }
+  }
+`;
+
+// Query to get all children
+export const GET_CHILDREN = gql`
+  query GetChildren {
+    getChildren {
+      id
+      userId
+      firstName
+      schoolId
+      schoolEmailAddress
+      createdAt
+    }
+  }
+`;
+
+// Query to get children for a user
+export const GET_CHILDREN_FOR_USER = gql`
+  query GetChildrenForUser {
+    getChildrenForUser {
+      id
+      userId
+      firstName
+      schoolId
+      schoolEmailAddress
+      createdAt
+    }
+  }
+`;
+
+// Mutation to create a child
+export const CREATE_CHILD = gql`
+  mutation CreateChild(
+    $firstName: String!
+    $schoolId: String!
+    $schoolEmailAddress: String
+  ) {
+    createChild(
+      firstName: $firstName
+      schoolId: $schoolId
+      schoolEmailAddress: $schoolEmailAddress
+    ) {
+      id
+      userId
+      firstName
+      schoolId
+      schoolEmailAddress
+      createdAt
     }
   }
 `;

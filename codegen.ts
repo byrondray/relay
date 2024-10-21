@@ -9,6 +9,8 @@ const httpUrl = isDev
   ? `http://${process.env.EXPO_PUBLIC_IP_ADDRESS}:4000/graphql`
   : `https://relay-api-ibel.onrender.com/graphql`;
 
+console.log(httpUrl, "httpUrl");
+
 const codegenConfig: CodegenConfig = {
   overwrite: true,
   schema: httpUrl,
