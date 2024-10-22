@@ -9,6 +9,7 @@ import { useLocationAndCommunityCenters } from "@/hooks/map/useMap";
 import { useDirections } from "@/hooks/map/useDirections";
 import { CommunityCenter } from "@/graphql/generated";
 import { useLogout } from "@/hooks/auth/useLogout";
+import Reload from "@/assets/images/reload.svg";
 
 function HomeScreen() {
   const [origin, setOrigin] = useState("");
@@ -23,6 +24,7 @@ function HomeScreen() {
 
   return (
     <ThemedView style={styles.container}>
+      <Reload width={-50} height={50} />
       <ThemedAddressCompletionInput
         value={origin}
         onChangeText={setOrigin}
