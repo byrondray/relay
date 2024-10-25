@@ -8,6 +8,8 @@ export const GET_USERS = gql`
       firstName
       lastName
       email
+      phoneNumber
+      city
     }
   }
 `;
@@ -20,6 +22,8 @@ export const GET_USER = gql`
       firstName
       lastName
       email
+      phoneNumber
+      city
     }
   }
 `;
@@ -187,6 +191,7 @@ export const GET_VEHICLE = gql`
       year
       licensePlate
       color
+      seats
     }
   }
 `;
@@ -202,6 +207,7 @@ export const GET_VEHICLE_FOR_USER = gql`
       year
       licensePlate
       color
+      seats
     }
   }
 `;
@@ -214,6 +220,7 @@ export const CREATE_VEHICLE = gql`
     $year: String!
     $licensePlate: String!
     $color: String!
+    $seats: Int!
   ) {
     createVehicle(
       make: $make
@@ -221,6 +228,7 @@ export const CREATE_VEHICLE = gql`
       year: $year
       licensePlate: $licensePlate
       color: $color
+      seats: $seats
     ) {
       id
       userId
@@ -229,6 +237,7 @@ export const CREATE_VEHICLE = gql`
       year
       licensePlate
       color
+      seats
     }
   }
 `;
@@ -364,12 +373,12 @@ export const GET_CHILDREN_FOR_USER = gql`
 export const CREATE_CHILD = gql`
   mutation CreateChild(
     $firstName: String!
-    $schoolId: String!
+    $schoolName: String!
     $schoolEmailAddress: String
   ) {
     createChild(
       firstName: $firstName
-      schoolId: $schoolId
+      schoolName: $schoolName
       schoolEmailAddress: $schoolEmailAddress
     ) {
       id
@@ -378,6 +387,195 @@ export const CREATE_CHILD = gql`
       schoolId
       schoolEmailAddress
       createdAt
+    }
+  }
+`;
+
+// Mutation to update a User
+
+export const UPDATE_USER = gql`
+  mutation UpdateUserInfo(
+    $id: String!
+    $firstName: String
+    $lastName: String
+    $email: String
+    $phoneNumber: String
+    $city: String
+  ) {
+    updateUserInfo(
+      id: $id
+      firstName: $firstName
+      lastName: $lastName
+      email: $email
+      phoneNumber: $phoneNumber
+      city: $city
+    ) {
+      id
+      firstName
+      lastName
+      email
+      phoneNumber
+      city
+    }
+  }
+`;
+
+export const HAS_USER_ON_BOARDED = gql`
+  query HasUserOnBoarded {
+    hasUserOnBoarded
+  }
+`;
+
+// Query to get carpools by group
+export const GET_CARPOOLS_BY_GROUP = gql`
+  query GetCarpoolsByGroup($groupId: String!) {
+    getCarpoolsByGroup(groupId: $groupId) {
+      id
+      driverId
+      vehicleId
+      startAddress
+      endAddress
+      startLat
+      startLon
+      endLat
+      endLon
+      departureDate
+      departureTime
+      extraCarSeat
+      winterTires
+      tripPreferences
+      estimatedTime
+    }
+  }
+`;
+
+// Query to get past carpools for a user
+export const GET_PAST_CARPOOLS = gql`
+  query GetPastCarpools($userId: String!) {
+    getPastCarpools(userId: $userId) {
+      id
+      driverId
+      vehicleId
+      startAddress
+      endAddress
+      startLat
+      startLon
+      endLat
+      endLon
+      departureDate
+      departureTime
+    }
+  }
+`;
+
+// Query to get current and upcoming carpools for a user
+export const GET_CURRENT_CARPOOLS = gql`
+  query GetCurrentCarpools($userId: String!) {
+    getCurrentCarpools(userId: $userId) {
+      id
+      driverId
+      vehicleId
+      startAddress
+      endAddress
+      startLat
+      startLon
+      endLat
+      endLon
+      departureDate
+      departureTime
+    }
+  }
+`;
+
+// Query to get carpools by group with approved carpoolers
+export const GET_CARPOOLS_BY_GROUP_WITH_APPROVED_CARPOOLERS = gql`
+  query GetCarpoolsByGroupsWithApprovedCarpoolers($groupId: String!) {
+    getCarpoolsByGroupsWithApprovedCarpoolers(groupId: $groupId) {
+      id
+      driverId
+      startAddress
+      endAddress
+      departureDate
+      departureTime
+      approvedCarpoolers {
+        parentName
+        childFirstName
+      }
+    }
+  }
+`;
+
+// Mutation to create a new carpool
+export const CREATE_CARPOOL = gql`
+  mutation CreateCarpool($input: CreateCarpoolInput!) {
+    createCarpool(input: $input) {
+      id
+      driverId
+      vehicleId
+      startAddress
+      endAddress
+      startLat
+      startLon
+      endLat
+      endLon
+      departureDate
+      departureTime
+      extraCarSeat
+      winterTires
+      tripPreferences
+      estimatedTime
+    }
+  }
+`;
+
+// Mutation to create a new carpool request
+export const CREATE_REQUEST = gql`
+  mutation CreateRequest($input: CreateRequestInput!) {
+    createRequest(input: $input) {
+      id
+      parentId
+      childId
+      carpoolId
+      isApproved
+      createdAt
+    }
+  }
+`;
+
+// Mutation to approve a carpool request
+export const APPROVE_REQUEST = gql`
+  mutation ApproveRequest($requestId: String!) {
+    approveRequest(requestId: $requestId) {
+      id
+      parentId
+      childId
+      carpoolId
+      isApproved
+      createdAt
+    }
+  }
+`;
+
+// Mutation to delete a carpool request
+export const SEND_LOCATION = gql`
+  mutation SendLocation($carpoolId: String!, $lat: Float!, $lon: Float!) {
+    sendLocation(carpoolId: $carpoolId, lat: $lat, lon: $lon) {
+      lat
+      lon
+      senderId
+      timestamp
+    }
+  }
+`;
+
+// Subscription to receive location updates from other carpool members
+export const LOCATION_RECEIVED_SUBSCRIPTION = gql`
+  subscription OnLocationReceived($recipientId: String!) {
+    locationReceived(recipientId: $recipientId) {
+      lat
+      lon
+      senderId
+      timestamp
     }
   }
 `;

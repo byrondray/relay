@@ -154,7 +154,7 @@ export const useLoginHooks = () => {
     } catch (err) {
       setLoading(false);
       setError("Email/Password sign-in failed. Please try again.");
-      console.error("Error during email/password sign-in:", err);
+      console.log("Error during email/password sign-in:", err);
     }
   };
 
