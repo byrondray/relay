@@ -15,7 +15,7 @@ export function ThemedAddressCompletionInput({
   style,
   onSuggestionSelect,
   onLatLonSelect,
-  value, 
+  value,
   onChangeText,
   ...restProps
 }: TextInputProps & {
@@ -27,8 +27,7 @@ export function ThemedAddressCompletionInput({
   const [suggestions, setSuggestions] = useState<
     { place_id: string; description: string }[]
   >([]);
-  const backgroundColor = useThemeColor({}, "background");
-  const textColor = useThemeColor({}, "text");
+  const textColor = useThemeColor({}, "placeholder");
 
   const fetchAddressSuggestions = useCallback(
     debounce(async (input: string) => {
@@ -85,7 +84,7 @@ export function ThemedAddressCompletionInput({
   return (
     <ThemedView style={style}>
       <TextInput
-        style={[styles.input, { backgroundColor, color: textColor }, style]}
+        style={[styles.input, { color: textColor, paddingLeft: 15 }, style]}
         value={value}
         onChangeText={(text) => {
           onChangeText(text);
@@ -118,13 +117,16 @@ export function ThemedAddressCompletionInput({
 const styles = StyleSheet.create({
   input: {
     padding: 10,
-    borderRadius: 5,
-    borderColor: "#ccc",
+    borderRadius: 20,
+    backgroundColor: "#F7F9FC",
+    borderColor: "#E4E9F2",
     borderWidth: 1,
+    height: 43,
   },
   suggestionText: {
     padding: 10,
     borderBottomWidth: 1,
-    borderColor: "#ccc",
+    backgroundColor: "#F7F9FC",
+    borderColor: "#E4E9F2",
   },
 });

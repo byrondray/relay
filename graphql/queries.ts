@@ -10,6 +10,8 @@ export const GET_USERS = gql`
       email
       phoneNumber
       city
+      licenseImageUrl
+      insuranceImageUrl
     }
   }
 `;
@@ -24,6 +26,8 @@ export const GET_USER = gql`
       email
       phoneNumber
       city
+      licenseImageUrl
+      insuranceImageUrl
     }
   }
 `;
@@ -192,6 +196,7 @@ export const GET_VEHICLE = gql`
       licensePlate
       color
       seats
+      vehicleImageUrl
     }
   }
 `;
@@ -208,6 +213,7 @@ export const GET_VEHICLE_FOR_USER = gql`
       licensePlate
       color
       seats
+      vehicleImageUrl
     }
   }
 `;
@@ -221,6 +227,7 @@ export const CREATE_VEHICLE = gql`
     $licensePlate: String!
     $color: String!
     $seats: Int!
+    $imageUrl: String
   ) {
     createVehicle(
       make: $make
@@ -229,6 +236,7 @@ export const CREATE_VEHICLE = gql`
       licensePlate: $licensePlate
       color: $color
       seats: $seats
+      imageUrl: $imageUrl
     ) {
       id
       userId
@@ -238,6 +246,7 @@ export const CREATE_VEHICLE = gql`
       licensePlate
       color
       seats
+      vehicleImageUrl
     }
   }
 `;
@@ -248,6 +257,8 @@ export const GET_GROUP = gql`
     getGroup(id: $id) {
       id
       name
+      schoolId
+      communityCenterId
     }
   }
 `;
@@ -258,6 +269,8 @@ export const GET_GROUPS = gql`
     getGroups {
       id
       name
+      schoolId
+      communityCenterId
     }
   }
 `;
@@ -268,6 +281,8 @@ export const GET_GROUP_WITH_USERS = gql`
     getGroupWithUsers(id: $id) {
       id
       name
+      schoolId
+      communityCenterId
       members {
         id
         firstName
@@ -283,6 +298,8 @@ export const CREATE_GROUP = gql`
     createGroup(name: $name) {
       id
       name
+      schoolId
+      communityCenterId
     }
   }
 `;
@@ -290,14 +307,18 @@ export const CREATE_GROUP = gql`
 // Mutation to add a member to a group
 export const ADD_MEMBER_TO_GROUP = gql`
   mutation AddMemberToGroup($groupId: String!, $userId: String!) {
-    addMemberToGroup(groupId: $groupId, userId: $userId)
+    addMemberToGroup(groupId: $groupId, userId: $userId) {
+      message
+    }
   }
 `;
 
 // Mutation to remove a member from a group
 export const DELETE_MEMBER_FROM_GROUP = gql`
   mutation DeleteMemberFromGroup($groupId: String!, $userId: String!) {
-    deleteMemberFromGroup(groupId: $groupId, userId: $userId)
+    deleteMemberFromGroup(groupId: $groupId, userId: $userId) {
+      message
+    }
   }
 `;
 
@@ -337,6 +358,7 @@ export const GET_CHILD = gql`
       schoolId
       schoolEmailAddress
       createdAt
+      imageUrl
     }
   }
 `;
@@ -351,6 +373,7 @@ export const GET_CHILDREN = gql`
       schoolId
       schoolEmailAddress
       createdAt
+      imageUrl
     }
   }
 `;
@@ -365,6 +388,7 @@ export const GET_CHILDREN_FOR_USER = gql`
       schoolId
       schoolEmailAddress
       createdAt
+      imageUrl
     }
   }
 `;
@@ -375,11 +399,13 @@ export const CREATE_CHILD = gql`
     $firstName: String!
     $schoolName: String!
     $schoolEmailAddress: String
+    $imageUrl: String
   ) {
     createChild(
       firstName: $firstName
       schoolName: $schoolName
       schoolEmailAddress: $schoolEmailAddress
+      imageUrl: $imageUrl
     ) {
       id
       userId
@@ -387,6 +413,7 @@ export const CREATE_CHILD = gql`
       schoolId
       schoolEmailAddress
       createdAt
+      imageUrl
     }
   }
 `;
@@ -401,6 +428,8 @@ export const UPDATE_USER = gql`
     $email: String
     $phoneNumber: String
     $city: String
+    $licenseImageUrl: String
+    $insuranceImageUrl: String
   ) {
     updateUserInfo(
       id: $id
@@ -409,6 +438,8 @@ export const UPDATE_USER = gql`
       email: $email
       phoneNumber: $phoneNumber
       city: $city
+      licenseImageUrl: $licenseImageUrl
+      insuranceImageUrl: $insuranceImageUrl
     ) {
       id
       firstName
@@ -416,6 +447,8 @@ export const UPDATE_USER = gql`
       email
       phoneNumber
       city
+      licenseImageUrl
+      insuranceImageUrl
     }
   }
 `;

@@ -130,10 +130,6 @@ function HomeScreen() {
           router.push("/OnboardForms/parent" as Href<"/OnboardForms/parent">)
         }
       />
-      <Button
-        title="Create a group"
-        onPress={() => router.push("/group/createGroup")}
-      />
 
       {predictedTime ? (
         <ThemedView style={styles.predictedTimeContainer}>
