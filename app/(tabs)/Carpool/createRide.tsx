@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -21,13 +21,23 @@ import {
 } from "@ui-kitten/components";
 import { TextInput } from "react-native-gesture-handler";
 import { TimePickerModal } from "react-native-paper-dates";
-import { Icon } from "react-native-paper";
+import ChildSelector from "@/components/carpool/childSelector";
+import {
+  GET_CARPOOLERS_WITHOUT_APPROVED_REQUESTS,
+  GET_VEHICLE_FOR_USER,
+} from "@/graphql/queries";
+import { useQuery } from "@apollo/client";
+import { auth } from "@/firebaseConfig";
+import { useLocalSearchParams } from "expo-router";
+import { Request } from "@/graphql/generated";
 
 const CreateRide = () => {
   const [origin, setOrigin] = useState("");
   const [destination, setDestination] = useState("");
   const [startingLatLng, setStartingLatLng] = useState({ lat: 0, lon: 0 });
   const [endingLatLng, setEndingLatLng] = useState({ lat: 0, lon: 0 });
+  const [startingAddress, setStartingAddress] = useState("");
+  const [endingAddress, setEndingAddress] = useState("");
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [dateAndTime, setDateAndTime] = useState("Select Date & Time");
@@ -41,19 +51,66 @@ const CreateRide = () => {
   const [winterTiresChecked, setWinterTiresChecked] = useState(false);
   const [showTimePicker, setShowTimePicker] = useState(false);
   const [time, setTime] = useState("");
+  const [requests, setRequests] = useState<Request[]>([]);
+  const [vehicles, setVehicles] = useState<string[]>([]);
+  const groupId = useLocalSearchParams().groupId;
+  const user = auth.currentUser;
+  const userId = user?.uid;
 
-  const vehicles = ["Marry's Toyota", "John's Honda", "Anna's Ford"];
+  console.log(vehicles, "vehicles");
+
+  const {
+    data: getCarpoolersWithoutApprovedRequests,
+    loading,
+    error,
+  } = useQuery(GET_CARPOOLERS_WITHOUT_APPROVED_REQUESTS, {
+    variables: {
+      groupId,
+      dateAndTime,
+      time,
+      endingAddress,
+    },
+    skip: !groupId || !dateAndTime || !time || !endingAddress,
+    onCompleted: (data) => {
+      if (data?.getCarpoolersByGroupWithoutApprovedRequests) {
+        setRequests(data.getCarpoolersByGroupWithoutApprovedRequests);
+      }
+    },
+  });
+
+  const { data: getVehicleForUser } = useQuery(GET_VEHICLE_FOR_USER, {
+    variables: {
+      userId,
+    },
+    skip: !userId,
+    onCompleted: (data) => {
+      if (data?.getVehicleForUser) {
+        setVehicles(data.getVehicleForUser);
+      }
+    },
+  });
+
+  useEffect(() => {
+    if (getCarpoolersWithoutApprovedRequests && !loading && !error) {
+      setRequests(
+        getCarpoolersWithoutApprovedRequests.getCarpoolersByGroupWithoutApprovedRequests
+      );
+    }
+  }, [getCarpoolersWithoutApprovedRequests, loading, error]);
+
+  useEffect(() => {
+    if (getCarpoolersWithoutApprovedRequests && !loading && !error) {
+      setRequests(
+        getCarpoolersWithoutApprovedRequests.getCarpoolersByGroupWithoutApprovedRequests
+      );
+    }
+  }, [getCarpoolersWithoutApprovedRequests, loading, error]);
 
   const seatsAvailable = [
     "1 seat available",
     "2 seats available",
     "3 seats available",
   ];
-
-  interface LatLng {
-    lat: number;
-    lon: number;
-  }
 
   const handleDateSelect = (nextDate: Date) => {
     setSelectedDate(nextDate);
@@ -106,8 +163,9 @@ const CreateRide = () => {
         <Text style={{ color: textColor, marginBottom: 5 }}>From</Text>
         <ThemedAddressCompletionInput
           value={origin}
-          onChangeText={setOrigin}
+          onChangeText={setStartingAddress}
           onSuggestionSelect={(address) => {
+            setStartingAddress(address);
             console.log("Selected Address:", address);
           }}
           onLatLonSelect={(lat, lon) => {
@@ -121,8 +179,8 @@ const CreateRide = () => {
         </Text>
         <ThemedAddressCompletionInput
           value={destination}
-          onChangeText={setDestination}
-          onSuggestionSelect={setDestination}
+          onChangeText={setEndingAddress}
+          onSuggestionSelect={setEndingAddress}
           onLatLonSelect={(lat, lon) => {
             setEndingLatLng({ lat, lon });
             console.log("Selected Lat/Lon:", lat, lon);
@@ -192,80 +250,7 @@ const CreateRide = () => {
         <Text style={{ color: textColor, marginBottom: 10, marginTop: 15 }}>
           Seats Required
         </Text>
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "flex-start",
-            gap: 10,
-          }}
-        >
-          <View style={{ position: "relative" }}>
-            <Image
-              source={{
-                uri: "https://img.freepik.com/free-photo/smiley-little-girl-red-dress_23-2148984788.jpg?",
-              }}
-              style={{ width: 90, height: 90, borderRadius: 50 }}
-            />
-            <Image
-              source={require("../../../assets/images/checkmark-circle-icon.png")}
-              style={{
-                position: "absolute",
-                top: -5,
-                right: -5,
-                width: 30,
-                height: 30,
-              }}
-            />
-          </View>
-
-          <View style={{ position: "relative" }}>
-            <Image
-              source={{
-                uri: "https://media.istockphoto.com/id/1387226163/photo/portrait-of-a-little-boy-with-a-plaster-on-his-arm-after-an-injection.jpg?s=612x612&w=0&k=20&c=3dlo_ztuREvJWLNbdqlgGcztceBgk5qDdU7ulYaErkk=",
-              }}
-              style={{ width: 90, height: 90, borderRadius: 50 }}
-            />
-            <Image
-              source={require("../../../assets/images/checkmark-circle-icon.png")}
-              style={{
-                position: "absolute",
-                top: -5,
-                right: -5,
-                width: 30,
-                height: 30,
-              }}
-            />
-          </View>
-
-          <View style={{ position: "relative", opacity: 0.5 }}>
-            <Image
-              source={{
-                uri: "https://www.openaccessgovernment.org/wp-content/uploads/2020/07/black-children.jpg",
-              }}
-              style={{ width: 90, height: 90, borderRadius: 50 }}
-            />
-          </View>
-
-          <View
-            style={{
-              width: 90,
-              height: 90,
-              backgroundColor: "#F7F9FC",
-              borderRadius: 50,
-              justifyContent: "center",
-              alignItems: "center",
-              borderColor: "#8F9BB3",
-              borderWidth: 1,
-            }}
-          >
-            <Image
-              style={{
-                resizeMode: "contain",
-              }}
-              source={require("../../../assets/images/add-member-icon.png")}
-            />
-          </View>
-        </View>
+        <ChildSelector />
         <View
           style={{
             width: "100%",

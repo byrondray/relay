@@ -115,7 +115,15 @@ export type CreateCarpoolInput = {
 export type CreateRequestInput = {
   carpoolId?: InputMaybe<Scalars['String']['input']>;
   childId: Scalars['String']['input'];
+  endingAddress: Scalars['String']['input'];
+  endingLat: Scalars['Float']['input'];
+  endingLon: Scalars['Float']['input'];
+  groupId: Scalars['String']['input'];
   parentId: Scalars['String']['input'];
+  pickupTime: Scalars['String']['input'];
+  startingAddress: Scalars['String']['input'];
+  startingLat: Scalars['Float']['input'];
+  startingLon: Scalars['Float']['input'];
 };
 
 export type DeleteMemberFromGroupResponse = {
@@ -287,6 +295,7 @@ export type MutationUpdateUserInfoArgs = {
 export type Query = {
   __typename?: 'Query';
   filterSchoolsByName: Array<School>;
+  getCarpoolersByGroupWithoutApprovedRequests?: Maybe<Array<Request>>;
   getCarpoolsByGroup?: Maybe<Array<Carpool>>;
   getCarpoolsByGroupsWithApprovedCarpoolers?: Maybe<Array<CarpoolWithCarpoolers>>;
   getChild?: Maybe<Child>;
@@ -311,6 +320,14 @@ export type Query = {
 
 export type QueryFilterSchoolsByNameArgs = {
   name: Scalars['String']['input'];
+};
+
+
+export type QueryGetCarpoolersByGroupWithoutApprovedRequestsArgs = {
+  date: Scalars['String']['input'];
+  endingAddress: Scalars['String']['input'];
+  groupId: Scalars['String']['input'];
+  time: Scalars['String']['input'];
 };
 
 
@@ -390,9 +407,17 @@ export type Request = {
   carpoolId?: Maybe<Scalars['String']['output']>;
   childId: Scalars['String']['output'];
   createdAt: Scalars['String']['output'];
+  endAddress: Scalars['String']['output'];
+  endingLat: Scalars['Float']['output'];
+  endingLon: Scalars['Float']['output'];
+  groupId: Scalars['String']['output'];
   id: Scalars['String']['output'];
   isApproved: Scalars['Boolean']['output'];
   parentId: Scalars['String']['output'];
+  pickupTime: Scalars['String']['output'];
+  startAddress: Scalars['String']['output'];
+  startingLat: Scalars['Float']['output'];
+  startingLon: Scalars['Float']['output'];
 };
 
 export type School = {
@@ -727,3 +752,13 @@ export type OnLocationReceivedSubscriptionVariables = Exact<{
 
 
 export type OnLocationReceivedSubscription = { __typename?: 'Subscription', locationReceived?: { __typename?: 'LocationData', lat: number, lon: number, senderId: string, timestamp: string } | null };
+
+export type GetCarpoolersWithoutApprovedRequestsQueryVariables = Exact<{
+  groupId: Scalars['String']['input'];
+  date: Scalars['String']['input'];
+  time: Scalars['String']['input'];
+  endingAddress: Scalars['String']['input'];
+}>;
+
+
+export type GetCarpoolersWithoutApprovedRequestsQuery = { __typename?: 'Query', getCarpoolersByGroupWithoutApprovedRequests?: Array<{ __typename?: 'Request', id: string, carpoolId?: string | null, parentId: string, childId: string, groupId: string, isApproved: boolean, startAddress: string, endAddress: string, startingLat: number, startingLon: number, endingLat: number, endingLon: number, pickupTime: string, createdAt: string }> | null };
