@@ -612,3 +612,34 @@ export const LOCATION_RECEIVED_SUBSCRIPTION = gql`
     }
   }
 `;
+
+export const GET_CARPOOLERS_WITHOUT_APPROVED_REQUESTS = gql`
+  query GetCarpoolersWithoutApprovedRequests(
+    $groupId: String!
+    $date: String!
+    $time: String!
+    $endingAddress: String!
+  ) {
+    getCarpoolersByGroupWithoutApprovedRequests(
+      groupId: $groupId
+      date: $date
+      time: $time
+      endingAddress: $endingAddress
+    ) {
+      id
+      carpoolId
+      parentId
+      childId
+      groupId
+      isApproved
+      startAddress
+      endAddress
+      startingLat
+      startingLon
+      endingLat
+      endingLon
+      pickupTime
+      createdAt
+    }
+  }
+`;

@@ -14,6 +14,7 @@ import { useQuery } from "@apollo/client";
 import { HAS_USER_ON_BOARDED } from "@/graphql/queries";
 import { router, Href } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { GET_CHILDREN_FOR_USER } from "@/graphql/queries";
 
 function HomeScreen() {
   const [origin, setOrigin] = useState("");
@@ -24,6 +25,16 @@ function HomeScreen() {
   const [startingLatLng, setStartingLatLng] = useState({ lat: 0, lon: 0 });
   const [endingLatLng, setEndingLatLng] = useState({ lat: 0, lon: 0 });
   const [waypointsLatLng, setLatLng] = useState({ lat: 0, lon: 0 });
+  const [children, setChildren] = useState([]);
+
+  const { data: childrenData, loading: childrenLoading } = useQuery(
+    GET_CHILDREN_FOR_USER,
+    {
+      onCompleted: (data) => {
+        setChildren(data.getChildrenForUser);
+      },
+    }
+  );
 
   const { userLocation, mapRegion, communityCentersData, setMapRegion } =
     useLocationAndCommunityCenters();
@@ -84,7 +95,6 @@ function HomeScreen() {
 
   return (
     <ThemedView style={styles.container}>
-      <Reload width={-50} height={50} />
       <ThemedAddressCompletionInput
         value={origin}
         onChangeText={setOrigin}
