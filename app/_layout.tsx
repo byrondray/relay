@@ -22,6 +22,7 @@ import { useFirebaseAuth } from "@/firebaseConfig";
 import { GET_USER, UPDATE_EXPO_PUSH_TOKEN } from "@/graphql/queries";
 import { auth } from "@/firebaseConfig";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { myTheme } from "./theme";
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
@@ -123,7 +124,11 @@ export default function RootLayout() {
         <ApolloProvider client={client}>
           <ApplicationProvider
             {...eva}
-            theme={colorScheme === "dark" ? eva.dark : eva.light}
+            theme={
+              colorScheme === "dark"
+                ? { ...eva.dark, ...myTheme }
+                : { ...eva.light, ...myTheme }
+            }
           >
             <ThemeProvider
               value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
