@@ -12,7 +12,6 @@ import {
   useColorScheme,
   View,
   ActivityIndicator,
-  Alert,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ApplicationProvider } from "@ui-kitten/components";
@@ -81,8 +80,7 @@ export default function RootLayout() {
           });
         }
       } catch (error) {
-        console.error("Error getting Expo Push Token:", error);
-        Alert.alert("Error", "Failed to get push notification token");
+        console.log("Error getting Expo Push Token:", error);
       }
     };
 
@@ -121,7 +119,6 @@ export default function RootLayout() {
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      {/* Wrap everything here */}
       <SafeAreaView style={{ flex: 1 }}>
         <ApolloProvider client={client}>
           <ApplicationProvider
@@ -149,6 +146,18 @@ export default function RootLayout() {
                   />
                   <Stack.Screen
                     name="Register/register"
+                    options={{ headerShown: false }}
+                  />
+                  <Stack.Screen
+                    name="OnboardForms/parent"
+                    options={{ headerShown: false }}
+                  />
+                  <Stack.Screen
+                    name="OnboardForms/child"
+                    options={{ headerShown: false }}
+                  />
+                  <Stack.Screen
+                    name="OnboardForms/vehicle"
                     options={{ headerShown: false }}
                   />
                   <Stack.Screen name="+not-found" />
