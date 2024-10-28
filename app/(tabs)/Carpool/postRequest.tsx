@@ -1,4 +1,3 @@
-import { ThemedView } from "@/components/ThemedView";
 import React, { useState } from "react";
 import {
   View,
@@ -11,28 +10,20 @@ import {
 } from "react-native";
 import { ThemedAddressCompletionInput } from "@/components/ThemedAddressCompletionInput";
 import { useThemeColor } from "@/hooks/useThemeColor";
-import MapView from "react-native-maps";
 import { LinearGradient } from "expo-linear-gradient";
 import {
-  CheckBox,
-  Datepicker,
-  IndexPath,
-  Select,
-  SelectItem,
   Radio,
-  Toggle,
   RadioGroup,
   RangeDatepicker,
+  Button,
 } from "@ui-kitten/components";
 import { TextInput } from "react-native-gesture-handler";
 import { TimePickerModal } from "react-native-paper-dates";
-import { Icon } from "react-native-paper";
+import ChildSelector from "@/components/carpool/childSelector";
 
 const RequestRide = () => {
   const [origin, setOrigin] = useState("");
-  const [destination, setDestination] = useState("");
   const [startingAddress, setStartingAddress] = useState("");
-  const [endingLatLng, setEndingLatLng] = useState({ lat: 0, lon: 0 });
   const [selectedIndex, setSelectedIndex] = React.useState(0);
   const textColor = useThemeColor({}, "placeholder");
   const [range, setRange] = React.useState({});
@@ -167,8 +158,11 @@ const RequestRide = () => {
           hours={12}
           minutes={0}
         />
-
-        <Text style={{ color: textColor, marginBottom: 5, marginTop: 10 }}>
+        <Text style={{ color: textColor, marginBottom: 10, marginTop: 15 }}>
+          Seats Required
+        </Text>
+        <ChildSelector />
+        <Text style={{ color: textColor, marginBottom: 5, marginTop: 20 }}>
           Description
         </Text>
         <TextInput
@@ -182,6 +176,39 @@ const RequestRide = () => {
           placeholder="Tell drivers more about any special arrangement, e.g. extra car seat, large instrument"
           multiline={true}
         ></TextInput>
+        <View
+          style={{
+            flex: 1,
+            justifyContent: "center",
+            alignItems: "center",
+            paddingHorizontal: 16,
+            backgroundColor: "#fff",
+          }}
+        >
+          <LinearGradient
+            colors={["#ff8833", "#e24a4a"]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            style={{
+              width: "100%",
+              borderRadius: 15,
+              overflow: "hidden",
+            }}
+          >
+            <Button
+              style={{
+                width: "100%",
+                paddingVertical: 12,
+              }}
+              appearance="ghost"
+              onPress={() => console.log("Button pressed")}
+            >
+              {() => (
+                <Text style={{ color: "#fff", fontSize: 16 }}>Submit</Text>
+              )}
+            </Button>
+          </LinearGradient>
+        </View>
       </ScrollView>
     </KeyboardAvoidingView>
   );
