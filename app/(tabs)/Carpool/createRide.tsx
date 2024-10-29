@@ -19,6 +19,9 @@ import {
   IndexPath,
   Select,
   SelectItem,
+  Button,
+  Layout,
+  Popover,
 } from "@ui-kitten/components";
 import { TextInput } from "react-native-gesture-handler";
 import { TimePickerModal } from "react-native-paper-dates";
@@ -75,6 +78,7 @@ const CreateRide = () => {
   const [requests, setRequests] = useState<Request[]>([]);
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
   const [selectedChildren, setSelectedChildren] = useState<string[]>([]);
+  const [visible, setVisible] = React.useState(false);
   const groupId = useLocalSearchParams().groupId;
   const user = auth.currentUser;
   const userId = user?.uid;
@@ -109,6 +113,23 @@ const CreateRide = () => {
       areCoordinatesEqual(route.coordinates, activeRoute.coordinates)
     );
   };
+
+  const handleModelSubmit = () => {
+    setVisible(true);
+  };
+
+  const renderToggleButton = (): React.ReactElement => (
+    <Button
+      style={{
+        width: "100%",
+        paddingVertical: 12,
+      }}
+      appearance="ghost"
+      onPress={handleModelSubmit}
+    >
+      {() => <Text style={{ color: "#fff", fontSize: 16 }}>Submit</Text>}
+    </Button>
+  );
 
   useEffect(() => {
     if (
@@ -780,17 +801,22 @@ const CreateRide = () => {
             style={{
               width: "100%",
               padding: 10,
-              borderColor: "#E4E9F2",
-              borderWidth: 1,
-              borderTopColor: "#FF6A00",
+              borderTopColor: "#FF8833",
               borderTopWidth: 3,
+              borderLeftColor: "#EDF1F7",
+              borderLeftWidth: 2,
+              borderRightColor: "#EDF1F7",
+              borderRightWidth: 2,
+              borderBottomColor: "#EDF1F7",
+              borderBottomWidth: 2,
               borderRadius: 10,
-              backgroundColor: "#FFFFFF",
+              backgroundColor: "#fff",
               marginTop: 20,
             }}
           >
-            <Text style={{ fontSize: 16, color: "#222B45" }}>
-              • add disclaimer showing we are not collecting money from app
+            <Text style={{ fontSize: 16, color: "#222B45", padding: 7 }}>
+              Please note that Relay does not handle payment processing. Any
+              costs shared between users are arranged directly between them.
             </Text>
           </View>
 
@@ -811,12 +837,54 @@ const CreateRide = () => {
               width: "100%",
               backgroundColor: "#F7F9FC",
               borderColor: "#E4E9F2",
+              borderWidth: 1,
+              borderRadius: 15,
               height: 100,
-              paddingLeft: 10,
+              paddingLeft: 30,
+              paddingRight: 30,
             }}
             placeholder="Tell drivers more about any special arrangement, e.g. extra car seat, large instrument"
             multiline={true}
           ></TextInput>
+        </View>
+        <View
+          style={{
+            flex: 1,
+            justifyContent: "center",
+            alignItems: "center",
+            paddingHorizontal: 16,
+            backgroundColor: "#fff",
+          }}
+        >
+          <LinearGradient
+            colors={["#ff8833", "#e24a4a"]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            style={{
+              width: "100%",
+              borderRadius: 15,
+              overflow: "hidden",
+            }}
+          >
+            {renderToggleButton()}
+          </LinearGradient>
+          <Popover
+            backdropStyle={styles.backdrop}
+            visible={visible}
+            anchor={() => renderToggleButton()}
+            onBackdropPress={() => setVisible(false)}
+            style={{
+              marginBottom: 400,
+              maxWidth: 330,
+              height: 80,
+              padding: 20,
+              borderRadius: 10,
+            }}
+          >
+            <Layout style={styles.content}>
+              <Text>Your ride has been successfully created👍</Text>
+            </Layout>
+          </Popover>
         </View>
       </ScrollView>
     </KeyboardAvoidingView>
@@ -865,6 +933,18 @@ const styles = StyleSheet.create({
   predictedTimeText: {
     color: "#fff",
     fontSize: 16,
+  },
+  content: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 4,
+    paddingVertical: 8,
+  },
+  avatar: {
+    marginHorizontal: 4,
+  },
+  backdrop: {
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
   },
 });
 
