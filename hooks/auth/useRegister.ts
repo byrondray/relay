@@ -99,7 +99,7 @@ export const useAuthHooks = () => {
 
           const { data } = await createUser({
             variables: {
-              name: firebaseUser.displayName || "",
+              firstName: firebaseUser.displayName || "",
               email: firebaseUser.email,
               firebaseId,
               expoPushToken: expoPushToken || "",

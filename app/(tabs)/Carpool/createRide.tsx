@@ -45,8 +45,8 @@ interface Route {
 }
 
 const CreateRide = () => {
-  const [startingLatLng, setStartingLatLng] = useState({ lat: 0, lon: 0 });
-  const [endingLatLng, setEndingLatLng] = useState({ lat: 0, lon: 0 });
+  const [startingLatLng, setStartingLatLng] = useState<LatLng>({ lat: 0, lon: 0 });
+  const [endingLatLng, setEndingLatLng] = useState<LatLng>({ lat: 0, lon: 0 });
   const [startingAddress, setStartingAddress] = useState("");
   const [endingAddress, setEndingAddress] = useState("");
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
@@ -79,6 +79,7 @@ const CreateRide = () => {
   const groupId = useLocalSearchParams().groupId;
   const user = auth.currentUser;
   const userId = user?.uid;
+
 
   const seatsLeft =
     vehicles[selectedVehicleIndex.row]?.seats - selectedChildren.length || 0;
@@ -164,7 +165,7 @@ const CreateRide = () => {
     error,
   } = useQuery(GET_CARPOOLERS_WITHOUT_APPROVED_REQUESTS, {
     variables: {
-      groupId: "1821f993-8988-45ac-9d39-af01584fb11e",
+      groupId: "90575985-3912-4b15-b590-b5b2498b0e0f",
       date: dateAndTime,
       time,
       endingAddress,
@@ -172,10 +173,13 @@ const CreateRide = () => {
     skip: !canSubmit,
     onCompleted: (data) => {
       if (data?.getCarpoolersByGroupWithoutApprovedRequests) {
+        console.log("Data:", data.getCarpoolersByGroupWithoutApprovedRequests);
         const sortedRequests = sortRequestsByDistance(
           data.getCarpoolersByGroupWithoutApprovedRequests,
           startingLatLng
         );
+
+        console.log("Sorted Requests:", sortedRequests);
 
         setRequests(sortedRequests);
       }
@@ -228,8 +232,8 @@ const CreateRide = () => {
       }));
 
       getDirections(
-        startingAddress,
-        endingAddress,
+        startingLatLng,
+        endingLatLng,
         waypoints.slice(0, seatsAvailable[selectedSeatsIndex.row]),
         new Date()
       ).then(({ coordinates: newCoordinates, predictedTime }) => {
@@ -303,9 +307,11 @@ const CreateRide = () => {
           value={startingAddress}
           onChangeText={(text) => setStartingAddress(text)}
           onSuggestionSelect={(address) => {
+            console.log("Selected Address:", address);
             setStartingAddress(address);
           }}
           onLatLonSelect={(lat, lon) => {
+            console.log("Selected Lat/Lon:", lat, lon);
             setStartingLatLng({ lat, lon });
           }}
           placeholder="Enter Origin"
@@ -315,11 +321,14 @@ const CreateRide = () => {
         </Text>
         <ThemedAddressCompletionInput
           value={endingAddress}
-          onChangeText={(text) => setEndingAddress(text)}
+          onChangeText={(text) => {
+            setEndingAddress(text);
+            console.log("Selected Address:", text);
+          }}
           onSuggestionSelect={setEndingAddress}
           onLatLonSelect={(lat, lon) => {
             setEndingLatLng({ lat, lon });
-            console.log("Selected Lat/Lon:", lat, lon);
+            console.log("Selected ending Lat/Lon:", lat, lon);
           }}
           placeholder="Enter Destination"
         />

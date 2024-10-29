@@ -48,6 +48,14 @@ export default function TabLayout() {
       />
 
       <Tabs.Screen
+        name="test"
+        options={{
+          title: "test",
+          tabBarButton: () => null,
+        }}
+      />
+
+      <Tabs.Screen
         name="Carpool/createRide"
         options={{
           title: "Trips",
