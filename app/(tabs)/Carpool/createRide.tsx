@@ -45,7 +45,10 @@ interface Route {
 }
 
 const CreateRide = () => {
-  const [startingLatLng, setStartingLatLng] = useState<LatLng>({ lat: 0, lon: 0 });
+  const [startingLatLng, setStartingLatLng] = useState<LatLng>({
+    lat: 0,
+    lon: 0,
+  });
   const [endingLatLng, setEndingLatLng] = useState<LatLng>({ lat: 0, lon: 0 });
   const [startingAddress, setStartingAddress] = useState("");
   const [endingAddress, setEndingAddress] = useState("");
@@ -79,7 +82,6 @@ const CreateRide = () => {
   const groupId = useLocalSearchParams().groupId;
   const user = auth.currentUser;
   const userId = user?.uid;
-
 
   const seatsLeft =
     vehicles[selectedVehicleIndex.row]?.seats - selectedChildren.length || 0;
@@ -173,13 +175,10 @@ const CreateRide = () => {
     skip: !canSubmit,
     onCompleted: (data) => {
       if (data?.getCarpoolersByGroupWithoutApprovedRequests) {
-        console.log("Data:", data.getCarpoolersByGroupWithoutApprovedRequests);
         const sortedRequests = sortRequestsByDistance(
           data.getCarpoolersByGroupWithoutApprovedRequests,
           startingLatLng
         );
-
-        console.log("Sorted Requests:", sortedRequests);
 
         setRequests(sortedRequests);
       }
@@ -307,11 +306,9 @@ const CreateRide = () => {
           value={startingAddress}
           onChangeText={(text) => setStartingAddress(text)}
           onSuggestionSelect={(address) => {
-            console.log("Selected Address:", address);
             setStartingAddress(address);
           }}
           onLatLonSelect={(lat, lon) => {
-            console.log("Selected Lat/Lon:", lat, lon);
             setStartingLatLng({ lat, lon });
           }}
           placeholder="Enter Origin"
@@ -323,12 +320,10 @@ const CreateRide = () => {
           value={endingAddress}
           onChangeText={(text) => {
             setEndingAddress(text);
-            console.log("Selected Address:", text);
           }}
           onSuggestionSelect={setEndingAddress}
           onLatLonSelect={(lat, lon) => {
             setEndingLatLng({ lat, lon });
-            console.log("Selected ending Lat/Lon:", lat, lon);
           }}
           placeholder="Enter Destination"
         />
