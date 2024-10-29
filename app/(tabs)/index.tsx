@@ -132,7 +132,7 @@ function HomeScreen() {
       </ThemedView>
       <ThemedView>
         <TouchableOpacity
-          onPress={() => router.push("/(tabs)/Carpool/requestRide" as Href)}
+          onPress={() => router.push("/(tabs)/Carpool/postRequest" as Href)}
         >
           <View
             style={{

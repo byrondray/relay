@@ -161,7 +161,11 @@ const RequestRide = () => {
         <Text style={{ color: textColor, marginBottom: 10, marginTop: 15 }}>
           Seats Required
         </Text>
-        <ChildSelector />
+        <ChildSelector
+          onSelectedChildrenChange={(selectedChildren) =>
+            console.log(selectedChildren)
+          }
+        />
         <Text style={{ color: textColor, marginBottom: 5, marginTop: 20 }}>
           Description
         </Text>
