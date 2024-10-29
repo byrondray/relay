@@ -15,10 +15,6 @@ export const useDirections = () => {
   ) => {
     if (origin && destination) {
       try {
-        console.log("Origin:", origin);
-        console.log("Destination:", destination);
-        console.log("Waypoints:", waypoints);
-
         const originCoordinates = `${origin.lat},${origin.lon}`;
         const destinationCoordinates = `${destination.lat},${destination.lon}`;
         const waypointsEncoded = waypoints.length
@@ -50,7 +46,7 @@ export const useDirections = () => {
           const totalDuration = json.routes[0].legs.reduce(
             (acc: number, leg: any) => {
               const legDuration = leg.duration_in_traffic
-                ? leg.duration_in_traffic.value 
+                ? leg.duration_in_traffic.value
                 : leg.duration.value;
               return acc + legDuration;
             },
@@ -63,15 +59,10 @@ export const useDirections = () => {
             hours > 0 ? `${hours}h ` : ""
           }${minutes}min`;
 
-          console.log("Total Duration in Traffic:", durationString);
           setPredictedTime(durationString);
 
           return { coordinates: coords, predictedTime: durationString };
         } else {
-          console.log(
-            "Error",
-            `No route found: ${json.status}. ${json.error_message || ""}`
-          );
           return { coordinates: [], predictedTime: "" };
         }
       } catch (error) {

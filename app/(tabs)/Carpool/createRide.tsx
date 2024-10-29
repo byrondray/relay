@@ -146,7 +146,7 @@ const CreateRide = () => {
     error,
   } = useQuery(GET_CARPOOLERS_WITHOUT_APPROVED_REQUESTS, {
     variables: {
-      groupId: "90575985-3912-4b15-b590-b5b2498b0e0f",
+      groupId: "2d171e93-c9e8-43df-95ee-4a99a80d1aa2",
       date: dateAndTime,
       time,
       endingAddress,
