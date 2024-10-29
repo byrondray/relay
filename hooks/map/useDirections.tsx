@@ -47,14 +47,26 @@ export const useDirections = () => {
           const coords = decodePolyline(points);
           setCoordinates(coords);
 
-          const leg = json.routes[0].legs[0];
-          const durationInTraffic = leg.duration_in_traffic
-            ? leg.duration_in_traffic.text
-            : leg.duration.text;
-          console.log("Duration in Traffic:", durationInTraffic);
-          setPredictedTime(durationInTraffic);
+          const totalDuration = json.routes[0].legs.reduce(
+            (acc: number, leg: any) => {
+              const legDuration = leg.duration_in_traffic
+                ? leg.duration_in_traffic.value 
+                : leg.duration.value;
+              return acc + legDuration;
+            },
+            0
+          );
 
-          return { coordinates: coords, predictedTime: durationInTraffic };
+          const hours = Math.floor(totalDuration / 3600);
+          const minutes = Math.floor((totalDuration % 3600) / 60);
+          const durationString = `${
+            hours > 0 ? `${hours}h ` : ""
+          }${minutes}min`;
+
+          console.log("Total Duration in Traffic:", durationString);
+          setPredictedTime(durationString);
+
+          return { coordinates: coords, predictedTime: durationString };
         } else {
           console.log(
             "Error",
