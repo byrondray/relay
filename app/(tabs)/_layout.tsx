@@ -26,6 +26,18 @@ export default function TabLayout() {
           ),
         }}
       />
+      <Tabs.Screen
+        name="Carpool/postRequest"
+        options={{
+          title: "NewRide",
+          tabBarIcon: ({ color, focused }) => (
+            <TabBarIcon
+              name={focused ? "search" : "search-outline"}
+              color={color}
+            />
+          ),
+        }}
+      />
 
       <Tabs.Screen
         name="messages/[userId]"
