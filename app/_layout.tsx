@@ -25,6 +25,7 @@ import { auth } from "@/firebaseConfig";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { myTheme } from "./theme";
 import { useFonts } from "expo-font";
+import { LogBox } from "react-native";
 
 export default function RootLayout() {
   const [fontsLoaded] = useFonts({
@@ -35,6 +36,8 @@ export default function RootLayout() {
   const [expoPushToken, setExpoPushToken] = useState<string | null>(null);
   const user = auth.currentUser;
   const userId = user?.uid;
+
+  LogBox.ignoreAllLogs();
 
   useEffect(() => {
     if (!fontsLoaded) {
