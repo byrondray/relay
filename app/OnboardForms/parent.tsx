@@ -12,7 +12,7 @@ function ParentForm(): JSX.Element {
   const auth = getAuth();
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("6043421096");
   const [email, setEmail] = useState("");
   const [location, setLocation] = useState("");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -48,16 +48,16 @@ function ParentForm(): JSX.Element {
     }
 
     try {
-      await updateUser({
-        variables: {
-          id: auth.currentUser?.uid,
-          firstName,
-          lastName,
-          phoneNumber,
-          email,
-          city: location,
-        },
-      });
+    //   await updateUser({
+    //     variables: {
+    //       id: auth.currentUser?.uid,
+    //       firstName,
+    //       lastName,
+    //       phoneNumber,
+    //       email,
+    //       city: location,
+    //     },
+    //   });
       router.push("/OnboardForms/child");
     } catch (err) {
       setSubmissionError("Failed to update user info. Please try again.");
@@ -82,7 +82,8 @@ function ParentForm(): JSX.Element {
         <ParentFormLabel label="First Name" />
         <ParentFormInput
           placeholder="First Name"
-          value={firstName.slice(0, 1).toUpperCase() + firstName.slice(1)}
+          // value={firstName.slice(0, 1).toUpperCase() + firstName.slice(1)}
+          value={"Bill"}
           onChangeText={setFirstName}
         />
       </View>
@@ -91,7 +92,8 @@ function ParentForm(): JSX.Element {
         <ParentFormLabel label="Last Name" />
         <ParentFormInput
           placeholder="Last Name"
-          value={lastName.slice(0, 1).toUpperCase() + lastName.slice(1)}
+          // value={lastName.slice(0, 1).toUpperCase() + lastName.slice(1)}
+          value={"Holland"}
           onChangeText={setLastName}
         />
       </View>
@@ -100,7 +102,8 @@ function ParentForm(): JSX.Element {
         <ParentFormLabel label="Phone Number" />
         <ParentFormInput
           placeholder="Phone Number"
-          value={phoneNumber}
+          // value={phoneNumber}
+          value={"6043421096"}
           onChangeText={setPhoneNumber}
         />
       </View>
@@ -109,7 +112,8 @@ function ParentForm(): JSX.Element {
         <ParentFormLabel label="Email" />
         <ParentFormInput
           placeholder="Email"
-          value={email}
+          // value={email}
+          value={"billholland@gmail.com"}
           onChangeText={setEmail}
         />
       </View>
@@ -118,7 +122,8 @@ function ParentForm(): JSX.Element {
         <ParentFormLabel label="Location" />
         <ParentFormInput
           placeholder="City you live in"
-          value={location}
+          // value={location}
+          value={"Vancouver"}
           onChangeText={setLocation}
         />
       </View>

@@ -8,11 +8,12 @@ import {
 } from "react-native";
 import ParentFormLabel from "@/components/form/inputLabel";
 import ParentFormInput from "@/components/form/inputForm";
-import { router } from "expo-router";
+import { Href, router } from "expo-router";
 import { useQuery, useMutation } from "@apollo/client";
 import { CREATE_VEHICLE, GET_VEHICLE_FOR_USER } from "@/graphql/queries";
 import { getAuth } from "firebase/auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { ScrollView } from "react-native-gesture-handler";
 
 function VehicleForm(): JSX.Element {
   const auth = getAuth();
@@ -52,18 +53,18 @@ function VehicleForm(): JSX.Element {
   const handleSubmit = async () => {
     setLoading(true);
     try {
-      await createVehicle({
-        variables: {
-          make,
-          model,
-          year,
-          licensePlate,
-          color,
-          numberOfSeats
-        },
-      });
-      await AsyncStorage.setItem("hasOnboarded", "true");
-      router.push("/(tabs)/");
+      // await createVehicle({
+      //   variables: {
+      //     make,
+      //     model,
+      //     year,
+      //     licensePlate,
+      //     color,
+      //     numberOfSeats
+      //   },
+      // });
+      // await AsyncStorage.setItem("hasOnboarded", "true");
+      router.push("/(tabs)/temp" as Href);
     } catch (error) {
       setErrorMessage("Failed to submit vehicle info. Please try again.");
     } finally {
@@ -80,118 +81,126 @@ function VehicleForm(): JSX.Element {
   }
 
   return (
-    <View style={[styles.container, { backgroundColor: "#ffffff" }]}>
-      <Text style={styles.heading}>Vehicle Information</Text>
+    <ScrollView>
+      <View style={[styles.container, { backgroundColor: "#ffffff" }]}>
+        <Text style={styles.heading}>Vehicle Information</Text>
 
-      {errorMessage && <Text style={styles.errorText}>{errorMessage}</Text>}
+        {errorMessage && <Text style={styles.errorText}>{errorMessage}</Text>}
 
-      <View style={{ marginBottom: 20 }}>
-        <ParentFormLabel label="Make" />
-        <ParentFormInput
-          placeholder="Make"
-          value={make}
-          onChangeText={setMake}
-        />
-      </View>
+        <View style={{ marginBottom: 20 }}>
+          <ParentFormLabel label="Make" />
+          <ParentFormInput
+            placeholder="Make"
+            // value={make}
+            value={"Toyota"}
+            onChangeText={setMake}
+          />
+        </View>
 
-      <View style={{ marginBottom: 20 }}>
-        <ParentFormLabel label="Model" />
-        <ParentFormInput
-          placeholder="Model"
-          value={model}
-          onChangeText={setModel}
-        />
-      </View>
+        <View style={{ marginBottom: 20 }}>
+          <ParentFormLabel label="Model" />
+          <ParentFormInput
+            placeholder="Model"
+            // value={model}
+            value={"Camry"}
+            onChangeText={setModel}
+          />
+        </View>
 
-      <View style={{ marginBottom: 20 }}>
-        <ParentFormLabel label="Year" />
-        <ParentFormInput
-          placeholder="Year"
-          value={year}
-          onChangeText={setYear}
-        />
-      </View>
+        <View style={{ marginBottom: 20 }}>
+          <ParentFormLabel label="Year" />
+          <ParentFormInput
+            placeholder="Year"
+            // value={year}
+            value={"2020"}
+            onChangeText={setYear}
+          />
+        </View>
 
-      <View style={{ marginBottom: 20 }}>
-        <ParentFormLabel label="License Plate" />
-        <ParentFormInput
-          placeholder="License Plate"
-          value={licensePlate}
-          onChangeText={setLicensePlate}
-        />
-      </View>
+        <View style={{ marginBottom: 20 }}>
+          <ParentFormLabel label="License Plate" />
+          <ParentFormInput
+            placeholder="License Plate"
+            // value={licensePlate}
+            value={"KP875G"}
+            onChangeText={setLicensePlate}
+          />
+        </View>
 
-      <View style={{ marginBottom: 20 }}>
-        <ParentFormLabel label="Vehicle Color" />
-        <ParentFormInput
-          placeholder="Vehicle Color"
-          value={color}
-          onChangeText={setColor}
-        />
-      </View>
+        <View style={{ marginBottom: 20 }}>
+          <ParentFormLabel label="Vehicle Color" />
+          <ParentFormInput
+            placeholder="Vehicle Color"
+            // value={color}
+            value={"Red"}
+            onChangeText={setColor}
+          />
+        </View>
 
-      <View style={{ marginBottom: 20 }}>
-        <ParentFormLabel label="Vehicle Seats" />
-        <ParentFormInput
-          placeholder="Vehicle Seats"
-          value={color}
-          onChangeText={setNumberOfSeats}
-        />
-      </View>
+        <View style={{ marginBottom: 20 }}>
+          <ParentFormLabel label="Vehicle Seats" />
+          <ParentFormInput
+            placeholder="Vehicle Seats"
+            // value={color}
+            value={"4"}
+            onChangeText={setNumberOfSeats}
+          />
+        </View>
 
-      <View style={{ marginBottom: 20 }}>
-        <ParentFormLabel label="Insurance Details" />
-        <TouchableOpacity>
-          <View
-            style={{
-              backgroundColor: "#F7F9FC",
-              width: "100%",
-              borderRadius: 15,
-              height: 100,
-              justifyContent: "center",
-              alignItems: "center",
-              borderColor: "#E4E9F2",
-            }}
-          >
-            <Text style={{ color: "#8F9BB3" }}>
-              Press here to upload photo of insurance details
-            </Text>
-          </View>
-        </TouchableOpacity>
-      </View>
-
-      <View
-        style={{ flex: 1, flexDirection: "row", justifyContent: "flex-end" }}
-      >
-        <TouchableOpacity
-          style={{
-            backgroundColor: loading ? "#cccccc" : "#FF8833",
-            padding: 10,
-            borderRadius: 50,
-            marginRight: 10,
-            width: 100,
-            height: 50,
-          }}
-          onPress={handleSubmit}
-          disabled={loading}
-        >
-          {loading ? (
-            <ActivityIndicator size="small" color="#ffffff" />
-          ) : (
-            <Text
+        <View style={{ marginBottom: 20 }}>
+          <ParentFormLabel label="Insurance Details" />
+          <TouchableOpacity>
+            <View
               style={{
-                color: "white",
-                textAlign: "center",
-                fontSize: 20,
-                fontWeight: "semibold",
+                backgroundColor: "#F7F9FC",
+                width: "100%",
+                borderRadius: 15,
+                height: 100,
+                justifyContent: "center",
+                alignItems: "center",
+                borderColor: "#E4E9F2",
               }}
             >
-              Next
-            </Text>
-          )}
-        </TouchableOpacity>
+              <Text style={{ color: "#8F9BB3" }}>
+                Press here to upload photo of insurance details
+              </Text>
+            </View>
+          </TouchableOpacity>
+        </View>
+
+        <View
+          style={{ flex: 1, flexDirection: "row", justifyContent: "flex-end" }}
+        >
+          <TouchableOpacity
+            style={{
+              backgroundColor: loading ? "#cccccc" : "#FF8833",
+              padding: 10,
+              borderRadius: 50,
+              marginRight: 10,
+              width: 100,
+              height: 50,
+            }}
+            onPress={handleSubmit}
+            disabled={loading}
+          >
+            {loading ? (
+              <ActivityIndicator size="small" color="#ffffff" />
+            ) : (
+              <Text
+                style={{
+                  color: "white",
+                  textAlign: "center",
+                  fontSize: 20,
+                  fontWeight: "semibold",
+                }}
+              >
+                Next
+              </Text>
+            )}
+          </TouchableOpacity>
+        </View>
       </View>
-    </View>
+    </ScrollView>
   );
 }
 

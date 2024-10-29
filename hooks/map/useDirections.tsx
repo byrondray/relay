@@ -8,15 +8,19 @@ export const useDirections = () => {
   const [predictedTime, setPredictedTime] = useState("");
 
   const getDirections = async (
-    origin: string,
-    destination: string,
+    origin: { lat: number; lon: number },
+    destination: { lat: number; lon: number },
     waypoints: { latitude: number; longitude: number }[],
     departureTime: Date
   ) => {
     if (origin && destination) {
       try {
-        const originEncoded = encodeURIComponent(origin);
-        const destinationEncoded = encodeURIComponent(destination);
+        console.log("Origin:", origin);
+        console.log("Destination:", destination);
+        console.log("Waypoints:", waypoints);
+
+        const originCoordinates = `${origin.lat},${origin.lon}`;
+        const destinationCoordinates = `${destination.lat},${destination.lon}`;
         const waypointsEncoded = waypoints.length
           ? `&waypoints=optimize:true|${waypoints
               .map((wp) => `${wp.latitude},${wp.longitude}`)
@@ -27,8 +31,8 @@ export const useDirections = () => {
 
         const url =
           `https://maps.googleapis.com/maps/api/directions/json` +
-          `?origin=${originEncoded}` +
-          `&destination=${destinationEncoded}` +
+          `?origin=${originCoordinates}` +
+          `&destination=${destinationCoordinates}` +
           `${waypointsEncoded}` +
           `&departure_time=${departureTimestamp}` +
           `&traffic_model=pessimistic` +
@@ -47,9 +51,9 @@ export const useDirections = () => {
           const durationInTraffic = leg.duration_in_traffic
             ? leg.duration_in_traffic.text
             : leg.duration.text;
+          console.log("Duration in Traffic:", durationInTraffic);
           setPredictedTime(durationInTraffic);
 
-          // Return both coordinates and predicted time for further usage
           return { coordinates: coords, predictedTime: durationInTraffic };
         } else {
           console.log(

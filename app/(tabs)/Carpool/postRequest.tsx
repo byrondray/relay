@@ -22,8 +22,16 @@ import { TimePickerModal } from "react-native-paper-dates";
 import ChildSelector from "@/components/carpool/childSelector";
 
 const RequestRide = () => {
-  const [origin, setOrigin] = useState("");
   const [startingAddress, setStartingAddress] = useState("");
+  const [endingAddress, setEndingAddress] = useState("");
+  const [startingLatLon, setStartingLatLon] = useState<{
+    lat: number;
+    lon: number;
+  } | null>(null);
+  const [endingLatLon, setEndingLatLon] = useState<{
+    lat: number;
+    lon: number;
+  } | null>(null);
   const [selectedIndex, setSelectedIndex] = React.useState(0);
   const textColor = useThemeColor({}, "placeholder");
   const [range, setRange] = React.useState({});
@@ -78,12 +86,15 @@ const RequestRide = () => {
         </View>
 
         <ThemedAddressCompletionInput
-          value={origin}
+          value={startingAddress}
           onChangeText={setStartingAddress}
           onSuggestionSelect={(address) => {
+            setStartingAddress(address);
             console.log("Selected Address:", address);
           }}
-          onLatLonSelect={(lat, lon) => {}}
+          onLatLonSelect={(lat, lon) => {
+            setStartingLatLon({ lat, lon });
+          }}
           placeholder="Enter Origin"
           style={{ marginBottom: 20 }}
         />
@@ -92,12 +103,15 @@ const RequestRide = () => {
           <Text style={{ color: textColor, marginBottom: 5 }}>* Required</Text>
         </View>
         <ThemedAddressCompletionInput
-          value={origin}
-          onChangeText={setStartingAddress}
+          value={endingAddress}
+          onChangeText={setEndingAddress}
           onSuggestionSelect={(address) => {
+            setEndingAddress(address);
             console.log("Selected Address:", address);
           }}
-          onLatLonSelect={(lat, lon) => {}}
+          onLatLonSelect={(lat, lon) => {
+            setEndingLatLon({ lat, lon });
+          }}
           placeholder="Enter Origin"
           style={{ marginBottom: 20 }}
         />

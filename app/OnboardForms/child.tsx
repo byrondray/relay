@@ -89,13 +89,13 @@ function ChildForm(): JSX.Element {
     setLoading(true);
     try {
       for (let child of children) {
-        await createChild({
-          variables: {
-            firstName: child.firstName,
-            schoolName: child.school,
-            schoolEmailAddress: child.schoolEmail,
-          },
-        });
+        // await createChild({
+        //   variables: {
+        //     firstName: child.firstName,
+        //     schoolName: child.school,
+        //     schoolEmailAddress: child.schoolEmail,
+        //   },
+        // });
       }
       router.push("/OnboardForms/vehicle");
     } catch (error) {
@@ -120,7 +120,7 @@ function ChildForm(): JSX.Element {
             <ParentFormLabel label={`Child ${index + 1} - First Name`} />
             <ParentFormInput
               placeholder="First Name"
-              value={child.firstName}
+              value={"Jack"}
               onChangeText={(text) =>
                 handleInputChange(index, "firstName", text)
               }
@@ -130,7 +130,8 @@ function ChildForm(): JSX.Element {
             <ParentFormLabel label="Last Name" />
             <ParentFormInput
               placeholder="Last Name"
-              value={child.lastName}
+              // value={child.lastName}
+              value={"Holland"}
               onChangeText={(text) =>
                 handleInputChange(index, "lastName", text)
               }
@@ -140,7 +141,8 @@ function ChildForm(): JSX.Element {
             <ParentFormLabel label="School" />
             <ParentFormInput
               placeholder="School"
-              value={child.school}
+              // value={child.school}
+              value={"Edmonds Community School"}
               onChangeText={(text) => handleInputChange(index, "school", text)}
             />
             {schoolLoading && (
@@ -167,7 +169,8 @@ function ChildForm(): JSX.Element {
             <ParentFormLabel label="School Email Address" />
             <ParentFormInput
               placeholder="School Email"
-              value={child.schoolEmail}
+              // value={child.schoolEmail}
+              value={"jholland@sd41.com"}
               onChangeText={(text) =>
                 handleInputChange(index, "schoolEmail", text)
               }
