@@ -58,7 +58,7 @@ export const useLoginHooks = () => {
       finalStatus = status;
     }
     if (finalStatus !== "granted") {
-      Alert.alert("Failed to get push token for push notifications!");
+      console.log("Failed to get push token for push notifications!");
       return;
     }
     token = (

@@ -99,7 +99,7 @@ export default function MessageScreen() {
             JSON.stringify([...messages, { text, senderId: messageSenderId }])
           );
         } else {
-          Alert.alert("New Message", `Message from another user: ${text}`);
+          console.log("New Message", `Message from another user: ${text}`);
         }
       });
 

@@ -83,7 +83,7 @@ export const useFetchUser = (userId: string) => {
     fetchPolicy: "network-only",
     onError: (error) => {
       console.error("Failed to fetch user:", error);
-      Alert.alert("Error", "Failed to load user information.");
+      console.log("Error", "Failed to load user information.");
     },
   });
 
