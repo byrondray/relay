@@ -1,5 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { Button, StyleSheet, ActivityIndicator } from "react-native";
+import {
+  Button,
+  StyleSheet,
+  ActivityIndicator,
+  Text,
+  View,
+  Image,
+  Touchable,
+} from "react-native";
 import withAuthCheck from "../../components/WithAuthCheck";
 import MapView, { Marker, Polyline } from "react-native-maps";
 import { ThemedAddressCompletionInput } from "@/components/ThemedAddressCompletionInput";
@@ -15,31 +23,10 @@ import { HAS_USER_ON_BOARDED } from "@/graphql/queries";
 import { router, Href } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { GET_CHILDREN_FOR_USER } from "@/graphql/queries";
+import { TouchableOpacity } from "react-native-gesture-handler";
+import { processFontFamily } from "expo-font";
 
 function HomeScreen() {
-  const [origin, setOrigin] = useState("");
-  const [destination, setDestination] = useState("");
-  const [waypoints, setWaypoints] = useState("");
-  const [departureTime, setDepartureTime] = useState(new Date());
-  const { logout, loading: logoutLoading } = useLogout();
-  const [startingLatLng, setStartingLatLng] = useState({ lat: 0, lon: 0 });
-  const [endingLatLng, setEndingLatLng] = useState({ lat: 0, lon: 0 });
-  const [waypointsLatLng, setLatLng] = useState({ lat: 0, lon: 0 });
-  const [children, setChildren] = useState([]);
-
-  const { data: childrenData, loading: childrenLoading } = useQuery(
-    GET_CHILDREN_FOR_USER,
-    {
-      onCompleted: (data) => {
-        setChildren(data.getChildrenForUser);
-      },
-    }
-  );
-
-  const { userLocation, mapRegion, communityCentersData, setMapRegion } =
-    useLocationAndCommunityCenters();
-  const { coordinates, predictedTime, getDirections } = useDirections();
-
   const [hasOnboarded, setHasOnboarded] = useState<boolean | null>(null);
 
   const {
@@ -95,7 +82,139 @@ function HomeScreen() {
 
   return (
     <ThemedView style={styles.container}>
-      <ThemedAddressCompletionInput
+      <Text style={[styles.heading, { fontFamily: "Comfortaa" }]}>
+        New Ride
+      </Text>
+      <ThemedView style={{ marginBottom: 20 }}>
+        <TouchableOpacity
+          onPress={() => router.push("/(tabs)/Carpool/createRide")}
+        >
+          <View
+            style={{
+              flexDirection: "row",
+              backgroundColor: "#F7F9FC",
+              borderRadius: 20,
+              paddingVertical: 20,
+              paddingHorizontal: 30,
+              borderColor: "#E4E9F2",
+              borderWidth: 1,
+              height: 100,
+              alignItems: "center",
+              justifyContent: "space-between",
+              width: "100%",
+            }}
+          >
+            <View style={{ flexDirection: "column", justifyContent: "center" }}>
+              <Text
+                style={{
+                  color: "black",
+                  fontSize: 20,
+                  fontWeight: "semibold",
+                  marginBottom: 3,
+                }}
+              >
+                I'm a driver
+              </Text>
+              <Text style={{ color: "#8F9BB3", fontSize: 16 }}>
+                I'm available to carpool other kids.
+              </Text>
+            </View>
+            <Image
+              source={require("@/assets/images/arrow-circle-right.png")}
+              style={{
+                width: 40,
+                height: 40,
+                tintColor: "#222B45",
+              }}
+            />
+          </View>
+        </TouchableOpacity>
+      </ThemedView>
+      <ThemedView>
+        <TouchableOpacity
+          onPress={() => router.push("/(tabs)/Carpool/requestRide" as Href)}
+        >
+          <View
+            style={{
+              flexDirection: "row",
+              backgroundColor: "#F7F9FC",
+              borderRadius: 20,
+              paddingVertical: 20,
+              paddingHorizontal: 30,
+              borderColor: "#E4E9F2",
+              borderWidth: 1,
+              height: 100,
+              alignItems: "center",
+              justifyContent: "space-between",
+              width: "100%",
+            }}
+          >
+            <View style={{ flexDirection: "column", justifyContent: "center" }}>
+              <Text
+                style={{
+                  color: "black",
+                  fontSize: 20,
+                  fontWeight: "semibold",
+                  marginBottom: 3,
+                }}
+              >
+                Looking for a ride for my kid
+              </Text>
+              <Text style={{ color: "#8F9BB3", fontSize: 16 }}>
+                Notify me when a ride matches
+              </Text>
+            </View>
+            <Image
+              source={require("@/assets/images/arrow-circle-right.png")}
+              style={{
+                width: 40,
+                height: 40,
+                tintColor: "#222B45",
+              }}
+            />
+          </View>
+        </TouchableOpacity>
+      </ThemedView>
+    </ThemedView>
+  );
+}
+
+export default withAuthCheck(HomeScreen);
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 16,
+    marginTop: 0,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  errorContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  predictedTimeContainer: {
+    padding: 8,
+    marginVertical: 8,
+  },
+  map: {
+    flex: 1,
+    width: "100%",
+    height: 400,
+  },
+  heading: {
+    fontSize: 32,
+    fontWeight: "bold",
+    marginBottom: 20,
+  },
+});
+
+{
+  /*   <ThemedAddressCompletionInput
         value={origin}
         onChangeText={setOrigin}
         onSuggestionSelect={(address) => {
@@ -156,7 +275,6 @@ function HomeScreen() {
         region={mapRegion}
         onRegionChangeComplete={(region) => setMapRegion(region)}
       >
-        {/* Community Center Markers */}
         {communityCentersData?.getCommunityCenters?.map(
           (center: CommunityCenter) => (
             <Marker
@@ -172,7 +290,6 @@ function HomeScreen() {
           )
         )}
 
-        {/* User Location Marker */}
         <Marker
           coordinate={{
             latitude: userLocation.latitude,
@@ -182,7 +299,6 @@ function HomeScreen() {
           pinColor="blue"
         />
 
-        {/* Render Polyline for Directions */}
         {coordinates.length > 0 && (
           <Polyline
             coordinates={coordinates}
@@ -190,36 +306,7 @@ function HomeScreen() {
             strokeWidth={4}
           />
         )}
-      </MapView>
-    </ThemedView>
-  );
+
+        
+      </MapView> */
 }
-
-export default withAuthCheck(HomeScreen);
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 16,
-    marginTop: 0,
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  errorContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  predictedTimeContainer: {
-    padding: 8,
-    marginVertical: 8,
-  },
-  map: {
-    flex: 1,
-    width: "100%",
-    height: 400,
-  },
-});

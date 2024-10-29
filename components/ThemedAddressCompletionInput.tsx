@@ -5,6 +5,7 @@ import {
   FlatList,
   TouchableOpacity,
   Text,
+  View,
 } from "react-native";
 import { TextInputProps } from "react-native";
 import { useThemeColor } from "@/hooks/useThemeColor";
@@ -27,6 +28,7 @@ export function ThemedAddressCompletionInput({
   const [suggestions, setSuggestions] = useState<
     { place_id: string; description: string }[]
   >([]);
+  const [isSuggestionSelected, setIsSuggestionSelected] = useState(false);
   const textColor = useThemeColor({}, "placeholder");
 
   const fetchAddressSuggestions = useCallback(
@@ -87,28 +89,31 @@ export function ThemedAddressCompletionInput({
         style={[styles.input, { color: textColor, paddingLeft: 15 }, style]}
         value={value}
         onChangeText={(text) => {
-          onChangeText(text);
-          fetchAddressSuggestions(text);
+          if (!isSuggestionSelected) {
+            onChangeText(text);
+            fetchAddressSuggestions(text);
+          } else {
+            setIsSuggestionSelected(false);
+          }
         }}
         {...restProps}
       />
       {suggestions.length > 0 && (
-        <FlatList
-          data={suggestions}
-          keyExtractor={(item) => item.place_id}
-          renderItem={({ item }) => (
+        <View>
+          {suggestions.map((item) => (
             <TouchableOpacity
+              key={item.place_id}
               onPress={() => {
+                setIsSuggestionSelected(true);
                 onSuggestionSelect(item.description);
                 fetchLatLonFromPlaceId(item.place_id);
-                onChangeText(item.description);
                 setSuggestions([]);
               }}
             >
               <Text style={styles.suggestionText}>{item.description}</Text>
             </TouchableOpacity>
-          )}
-        />
+          ))}
+        </View>
       )}
     </ThemedView>
   );

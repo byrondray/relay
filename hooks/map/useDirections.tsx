@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { Alert } from "react-native";
 import { decodePolyline } from "@/components/MapUtils";
 
 export const useDirections = () => {
@@ -11,15 +10,17 @@ export const useDirections = () => {
   const getDirections = async (
     origin: string,
     destination: string,
-    waypoints: string,
+    waypoints: { latitude: number; longitude: number }[],
     departureTime: Date
   ) => {
     if (origin && destination) {
       try {
         const originEncoded = encodeURIComponent(origin);
         const destinationEncoded = encodeURIComponent(destination);
-        const waypointsEncoded = waypoints
-          ? `&waypoints=${encodeURIComponent(waypoints)}`
+        const waypointsEncoded = waypoints.length
+          ? `&waypoints=optimize:true|${waypoints
+              .map((wp) => `${wp.latitude},${wp.longitude}`)
+              .join("|")}`
           : "";
 
         const departureTimestamp = Math.floor(departureTime.getTime() / 1000);
@@ -30,7 +31,7 @@ export const useDirections = () => {
           `&destination=${destinationEncoded}` +
           `${waypointsEncoded}` +
           `&departure_time=${departureTimestamp}` +
-          `&traffic_model=best_guess` +
+          `&traffic_model=pessimistic` +
           `&mode=driving` +
           `&key=${process.env.EXPO_PUBLIC_GOOGLE_MAPS_API}`;
 
@@ -43,22 +44,34 @@ export const useDirections = () => {
           setCoordinates(coords);
 
           const leg = json.routes[0].legs[0];
-          const durationInTraffic = leg.duration_in_traffic.text;
+          const durationInTraffic = leg.duration_in_traffic
+            ? leg.duration_in_traffic.text
+            : leg.duration.text;
           setPredictedTime(durationInTraffic);
+
+          // Return both coordinates and predicted time for further usage
+          return { coordinates: coords, predictedTime: durationInTraffic };
         } else {
-          Alert.alert(
+          console.log(
             "Error",
             `No route found: ${json.status}. ${json.error_message || ""}`
           );
+          return { coordinates: [], predictedTime: "" };
         }
       } catch (error) {
-        Alert.alert("Error", "An error occurred while fetching directions.");
+        console.log(
+          "Error",
+          "An error occurred while fetching directions.",
+          error
+        );
+        return { coordinates: [], predictedTime: "" };
       }
     } else {
-      Alert.alert(
+      console.log(
         "Input Required",
         "Please enter both origin and destination."
       );
+      return { coordinates: [], predictedTime: "" };
     }
   };
 

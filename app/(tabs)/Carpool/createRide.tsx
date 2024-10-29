@@ -7,10 +7,11 @@ import {
   Image,
   ScrollView,
   TouchableOpacity,
+  StyleSheet,
 } from "react-native";
 import { ThemedAddressCompletionInput } from "@/components/ThemedAddressCompletionInput";
 import { useThemeColor } from "@/hooks/useThemeColor";
-import MapView from "react-native-maps";
+import MapView, { Callout, Marker } from "react-native-maps";
 import { LinearGradient } from "expo-linear-gradient";
 import {
   CheckBox,
@@ -29,11 +30,18 @@ import {
 import { useQuery } from "@apollo/client";
 import { auth } from "@/firebaseConfig";
 import { useLocalSearchParams } from "expo-router";
-import { Request } from "@/graphql/generated";
+import { Request, Vehicle } from "@/graphql/generated";
+import { haversineDistance } from "@/utils/distance";
+import { useDirections } from "@/hooks/map/useDirections";
+import { Polyline } from "react-native-maps";
+import { areCoordinatesEqual } from "@/utils/equalCoorordinates";
+
+interface Route {
+  coordinates: { latitude: number; longitude: number }[];
+  predictedTime?: string;
+}
 
 const CreateRide = () => {
-  const [origin, setOrigin] = useState("");
-  const [destination, setDestination] = useState("");
   const [startingLatLng, setStartingLatLng] = useState({ lat: 0, lon: 0 });
   const [endingLatLng, setEndingLatLng] = useState({ lat: 0, lon: 0 });
   const [startingAddress, setStartingAddress] = useState("");
@@ -47,17 +55,87 @@ const CreateRide = () => {
   const [selectedSeatsIndex, setSelectedSeatsIndex] = useState(
     new IndexPath(0)
   );
+  const [activeRoute, setActiveRoute] = useState<{
+    coordinates: any[];
+    predictedTime?: string;
+  }>({
+    coordinates: [],
+  });
+  const [previousRoutes, setPreviousRoutes] = useState<
+    { coordinates: any[]; predictedTime?: string }[]
+  >([]);
+  const [canSubmit, setCanSubmit] = useState(false);
   const [extraCarseatChecked, setExtraCarseatChecked] = useState(false);
   const [winterTiresChecked, setWinterTiresChecked] = useState(false);
   const [showTimePicker, setShowTimePicker] = useState(false);
   const [time, setTime] = useState("");
   const [requests, setRequests] = useState<Request[]>([]);
-  const [vehicles, setVehicles] = useState<string[]>([]);
+  const [vehicles, setVehicles] = useState<Vehicle[]>([]);
+  const [selectedChildren, setSelectedChildren] = useState<string[]>([]);
   const groupId = useLocalSearchParams().groupId;
   const user = auth.currentUser;
   const userId = user?.uid;
 
-  console.log(vehicles, "vehicles");
+  const seatsLeft =
+    vehicles[selectedVehicleIndex.row]?.seats - selectedChildren.length || 0;
+
+  const seatsAvailable = Array.from(
+    { length: seatsLeft },
+    (_, i) => seatsLeft - i
+  );
+
+  interface LatLng {
+    lat: number;
+    lon: number;
+  }
+
+  interface CarpoolerRequest {
+    id: string;
+    startingLat: number;
+    startingLon: number;
+    startAddress: string;
+  }
+
+  interface Route {
+    coordinates: { latitude: number; longitude: number }[];
+  }
+
+  const isActiveRoute = (route: Route): boolean => {
+    return (
+      activeRoute &&
+      areCoordinatesEqual(route.coordinates, activeRoute.coordinates)
+    );
+  };
+
+  useEffect(() => {
+    if (
+      startingAddress &&
+      endingAddress &&
+      dateAndTime !== "Select Date & Time" &&
+      time
+    ) {
+      setCanSubmit(true);
+    } else {
+      setCanSubmit(false);
+    }
+  }, [startingAddress, endingAddress, dateAndTime, time]);
+
+  const sortRequestsByDistance = (
+    requests: Request[],
+    startingLatLng: LatLng
+  ) => {
+    return [...requests].sort((a: Request, b: Request) => {
+      const distanceA = haversineDistance(startingLatLng, {
+        lat: a.startingLat,
+        lon: a.startingLon,
+      });
+      const distanceB = haversineDistance(startingLatLng, {
+        lat: b.startingLat,
+        lon: b.startingLon,
+      });
+      return distanceA - distanceB;
+    });
+  };
 
   const {
     data: getCarpoolersWithoutApprovedRequests,
@@ -65,18 +143,30 @@ const CreateRide = () => {
     error,
   } = useQuery(GET_CARPOOLERS_WITHOUT_APPROVED_REQUESTS, {
     variables: {
-      groupId,
-      dateAndTime,
+      groupId: "1821f993-8988-45ac-9d39-af01584fb11e",
+      date: dateAndTime,
       time,
       endingAddress,
     },
-    skip: !groupId || !dateAndTime || !time || !endingAddress,
+    skip: !canSubmit,
     onCompleted: (data) => {
       if (data?.getCarpoolersByGroupWithoutApprovedRequests) {
-        setRequests(data.getCarpoolersByGroupWithoutApprovedRequests);
+        const sortedRequests = sortRequestsByDistance(
+          data.getCarpoolersByGroupWithoutApprovedRequests,
+          startingLatLng
+        );
+
+        setRequests(sortedRequests);
       }
     },
   });
+
+  useEffect(() => {
+    if (requests.length > 0) {
+      const sortedRequests = sortRequestsByDistance(requests, startingLatLng);
+      setRequests(sortedRequests);
+    }
+  }, [startingLatLng]);
 
   const { data: getVehicleForUser } = useQuery(GET_VEHICLE_FOR_USER, {
     variables: {
@@ -84,48 +174,17 @@ const CreateRide = () => {
     },
     skip: !userId,
     onCompleted: (data) => {
-      if (data?.getVehicleForUser) {
+      if (data.getVehicleForUser) {
         setVehicles(data.getVehicleForUser);
       }
     },
   });
-
-  useEffect(() => {
-    if (getCarpoolersWithoutApprovedRequests && !loading && !error) {
-      setRequests(
-        getCarpoolersWithoutApprovedRequests.getCarpoolersByGroupWithoutApprovedRequests
-      );
-    }
-  }, [getCarpoolersWithoutApprovedRequests, loading, error]);
-
-  useEffect(() => {
-    if (getCarpoolersWithoutApprovedRequests && !loading && !error) {
-      setRequests(
-        getCarpoolersWithoutApprovedRequests.getCarpoolersByGroupWithoutApprovedRequests
-      );
-    }
-  }, [getCarpoolersWithoutApprovedRequests, loading, error]);
-
-  const seatsAvailable = [
-    "1 seat available",
-    "2 seats available",
-    "3 seats available",
-  ];
 
   const handleDateSelect = (nextDate: Date) => {
     setSelectedDate(nextDate);
     setDateAndTime(nextDate.toLocaleString());
     setShowDatePicker(false);
   };
-
-  interface TimeSelectEvent {
-    type: string;
-    nativeEvent: any;
-  }
-
-  interface TimeSelectHandler {
-    (event: TimeSelectEvent, selectedTime: Date | undefined): void;
-  }
 
   const handleTimeConfirm = ({
     hours,
@@ -136,6 +195,64 @@ const CreateRide = () => {
   }) => {
     setTime(`${hours}:${minutes}`);
     setShowTimePicker(false);
+  };
+
+  const { coordinates, getDirections, predictedTime } = useDirections();
+
+  useEffect(() => {
+    if (startingAddress && endingAddress && requests.length > 0) {
+      const waypoints = requests.map((request) => ({
+        latitude: request.startingLat,
+        longitude: request.startingLon,
+      }));
+
+      getDirections(
+        startingAddress,
+        endingAddress,
+        waypoints.slice(0, seatsAvailable[selectedSeatsIndex.row]),
+        new Date()
+      ).then(({ coordinates: newCoordinates, predictedTime }) => {
+        if (newCoordinates.length > 0) {
+          if (activeRoute.coordinates.length > 0) {
+            const isDuplicate = previousRoutes.some((route) =>
+              areCoordinatesEqual(route.coordinates, activeRoute.coordinates)
+            );
+
+            if (!isDuplicate) {
+              setPreviousRoutes((prevRoutes) => [
+                ...prevRoutes,
+                {
+                  coordinates: activeRoute.coordinates,
+                  predictedTime: activeRoute.predictedTime,
+                },
+              ]);
+            }
+          }
+
+          setActiveRoute({ coordinates: newCoordinates, predictedTime });
+        }
+      });
+    }
+  }, [
+    startingAddress,
+    endingAddress,
+    requests,
+    seatsLeft,
+    selectedChildren,
+    selectedSeatsIndex,
+  ]);
+
+  interface Coordinate {
+    latitude: number;
+    longitude: number;
+  }
+
+  const calculateMidpoint = (coordinates: Coordinate[]): Coordinate | null => {
+    const totalPoints = coordinates.length;
+    if (totalPoints === 0) return null;
+
+    const midpointIndex = Math.floor(totalPoints / 2);
+    return coordinates[midpointIndex];
   };
 
   const textColor = useThemeColor({}, "placeholder");
@@ -162,15 +279,13 @@ const CreateRide = () => {
         </Text>
         <Text style={{ color: textColor, marginBottom: 5 }}>From</Text>
         <ThemedAddressCompletionInput
-          value={origin}
-          onChangeText={setStartingAddress}
+          value={startingAddress}
+          onChangeText={(text) => setStartingAddress(text)}
           onSuggestionSelect={(address) => {
             setStartingAddress(address);
-            console.log("Selected Address:", address);
           }}
           onLatLonSelect={(lat, lon) => {
             setStartingLatLng({ lat, lon });
-            console.log("Selected Lat/Lon:", lat, lon);
           }}
           placeholder="Enter Origin"
         />
@@ -178,8 +293,8 @@ const CreateRide = () => {
           To
         </Text>
         <ThemedAddressCompletionInput
-          value={destination}
-          onChangeText={setEndingAddress}
+          value={endingAddress}
+          onChangeText={(text) => setEndingAddress(text)}
           onSuggestionSelect={setEndingAddress}
           onLatLonSelect={(lat, lon) => {
             setEndingLatLng({ lat, lon });
@@ -250,7 +365,7 @@ const CreateRide = () => {
         <Text style={{ color: textColor, marginBottom: 10, marginTop: 15 }}>
           Seats Required
         </Text>
-        <ChildSelector />
+        <ChildSelector onSelectedChildrenChange={setSelectedChildren} />
         <View
           style={{
             width: "100%",
@@ -307,15 +422,129 @@ const CreateRide = () => {
             passenger(s) NOW!!
           </Text>
         </View>
-        <MapView
-          style={{ width: "100%", height: 300, marginTop: 20 }}
-          initialRegion={{
-            latitude: 37.78825,
-            longitude: -122.4324,
-            latitudeDelta: 0.0922,
-            longitudeDelta: 0.0421,
-          }}
-        />
+        <View style={{ flex: 1 }}>
+          {/* Container for the Map and Predicted Time Box */}
+          <MapView
+            style={{ width: "100%", height: 300, marginTop: 20 }}
+            initialRegion={{
+              latitude: 49.2827,
+              longitude: -123.1207,
+              latitudeDelta: 0.1,
+              longitudeDelta: 0.1,
+            }}
+          >
+            {requests.map((request, index) => (
+              <Marker
+                key={request.id}
+                coordinate={{
+                  latitude: request.startingLat,
+                  longitude: request.startingLon,
+                }}
+                title={request.startAddress}
+                anchor={{ x: 0.5, y: 0.5 }}
+              >
+                <View style={styles.markerContainer}>
+                  <Image
+                    source={require("../../../assets/images/pin-icon.png")}
+                    style={styles.markerImage}
+                  />
+                  <View style={styles.letterContainer}>
+                    <Text style={styles.letterText}>{index + 1}</Text>
+                  </View>
+                </View>
+              </Marker>
+            ))}
+
+            {startingLatLng.lat !== 0 && (
+              <Marker
+                coordinate={{
+                  latitude: startingLatLng.lat,
+                  longitude: startingLatLng.lon,
+                }}
+                title={startingAddress}
+                anchor={{ x: 0.5, y: 0.5 }}
+              >
+                <View style={styles.markerContainer}>
+                  <Image
+                    source={require("../../../assets/images/starting-pin.png")}
+                    style={styles.markerImage}
+                  />
+                </View>
+              </Marker>
+            )}
+
+            {endingLatLng.lat !== 0 && (
+              <Marker
+                coordinate={{
+                  latitude: endingLatLng.lat,
+                  longitude: endingLatLng.lon,
+                }}
+                title={endingAddress}
+                anchor={{ x: 0.5, y: 0.5 }}
+              >
+                <View style={styles.markerContainer}>
+                  <Image
+                    source={require("../../../assets/images/ending-pin.png")}
+                    style={styles.markerImage}
+                  />
+                </View>
+              </Marker>
+            )}
+
+            {previousRoutes.map((route, index) => (
+              <Polyline
+                key={`previous-route-${index}`}
+                coordinates={route.coordinates}
+                strokeColor={isActiveRoute(route) ? "#FF6A00" : "#ff9950"}
+                strokeWidth={isActiveRoute(route) ? 5 : 4}
+                lineDashPattern={isActiveRoute(route) ? [] : [5, 5]}
+                tappable={true}
+                onPress={() => {
+                  if (activeRoute.coordinates.length > 0) {
+                    const isDuplicate = previousRoutes.some((r) =>
+                      areCoordinatesEqual(
+                        r.coordinates,
+                        activeRoute.coordinates
+                      )
+                    );
+                    if (!isDuplicate) {
+                      setPreviousRoutes((prevRoutes) => [
+                        ...prevRoutes,
+                        { coordinates: activeRoute.coordinates },
+                      ]);
+                    }
+                  }
+
+                  setActiveRoute({
+                    coordinates: route.coordinates,
+                    predictedTime: route.predictedTime,
+                  });
+                }}
+              />
+            ))}
+
+            {coordinates.length > 0 && (
+              <Polyline
+                coordinates={coordinates.map((coord) => ({
+                  latitude: coord.latitude,
+                  longitude: coord.longitude,
+                }))}
+                fillColor="#FFC195"
+                strokeColor="#FF6A00"
+                strokeWidth={5}
+              />
+            )}
+          </MapView>
+
+          {activeRoute.predictedTime && (
+            <View style={styles.predictedTimeBox}>
+              <Text style={styles.predictedTimeText}>
+                {`Estimated Time: ${activeRoute.predictedTime}`}
+              </Text>
+            </View>
+          )}
+        </View>
+
         <Text
           style={{
             color: "#8F9BB3",
@@ -460,11 +689,16 @@ const CreateRide = () => {
                     setSelectedVehicleIndex(index);
                   }
                 }}
-                value={vehicles[selectedVehicleIndex.row]}
+                value={
+                  vehicles[selectedVehicleIndex.row]?.make || "Select Vehicle"
+                }
                 placeholder="Select Vehicle"
               >
                 {vehicles.map((vehicle, index) => (
-                  <SelectItem title={vehicle} key={index} />
+                  <SelectItem
+                    title={vehicle.make + " " + vehicle.model}
+                    key={index}
+                  />
                 ))}
               </Select>
             </View>
@@ -493,7 +727,7 @@ const CreateRide = () => {
                 placeholder="Select Seats Available"
               >
                 {seatsAvailable.map((seat, index) => (
-                  <SelectItem title={seat} key={index} />
+                  <SelectItem title={`${seat}`} key={index} />
                 ))}
               </Select>
             </View>
@@ -542,10 +776,10 @@ const CreateRide = () => {
             style={{
               width: "100%",
               padding: 10,
-              borderTopColor: "#FF6A00",
-              borderTopWidth: 3,
               borderColor: "#E4E9F2",
               borderWidth: 1,
+              borderTopColor: "#FF6A00",
+              borderTopWidth: 3,
               borderRadius: 10,
               backgroundColor: "#FFFFFF",
               marginTop: 20,
@@ -555,6 +789,7 @@ const CreateRide = () => {
               • add disclaimer showing we are not collecting money from app
             </Text>
           </View>
+
           <Text
             style={{
               color: "#FF6A00",
@@ -583,5 +818,50 @@ const CreateRide = () => {
     </KeyboardAvoidingView>
   );
 };
+
+const styles = StyleSheet.create({
+  markerContainer: {
+    alignItems: "center",
+    justifyContent: "center",
+    width: 70,
+    height: 110,
+    backgroundColor: "transparent",
+  },
+  markerImage: {
+    width: 40,
+    height: 60,
+    resizeMode: "contain",
+  },
+  letterContainer: {
+    position: "absolute",
+    top: 5,
+    backgroundColor: "#000",
+    borderRadius: 15,
+    width: 30,
+    height: 30,
+    justifyContent: "center",
+    alignItems: "center",
+    zIndex: 2,
+  },
+  letterText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  predictedTimeBox: {
+    position: "absolute",
+    bottom: 20,
+    left: 20,
+    right: 20,
+    padding: 10,
+    backgroundColor: "rgba(0, 0, 0, 0.6)",
+    borderRadius: 10,
+    alignItems: "center",
+  },
+  predictedTimeText: {
+    color: "#fff",
+    fontSize: 16,
+  },
+});
 
 export default CreateRide;

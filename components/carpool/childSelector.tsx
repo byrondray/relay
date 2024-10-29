@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View } from "react-native";
 import ChildImage from "./childImage";
 import { useQuery } from "@apollo/client";
@@ -7,19 +7,35 @@ import { Spinner } from "@ui-kitten/components";
 import { Image } from "react-native";
 import { Child } from "@/graphql/generated";
 
-const ChildSelector = () => {
+const ChildSelector = ({
+  onSelectedChildrenChange,
+}: {
+  onSelectedChildrenChange: (childrenIds: string[]) => void;
+}) => {
   const [selectedChildren, setSelectedChildren] = useState<string[]>([]);
+  const [childrenWithImages, setChildrenWithImages] = useState<Child[]>([]);
 
   const { data: childrenData, loading: childrenLoading } = useQuery(
     GET_CHILDREN_FOR_USER,
     {
       onCompleted: (data) => {
-        setSelectedChildren(
-          data.getChildrenForUser.map((child: Child) => child.id)
+        const filteredChildren = data.getChildrenForUser.filter(
+          (child: Child) => child.imageUrl !== null
         );
+        setChildrenWithImages(filteredChildren);
+        const initialSelected = filteredChildren.map(
+          (child: Child) => child.id
+        );
+        setSelectedChildren(initialSelected);
       },
     }
   );
+
+  useEffect(() => {
+    if (selectedChildren.length > 0) {
+      onSelectedChildrenChange(selectedChildren);
+    }
+  }, [selectedChildren, onSelectedChildrenChange]);
 
   if (childrenLoading)
     return (
@@ -29,28 +45,27 @@ const ChildSelector = () => {
     );
 
   const toggleSelection = (childId: string) => {
-    setSelectedChildren((prevSelected) =>
-      prevSelected.includes(childId)
+    setSelectedChildren((prevSelected) => {
+      const updatedSelection = prevSelected.includes(childId)
         ? prevSelected.filter((id) => id !== childId)
-        : [...prevSelected, childId]
-    );
+        : [...prevSelected, childId];
+
+      return updatedSelection;
+    });
   };
 
   return (
     <View
       style={{ flexDirection: "row", justifyContent: "flex-start", gap: 10 }}
     >
-      {childrenData?.getChildrenForUser.slice(0, 2).map(
-        // change this line back later
-        (child: Child) => (
-          <ChildImage
-            key={child.id}
-            imageUrl={child.imageUrl || ""}
-            isSelected={selectedChildren.includes(child.id)}
-            onPress={() => toggleSelection(child.id)}
-          />
-        )
-      )}
+      {childrenWithImages.map((child: Child) => (
+        <ChildImage
+          key={child.id}
+          imageUrl={child.imageUrl || ""}
+          isSelected={selectedChildren.includes(child.id)}
+          onPress={() => toggleSelection(child.id)}
+        />
+      ))}
       <View
         style={{
           width: 90,

@@ -6,12 +6,13 @@ import {
   DefaultTheme,
   ThemeProvider,
 } from "@react-navigation/native";
-import { router, Stack } from "expo-router";
+import { router, SplashScreen, Stack } from "expo-router";
 import {
   StyleSheet,
   useColorScheme,
   View,
   ActivityIndicator,
+  Text,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ApplicationProvider } from "@ui-kitten/components";
@@ -23,13 +24,25 @@ import { GET_USER, UPDATE_EXPO_PUSH_TOKEN } from "@/graphql/queries";
 import { auth } from "@/firebaseConfig";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { myTheme } from "./theme";
+import { useFonts } from "expo-font";
 
 export default function RootLayout() {
+  const [fontsLoaded] = useFonts({
+    Comfortaa: require("@/assets/fonts/Comfortaa-VariableFont_wght.ttf"),
+  });
   const colorScheme = useColorScheme();
   const isLoading = useFirebaseAuth();
   const [expoPushToken, setExpoPushToken] = useState<string | null>(null);
   const user = auth.currentUser;
   const userId = user?.uid;
+
+  useEffect(() => {
+    if (!fontsLoaded) {
+      SplashScreen.preventAutoHideAsync();
+    } else {
+      SplashScreen.hideAsync();
+    }
+  }, [fontsLoaded]);
 
   const [updateExpoPushToken, { loading: updateTokenLoading }] = useMutation(
     UPDATE_EXPO_PUSH_TOKEN,
@@ -110,7 +123,7 @@ export default function RootLayout() {
     };
   }, [userId]);
 
-  if (isLoading || userLoading || updateTokenLoading) {
+  if (isLoading || userLoading || updateTokenLoading || !fontsLoaded) {
     return (
       <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color="#0000ff" />
