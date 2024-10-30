@@ -9,15 +9,12 @@ import {
   Touchable,
 } from "react-native";
 import withAuthCheck from "../../components/WithAuthCheck";
-import MapView, { Marker, Polyline } from "react-native-maps";
-import { ThemedAddressCompletionInput } from "@/components/ThemedAddressCompletionInput";
 import { ThemedView } from "@/components/ThemedView";
 import { ThemedText } from "@/components/ThemedText";
 import { useLocationAndCommunityCenters } from "@/hooks/map/useMap";
 import { useDirections } from "@/hooks/map/useDirections";
 import { CommunityCenter } from "@/graphql/generated";
 import { useLogout } from "@/hooks/auth/useLogout";
-import Reload from "@/assets/images/reload.svg";
 import { useQuery } from "@apollo/client";
 import { HAS_USER_ON_BOARDED } from "@/graphql/queries";
 import { router, Href } from "expo-router";
@@ -26,7 +23,6 @@ import { GET_CHILDREN_FOR_USER } from "@/graphql/queries";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { processFontFamily } from "expo-font";
 import { auth } from "@/firebaseConfig";
-import NavBar from "@/components/NavBar";
 
 function HomeScreen() {
   const [hasOnboarded, setHasOnboarded] = useState<boolean | null>(null);
