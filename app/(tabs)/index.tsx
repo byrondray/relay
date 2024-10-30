@@ -26,6 +26,7 @@ import { GET_CHILDREN_FOR_USER } from "@/graphql/queries";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { processFontFamily } from "expo-font";
 import { auth } from "@/firebaseConfig";
+import NavBar from "@/components/NavBar";
 
 function HomeScreen() {
   const [hasOnboarded, setHasOnboarded] = useState<boolean | null>(null);
@@ -74,28 +75,28 @@ function HomeScreen() {
 
   if (onboardingLoading || hasOnboarded === null) {
     return (
-      <ThemedView style={styles.loadingContainer}>
+      <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color="#0000ff" />
-      </ThemedView>
+      </View>
     );
   }
 
   if (error) {
     return (
-      <ThemedView style={styles.errorContainer}>
+      <View style={styles.errorContainer}>
         <ThemedText>
           Error checking onboarding status: {error.message}
         </ThemedText>
-      </ThemedView>
+      </View>
     );
   }
 
   return (
-    <ThemedView style={styles.container}>
+    <View style={styles.container}>
       <Text style={[styles.heading, { fontFamily: "Comfortaa" }]}>
         New Ride
       </Text>
-      <ThemedView style={{ marginBottom: 20 }}>
+      <View style={{ marginBottom: 20 }}>
         <TouchableOpacity
           onPress={() => router.push("/(tabs)/Carpool/createRide")}
         >
@@ -139,8 +140,8 @@ function HomeScreen() {
             />
           </View>
         </TouchableOpacity>
-      </ThemedView>
-      <ThemedView>
+      </View>
+      <View>
         <TouchableOpacity
           onPress={() => router.push("/(tabs)/Carpool/postRequest" as Href)}
         >
@@ -184,8 +185,8 @@ function HomeScreen() {
             />
           </View>
         </TouchableOpacity>
-      </ThemedView>
-    </ThemedView>
+      </View>
+    </View>
   );
 }
 
@@ -196,6 +197,7 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 16,
     marginTop: 0,
+    backgroundColor: "#fff",
   },
   loadingContainer: {
     flex: 1,

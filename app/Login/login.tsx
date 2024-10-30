@@ -56,7 +56,7 @@ export default function LoginScreen(): JSX.Element {
               </Text>
               <TextInput
                 placeholder="Email"
-                value={email}
+                value={email.toLowerCase()}
                 onChangeText={setEmail}
                 style={[styles.input, { marginBottom: 10 }]}
                 placeholderTextColor="#b0b0b0"
@@ -121,19 +121,34 @@ export default function LoginScreen(): JSX.Element {
                 />
               </View>
               <View
-                style={{ flex: 1, flexDirection: "row", marginVertical: 20, marginLeft: 60 }}
+                style={{
+                  flex: 1,
+                  flexDirection: "row",
+                  marginVertical: 20,
+                  marginLeft: 60,
+                }}
               >
                 <TouchableOpacity style={{}}>
                   <Image
                     source={require("../../assets/images/google_signin.png")}
-                    style={{ width: 200, height: 45, resizeMode: "contain", marginLeft: 40 }}
+                    style={{
+                      width: 200,
+                      height: 45,
+                      resizeMode: "contain",
+                      marginLeft: 40,
+                    }}
                   />
                 </TouchableOpacity>
 
                 <TouchableOpacity style={{}}>
                   <Image
                     source={require("../../assets/images/fb_signin.png")}
-                    style={{ width: 200, height: 45, resizeMode: "contain", marginRight: 100 }}
+                    style={{
+                      width: 200,
+                      height: 45,
+                      resizeMode: "contain",
+                      marginRight: 100,
+                    }}
                   />
                 </TouchableOpacity>
               </View>

@@ -11,7 +11,10 @@ export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
+        tabBarActiveTintColor: "#ff9900",
+        tabBarInactiveTintColor: "#777",
+        tabBarStyle: styles.navContainer,
+        tabBarLabelStyle: styles.navText,
         headerShown: false,
       }}
     >
@@ -23,20 +26,56 @@ export default function TabLayout() {
             <TabBarIcon
               name={focused ? "home" : "home-outline"}
               color={color}
-              style={{}}
             />
           ),
         }}
       />
+
+      <Tabs.Screen
+        name="Carpool/createRide"
+        options={{
+          title: "Trips",
+          tabBarIcon: ({ color, focused }) => (
+            <TabBarIcon
+              name={focused ? "paper-plane" : "paper-plane-outline"}
+              color={color}
+            />
+          ),
+        }}
+      />
+
       <Tabs.Screen
         name="Carpool/postRequest"
         options={{
-          title: "NewRide",
+          title: "New Ride",
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon
-              name={focused ? "search" : "search-outline"}
+              name={focused ? "add-circle" : "add-circle-outline"}
               color={color}
             />
+          ),
+        }}
+      />
+
+      <Tabs.Screen
+        name="Community/community"
+        options={{
+          title: "Community",
+          tabBarIcon: ({ color, focused }) => (
+            <TabBarIcon
+              name={focused ? "people" : "people-outline"}
+              color={color}
+            />
+          ),
+        }}
+      />
+
+      <Tabs.Screen
+        name="settings"
+        options={{
+          title: "Settings",
+          tabBarIcon: ({ color, focused }) => (
+            <TabBarIcon name={focused ? "cog" : "cog-outline"} color={color} />
           ),
         }}
       />
@@ -50,23 +89,10 @@ export default function TabLayout() {
       />
 
       <Tabs.Screen
-        name="test"
+        name="temp"
         options={{
-          title: "test",
+          title: "Message",
           tabBarButton: () => null,
-        }}
-      />
-
-      <Tabs.Screen
-        name="Carpool/createRide"
-        options={{
-          title: "Trips",
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon
-              name={focused ? "person" : "person-outline"}
-              color={color}
-            />
-          ),
         }}
       />
     </Tabs>
@@ -77,7 +103,6 @@ const styles = StyleSheet.create({
   navContainer: {
     flexDirection: "row",
     justifyContent: "space-around",
-    paddingVertical: 10,
     backgroundColor: "#f8f8f8",
     borderTopWidth: 1,
     borderTopColor: "#ddd",
@@ -88,6 +113,8 @@ const styles = StyleSheet.create({
   navText: {
     fontSize: 12,
     color: "#777",
-    marginTop: 4,
+  },
+  activeNavText: {
+    color: "#ff9900",
   },
 });

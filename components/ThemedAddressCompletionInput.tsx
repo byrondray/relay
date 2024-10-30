@@ -84,7 +84,7 @@ export function ThemedAddressCompletionInput({
   };
 
   return (
-    <ThemedView style={style}>
+    <View style={style}>
       <TextInput
         style={[styles.input, { color: textColor, paddingLeft: 15 }, style]}
         value={value}
@@ -115,7 +115,7 @@ export function ThemedAddressCompletionInput({
           ))}
         </View>
       )}
-    </ThemedView>
+    </View>
   );
 }
 

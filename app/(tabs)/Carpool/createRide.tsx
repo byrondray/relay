@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   View,
   Text,
@@ -11,7 +11,7 @@ import {
 } from "react-native";
 import { ThemedAddressCompletionInput } from "@/components/ThemedAddressCompletionInput";
 import { useThemeColor } from "@/hooks/useThemeColor";
-import MapView, { Callout, Marker } from "react-native-maps";
+import MapView, { Marker } from "react-native-maps";
 import { LinearGradient } from "expo-linear-gradient";
 import {
   CheckBox,
@@ -39,22 +39,22 @@ import { useDirections } from "@/hooks/map/useDirections";
 import { Polyline } from "react-native-maps";
 import { areCoordinatesEqual } from "@/utils/equalCoorordinates";
 
-interface Route {
-  coordinates: { latitude: number; longitude: number }[];
-  predictedTime?: string;
-}
-
 const CreateRide = () => {
-  const [startingLatLng, setStartingLatLng] = useState<LatLng>({
-    lat: 0,
-    lon: 0,
-  });
   const [endingLatLng, setEndingLatLng] = useState<LatLng>({ lat: 0, lon: 0 });
   const [startingAddress, setStartingAddress] = useState("");
   const [endingAddress, setEndingAddress] = useState("");
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [dateAndTime, setDateAndTime] = useState("Select Date & Time");
+  const [canSubmit, setCanSubmit] = useState(false);
+  const [extraCarseatChecked, setExtraCarseatChecked] = useState(false);
+  const [winterTiresChecked, setWinterTiresChecked] = useState(false);
+  const [showTimePicker, setShowTimePicker] = useState(false);
+  const [time, setTime] = useState("");
+  const [requests, setRequests] = useState<Request[]>([]);
+  const [vehicles, setVehicles] = useState<Vehicle[]>([]);
+  const [selectedChildren, setSelectedChildren] = useState<string[]>([]);
+  const [visible, setVisible] = React.useState(false);
   const [selectedVehicleIndex, setSelectedVehicleIndex] = useState(
     new IndexPath(0)
   );
@@ -70,15 +70,10 @@ const CreateRide = () => {
   const [previousRoutes, setPreviousRoutes] = useState<
     { coordinates: any[]; predictedTime?: string }[]
   >([]);
-  const [canSubmit, setCanSubmit] = useState(false);
-  const [extraCarseatChecked, setExtraCarseatChecked] = useState(false);
-  const [winterTiresChecked, setWinterTiresChecked] = useState(false);
-  const [showTimePicker, setShowTimePicker] = useState(false);
-  const [time, setTime] = useState("");
-  const [requests, setRequests] = useState<Request[]>([]);
-  const [vehicles, setVehicles] = useState<Vehicle[]>([]);
-  const [selectedChildren, setSelectedChildren] = useState<string[]>([]);
-  const [visible, setVisible] = React.useState(false);
+  const [startingLatLng, setStartingLatLng] = useState<LatLng>({
+    lat: 0,
+    lon: 0,
+  });
   const groupId = useLocalSearchParams().groupId;
   const user = auth.currentUser;
   const userId = user?.uid;
@@ -94,13 +89,6 @@ const CreateRide = () => {
   interface LatLng {
     lat: number;
     lon: number;
-  }
-
-  interface CarpoolerRequest {
-    id: string;
-    startingLat: number;
-    startingLon: number;
-    startAddress: string;
   }
 
   interface Route {
@@ -223,6 +211,8 @@ const CreateRide = () => {
 
   const { coordinates, getDirections, predictedTime } = useDirections();
 
+  const mapRef = useRef<MapView>(null);
+
   useEffect(() => {
     if (startingAddress && endingAddress && requests.length > 0) {
       const waypoints = requests.map((request) => ({
@@ -254,6 +244,13 @@ const CreateRide = () => {
           }
 
           setActiveRoute({ coordinates: newCoordinates, predictedTime });
+
+          if (mapRef.current) {
+            mapRef.current.fitToCoordinates(newCoordinates, {
+              edgePadding: { top: 50, right: 50, bottom: 50, left: 50 },
+              animated: true,
+            });
+          }
         }
       });
     }
@@ -443,13 +440,12 @@ const CreateRide = () => {
               marginTop: 10,
             }}
           >
-            Would you like to pick up other passenger(s)?{"\n"}OR{"\n"}No match
-            passenger(s) NOW!!
+            Routes will adjust based on selected passengers.
           </Text>
         </View>
         <View style={{ flex: 1 }}>
-          {/* Container for the Map and Predicted Time Box */}
           <MapView
+            ref={mapRef}
             style={{ width: "100%", height: 300, marginTop: 20 }}
             initialRegion={{
               latitude: 49.2827,
@@ -843,7 +839,7 @@ const CreateRide = () => {
               paddingLeft: 30,
               paddingRight: 30,
             }}
-            placeholder="Tell drivers more about any special arrangement, e.g. extra car seat, large instrument"
+            placeholder="Any preferences for trips? (e.g., preferred age range of kids, allowed stopovers, special requests)"
             multiline={true}
           ></TextInput>
         </View>

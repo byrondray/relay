@@ -46,7 +46,6 @@ export default function RegisterScreen(): JSX.Element {
             <ActivityIndicator size="large" color="#0000ff" />
           ) : (
             <View style={styles.form}>
-              {/* Name Input */}
               <Text
                 style={{
                   color: "white",
@@ -65,7 +64,6 @@ export default function RegisterScreen(): JSX.Element {
                 placeholderTextColor="#b0b0b0"
               />
 
-              {/* Email Input */}
               <Text
                 style={{
                   color: "white",
@@ -78,13 +76,12 @@ export default function RegisterScreen(): JSX.Element {
               </Text>
               <TextInput
                 placeholder="Email"
-                value={email}
+                value={email.toLowerCase()}
                 onChangeText={setEmail}
                 style={[styles.input, { marginBottom: 10 }]}
                 placeholderTextColor="#b0b0b0"
               />
 
-              {/* Password Input */}
               <Text
                 style={{
                   color: "white",

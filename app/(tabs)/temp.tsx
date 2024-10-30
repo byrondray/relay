@@ -28,13 +28,12 @@ import { processFontFamily } from "expo-font";
 import { auth } from "@/firebaseConfig";
 
 function HomeScreen() {
-
   return (
-    <ThemedView style={styles.container}>
+    <View style={styles.container}>
       <Text style={[styles.heading, { fontFamily: "Comfortaa" }]}>
         New Ride
       </Text>
-      <ThemedView style={{ marginBottom: 20 }}>
+      <View style={{ marginBottom: 20 }}>
         <TouchableOpacity
           onPress={() => router.push("/(tabs)/Carpool/createRide")}
         >
@@ -78,8 +77,8 @@ function HomeScreen() {
             />
           </View>
         </TouchableOpacity>
-      </ThemedView>
-      <ThemedView>
+      </View>
+      <View>
         <TouchableOpacity
           onPress={() => router.push("/(tabs)/Carpool/postRequest" as Href)}
         >
@@ -123,8 +122,8 @@ function HomeScreen() {
             />
           </View>
         </TouchableOpacity>
-      </ThemedView>
-    </ThemedView>
+      </View>
+    </View>
   );
 }
 
@@ -135,6 +134,7 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 16,
     marginTop: 0,
+    backgroundColor: "#fff",
   },
   loadingContainer: {
     flex: 1,
@@ -161,4 +161,3 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
 });
-
