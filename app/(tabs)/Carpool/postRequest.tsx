@@ -194,7 +194,7 @@ const RequestRide = () => {
           minutes={0}
         />
         <Text style={{ color: textColor, marginBottom: 10, marginTop: 15 }}>
-          Seats Required
+          Seats Occupied
         </Text>
         <ChildSelector
           onSelectedChildrenChange={(selectedChildren) =>

@@ -1,5 +1,17 @@
 import React from "react";
 import { View, Text, Switch, StyleSheet } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
+import { useLogout } from "@/hooks/auth/useLogout";
+
+const LogoutButton = () => {
+  const { logout, loading } = useLogout();
+
+  return (
+    <Text onPress={logout} style={{ color: "#fff", padding: 10 }}>
+      {loading ? "Logging out..." : "Logout"}
+    </Text>
+  );
+};
 
 const Settings = () => {
   return (
@@ -20,6 +32,20 @@ const Settings = () => {
         <Text style={styles.settingText}>Location Access</Text>
         <Switch value={false} onValueChange={() => {}} />
       </View>
+      <LinearGradient
+        colors={["#ff8833", "#e24a4a"]}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 0 }}
+        style={{
+          width: "100%",
+          borderRadius: 15,
+          overflow: "hidden",
+          alignItems: "center",
+          marginTop: 20,
+        }}
+      >
+        <LogoutButton />
+      </LinearGradient>
     </View>
   );
 };

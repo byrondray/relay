@@ -1,7 +1,6 @@
 import { Tabs } from "expo-router";
 import React from "react";
 import { TabBarIcon } from "@/components/navigation/TabBarIcon";
-import { Colors } from "@/constants/Colors";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { StyleSheet } from "react-native";
 
@@ -32,7 +31,7 @@ export default function TabLayout() {
       />
 
       <Tabs.Screen
-        name="Carpool/createRide"
+        name="Carpool/postRequest"
         options={{
           title: "Trips",
           tabBarIcon: ({ color, focused }) => (
@@ -45,7 +44,7 @@ export default function TabLayout() {
       />
 
       <Tabs.Screen
-        name="Carpool/postRequest"
+        name="Carpool/createRide"
         options={{
           title: "New Ride",
           tabBarIcon: ({ color, focused }) => (

@@ -385,7 +385,7 @@ const CreateRide = () => {
         />
 
         <Text style={{ color: textColor, marginBottom: 10, marginTop: 15 }}>
-          Seats Required
+          Seats Occupied
         </Text>
         <ChildSelector onSelectedChildrenChange={setSelectedChildren} />
         <View
@@ -587,6 +587,7 @@ const CreateRide = () => {
               alignItems: "center",
               justifyContent: "space-between",
               paddingHorizontal: 10,
+              opacity: 0.7,
             }}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 0 }}
@@ -630,7 +631,7 @@ const CreateRide = () => {
                   fontSize: 16,
                 }}
               >
-                A
+                1
               </Text>
             </View>
 
@@ -651,7 +652,7 @@ const CreateRide = () => {
                   fontSize: 16,
                 }}
               >
-                C
+                2
               </Text>
             </View>
 
