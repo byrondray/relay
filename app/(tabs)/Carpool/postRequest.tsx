@@ -1,48 +1,45 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   View,
   Text,
   KeyboardAvoidingView,
   Platform,
-  Image,
   ScrollView,
-  TouchableOpacity,
   StyleSheet,
 } from "react-native";
 import { ThemedAddressCompletionInput } from "@/components/ThemedAddressCompletionInput";
-import { useThemeColor } from "@/hooks/useThemeColor";
 import { LinearGradient } from "expo-linear-gradient";
-import {
-  Radio,
-  RadioGroup,
-  RangeDatepicker,
-  Button,
-  Layout,
-  Popover,
-} from "@ui-kitten/components";
-import { TextInput } from "react-native-gesture-handler";
-import { TimePickerModal } from "react-native-paper-dates";
+import { Button, Layout, Popover } from "@ui-kitten/components";
 import ChildSelector from "@/components/carpool/childSelector";
+import RideDateTimePicker from "@/components/carpool/dateAndTimePicker";
+import TripDescriptionInput from "@/components/carpool/carpoolDescription";
+import { useRequestState } from "@/hooks/carpoolRequestState";
+import RadioGroupComponent from "@/components/carpool/carpoolFrequency";
 
 const RequestRide = () => {
-  const [startingAddress, setStartingAddress] = useState("");
-  const [endingAddress, setEndingAddress] = useState("");
-  const [startingLatLon, setStartingLatLon] = useState<{
-    lat: number;
-    lon: number;
-  } | null>(null);
-  const [endingLatLon, setEndingLatLon] = useState<{
-    lat: number;
-    lon: number;
-  } | null>(null);
-  const [selectedIndex, setSelectedIndex] = React.useState(0);
-  const textColor = useThemeColor({}, "placeholder");
-  const [range, setRange] = React.useState({});
-  const [showTimePicker, setShowTimePicker] = useState(false);
-  const [time, setTime] = useState("");
-  const [visible, setVisible] = React.useState(false);
-
-  console.log("Range:", range);
+  const {
+    startingAddress,
+    setStartingAddress,
+    endingAddress,
+    setEndingAddress,
+    startingLatLon,
+    setStartingLatLon,
+    endingLatLon,
+    setEndingLatLon,
+    selectedIndex,
+    setSelectedIndex,
+    textColor,
+    range,
+    setRange,
+    showTimePicker,
+    setShowTimePicker,
+    time,
+    setTime,
+    visible,
+    setVisible,
+    description,
+    setDescription,
+  } = useRequestState();
 
   const handleTimeConfirm = ({
     hours,
@@ -90,16 +87,10 @@ const RequestRide = () => {
           </Text>
         </View>
 
-        <View style={{ marginBottom: 20 }}>
-          <RadioGroup
-            selectedIndex={selectedIndex}
-            onChange={(index) => setSelectedIndex(index)}
-            style={{ flexDirection: "row", width: "100%" }}
-          >
-            <Radio style={{ marginRight: 10 }}>One time</Radio>
-            <Radio>Recurring</Radio>
-          </RadioGroup>
-        </View>
+        <RadioGroupComponent
+          selectedIndex={selectedIndex}
+          setSelectedIndex={setSelectedIndex}
+        />
 
         <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
           <Text style={{ color: textColor, marginBottom: 5 }}>From</Text>
@@ -128,7 +119,6 @@ const RequestRide = () => {
           onChangeText={setEndingAddress}
           onSuggestionSelect={(address) => {
             setEndingAddress(address);
-            console.log("Selected Address:", address);
           }}
           onLatLonSelect={(lat, lon) => {
             setEndingLatLon({ lat, lon });
@@ -136,62 +126,12 @@ const RequestRide = () => {
           placeholder="Enter Origin"
           style={{ marginBottom: 10 }}
         />
-        <Text style={{ marginBottom: 5, marginTop: 15, color: "#8F9BB3" }}>
-          Date Range of Ride
-        </Text>
-        <View
-          style={{
-            backgroundColor: "#F7F9FC",
-            height: 43,
-            borderColor: "#E4E9F2",
-            borderWidth: 1,
-            borderRadius: 15,
-            paddingLeft: 15,
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "space-between",
-          }}
-        >
-          <Image
-            source={require("../../../assets/images/calendar-icon.png")}
-            style={{ marginLeft: 10 }}
-          />
-          <RangeDatepicker
-            range={range}
-            onSelect={(nextRange) => setRange(nextRange)}
-          />
-        </View>
-        <TouchableOpacity onPress={() => setShowTimePicker(true)}>
-          <View
-            style={{
-              backgroundColor: "#F7F9FC",
-              height: 43,
-              borderColor: "#E4E9F2",
-              borderWidth: 1,
-              borderRadius: 15,
-              paddingLeft: 25,
-              flexDirection: "row",
-              alignItems: "center",
-              marginTop: 10,
-              justifyContent: "space-between",
-            }}
-          >
-            <Image
-              source={require("../../../assets/images/calendar-icon.png")}
-              style={{ marginTop: 2 }}
-            />
-            <Text style={{ marginLeft: 15, color: textColor, marginRight: 25 }}>
-              {time ? time : "Select Date & Time"}
-            </Text>
-          </View>
-        </TouchableOpacity>
-
-        <TimePickerModal
-          visible={showTimePicker}
-          onDismiss={() => setShowTimePicker(false)}
-          onConfirm={handleTimeConfirm}
-          hours={12}
-          minutes={0}
+        <RideDateTimePicker
+          selectedDate={new Date()}
+          handleDateSelect={(date) => console.log(date)}
+          selectedTime={time}
+          handleTimeSelect={handleTimeConfirm}
+          textColor={textColor}
         />
         <Text style={{ color: textColor, marginBottom: 10, marginTop: 15 }}>
           Seats Occupied
@@ -201,24 +141,11 @@ const RequestRide = () => {
             console.log(selectedChildren)
           }
         />
-        <Text style={{ color: textColor, marginBottom: 5, marginTop: 20 }}>
-          Description
-        </Text>
-
-        <TextInput
-          style={{
-            width: "100%",
-            backgroundColor: "#F7F9FC",
-            borderColor: "#E4E9F2",
-            borderWidth: 1,
-            borderRadius: 15,
-            height: 100,
-            paddingLeft: 30,
-            paddingRight: 30,
-          }}
-          placeholder="Tell drivers more about any special arrangement, e.g. extra car seat, large instrument"
-          multiline={true}
-        ></TextInput>
+        <TripDescriptionInput
+          textColor={textColor}
+          description={description}
+          setDescription={setDescription}
+        />
         <View
           style={{
             flex: 1,

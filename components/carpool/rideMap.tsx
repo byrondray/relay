@@ -1,0 +1,185 @@
+import React from "react";
+import { View, Text, Image } from "react-native";
+import MapView, { Marker, Polyline } from "react-native-maps";
+
+type RideMapProps = {
+  mapRef: React.RefObject<MapView>;
+  requests: Array<{
+    id: string;
+    startingLat: number;
+    startingLon: number;
+    startAddress: string;
+  }>;
+  startingLatLng: { lat: number; lon: number };
+  endingLatLng: { lat: number; lon: number };
+  startingAddress: string;
+  endingAddress: string;
+  previousRoutes: Array<{
+    coordinates: Array<{ latitude: number; longitude: number }>;
+    predictedTime?: string;
+  }>;
+  coordinates: Array<{ latitude: number; longitude: number }>;
+  activeRoute: {
+    coordinates: Array<{ latitude: number; longitude: number }>;
+    predictedTime?: string;
+  };
+  setActiveRoute: (route: {
+    coordinates: Array<{ latitude: number; longitude: number }>;
+    predictedTime?: string;
+  }) => void;
+  setPreviousRoutes: (
+    routes: Array<{
+      coordinates: Array<{ latitude: number; longitude: number }>;
+      predictedTime?: string;
+    }>
+  ) => void;
+  styles: any;
+  isActiveRoute: (route: {
+    coordinates: Array<{ latitude: number; longitude: number }>;
+    predictedTime?: string;
+  }) => boolean;
+  areCoordinatesEqual: (
+    coords1: Array<{ latitude: number; longitude: number }>,
+    coords2: Array<{ latitude: number; longitude: number }>
+  ) => boolean;
+};
+
+const RideMap: React.FC<RideMapProps> = ({
+  mapRef,
+  requests,
+  startingLatLng,
+  endingLatLng,
+  startingAddress,
+  endingAddress,
+  previousRoutes,
+  coordinates,
+  activeRoute,
+  setActiveRoute,
+  setPreviousRoutes,
+  styles,
+  isActiveRoute,
+  areCoordinatesEqual,
+}) => {
+  return (
+    <View style={{ flex: 1 }}>
+      <MapView
+        ref={mapRef}
+        style={{ width: "100%", height: 300, marginTop: 20 }}
+        initialRegion={{
+          latitude: 49.2827,
+          longitude: -123.1207,
+          latitudeDelta: 0.1,
+          longitudeDelta: 0.1,
+        }}
+      >
+        {requests.map((request, index) => (
+          <Marker
+            key={request.id}
+            coordinate={{
+              latitude: request.startingLat,
+              longitude: request.startingLon,
+            }}
+            title={request.startAddress}
+            anchor={{ x: 0.5, y: 0.5 }}
+          >
+            <View style={styles.markerContainer}>
+              <Image
+                source={require("@/assets/images/pin-icon.png")}
+                style={styles.markerImage}
+              />
+              <View style={styles.letterContainer}>
+                <Text style={styles.letterText}>{index + 1}</Text>
+              </View>
+            </View>
+          </Marker>
+        ))}
+
+        {startingLatLng.lat !== 0 && (
+          <Marker
+            coordinate={{
+              latitude: startingLatLng.lat,
+              longitude: startingLatLng.lon,
+            }}
+            title={startingAddress}
+            anchor={{ x: 0.5, y: 0.5 }}
+          >
+            <View style={styles.markerContainer}>
+              <Image
+                source={require("@/assets/images/starting-pin.png")}
+                style={styles.markerImage}
+              />
+            </View>
+          </Marker>
+        )}
+
+        {endingLatLng.lat !== 0 && (
+          <Marker
+            coordinate={{
+              latitude: endingLatLng.lat,
+              longitude: endingLatLng.lon,
+            }}
+            title={endingAddress}
+            anchor={{ x: 0.5, y: 0.5 }}
+          >
+            <View style={styles.markerContainer}>
+              <Image
+                source={require("@/assets/images/ending-pin.png")}
+                style={styles.markerImage}
+              />
+            </View>
+          </Marker>
+        )}
+
+        {previousRoutes.map((route, index) => (
+          <Polyline
+            key={`previous-route-${index}`}
+            coordinates={route.coordinates}
+            strokeColor={isActiveRoute(route) ? "#FF6A00" : "#ff9950"}
+            strokeWidth={isActiveRoute(route) ? 5 : 4}
+            lineDashPattern={isActiveRoute(route) ? [] : [5, 5]}
+            tappable={true}
+            onPress={() => {
+              if (activeRoute.coordinates.length > 0) {
+                const isDuplicate = previousRoutes.some((r) =>
+                  areCoordinatesEqual(r.coordinates, activeRoute.coordinates)
+                );
+                if (!isDuplicate) {
+                  setPreviousRoutes([
+                    ...previousRoutes,
+                    { coordinates: activeRoute.coordinates },
+                  ]);
+                }
+              }
+              setActiveRoute({
+                coordinates: route.coordinates,
+                predictedTime: route.predictedTime,
+              });
+            }}
+          />
+        ))}
+
+        {coordinates.length > 0 && (
+          <Polyline
+            coordinates={coordinates.map((coord) => ({
+              latitude: coord.latitude,
+              longitude: coord.longitude,
+            }))}
+            fillColor="#FFC195"
+            strokeColor="#FF6A00"
+            strokeWidth={5}
+          />
+        )}
+      </MapView>
+
+      {activeRoute.predictedTime && (
+        <View style={styles.predictedTimeBox}>
+          <Text style={styles.predictedTimeText}>
+            {`Estimated Time: ${activeRoute.predictedTime}`}
+          </Text>
+        </View>
+      )}
+    </View>
+  );
+};
+
+export default RideMap;

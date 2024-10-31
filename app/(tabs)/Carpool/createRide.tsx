@@ -4,27 +4,14 @@ import {
   Text,
   KeyboardAvoidingView,
   Platform,
-  Image,
   ScrollView,
-  TouchableOpacity,
   StyleSheet,
 } from "react-native";
 import { ThemedAddressCompletionInput } from "@/components/ThemedAddressCompletionInput";
 import { useThemeColor } from "@/hooks/useThemeColor";
-import MapView, { Marker } from "react-native-maps";
+import MapView from "react-native-maps";
 import { LinearGradient } from "expo-linear-gradient";
-import {
-  CheckBox,
-  Datepicker,
-  IndexPath,
-  Select,
-  SelectItem,
-  Button,
-  Layout,
-  Popover,
-} from "@ui-kitten/components";
-import { TextInput } from "react-native-gesture-handler";
-import { TimePickerModal } from "react-native-paper-dates";
+import { Button, Layout, Popover } from "@ui-kitten/components";
 import ChildSelector from "@/components/carpool/childSelector";
 import {
   GET_CARPOOLERS_WITHOUT_APPROVED_REQUESTS,
@@ -32,49 +19,65 @@ import {
 } from "@/graphql/queries";
 import { useQuery } from "@apollo/client";
 import { auth } from "@/firebaseConfig";
-import { useLocalSearchParams } from "expo-router";
-import { Request, Vehicle } from "@/graphql/generated";
+import { Request } from "@/graphql/generated";
 import { haversineDistance } from "@/utils/distance";
 import { useDirections } from "@/hooks/map/useDirections";
-import { Polyline } from "react-native-maps";
 import { areCoordinatesEqual } from "@/utils/equalCoorordinates";
+import CarFeaturesCheckbox from "@/components/carpool/carFeaturesCheckbox";
+import TripDescriptionInput from "@/components/carpool/carpoolDescription";
+import RideDateTimePicker from "@/components/carpool/dateAndTimePicker";
+import MapAiInfo from "@/components/carpool/mapAiInfo";
+import RideMap from "@/components/carpool/rideMap";
+import CarpoolPickerBar from "@/components/carpool/carpoolPickerBar";
+import VehicleDetailsPicker from "@/components/carpool/vehicleDetails";
+import PaymentInfo from "@/components/carpool/paymentInfo";
+import { useRideState } from "@/hooks/carpoolCreateState";
 
 const CreateRide = () => {
-  const [endingLatLng, setEndingLatLng] = useState<LatLng>({ lat: 0, lon: 0 });
-  const [startingAddress, setStartingAddress] = useState("");
-  const [endingAddress, setEndingAddress] = useState("");
-  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-  const [showDatePicker, setShowDatePicker] = useState(false);
-  const [dateAndTime, setDateAndTime] = useState("Select Date & Time");
-  const [canSubmit, setCanSubmit] = useState(false);
-  const [extraCarseatChecked, setExtraCarseatChecked] = useState(false);
-  const [winterTiresChecked, setWinterTiresChecked] = useState(false);
-  const [showTimePicker, setShowTimePicker] = useState(false);
-  const [time, setTime] = useState("");
+  const {
+    endingLatLng,
+    setEndingLatLng,
+    startingLatLng,
+    setStartingLatLng,
+    startingAddress,
+    setStartingAddress,
+    endingAddress,
+    setEndingAddress,
+    selectedDate,
+    setSelectedDate,
+    showDatePicker,
+    setShowDatePicker,
+    dateAndTime,
+    setDateAndTime,
+    canSubmit,
+    setCanSubmit,
+    extraCarseatChecked,
+    setExtraCarseatChecked,
+    winterTiresChecked,
+    setWinterTiresChecked,
+    showTimePicker,
+    setShowTimePicker,
+    time,
+    setTime,
+    vehicles,
+    setVehicles,
+    selectedChildren,
+    setSelectedChildren,
+    visible,
+    setVisible,
+    description,
+    setDescription,
+    selectedVehicleIndex,
+    setSelectedVehicleIndex,
+    selectedSeatsIndex,
+    setSelectedSeatsIndex,
+    activeRoute,
+    setActiveRoute,
+    previousRoutes,
+    setPreviousRoutes,
+  } = useRideState();
+
   const [requests, setRequests] = useState<Request[]>([]);
-  const [vehicles, setVehicles] = useState<Vehicle[]>([]);
-  const [selectedChildren, setSelectedChildren] = useState<string[]>([]);
-  const [visible, setVisible] = React.useState(false);
-  const [selectedVehicleIndex, setSelectedVehicleIndex] = useState(
-    new IndexPath(0)
-  );
-  const [selectedSeatsIndex, setSelectedSeatsIndex] = useState(
-    new IndexPath(0)
-  );
-  const [activeRoute, setActiveRoute] = useState<{
-    coordinates: any[];
-    predictedTime?: string;
-  }>({
-    coordinates: [],
-  });
-  const [previousRoutes, setPreviousRoutes] = useState<
-    { coordinates: any[]; predictedTime?: string }[]
-  >([]);
-  const [startingLatLng, setStartingLatLng] = useState<LatLng>({
-    lat: 0,
-    lon: 0,
-  });
-  const groupId = useLocalSearchParams().groupId;
   const user = auth.currentUser;
   const userId = user?.uid;
 
@@ -210,7 +213,6 @@ const CreateRide = () => {
   };
 
   const { coordinates, getDirections, predictedTime } = useDirections();
-
   const mapRef = useRef<MapView>(null);
 
   useEffect(() => {
@@ -263,19 +265,6 @@ const CreateRide = () => {
     selectedSeatsIndex,
   ]);
 
-  interface Coordinate {
-    latitude: number;
-    longitude: number;
-  }
-
-  const calculateMidpoint = (coordinates: Coordinate[]): Coordinate | null => {
-    const totalPoints = coordinates.length;
-    if (totalPoints === 0) return null;
-
-    const midpointIndex = Math.floor(totalPoints / 2);
-    return coordinates[midpointIndex];
-  };
-
   const textColor = useThemeColor({}, "placeholder");
 
   return (
@@ -324,247 +313,35 @@ const CreateRide = () => {
           }}
           placeholder="Enter Destination"
         />
-        <Text style={{ marginBottom: 5, marginTop: 15, color: "#8F9BB3" }}>
-          Date & Time of Ride
-        </Text>
-        <View
-          style={{
-            backgroundColor: "#F7F9FC",
-            height: 43,
-            borderColor: "#E4E9F2",
-            borderWidth: 1,
-            borderRadius: 15,
-            paddingLeft: 15,
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "space-between",
-          }}
-        >
-          <Image
-            source={require("../../../assets/images/calendar-icon.png")}
-            style={{ marginLeft: 10 }}
-          />
-          <Datepicker
-            date={selectedDate || undefined}
-            onSelect={handleDateSelect}
-            style={{ marginRight: 5 }}
-          />
-        </View>
-
-        <TouchableOpacity onPress={() => setShowTimePicker(true)}>
-          <View
-            style={{
-              backgroundColor: "#F7F9FC",
-              height: 43,
-              borderColor: "#E4E9F2",
-              borderWidth: 1,
-              borderRadius: 15,
-              paddingLeft: 25,
-              flexDirection: "row",
-              alignItems: "center",
-              marginTop: 10,
-              justifyContent: "space-between",
-            }}
-          >
-            <Image
-              source={require("../../../assets/images/calendar-icon.png")}
-              style={{ marginTop: 2 }}
-            />
-            <Text style={{ marginLeft: 15, color: textColor, marginRight: 25 }}>
-              {time ? time : "Select Date & Time"}
-            </Text>
-          </View>
-        </TouchableOpacity>
-
-        <TimePickerModal
-          visible={showTimePicker}
-          onDismiss={() => setShowTimePicker(false)}
-          onConfirm={handleTimeConfirm}
-          hours={12}
-          minutes={0}
+        <RideDateTimePicker
+          selectedDate={selectedDate}
+          handleDateSelect={handleDateSelect}
+          selectedTime={time}
+          handleTimeSelect={handleTimeConfirm}
+          textColor={textColor}
         />
 
         <Text style={{ color: textColor, marginBottom: 10, marginTop: 15 }}>
           Seats Occupied
         </Text>
         <ChildSelector onSelectedChildrenChange={setSelectedChildren} />
-        <View
-          style={{
-            width: "100%",
-            padding: 20,
-            borderTopColor: "#FF8833",
-            borderTopWidth: 3,
-            borderLeftColor: "#EDF1F7",
-            borderLeftWidth: 2,
-            borderRightColor: "#EDF1F7",
-            borderRightWidth: 2,
-            borderBottomColor: "#EDF1F7",
-            borderBottomWidth: 2,
-            borderRadius: 10,
-            backgroundColor: "#fff",
-            marginTop: 20,
-          }}
-        >
-          <Text
-            style={{
-              fontSize: 18,
-              fontWeight: "bold",
-              color: "#151A30",
-              marginBottom: 10,
-            }}
-          >
-            Route Auto-Match
-          </Text>
-          <Text
-            style={{
-              fontSize: 14,
-              color: "#151A30",
-              marginBottom: 10,
-            }}
-          >
-            Here are some carpool requests with routes matched to you according
-            to our AI module.
-          </Text>
-          <View
-            style={{
-              marginTop: 10,
-              borderTopColor: "#E4E9F2",
-              borderTopWidth: 1,
-              width: "100%",
-            }}
-          />
-          <Text
-            style={{
-              fontSize: 14,
-              color: "#151A30",
-              marginTop: 10,
-            }}
-          >
-            Routes will adjust based on selected passengers.
-          </Text>
-        </View>
-        <View style={{ flex: 1 }}>
-          <MapView
-            ref={mapRef}
-            style={{ width: "100%", height: 300, marginTop: 20 }}
-            initialRegion={{
-              latitude: 49.2827,
-              longitude: -123.1207,
-              latitudeDelta: 0.1,
-              longitudeDelta: 0.1,
-            }}
-          >
-            {requests.map((request, index) => (
-              <Marker
-                key={request.id}
-                coordinate={{
-                  latitude: request.startingLat,
-                  longitude: request.startingLon,
-                }}
-                title={request.startAddress}
-                anchor={{ x: 0.5, y: 0.5 }}
-              >
-                <View style={styles.markerContainer}>
-                  <Image
-                    source={require("../../../assets/images/pin-icon.png")}
-                    style={styles.markerImage}
-                  />
-                  <View style={styles.letterContainer}>
-                    <Text style={styles.letterText}>{index + 1}</Text>
-                  </View>
-                </View>
-              </Marker>
-            ))}
-
-            {startingLatLng.lat !== 0 && (
-              <Marker
-                coordinate={{
-                  latitude: startingLatLng.lat,
-                  longitude: startingLatLng.lon,
-                }}
-                title={startingAddress}
-                anchor={{ x: 0.5, y: 0.5 }}
-              >
-                <View style={styles.markerContainer}>
-                  <Image
-                    source={require("../../../assets/images/starting-pin.png")}
-                    style={styles.markerImage}
-                  />
-                </View>
-              </Marker>
-            )}
-
-            {endingLatLng.lat !== 0 && (
-              <Marker
-                coordinate={{
-                  latitude: endingLatLng.lat,
-                  longitude: endingLatLng.lon,
-                }}
-                title={endingAddress}
-                anchor={{ x: 0.5, y: 0.5 }}
-              >
-                <View style={styles.markerContainer}>
-                  <Image
-                    source={require("../../../assets/images/ending-pin.png")}
-                    style={styles.markerImage}
-                  />
-                </View>
-              </Marker>
-            )}
-
-            {previousRoutes.map((route, index) => (
-              <Polyline
-                key={`previous-route-${index}`}
-                coordinates={route.coordinates}
-                strokeColor={isActiveRoute(route) ? "#FF6A00" : "#ff9950"}
-                strokeWidth={isActiveRoute(route) ? 5 : 4}
-                lineDashPattern={isActiveRoute(route) ? [] : [5, 5]}
-                tappable={true}
-                onPress={() => {
-                  if (activeRoute.coordinates.length > 0) {
-                    const isDuplicate = previousRoutes.some((r) =>
-                      areCoordinatesEqual(
-                        r.coordinates,
-                        activeRoute.coordinates
-                      )
-                    );
-                    if (!isDuplicate) {
-                      setPreviousRoutes((prevRoutes) => [
-                        ...prevRoutes,
-                        { coordinates: activeRoute.coordinates },
-                      ]);
-                    }
-                  }
-
-                  setActiveRoute({
-                    coordinates: route.coordinates,
-                    predictedTime: route.predictedTime,
-                  });
-                }}
-              />
-            ))}
-
-            {coordinates.length > 0 && (
-              <Polyline
-                coordinates={coordinates.map((coord) => ({
-                  latitude: coord.latitude,
-                  longitude: coord.longitude,
-                }))}
-                fillColor="#FFC195"
-                strokeColor="#FF6A00"
-                strokeWidth={5}
-              />
-            )}
-          </MapView>
-
-          {activeRoute.predictedTime && (
-            <View style={styles.predictedTimeBox}>
-              <Text style={styles.predictedTimeText}>
-                {`Estimated Time: ${activeRoute.predictedTime}`}
-              </Text>
-            </View>
-          )}
-        </View>
+        <MapAiInfo />
+        <RideMap
+          mapRef={mapRef}
+          requests={requests}
+          startingLatLng={startingLatLng}
+          endingLatLng={endingLatLng}
+          startingAddress={startingAddress}
+          endingAddress={endingAddress}
+          previousRoutes={previousRoutes}
+          coordinates={coordinates}
+          activeRoute={activeRoute}
+          setActiveRoute={setActiveRoute}
+          setPreviousRoutes={setPreviousRoutes}
+          styles={styles}
+          isActiveRoute={isActiveRoute}
+          areCoordinatesEqual={areCoordinatesEqual}
+        />
 
         <Text
           style={{
@@ -577,184 +354,16 @@ const CreateRide = () => {
           You choose the below passenger(s)
         </Text>
         <View style={{ width: "100%", marginBottom: 40 }}>
-          <LinearGradient
-            colors={["#FF8834", "#E44D4A"]}
-            style={{
-              width: "100%",
-              height: 35,
-              borderRadius: 30,
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "space-between",
-              paddingHorizontal: 10,
-              opacity: 0.7,
-            }}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 0 }}
-          >
-            <View
-              style={{
-                width: 60,
-                height: 25,
-                borderRadius: 20,
-                justifyContent: "center",
-                alignItems: "center",
-                paddingHorizontal: 10,
-                backgroundColor: "#FF6A00",
-              }}
-            >
-              <Text
-                style={{
-                  color: "#FFFFFF",
-                  fontWeight: "bold",
-                  fontSize: 12,
-                }}
-              >
-                START
-              </Text>
-            </View>
-
-            <View
-              style={{
-                width: 25,
-                height: 25,
-                borderRadius: 20,
-                backgroundColor: "#1C1C1E",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <Text
-                style={{
-                  color: "#FFFFFF",
-                  fontWeight: "bold",
-                  fontSize: 16,
-                }}
-              >
-                1
-              </Text>
-            </View>
-
-            <View
-              style={{
-                width: 25,
-                height: 25,
-                borderRadius: 20,
-                backgroundColor: "#1C1C1E",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <Text
-                style={{
-                  color: "#FFFFFF",
-                  fontWeight: "bold",
-                  fontSize: 16,
-                }}
-              >
-                2
-              </Text>
-            </View>
-
-            <View
-              style={{
-                width: 60,
-                height: 25,
-                borderRadius: 20,
-                justifyContent: "center",
-                alignItems: "center",
-                paddingHorizontal: 10,
-                backgroundColor: "#DE4141",
-              }}
-            >
-              <Text
-                style={{
-                  color: "#FFFFFF",
-                  fontWeight: "bold",
-                  fontSize: 12,
-                }}
-              >
-                END
-              </Text>
-            </View>
-          </LinearGradient>
-          <Text
-            style={{
-              color: "#FF6A00",
-              fontSize: 22,
-              marginBottom: 15,
-              marginTop: 15,
-            }}
-          >
-            Vehicle Details
-          </Text>
-          <Text style={{ color: textColor, marginBottom: 5 }}>
-            Select Vehicle
-          </Text>
-          <View>
-            <View
-              style={{
-                backgroundColor: "#F7F9FC",
-                height: 43,
-                borderColor: "#E4E9F2",
-                borderWidth: 1,
-                borderRadius: 15,
-                paddingLeft: 15,
-                justifyContent: "center",
-                marginBottom: 20,
-              }}
-            >
-              <Select
-                selectedIndex={selectedVehicleIndex}
-                onSelect={(index: IndexPath | IndexPath[]) => {
-                  if (index instanceof IndexPath) {
-                    setSelectedVehicleIndex(index);
-                  }
-                }}
-                value={
-                  vehicles[selectedVehicleIndex.row]?.make || "Select Vehicle"
-                }
-                placeholder="Select Vehicle"
-              >
-                {vehicles.map((vehicle, index) => (
-                  <SelectItem
-                    title={vehicle.make + " " + vehicle.model}
-                    key={index}
-                  />
-                ))}
-              </Select>
-            </View>
-            <Text style={{ color: textColor, marginBottom: 5 }}>
-              Seats Available
-            </Text>
-            <View
-              style={{
-                backgroundColor: "#F7F9FC",
-                height: 43,
-                borderColor: "#E4E9F2",
-                borderWidth: 1,
-                borderRadius: 15,
-                paddingLeft: 15,
-                justifyContent: "center",
-              }}
-            >
-              <Select
-                selectedIndex={selectedSeatsIndex}
-                onSelect={(index: IndexPath | IndexPath[]) => {
-                  if (index instanceof IndexPath) {
-                    setSelectedSeatsIndex(index);
-                  }
-                }}
-                value={seatsAvailable[selectedSeatsIndex.row]}
-                placeholder="Select Seats Available"
-              >
-                {seatsAvailable.map((seat, index) => (
-                  <SelectItem title={`${seat}`} key={index} />
-                ))}
-              </Select>
-            </View>
-          </View>
-
+          <CarpoolPickerBar />
+          <VehicleDetailsPicker
+            selectedVehicleIndex={selectedVehicleIndex}
+            selectedSeatsIndex={selectedSeatsIndex}
+            vehicles={vehicles}
+            seatsAvailable={seatsAvailable}
+            setSelectedVehicleIndex={setSelectedVehicleIndex}
+            setSelectedSeatsIndex={setSelectedSeatsIndex}
+            textColor={textColor}
+          />
           <Text
             style={{
               color: "#FF6A00",
@@ -764,59 +373,13 @@ const CreateRide = () => {
           >
             Pricing
           </Text>
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              marginTop: 15,
-              paddingLeft: 5,
-            }}
-          >
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                marginRight: 20,
-              }}
-            >
-              <CheckBox
-                checked={extraCarseatChecked}
-                onChange={(nextChecked) => setExtraCarseatChecked(nextChecked)}
-              />
-              <Text style={{ marginLeft: 8 }}>With Extra Carseat</Text>
-            </View>
-
-            <View style={{ flexDirection: "row", alignItems: "center" }}>
-              <CheckBox
-                checked={winterTiresChecked}
-                onChange={(nextChecked) => setWinterTiresChecked(nextChecked)}
-              />
-              <Text style={{ marginLeft: 8 }}>With Winter Tires</Text>
-            </View>
-          </View>
-          <View
-            style={{
-              width: "100%",
-              padding: 10,
-              borderTopColor: "#FF8833",
-              borderTopWidth: 3,
-              borderLeftColor: "#EDF1F7",
-              borderLeftWidth: 2,
-              borderRightColor: "#EDF1F7",
-              borderRightWidth: 2,
-              borderBottomColor: "#EDF1F7",
-              borderBottomWidth: 2,
-              borderRadius: 10,
-              backgroundColor: "#fff",
-              marginTop: 20,
-            }}
-          >
-            <Text style={{ fontSize: 16, color: "#222B45", padding: 7 }}>
-              Please note that Relay does not handle payment processing. Any
-              costs shared between users are arranged directly between them.
-            </Text>
-          </View>
-
+          <CarFeaturesCheckbox
+            extraCarseatChecked={extraCarseatChecked}
+            winterTiresChecked={winterTiresChecked}
+            setExtraCarseatChecked={setExtraCarseatChecked}
+            setWinterTiresChecked={setWinterTiresChecked}
+          />
+          <PaymentInfo />
           <Text
             style={{
               color: "#FF6A00",
@@ -826,23 +389,11 @@ const CreateRide = () => {
           >
             Trip Preferences
           </Text>
-          <Text style={{ color: textColor, marginBottom: 5, marginTop: 10 }}>
-            Description
-          </Text>
-          <TextInput
-            style={{
-              width: "100%",
-              backgroundColor: "#F7F9FC",
-              borderColor: "#E4E9F2",
-              borderWidth: 1,
-              borderRadius: 15,
-              height: 100,
-              paddingLeft: 30,
-              paddingRight: 30,
-            }}
-            placeholder="Any preferences for trips? (e.g., preferred age range of kids, allowed stopovers, special requests)"
-            multiline={true}
-          ></TextInput>
+          <TripDescriptionInput
+            textColor={textColor}
+            description={description}
+            setDescription={setDescription}
+          />
         </View>
         <View
           style={{
