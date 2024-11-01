@@ -36,7 +36,6 @@ const CarFeaturesCheckbox = ({
         <Text style={{ marginLeft: 8 }}>With Extra Carseat</Text>
       </View>
 
-      {/* Winter Tires Checkbox */}
       <View style={{ flexDirection: "row", alignItems: "center" }}>
         <CheckBox
           checked={winterTiresChecked}

@@ -15,6 +15,8 @@ import RideDateTimePicker from "@/components/carpool/dateAndTimePicker";
 import TripDescriptionInput from "@/components/carpool/carpoolDescription";
 import { useRequestState } from "@/hooks/carpoolRequestState";
 import RadioGroupComponent from "@/components/carpool/carpoolFrequency";
+import { useMutation } from "@apollo/client";
+import { CREATE_REQUEST } from "@/graphql/queries";
 
 const RequestRide = () => {
   const {
@@ -40,6 +42,8 @@ const RequestRide = () => {
     description,
     setDescription,
   } = useRequestState();
+
+  const [createRequest] = useMutation<Request>(CREATE_REQUEST);
 
   const handleTimeConfirm = ({
     hours,
@@ -166,7 +170,7 @@ const RequestRide = () => {
               overflow: "hidden",
             }}
           >
-            {renderToggleButton()}
+            {/* {createRequest()} */}
           </LinearGradient>
           <Popover
             backdropStyle={styles.backdrop}

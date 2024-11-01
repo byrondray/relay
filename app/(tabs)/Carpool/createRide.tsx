@@ -1,25 +1,13 @@
 import React, { useEffect, useRef, useState } from "react";
-import {
-  View,
-  Text,
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
-  StyleSheet,
-} from "react-native";
 import { ThemedAddressCompletionInput } from "@/components/ThemedAddressCompletionInput";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import MapView from "react-native-maps";
 import { LinearGradient } from "expo-linear-gradient";
 import { Button, Layout, Popover } from "@ui-kitten/components";
 import ChildSelector from "@/components/carpool/childSelector";
-import {
-  GET_CARPOOLERS_WITHOUT_APPROVED_REQUESTS,
-  GET_VEHICLE_FOR_USER,
-} from "@/graphql/queries";
 import { useQuery } from "@apollo/client";
 import { auth } from "@/firebaseConfig";
-import { Request } from "@/graphql/generated";
+import { Carpool, Request } from "@/graphql/generated";
 import { haversineDistance } from "@/utils/distance";
 import { useDirections } from "@/hooks/map/useDirections";
 import { areCoordinatesEqual } from "@/utils/equalCoorordinates";
@@ -32,6 +20,22 @@ import CarpoolPickerBar from "@/components/carpool/carpoolPickerBar";
 import VehicleDetailsPicker from "@/components/carpool/vehicleDetails";
 import PaymentInfo from "@/components/carpool/paymentInfo";
 import { useRideState } from "@/hooks/carpoolCreateState";
+import { useMutation } from "@apollo/client";
+import {
+  GET_CARPOOLERS_WITHOUT_APPROVED_REQUESTS,
+  GET_VEHICLE_FOR_USER,
+  CREATE_CARPOOL,
+} from "@/graphql/queries";
+import {
+  View,
+  Text,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  StyleSheet,
+} from "react-native";
+import RadioGroupComponent from "@/components/carpool/carpoolFrequency";
+import { CreateCarpoolInput } from "@/graphql/generated";
 
 const CreateRide = () => {
   const {
@@ -75,7 +79,14 @@ const CreateRide = () => {
     setActiveRoute,
     previousRoutes,
     setPreviousRoutes,
+    selectedIndex,
+    setSelectedIndex,
   } = useRideState();
+
+  const [createCarpool] = useMutation<
+    { createCarpool: Carpool },
+    { input: CreateCarpoolInput }
+  >(CREATE_CARPOOL);
 
   const [requests, setRequests] = useState<Request[]>([]);
   const user = auth.currentUser;
@@ -287,6 +298,10 @@ const CreateRide = () => {
         <Text style={{ color: "#FF6A00", fontSize: 22, marginBottom: 15 }}>
           Itinerary
         </Text>
+        <RadioGroupComponent
+          selectedIndex={selectedIndex}
+          setSelectedIndex={setSelectedIndex}
+        />
         <Text style={{ color: textColor, marginBottom: 5 }}>From</Text>
         <ThemedAddressCompletionInput
           value={startingAddress}
@@ -414,7 +429,43 @@ const CreateRide = () => {
               overflow: "hidden",
             }}
           >
-            {renderToggleButton()}
+            <Button
+              style={{
+                width: "100%",
+                paddingVertical: 12,
+              }}
+              appearance="ghost"
+              onPress={() => {
+                // createCarpool({
+                //   variables: {
+                //     input: {
+                //       driverId: userId!,
+                //       startLat: startingLatLng.lat,
+                //       startLon: startingLatLng.lon,
+                //       endLat: endingLatLng.lat,
+                //       endLon: endingLatLng.lon,
+                //       startAddress: startingAddress,
+                //       endAddress: endingAddress,
+                //       departureDate: dateAndTime,
+                //       departureTime: time,
+                //       tripPreferences: description,
+                //       vehicleId: vehicles[selectedVehicleIndex.row].id,
+                //       extraCarseat: extraCarseatChecked,
+                //       winterTires: winterTiresChecked,
+                //       children: selectedChildren.map((child) => child.id),
+                //       payment: {
+                //         amount: 10,
+                //         currency: "USD",
+                //       },
+                //     },
+                //   },
+                // });
+              }}
+            >
+              {() => (
+                <Text style={{ color: "#fff", fontSize: 16 }}>Submit</Text>
+              )}
+            </Button>
           </LinearGradient>
           <Popover
             backdropStyle={styles.backdrop}

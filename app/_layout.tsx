@@ -1,19 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { ApolloProvider, useMutation, useQuery } from "@apollo/client";
 import client from "../graphql/client";
-import {
-  DarkTheme,
-  DefaultTheme,
-  ThemeProvider,
-} from "@react-navigation/native";
 import { router, SplashScreen, Stack } from "expo-router";
-import {
-  StyleSheet,
-  useColorScheme,
-  View,
-  ActivityIndicator,
-  Text,
-} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ApplicationProvider } from "@ui-kitten/components";
 import * as eva from "@eva-design/eva";
@@ -26,6 +14,17 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { myTheme } from "./theme";
 import { useFonts } from "expo-font";
 import { LogBox } from "react-native";
+import {
+  StyleSheet,
+  useColorScheme,
+  View,
+  ActivityIndicator,
+} from "react-native";
+import {
+  DarkTheme,
+  DefaultTheme,
+  ThemeProvider,
+} from "@react-navigation/native";
 
 export default function RootLayout() {
   const [fontsLoaded] = useFonts({
@@ -37,7 +36,7 @@ export default function RootLayout() {
   const user = auth.currentUser;
   const userId = user?.uid;
 
-  LogBox.ignoreAllLogs();
+  // LogBox.ignoreAllLogs();
 
   useEffect(() => {
     if (!fontsLoaded) {

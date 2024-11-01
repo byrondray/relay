@@ -55,6 +55,7 @@ export const useRideState = () => {
   const [previousRoutes, setPreviousRoutes] = useState<
     { coordinates: any[]; predictedTime?: string }[]
   >([]);
+  const [selectedIndex, setSelectedIndex] = useState(0);
 
   return {
     endingLatLng,
@@ -97,5 +98,7 @@ export const useRideState = () => {
     setActiveRoute,
     previousRoutes,
     setPreviousRoutes,
+    selectedIndex,
+    setSelectedIndex,
   };
 };

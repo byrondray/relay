@@ -27,6 +27,8 @@ import { auth } from "@/firebaseConfig";
 function HomeScreen() {
   const [hasOnboarded, setHasOnboarded] = useState<boolean | null>(null);
 
+  const hasFilledDriverInfo = false;
+
   const {
     data,
     loading: onboardingLoading,
@@ -111,21 +113,29 @@ function HomeScreen() {
               width: "100%",
             }}
           >
-            <View style={{ flexDirection: "column", justifyContent: "center" }}>
-              <Text
-                style={{
-                  color: "black",
-                  fontSize: 20,
-                  fontWeight: "semibold",
-                  marginBottom: 3,
-                }}
+            {hasFilledDriverInfo ? (
+              <View
+                style={{ flexDirection: "column", justifyContent: "center" }}
               >
-                I'm a driver
-              </Text>
-              <Text style={{ color: "#8F9BB3", fontSize: 16 }}>
-                I'm available to carpool other kids.
-              </Text>
-            </View>
+                <Text
+                  style={{
+                    color: "black",
+                    fontSize: 20,
+                    fontWeight: "semibold",
+                    marginBottom: 3,
+                  }}
+                >
+                  I'm a driver
+                </Text>
+                <Text style={{ color: "#8F9BB3", fontSize: 16 }}>
+                  I'm available to carpool other kids.
+                </Text>
+              </View>
+            ) : (
+              <View>
+                
+              </View>
+            )}
             <Image
               source={require("@/assets/images/arrow-circle-right.png")}
               style={{

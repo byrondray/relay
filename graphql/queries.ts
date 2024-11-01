@@ -567,10 +567,16 @@ export const CREATE_REQUEST = gql`
     createRequest(input: $input) {
       id
       parentId
-      childId
       carpoolId
       isApproved
       createdAt
+      children {
+        id
+        firstName
+        schoolId
+        schoolEmailAddress
+        imageUrl
+      }
     }
   }
 `;
@@ -581,10 +587,16 @@ export const APPROVE_REQUEST = gql`
     approveRequest(requestId: $requestId) {
       id
       parentId
-      childId
       carpoolId
       isApproved
       createdAt
+      children {
+        id
+        firstName
+        schoolId
+        schoolEmailAddress
+        imageUrl
+      }
     }
   }
 `;
@@ -629,7 +641,6 @@ export const GET_CARPOOLERS_WITHOUT_APPROVED_REQUESTS = gql`
       id
       carpoolId
       parentId
-      childId
       groupId
       isApproved
       startAddress
@@ -640,6 +651,13 @@ export const GET_CARPOOLERS_WITHOUT_APPROVED_REQUESTS = gql`
       endingLon
       pickupTime
       createdAt
+      children {
+        id
+        firstName
+        schoolId
+        schoolEmailAddress
+        imageUrl
+      }
     }
   }
 `;
