@@ -1,22 +1,26 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
-  StyleSheet,
 } from "react-native";
 import { ThemedAddressCompletionInput } from "@/components/ThemedAddressCompletionInput";
 import { LinearGradient } from "expo-linear-gradient";
-import { Button, Layout, Popover } from "@ui-kitten/components";
+import { Button, IndexPath } from "@ui-kitten/components";
 import ChildSelector from "@/components/carpool/childSelector";
 import RideDateTimePicker from "@/components/carpool/dateAndTimePicker";
 import TripDescriptionInput from "@/components/carpool/carpoolDescription";
 import { useRequestState } from "@/hooks/carpoolRequestState";
 import RadioGroupComponent from "@/components/carpool/carpoolFrequency";
-import { useMutation } from "@apollo/client";
-import { CREATE_REQUEST } from "@/graphql/queries";
+import { ApolloError, useMutation, useQuery } from "@apollo/client";
+import { GET_GROUPS } from "@/graphql/group/queries";
+import { CREATE_REQUEST } from "@/graphql/carpool/queries";
+import { CreateRequestInput, Group } from "@/graphql/generated";
+import GroupPicker from "@/components/carpool/groupSelector";
+import { auth } from "@/firebaseConfig";
+import { router } from "expo-router";
 
 const RequestRide = () => {
   const {
@@ -31,8 +35,6 @@ const RequestRide = () => {
     selectedIndex,
     setSelectedIndex,
     textColor,
-    range,
-    setRange,
     showTimePicker,
     setShowTimePicker,
     time,
@@ -42,6 +44,30 @@ const RequestRide = () => {
     description,
     setDescription,
   } = useRequestState();
+
+  const [groups, setGroups] = useState<Group[]>([]);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [selectedChildren, setSelectedChildren] = useState<string[]>([]);
+  const [date, setDate] = useState(new Date());
+  const [selectedGroupIndex, setSelectedGroupIndex] = useState<IndexPath>(
+    new IndexPath(0)
+  );
+
+  const currentUser = auth.currentUser;
+
+  if (!currentUser?.uid) {
+    router.replace("/Login/login");
+  }
+
+  const { data, loading, error } = useQuery(GET_GROUPS, {
+    onCompleted: (data) => {
+      console.log("Data", data);
+      if (data) {
+        console.log("Groups", data.getGroups);
+        setGroups(data.getGroups);
+      }
+    },
+  });
 
   const [createRequest] = useMutation<Request>(CREATE_REQUEST);
 
@@ -56,18 +82,55 @@ const RequestRide = () => {
     setShowTimePicker(false);
   };
 
-  const handleModelSubmit = () => {
-    setVisible(true);
+  const handleSubmit = async () => {
+    try {
+      const selectedGroup = groups[selectedGroupIndex.row];
+      if (!startingLatLon || !endingLatLon) {
+        setErrorMessage("Starting and ending locations must be selected.");
+        return;
+      }
+
+      const getPickupTimeISO = () => {
+        const [hours, minutes] = time.split(":").map(Number);
+
+        const combinedDate = new Date(date);
+        combinedDate.setHours(hours, minutes, 0, 0);
+
+        return combinedDate.toISOString();
+      };
+
+      const input: CreateRequestInput = {
+        parentId: currentUser?.uid!,
+        startingAddress,
+        endingAddress,
+        startingLat: startingLatLon.lat,
+        startingLon: startingLatLon.lon,
+        endingLat: endingLatLon.lat,
+        endingLon: endingLatLon.lon,
+        pickupTime: getPickupTimeISO(),
+        groupId: selectedGroup?.id,
+        childIds: selectedChildren.map((child) => child),
+      };
+
+      await createRequest({ variables: { input } });
+      setVisible(true);
+    } catch (error) {
+      console.error("Error creating request:", error);
+      setErrorMessage(
+        (error as ApolloError).message ||
+          "An error occurred while creating the request."
+      );
+    }
   };
 
-  const renderToggleButton = (): React.ReactElement => (
+  const renderSubmitButton = (): React.ReactElement => (
     <Button
       style={{
         width: "100%",
         paddingVertical: 12,
       }}
       appearance="ghost"
-      onPress={handleModelSubmit}
+      onPress={handleSubmit}
     >
       {() => <Text style={{ color: "#fff", fontSize: 16 }}>Submit</Text>}
     </Button>
@@ -131,8 +194,8 @@ const RequestRide = () => {
           style={{ marginBottom: 10 }}
         />
         <RideDateTimePicker
-          selectedDate={new Date()}
-          handleDateSelect={(date) => console.log(date)}
+          selectedDate={date}
+          handleDateSelect={(date) => setDate(date)}
           selectedTime={time}
           handleTimeSelect={handleTimeConfirm}
           textColor={textColor}
@@ -142,8 +205,14 @@ const RequestRide = () => {
         </Text>
         <ChildSelector
           onSelectedChildrenChange={(selectedChildren) =>
-            console.log(selectedChildren)
+            setSelectedChildren(selectedChildren)
           }
+        />
+        <GroupPicker
+          groups={groups}
+          selectedGroupIndex={selectedGroupIndex}
+          setSelectedGroupIndex={setSelectedGroupIndex}
+          textColor={textColor}
         />
         <TripDescriptionInput
           textColor={textColor}
@@ -170,46 +239,12 @@ const RequestRide = () => {
               overflow: "hidden",
             }}
           >
-            {/* {createRequest()} */}
+            {renderSubmitButton()}
           </LinearGradient>
-          <Popover
-            backdropStyle={styles.backdrop}
-            visible={visible}
-            anchor={() => renderToggleButton()}
-            onBackdropPress={() => setVisible(false)}
-            style={{
-              marginBottom: 400,
-              maxWidth: 300,
-              height: 100,
-              padding: 20,
-              borderRadius: 10,
-            }}
-          >
-            <Layout style={styles.content}>
-              <Text>
-                There is no driver avaliable, we'll send you a notification when
-                one is ready👍
-              </Text>
-            </Layout>
-          </Popover>
         </View>
       </ScrollView>
     </KeyboardAvoidingView>
   );
 };
 
-const styles = StyleSheet.create({
-  content: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingHorizontal: 4,
-    paddingVertical: 8,
-  },
-  avatar: {
-    marginHorizontal: 4,
-  },
-  backdrop: {
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-  },
-});
 export default RequestRide;

@@ -1,5 +1,5 @@
 import { useSubscription } from "@apollo/client";
-import { LOCATION_RECEIVED_SUBSCRIPTION } from "@/graphql/queries";
+import { LOCATION_RECEIVED_SUBSCRIPTION } from "@/graphql/map/queries";
 
 export const useLocationSubscription = (recipientId: string) => {
   const { data, loading, error } = useSubscription(

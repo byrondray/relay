@@ -6,7 +6,6 @@ import {
   Button,
   FlatList,
   StyleSheet,
-  Alert,
 } from "react-native";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";

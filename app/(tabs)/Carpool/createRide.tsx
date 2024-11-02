@@ -3,11 +3,11 @@ import { ThemedAddressCompletionInput } from "@/components/ThemedAddressCompleti
 import { useThemeColor } from "@/hooks/useThemeColor";
 import MapView from "react-native-maps";
 import { LinearGradient } from "expo-linear-gradient";
-import { Button, Layout, Popover } from "@ui-kitten/components";
+import { Button, IndexPath, Layout, Popover } from "@ui-kitten/components";
 import ChildSelector from "@/components/carpool/childSelector";
 import { useQuery } from "@apollo/client";
 import { auth } from "@/firebaseConfig";
-import { Carpool, Request } from "@/graphql/generated";
+import { Carpool, Group, Request } from "@/graphql/generated";
 import { haversineDistance } from "@/utils/distance";
 import { useDirections } from "@/hooks/map/useDirections";
 import { areCoordinatesEqual } from "@/utils/equalCoorordinates";
@@ -21,11 +21,12 @@ import VehicleDetailsPicker from "@/components/carpool/vehicleDetails";
 import PaymentInfo from "@/components/carpool/paymentInfo";
 import { useRideState } from "@/hooks/carpoolCreateState";
 import { useMutation } from "@apollo/client";
+import { GET_VEHICLE_FOR_USER } from "@/graphql/user/queries";
 import {
   GET_CARPOOLERS_WITHOUT_APPROVED_REQUESTS,
-  GET_VEHICLE_FOR_USER,
   CREATE_CARPOOL,
-} from "@/graphql/queries";
+} from "@/graphql/carpool/queries";
+import { GET_GROUPS } from "@/graphql/group/queries";
 import {
   View,
   Text,
@@ -36,6 +37,7 @@ import {
 } from "react-native";
 import RadioGroupComponent from "@/components/carpool/carpoolFrequency";
 import { CreateCarpoolInput } from "@/graphql/generated";
+import GroupPicker from "@/components/carpool/groupSelector";
 
 const CreateRide = () => {
   const {
@@ -82,6 +84,12 @@ const CreateRide = () => {
     selectedIndex,
     setSelectedIndex,
   } = useRideState();
+
+  const [groups, setGroups] = useState<Group[]>([]);
+  const [selectedGroupIndex, setSelectedGroupIndex] = useState<IndexPath>(
+    new IndexPath(0)
+  );
+  const [groupId, setGroupId] = useState<string | null>(null);
 
   const [createCarpool] = useMutation<
     { createCarpool: Carpool },
@@ -163,13 +171,29 @@ const CreateRide = () => {
     });
   };
 
+  const { data } = useQuery(GET_GROUPS, {
+    onCompleted: (data) => {
+      console.log("Data", data);
+      if (data) {
+        console.log("Groups", data.getGroups);
+        setGroups(data.getGroups);
+      }
+    },
+  });
+
+  useEffect(() => {
+    const selectedGroup = groups[selectedGroupIndex.row];
+    setGroupId(selectedGroup ? selectedGroup.id : null);
+    setCanSubmit(!!selectedGroup);
+  }, [selectedGroupIndex, groups]);
+
   const {
     data: getCarpoolersWithoutApprovedRequests,
     loading,
     error,
   } = useQuery(GET_CARPOOLERS_WITHOUT_APPROVED_REQUESTS, {
     variables: {
-      groupId: "2d171e93-c9e8-43df-95ee-4a99a80d1aa2",
+      groupId,
       date: dateAndTime,
       time,
       endingAddress,
@@ -181,7 +205,6 @@ const CreateRide = () => {
           data.getCarpoolersByGroupWithoutApprovedRequests,
           startingLatLng
         );
-
         setRequests(sortedRequests);
       }
     },
@@ -274,6 +297,7 @@ const CreateRide = () => {
     seatsLeft,
     selectedChildren,
     selectedSeatsIndex,
+    selectedGroupIndex,
   ]);
 
   const textColor = useThemeColor({}, "placeholder");
@@ -340,6 +364,12 @@ const CreateRide = () => {
           Seats Occupied
         </Text>
         <ChildSelector onSelectedChildrenChange={setSelectedChildren} />
+        <GroupPicker
+          groups={groups}
+          selectedGroupIndex={selectedGroupIndex}
+          setSelectedGroupIndex={setSelectedGroupIndex}
+          textColor={textColor}
+        />
         <MapAiInfo />
         <RideMap
           mapRef={mapRef}

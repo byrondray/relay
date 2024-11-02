@@ -9,7 +9,7 @@ import { useAuthRequest } from "expo-auth-session/providers/google";
 import { auth } from "@/firebaseConfig";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useMutation } from "@apollo/client";
-import { CREATE_USER } from "@/graphql/queries";
+import { CREATE_USER } from "@/graphql/user/queries";
 import { router } from "expo-router";
 import * as Notifications from "expo-notifications";
 import * as Device from "expo-device";

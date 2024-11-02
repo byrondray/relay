@@ -8,7 +8,7 @@ import * as eva from "@eva-design/eva";
 import * as Notifications from "expo-notifications";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { useFirebaseAuth } from "@/firebaseConfig";
-import { GET_USER, UPDATE_EXPO_PUSH_TOKEN } from "@/graphql/queries";
+import { GET_USER, UPDATE_EXPO_PUSH_TOKEN } from "@/graphql/user/queries";
 import { auth } from "@/firebaseConfig";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { myTheme } from "./theme";

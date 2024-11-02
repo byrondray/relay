@@ -7,7 +7,7 @@ import {
 } from "firebase/auth";
 import * as Notifications from "expo-notifications";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { LOGIN } from "@/graphql/queries";
+import { LOGIN } from "@/graphql/user/queries";
 import { auth } from "@/firebaseConfig";
 import { useMutation } from "@apollo/client";
 import { useAuthRequest } from "expo-auth-session/providers/google";

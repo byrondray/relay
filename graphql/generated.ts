@@ -79,6 +79,16 @@ export type Child = {
   userId: Scalars['String']['output'];
 };
 
+export type ChildWithParent = {
+  __typename?: 'ChildWithParent';
+  firstName: Scalars['String']['output'];
+  id: Scalars['ID']['output'];
+  imageUrl?: Maybe<Scalars['String']['output']>;
+  parent: User;
+  schoolEmailAddress?: Maybe<Scalars['String']['output']>;
+  schoolId: Scalars['String']['output'];
+};
+
 export type CommunityCenter = {
   __typename?: 'CommunityCenter';
   address: Scalars['String']['output'];
@@ -104,6 +114,7 @@ export type CreateCarpoolInput = {
   endLon: Scalars['Float']['input'];
   extraCarSeat?: InputMaybe<Scalars['Boolean']['input']>;
   groupId: Scalars['String']['input'];
+  requestIds: Array<Scalars['String']['input']>;
   startAddress: Scalars['String']['input'];
   startLat: Scalars['Float']['input'];
   startLon: Scalars['Float']['input'];
@@ -114,7 +125,7 @@ export type CreateCarpoolInput = {
 
 export type CreateRequestInput = {
   carpoolId?: InputMaybe<Scalars['String']['input']>;
-  childId: Scalars['String']['input'];
+  childIds: Array<Scalars['String']['input']>;
   endingAddress: Scalars['String']['input'];
   endingLat: Scalars['Float']['input'];
   endingLon: Scalars['Float']['input'];
@@ -295,7 +306,7 @@ export type MutationUpdateUserInfoArgs = {
 export type Query = {
   __typename?: 'Query';
   filterSchoolsByName: Array<School>;
-  getCarpoolersByGroupWithoutApprovedRequests?: Maybe<Array<Request>>;
+  getCarpoolersByGroupWithoutApprovedRequests?: Maybe<Array<RequestWithChildrenAndParent>>;
   getCarpoolsByGroup?: Maybe<Array<Carpool>>;
   getCarpoolsByGroupsWithApprovedCarpoolers?: Maybe<Array<CarpoolWithCarpoolers>>;
   getChild?: Maybe<Child>;
@@ -405,7 +416,7 @@ export type QueryGetVehicleForUserArgs = {
 export type Request = {
   __typename?: 'Request';
   carpoolId?: Maybe<Scalars['String']['output']>;
-  childId: Scalars['String']['output'];
+  children: Array<Child>;
   createdAt: Scalars['String']['output'];
   endAddress: Scalars['String']['output'];
   endingLat: Scalars['Float']['output'];
@@ -418,6 +429,24 @@ export type Request = {
   startAddress: Scalars['String']['output'];
   startingLat: Scalars['Float']['output'];
   startingLon: Scalars['Float']['output'];
+};
+
+export type RequestWithChildrenAndParent = {
+  __typename?: 'RequestWithChildrenAndParent';
+  carpoolId?: Maybe<Scalars['String']['output']>;
+  children: Array<ChildWithParent>;
+  createdAt: Scalars['String']['output'];
+  driverId: Scalars['String']['output'];
+  endAddress: Scalars['String']['output'];
+  endingLat: Scalars['String']['output'];
+  endingLon: Scalars['String']['output'];
+  groupId: Scalars['String']['output'];
+  id: Scalars['ID']['output'];
+  isApproved: Scalars['Int']['output'];
+  pickupTime: Scalars['String']['output'];
+  startAddress: Scalars['String']['output'];
+  startingLat: Scalars['String']['output'];
+  startingLon: Scalars['String']['output'];
 };
 
 export type School = {
@@ -472,6 +501,184 @@ export type Vehicle = {
   year: Scalars['String']['output'];
 };
 
+export type GetCarpoolsByGroupQueryVariables = Exact<{
+  groupId: Scalars['String']['input'];
+}>;
+
+
+export type GetCarpoolsByGroupQuery = { __typename?: 'Query', getCarpoolsByGroup?: Array<{ __typename?: 'Carpool', id: string, driverId: string, vehicleId: string, startAddress: string, endAddress: string, startLat: number, startLon: number, endLat: number, endLon: number, departureDate: string, departureTime: string, extraCarSeat: boolean, winterTires: boolean, tripPreferences?: string | null, estimatedTime?: string | null }> | null };
+
+export type GetPastCarpoolsQueryVariables = Exact<{
+  userId: Scalars['String']['input'];
+}>;
+
+
+export type GetPastCarpoolsQuery = { __typename?: 'Query', getPastCarpools?: Array<{ __typename?: 'Carpool', id: string, driverId: string, vehicleId: string, startAddress: string, endAddress: string, startLat: number, startLon: number, endLat: number, endLon: number, departureDate: string, departureTime: string }> | null };
+
+export type GetCurrentCarpoolsQueryVariables = Exact<{
+  userId: Scalars['String']['input'];
+}>;
+
+
+export type GetCurrentCarpoolsQuery = { __typename?: 'Query', getCurrentCarpools?: Array<{ __typename?: 'Carpool', id: string, driverId: string, vehicleId: string, startAddress: string, endAddress: string, startLat: number, startLon: number, endLat: number, endLon: number, departureDate: string, departureTime: string }> | null };
+
+export type GetCarpoolsByGroupsWithApprovedCarpoolersQueryVariables = Exact<{
+  groupId: Scalars['String']['input'];
+}>;
+
+
+export type GetCarpoolsByGroupsWithApprovedCarpoolersQuery = { __typename?: 'Query', getCarpoolsByGroupsWithApprovedCarpoolers?: Array<{ __typename?: 'CarpoolWithCarpoolers', id: string, driverId: string, startAddress: string, endAddress: string, departureDate: string, departureTime: string, approvedCarpoolers?: Array<{ __typename?: 'ApprovedCarpooler', parentName: string, childFirstName: string }> | null }> | null };
+
+export type CreateCarpoolMutationVariables = Exact<{
+  input: CreateCarpoolInput;
+}>;
+
+
+export type CreateCarpoolMutation = { __typename?: 'Mutation', createCarpool: { __typename?: 'Carpool', id: string, driverId: string, vehicleId: string, startAddress: string, endAddress: string, startLat: number, startLon: number, endLat: number, endLon: number, departureDate: string, departureTime: string, extraCarSeat: boolean, winterTires: boolean, tripPreferences?: string | null, estimatedTime?: string | null } };
+
+export type CreateRequestMutationVariables = Exact<{
+  input: CreateRequestInput;
+}>;
+
+
+export type CreateRequestMutation = { __typename?: 'Mutation', createRequest: { __typename?: 'Request', id: string, parentId: string, carpoolId?: string | null, isApproved: boolean, createdAt: string, children: Array<{ __typename?: 'Child', id: string, firstName: string, schoolId: string, schoolEmailAddress?: string | null, imageUrl?: string | null }> } };
+
+export type ApproveRequestMutationVariables = Exact<{
+  requestId: Scalars['String']['input'];
+}>;
+
+
+export type ApproveRequestMutation = { __typename?: 'Mutation', approveRequest: { __typename?: 'Request', id: string, parentId: string, carpoolId?: string | null, isApproved: boolean, createdAt: string, children: Array<{ __typename?: 'Child', id: string, firstName: string, schoolId: string, schoolEmailAddress?: string | null, imageUrl?: string | null }> } };
+
+export type GetCarpoolersWithoutApprovedRequestsQueryVariables = Exact<{
+  groupId: Scalars['String']['input'];
+  date: Scalars['String']['input'];
+  time: Scalars['String']['input'];
+  endingAddress: Scalars['String']['input'];
+}>;
+
+
+export type GetCarpoolersWithoutApprovedRequestsQuery = { __typename?: 'Query', getCarpoolersByGroupWithoutApprovedRequests?: Array<{ __typename?: 'RequestWithChildrenAndParent', id: string, carpoolId?: string | null, driverId: string, groupId: string, isApproved: number, startAddress: string, endAddress: string, startingLat: string, startingLon: string, endingLat: string, endingLon: string, pickupTime: string, createdAt: string, children: Array<{ __typename?: 'ChildWithParent', id: string, firstName: string, schoolId: string, schoolEmailAddress?: string | null, imageUrl?: string | null, parent: { __typename?: 'User', id: string, firstName: string, lastName?: string | null, email: string, phoneNumber?: string | null, licenseImageUrl?: string | null, insuranceImageUrl?: string | null, city?: string | null, createdAt?: string | null, expoPushToken?: string | null } }> }> | null };
+
+export type GetGroupQueryVariables = Exact<{
+  id: Scalars['ID']['input'];
+}>;
+
+
+export type GetGroupQuery = { __typename?: 'Query', getGroup?: { __typename?: 'Group', id: string, name: string, schoolId?: string | null, communityCenterId?: string | null } | null };
+
+export type GetGroupsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetGroupsQuery = { __typename?: 'Query', getGroups: Array<{ __typename?: 'Group', id: string, name: string, schoolId?: string | null, communityCenterId?: string | null, members: Array<{ __typename?: 'User', id: string, firstName: string, lastName?: string | null, email: string }> }> };
+
+export type GetGroupWithUsersQueryVariables = Exact<{
+  id: Scalars['ID']['input'];
+}>;
+
+
+export type GetGroupWithUsersQuery = { __typename?: 'Query', getGroupWithUsers: { __typename?: 'Group', id: string, name: string, schoolId?: string | null, communityCenterId?: string | null, members: Array<{ __typename?: 'User', id: string, firstName: string, lastName?: string | null }> } };
+
+export type CreateGroupMutationVariables = Exact<{
+  name: Scalars['String']['input'];
+}>;
+
+
+export type CreateGroupMutation = { __typename?: 'Mutation', createGroup: { __typename?: 'Group', id: string, name: string, schoolId?: string | null, communityCenterId?: string | null } };
+
+export type AddMemberToGroupMutationVariables = Exact<{
+  groupId: Scalars['String']['input'];
+  userId: Scalars['String']['input'];
+}>;
+
+
+export type AddMemberToGroupMutation = { __typename?: 'Mutation', addMemberToGroup: { __typename?: 'AddMemberToGroupResponse', message: string } };
+
+export type DeleteMemberFromGroupMutationVariables = Exact<{
+  groupId: Scalars['String']['input'];
+  userId: Scalars['String']['input'];
+}>;
+
+
+export type DeleteMemberFromGroupMutation = { __typename?: 'Mutation', deleteMemberFromGroup: { __typename?: 'DeleteMemberFromGroupResponse', message: string } };
+
+export type GetCommunityCentersQueryVariables = Exact<{
+  lat: Scalars['Float']['input'];
+  lon: Scalars['Float']['input'];
+}>;
+
+
+export type GetCommunityCentersQuery = { __typename?: 'Query', getCommunityCenters: Array<{ __typename?: 'CommunityCenter', id: string, name: string, address: string, lat: number, lon: number, distance: number }> };
+
+export type FilterSchoolsByNameQueryVariables = Exact<{
+  name: Scalars['String']['input'];
+}>;
+
+
+export type FilterSchoolsByNameQuery = { __typename?: 'Query', filterSchoolsByName: Array<{ __typename?: 'School', id: string, districtNumber: number, name: string, address: string, city: string }> };
+
+export type SendLocationMutationVariables = Exact<{
+  carpoolId: Scalars['String']['input'];
+  lat: Scalars['Float']['input'];
+  lon: Scalars['Float']['input'];
+}>;
+
+
+export type SendLocationMutation = { __typename?: 'Mutation', sendLocation?: { __typename?: 'LocationData', lat: number, lon: number, senderId: string, timestamp: string } | null };
+
+export type OnLocationReceivedSubscriptionVariables = Exact<{
+  recipientId: Scalars['String']['input'];
+}>;
+
+
+export type OnLocationReceivedSubscription = { __typename?: 'Subscription', locationReceived?: { __typename?: 'LocationData', lat: number, lon: number, senderId: string, timestamp: string } | null };
+
+export type GetConversationsForUserQueryVariables = Exact<{
+  userId: Scalars['String']['input'];
+}>;
+
+
+export type GetConversationsForUserQuery = { __typename?: 'Query', getConversationsForUser: Array<{ __typename?: 'Conversation', recipientName: string, messages: Array<{ __typename?: 'Message', id: string, senderId: string, recipientId: string, text: string, createdAt: string }> }> };
+
+export type GetPrivateMessageConversationQueryVariables = Exact<{
+  senderId: Scalars['String']['input'];
+  recipientId: Scalars['String']['input'];
+}>;
+
+
+export type GetPrivateMessageConversationQuery = { __typename?: 'Query', getPrivateMessageConversation: Array<{ __typename?: 'Message', id: string, senderId: string, recipientId: string, text: string, createdAt: string }> };
+
+export type CreateMessageMutationVariables = Exact<{
+  senderId: Scalars['String']['input'];
+  recipientId: Scalars['String']['input'];
+  text: Scalars['String']['input'];
+}>;
+
+
+export type CreateMessageMutation = { __typename?: 'Mutation', createMessage: { __typename?: 'Message', id: string, senderId: string, recipientId: string, text: string, createdAt: string } };
+
+export type OnMessageSentSubscriptionVariables = Exact<{
+  recipientId: Scalars['String']['input'];
+}>;
+
+
+export type OnMessageSentSubscription = { __typename?: 'Subscription', messageSent: { __typename?: 'Message', id: string, senderId: string, recipientId: string, text: string, createdAt: string } };
+
+export type GetGroupMessagesQueryVariables = Exact<{
+  groupId: Scalars['String']['input'];
+}>;
+
+
+export type GetGroupMessagesQuery = { __typename?: 'Query', getGroupMessages: Array<{ __typename?: 'GroupMessage', id: string, groupId: string, userId: string, message: string, createdAt: string }> };
+
+export type CreateGroupMessageMutationVariables = Exact<{
+  groupId: Scalars['String']['input'];
+  message: Scalars['String']['input'];
+}>;
+
+
+export type CreateGroupMessageMutation = { __typename?: 'Mutation', createGroupMessage: { __typename?: 'GroupMessage', id: string, groupId: string, userId: string, message: string, createdAt: string } };
+
 export type GetUsersQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -512,52 +719,6 @@ export type UpdateExpoPushTokenMutationVariables = Exact<{
 
 export type UpdateExpoPushTokenMutation = { __typename?: 'Mutation', updateExpoPushToken: { __typename?: 'User', id: string, firstName: string, lastName?: string | null, email: string, expoPushToken?: string | null } };
 
-export type GetConversationsForUserQueryVariables = Exact<{
-  userId: Scalars['String']['input'];
-}>;
-
-
-export type GetConversationsForUserQuery = { __typename?: 'Query', getConversationsForUser: Array<{ __typename?: 'Conversation', recipientName: string, messages: Array<{ __typename?: 'Message', id: string, senderId: string, recipientId: string, text: string, createdAt: string }> }> };
-
-export type GetPrivateMessageConversationQueryVariables = Exact<{
-  senderId: Scalars['String']['input'];
-  recipientId: Scalars['String']['input'];
-}>;
-
-
-export type GetPrivateMessageConversationQuery = { __typename?: 'Query', getPrivateMessageConversation: Array<{ __typename?: 'Message', id: string, senderId: string, recipientId: string, text: string, createdAt: string }> };
-
-export type CreateMessageMutationVariables = Exact<{
-  senderId: Scalars['String']['input'];
-  recipientId: Scalars['String']['input'];
-  text: Scalars['String']['input'];
-}>;
-
-
-export type CreateMessageMutation = { __typename?: 'Mutation', createMessage: { __typename?: 'Message', id: string, senderId: string, recipientId: string, text: string, createdAt: string } };
-
-export type OnMessageSentSubscriptionVariables = Exact<{
-  recipientId: Scalars['String']['input'];
-}>;
-
-
-export type OnMessageSentSubscription = { __typename?: 'Subscription', messageSent: { __typename?: 'Message', id: string, senderId: string, recipientId: string, text: string, createdAt: string } };
-
-export type GetCommunityCentersQueryVariables = Exact<{
-  lat: Scalars['Float']['input'];
-  lon: Scalars['Float']['input'];
-}>;
-
-
-export type GetCommunityCentersQuery = { __typename?: 'Query', getCommunityCenters: Array<{ __typename?: 'CommunityCenter', id: string, name: string, address: string, lat: number, lon: number, distance: number }> };
-
-export type FilterSchoolsByNameQueryVariables = Exact<{
-  name: Scalars['String']['input'];
-}>;
-
-
-export type FilterSchoolsByNameQuery = { __typename?: 'Query', filterSchoolsByName: Array<{ __typename?: 'School', id: string, districtNumber: number, name: string, address: string, city: string }> };
-
 export type GetVehicleQueryVariables = Exact<{
   id: Scalars['ID']['input'];
 }>;
@@ -584,63 +745,6 @@ export type CreateVehicleMutationVariables = Exact<{
 
 
 export type CreateVehicleMutation = { __typename?: 'Mutation', createVehicle: { __typename?: 'Vehicle', id: string, userId: string, make: string, model: string, year: string, licensePlate: string, color: string, seats: number, vehicleImageUrl?: string | null } };
-
-export type GetGroupQueryVariables = Exact<{
-  id: Scalars['ID']['input'];
-}>;
-
-
-export type GetGroupQuery = { __typename?: 'Query', getGroup?: { __typename?: 'Group', id: string, name: string, schoolId?: string | null, communityCenterId?: string | null } | null };
-
-export type GetGroupsQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type GetGroupsQuery = { __typename?: 'Query', getGroups: Array<{ __typename?: 'Group', id: string, name: string, schoolId?: string | null, communityCenterId?: string | null }> };
-
-export type GetGroupWithUsersQueryVariables = Exact<{
-  id: Scalars['ID']['input'];
-}>;
-
-
-export type GetGroupWithUsersQuery = { __typename?: 'Query', getGroupWithUsers: { __typename?: 'Group', id: string, name: string, schoolId?: string | null, communityCenterId?: string | null, members: Array<{ __typename?: 'User', id: string, firstName: string, lastName?: string | null }> } };
-
-export type CreateGroupMutationVariables = Exact<{
-  name: Scalars['String']['input'];
-}>;
-
-
-export type CreateGroupMutation = { __typename?: 'Mutation', createGroup: { __typename?: 'Group', id: string, name: string, schoolId?: string | null, communityCenterId?: string | null } };
-
-export type AddMemberToGroupMutationVariables = Exact<{
-  groupId: Scalars['String']['input'];
-  userId: Scalars['String']['input'];
-}>;
-
-
-export type AddMemberToGroupMutation = { __typename?: 'Mutation', addMemberToGroup: { __typename?: 'AddMemberToGroupResponse', message: string } };
-
-export type DeleteMemberFromGroupMutationVariables = Exact<{
-  groupId: Scalars['String']['input'];
-  userId: Scalars['String']['input'];
-}>;
-
-
-export type DeleteMemberFromGroupMutation = { __typename?: 'Mutation', deleteMemberFromGroup: { __typename?: 'DeleteMemberFromGroupResponse', message: string } };
-
-export type GetGroupMessagesQueryVariables = Exact<{
-  groupId: Scalars['String']['input'];
-}>;
-
-
-export type GetGroupMessagesQuery = { __typename?: 'Query', getGroupMessages: Array<{ __typename?: 'GroupMessage', id: string, groupId: string, userId: string, message: string, createdAt: string }> };
-
-export type CreateGroupMessageMutationVariables = Exact<{
-  groupId: Scalars['String']['input'];
-  message: Scalars['String']['input'];
-}>;
-
-
-export type CreateGroupMessageMutation = { __typename?: 'Mutation', createGroupMessage: { __typename?: 'GroupMessage', id: string, groupId: string, userId: string, message: string, createdAt: string } };
 
 export type GetChildQueryVariables = Exact<{
   id: Scalars['ID']['input'];
@@ -687,78 +791,3 @@ export type HasUserOnBoardedQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type HasUserOnBoardedQuery = { __typename?: 'Query', hasUserOnBoarded: boolean };
-
-export type GetCarpoolsByGroupQueryVariables = Exact<{
-  groupId: Scalars['String']['input'];
-}>;
-
-
-export type GetCarpoolsByGroupQuery = { __typename?: 'Query', getCarpoolsByGroup?: Array<{ __typename?: 'Carpool', id: string, driverId: string, vehicleId: string, startAddress: string, endAddress: string, startLat: number, startLon: number, endLat: number, endLon: number, departureDate: string, departureTime: string, extraCarSeat: boolean, winterTires: boolean, tripPreferences?: string | null, estimatedTime?: string | null }> | null };
-
-export type GetPastCarpoolsQueryVariables = Exact<{
-  userId: Scalars['String']['input'];
-}>;
-
-
-export type GetPastCarpoolsQuery = { __typename?: 'Query', getPastCarpools?: Array<{ __typename?: 'Carpool', id: string, driverId: string, vehicleId: string, startAddress: string, endAddress: string, startLat: number, startLon: number, endLat: number, endLon: number, departureDate: string, departureTime: string }> | null };
-
-export type GetCurrentCarpoolsQueryVariables = Exact<{
-  userId: Scalars['String']['input'];
-}>;
-
-
-export type GetCurrentCarpoolsQuery = { __typename?: 'Query', getCurrentCarpools?: Array<{ __typename?: 'Carpool', id: string, driverId: string, vehicleId: string, startAddress: string, endAddress: string, startLat: number, startLon: number, endLat: number, endLon: number, departureDate: string, departureTime: string }> | null };
-
-export type GetCarpoolsByGroupsWithApprovedCarpoolersQueryVariables = Exact<{
-  groupId: Scalars['String']['input'];
-}>;
-
-
-export type GetCarpoolsByGroupsWithApprovedCarpoolersQuery = { __typename?: 'Query', getCarpoolsByGroupsWithApprovedCarpoolers?: Array<{ __typename?: 'CarpoolWithCarpoolers', id: string, driverId: string, startAddress: string, endAddress: string, departureDate: string, departureTime: string, approvedCarpoolers?: Array<{ __typename?: 'ApprovedCarpooler', parentName: string, childFirstName: string }> | null }> | null };
-
-export type CreateCarpoolMutationVariables = Exact<{
-  input: CreateCarpoolInput;
-}>;
-
-
-export type CreateCarpoolMutation = { __typename?: 'Mutation', createCarpool: { __typename?: 'Carpool', id: string, driverId: string, vehicleId: string, startAddress: string, endAddress: string, startLat: number, startLon: number, endLat: number, endLon: number, departureDate: string, departureTime: string, extraCarSeat: boolean, winterTires: boolean, tripPreferences?: string | null, estimatedTime?: string | null } };
-
-export type CreateRequestMutationVariables = Exact<{
-  input: CreateRequestInput;
-}>;
-
-
-export type CreateRequestMutation = { __typename?: 'Mutation', createRequest: { __typename?: 'Request', id: string, parentId: string, childId: string, carpoolId?: string | null, isApproved: boolean, createdAt: string } };
-
-export type ApproveRequestMutationVariables = Exact<{
-  requestId: Scalars['String']['input'];
-}>;
-
-
-export type ApproveRequestMutation = { __typename?: 'Mutation', approveRequest: { __typename?: 'Request', id: string, parentId: string, childId: string, carpoolId?: string | null, isApproved: boolean, createdAt: string } };
-
-export type SendLocationMutationVariables = Exact<{
-  carpoolId: Scalars['String']['input'];
-  lat: Scalars['Float']['input'];
-  lon: Scalars['Float']['input'];
-}>;
-
-
-export type SendLocationMutation = { __typename?: 'Mutation', sendLocation?: { __typename?: 'LocationData', lat: number, lon: number, senderId: string, timestamp: string } | null };
-
-export type OnLocationReceivedSubscriptionVariables = Exact<{
-  recipientId: Scalars['String']['input'];
-}>;
-
-
-export type OnLocationReceivedSubscription = { __typename?: 'Subscription', locationReceived?: { __typename?: 'LocationData', lat: number, lon: number, senderId: string, timestamp: string } | null };
-
-export type GetCarpoolersWithoutApprovedRequestsQueryVariables = Exact<{
-  groupId: Scalars['String']['input'];
-  date: Scalars['String']['input'];
-  time: Scalars['String']['input'];
-  endingAddress: Scalars['String']['input'];
-}>;
-
-
-export type GetCarpoolersWithoutApprovedRequestsQuery = { __typename?: 'Query', getCarpoolersByGroupWithoutApprovedRequests?: Array<{ __typename?: 'Request', id: string, carpoolId?: string | null, parentId: string, childId: string, groupId: string, isApproved: boolean, startAddress: string, endAddress: string, startingLat: number, startingLon: number, endingLat: number, endingLon: number, pickupTime: string, createdAt: string }> | null };

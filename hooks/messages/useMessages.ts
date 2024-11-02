@@ -8,9 +8,9 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   GET_PRIVATE_MESSAGE_CONVERSATION,
   CREATE_MESSAGE,
-} from "@/graphql/queries";
-import { MESSAGE_SENT_SUBSCRIPTION } from "@/graphql/queries";
-import { GET_USER } from "@/graphql/queries";
+} from "@/graphql/messages/queries";
+import { MESSAGE_SENT_SUBSCRIPTION } from "@/graphql/messages/queries";
+import { GET_USER } from "@/graphql/user/queries";
 import { Alert } from "react-native";
 import { Message } from "@/graphql/generated";
 import { useEffect } from "react";

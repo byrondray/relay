@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useMutation } from "@apollo/client";
-import { SEND_LOCATION } from "@/graphql/queries";
+import { SEND_LOCATION } from "@/graphql/map/queries";
 
 export const useSendLocation = () => {
   const [sendLocation, { data, loading, error }] = useMutation(SEND_LOCATION);

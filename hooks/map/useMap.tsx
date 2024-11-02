@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import * as Location from "expo-location";
 import { useLazyQuery } from "@apollo/client";
-import { GET_COMMUNITY_CENTERS } from "@/graphql/queries";
+import { GET_COMMUNITY_CENTERS } from "@/graphql/map/queries";
 import { Alert } from "react-native";
 
 export const useLocationAndCommunityCenters = () => {

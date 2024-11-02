@@ -1,25 +1,16 @@
 import React, { useState, useEffect } from "react";
-import {
-  Button,
-  StyleSheet,
-  ActivityIndicator,
-  Text,
-  View,
-  Image,
-  Touchable,
-} from "react-native";
+import { StyleSheet, ActivityIndicator, Text, View, Image } from "react-native";
 import withAuthCheck from "../../components/WithAuthCheck";
-import { ThemedView } from "@/components/ThemedView";
 import { ThemedText } from "@/components/ThemedText";
 import { useLocationAndCommunityCenters } from "@/hooks/map/useMap";
 import { useDirections } from "@/hooks/map/useDirections";
 import { CommunityCenter } from "@/graphql/generated";
 import { useLogout } from "@/hooks/auth/useLogout";
 import { useQuery } from "@apollo/client";
-import { HAS_USER_ON_BOARDED } from "@/graphql/queries";
+import { HAS_USER_ON_BOARDED } from "@/graphql/user/queries";
 import { router, Href } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { GET_CHILDREN_FOR_USER } from "@/graphql/queries";
+import { GET_CHILDREN_FOR_USER } from "@/graphql/user/queries";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { processFontFamily } from "expo-font";
 import { auth } from "@/firebaseConfig";
@@ -113,29 +104,21 @@ function HomeScreen() {
               width: "100%",
             }}
           >
-            {hasFilledDriverInfo ? (
-              <View
-                style={{ flexDirection: "column", justifyContent: "center" }}
+            <View style={{ flexDirection: "column", justifyContent: "center" }}>
+              <Text
+                style={{
+                  color: "black",
+                  fontSize: 20,
+                  fontWeight: "semibold",
+                  marginBottom: 3,
+                }}
               >
-                <Text
-                  style={{
-                    color: "black",
-                    fontSize: 20,
-                    fontWeight: "semibold",
-                    marginBottom: 3,
-                  }}
-                >
-                  I'm a driver
-                </Text>
-                <Text style={{ color: "#8F9BB3", fontSize: 16 }}>
-                  I'm available to carpool other kids.
-                </Text>
-              </View>
-            ) : (
-              <View>
-                
-              </View>
-            )}
+                I'm a driver
+              </Text>
+              <Text style={{ color: "#8F9BB3", fontSize: 16 }}>
+                I'm available to carpool other kids.
+              </Text>
+            </View>
             <Image
               source={require("@/assets/images/arrow-circle-right.png")}
               style={{
