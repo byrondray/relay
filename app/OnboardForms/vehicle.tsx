@@ -14,6 +14,10 @@ import { CREATE_VEHICLE, GET_VEHICLE_FOR_USER } from "@/graphql/queries";
 import { getAuth } from "firebase/auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ScrollView } from "react-native-gesture-handler";
+import ImageUpload from "@/components/carpool/uploadImageInput";
+import * as ImagePicker from "expo-image-picker";
+import { LinearGradient } from "expo-linear-gradient";
+import { CheckBox } from "@ui-kitten/components";
 
 function VehicleForm(): JSX.Element {
   const auth = getAuth();
@@ -27,6 +31,8 @@ function VehicleForm(): JSX.Element {
   const [numberOfSeats, setNumberOfSeats] = useState("");
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [insuranceImage, setInsuranceImage] = useState<string | null>(null);
+  const [checked, setChecked] = React.useState(false);
 
   const {
     data: vehicleData,
@@ -80,6 +86,21 @@ function VehicleForm(): JSX.Element {
     return <Text style={styles.errorText}>Error loading vehicle data.</Text>;
   }
 
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    console.log(result);
+
+    if (!result.canceled) {
+      setInsuranceImage(result.assets[0].uri);
+    }
+  };
+
   return (
     <ScrollView>
       <View style={[styles.container, { backgroundColor: "#ffffff" }]}>
@@ -90,9 +111,8 @@ function VehicleForm(): JSX.Element {
         <View style={{ marginBottom: 20 }}>
           <ParentFormLabel label="Make" />
           <ParentFormInput
-            placeholder="Make"
-            // value={make}
-            value={"Toyota"}
+            placeholder="e.g. BMW"
+            value={make}
             onChangeText={setMake}
           />
         </View>
@@ -100,9 +120,8 @@ function VehicleForm(): JSX.Element {
         <View style={{ marginBottom: 20 }}>
           <ParentFormLabel label="Model" />
           <ParentFormInput
-            placeholder="Model"
-            // value={model}
-            value={"Camry"}
+            placeholder="e.g. X3"
+            value={model}
             onChangeText={setModel}
           />
         </View>
@@ -110,9 +129,8 @@ function VehicleForm(): JSX.Element {
         <View style={{ marginBottom: 20 }}>
           <ParentFormLabel label="Year" />
           <ParentFormInput
-            placeholder="Year"
-            // value={year}
-            value={"2020"}
+            placeholder="e.g. 2020"
+            value={year}
             onChangeText={setYear}
           />
         </View>
@@ -121,8 +139,7 @@ function VehicleForm(): JSX.Element {
           <ParentFormLabel label="License Plate" />
           <ParentFormInput
             placeholder="License Plate"
-            // value={licensePlate}
-            value={"KP875G"}
+            value={licensePlate}
             onChangeText={setLicensePlate}
           />
         </View>
@@ -131,24 +148,22 @@ function VehicleForm(): JSX.Element {
           <ParentFormLabel label="Vehicle Color" />
           <ParentFormInput
             placeholder="Vehicle Color"
-            // value={color}
-            value={"Red"}
+            value={color}
             onChangeText={setColor}
           />
         </View>
 
         <View style={{ marginBottom: 20 }}>
-          <ParentFormLabel label="Vehicle Seats" />
+          <ParentFormLabel label="Passenger Seat(s) available" />
           <ParentFormInput
             placeholder="Vehicle Seats"
-            // value={color}
-            value={"4"}
+            value={color}
             onChangeText={setNumberOfSeats}
           />
         </View>
 
         <View style={{ marginBottom: 20 }}>
-          <ParentFormLabel label="Insurance Details" />
+          <ParentFormLabel label="Driver’s License " />
           <TouchableOpacity>
             <View
               style={{
@@ -159,26 +174,65 @@ function VehicleForm(): JSX.Element {
                 justifyContent: "center",
                 alignItems: "center",
                 borderColor: "#E4E9F2",
+                marginTop: 15,
               }}
             >
-              <Text style={{ color: "#8F9BB3" }}>
-                Press here to upload photo of insurance details
-              </Text>
+              <ImageUpload
+                profileImage={insuranceImage}
+                pickImage={pickImage}
+              />
             </View>
           </TouchableOpacity>
         </View>
 
+        <View style={{ marginBottom: 10 }}>
+          <ParentFormLabel label="Vehicle Insurance Proof" />
+          <TouchableOpacity>
+            <View
+              style={{
+                backgroundColor: "#F7F9FC",
+                width: "100%",
+                borderRadius: 15,
+                height: 100,
+                justifyContent: "center",
+                alignItems: "center",
+                borderColor: "#E4E9F2",
+                marginTop: 15,
+              }}
+            >
+              <ImageUpload
+                profileImage={insuranceImage}
+                pickImage={pickImage}
+              />
+            </View>
+          </TouchableOpacity>
+        </View>
         <View
-          style={{ flex: 1, flexDirection: "row", justifyContent: "flex-end" }}
+          style={{
+            flexDirection: "row",
+            alignItems: "flex-start",
+            marginBottom: 80,
+          }}
+        >
+          <CheckBox
+            checked={checked}
+            onChange={(nextChecked) => setChecked(nextChecked)}
+          />
+          <Text style={{ fontSize: 12, color: "#000", marginLeft: 8 }}>
+            By checking this box, you agree to our Terms and Conditions and
+            acknowledge that you have read and understood the Carpool Agreement.
+          </Text>
+        </View>
+
+        <LinearGradient
+          colors={["#ff8833", "#e24a4a"]}
+          style={{ width: "100%", borderRadius: 50 }}
         >
           <TouchableOpacity
             style={{
-              backgroundColor: loading ? "#cccccc" : "#FF8833",
-              padding: 10,
-              borderRadius: 50,
-              marginRight: 10,
-              width: 100,
-              height: 50,
+              paddingVertical: 12,
+              alignItems: "center",
+              justifyContent: "center",
             }}
             onPress={handleSubmit}
             disabled={loading}
@@ -191,14 +245,13 @@ function VehicleForm(): JSX.Element {
                   color: "white",
                   textAlign: "center",
                   fontSize: 20,
-                  fontWeight: "semibold",
                 }}
               >
-                Next
+                Submit
               </Text>
             )}
           </TouchableOpacity>
-        </View>
+        </LinearGradient>
       </View>
     </ScrollView>
   );
