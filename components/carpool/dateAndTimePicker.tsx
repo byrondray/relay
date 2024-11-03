@@ -10,7 +10,7 @@ const RideDateTimePicker = ({
   handleTimeSelect,
   textColor,
 }: {
-  selectedDate: Date;
+  selectedDate: Date | null;
   handleDateSelect: (date: Date) => void;
   selectedTime: string;
   handleTimeSelect: (time: { hours: number; minutes: number }) => void;
@@ -48,6 +48,7 @@ const RideDateTimePicker = ({
         />
       </View>
 
+      {/* Time Section */}
       <TouchableOpacity onPress={() => setShowTimePicker(true)}>
         <View
           style={{
@@ -73,10 +74,14 @@ const RideDateTimePicker = ({
         </View>
       </TouchableOpacity>
 
+      {/* Time Picker Modal */}
       <TimePickerModal
         visible={showTimePicker}
         onDismiss={() => setShowTimePicker(false)}
-        onConfirm={handleTimeSelect}
+        onConfirm={(time) => {
+          handleTimeSelect(time); // Call parent function
+          setShowTimePicker(false); // Close modal
+        }}
         hours={12}
         minutes={0}
       />

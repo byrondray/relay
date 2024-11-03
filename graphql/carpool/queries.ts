@@ -156,7 +156,7 @@ export const GET_CARPOOLERS_WITHOUT_APPROVED_REQUESTS = gql`
     ) {
       id
       carpoolId
-      driverId
+      parentId
       groupId
       isApproved
       startAddress

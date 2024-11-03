@@ -87,7 +87,11 @@ const VehicleDetailsPicker = ({
                 setSelectedSeatsIndex(index);
               }
             }}
-            value={seatsAvailable[selectedSeatsIndex?.row]}
+            value={
+              seatsAvailable[selectedSeatsIndex?.row] !== undefined
+                ? `${seatsAvailable[selectedSeatsIndex.row]}`
+                : "Select Seats Available"
+            }
             placeholder="Select Seats Available"
           >
             {seatsAvailable.map((seat, index) => (

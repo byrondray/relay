@@ -436,13 +436,13 @@ export type RequestWithChildrenAndParent = {
   carpoolId?: Maybe<Scalars['String']['output']>;
   children: Array<ChildWithParent>;
   createdAt: Scalars['String']['output'];
-  driverId: Scalars['String']['output'];
   endAddress: Scalars['String']['output'];
   endingLat: Scalars['String']['output'];
   endingLon: Scalars['String']['output'];
   groupId: Scalars['String']['output'];
   id: Scalars['ID']['output'];
   isApproved: Scalars['Int']['output'];
+  parentId: Scalars['String']['output'];
   pickupTime: Scalars['String']['output'];
   startAddress: Scalars['String']['output'];
   startingLat: Scalars['String']['output'];
@@ -558,7 +558,7 @@ export type GetCarpoolersWithoutApprovedRequestsQueryVariables = Exact<{
 }>;
 
 
-export type GetCarpoolersWithoutApprovedRequestsQuery = { __typename?: 'Query', getCarpoolersByGroupWithoutApprovedRequests?: Array<{ __typename?: 'RequestWithChildrenAndParent', id: string, carpoolId?: string | null, driverId: string, groupId: string, isApproved: number, startAddress: string, endAddress: string, startingLat: string, startingLon: string, endingLat: string, endingLon: string, pickupTime: string, createdAt: string, children: Array<{ __typename?: 'ChildWithParent', id: string, firstName: string, schoolId: string, schoolEmailAddress?: string | null, imageUrl?: string | null, parent: { __typename?: 'User', id: string, firstName: string, lastName?: string | null, email: string, phoneNumber?: string | null, licenseImageUrl?: string | null, insuranceImageUrl?: string | null, city?: string | null, createdAt?: string | null, expoPushToken?: string | null } }> }> | null };
+export type GetCarpoolersWithoutApprovedRequestsQuery = { __typename?: 'Query', getCarpoolersByGroupWithoutApprovedRequests?: Array<{ __typename?: 'RequestWithChildrenAndParent', id: string, carpoolId?: string | null, parentId: string, groupId: string, isApproved: number, startAddress: string, endAddress: string, startingLat: string, startingLon: string, endingLat: string, endingLon: string, pickupTime: string, createdAt: string, children: Array<{ __typename?: 'ChildWithParent', id: string, firstName: string, schoolId: string, schoolEmailAddress?: string | null, imageUrl?: string | null, parent: { __typename?: 'User', id: string, firstName: string, lastName?: string | null, email: string, phoneNumber?: string | null, licenseImageUrl?: string | null, insuranceImageUrl?: string | null, city?: string | null, createdAt?: string | null, expoPushToken?: string | null } }> }> | null };
 
 export type GetGroupQueryVariables = Exact<{
   id: Scalars['ID']['input'];

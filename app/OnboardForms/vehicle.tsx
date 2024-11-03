@@ -10,7 +10,7 @@ import ParentFormLabel from "@/components/form/inputLabel";
 import ParentFormInput from "@/components/form/inputForm";
 import { Href, router } from "expo-router";
 import { useQuery, useMutation } from "@apollo/client";
-import { CREATE_VEHICLE, GET_VEHICLE_FOR_USER } from "@/graphql/queries";
+import { CREATE_VEHICLE, GET_VEHICLE_FOR_USER } from "@/graphql/user/queries";
 import { getAuth } from "firebase/auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ScrollView } from "react-native-gesture-handler";

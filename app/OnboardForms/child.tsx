@@ -13,7 +13,8 @@ import ParentFormLabel from "@/components/form/inputLabel";
 import ParentFormInput from "@/components/form/inputForm";
 import { router } from "expo-router";
 import { useMutation, useLazyQuery } from "@apollo/client";
-import { CREATE_CHILD, FILTER_SCHOOLS_BY_NAME } from "@/graphql/queries";
+import { FILTER_SCHOOLS_BY_NAME } from "@/graphql/map/queries";
+import { CREATE_CHILD } from "@/graphql/user/queries";
 import debounce from "lodash.debounce";
 
 function ChildForm(): JSX.Element {

@@ -36,7 +36,7 @@ export default function RootLayout() {
   const user = auth.currentUser;
   const userId = user?.uid;
 
-  // LogBox.ignoreAllLogs();
+  LogBox.ignoreAllLogs();
 
   useEffect(() => {
     if (!fontsLoaded) {

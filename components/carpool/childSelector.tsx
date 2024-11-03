@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { View } from "react-native";
 import ChildImage from "./childImage";
 import { useQuery } from "@apollo/client";
-import { GET_CHILDREN_FOR_USER } from "@/graphql/queries";
+import { GET_CHILDREN_FOR_USER } from "@/graphql/user/queries";
 import { Spinner } from "@ui-kitten/components";
 import { Image } from "react-native";
 import { Child } from "@/graphql/generated";

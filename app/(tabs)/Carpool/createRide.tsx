@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { ThemedAddressCompletionInput } from "@/components/ThemedAddressCompletionInput";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import MapView from "react-native-maps";
@@ -7,7 +7,11 @@ import { Button, IndexPath, Layout, Popover } from "@ui-kitten/components";
 import ChildSelector from "@/components/carpool/childSelector";
 import { useQuery } from "@apollo/client";
 import { auth } from "@/firebaseConfig";
-import { Carpool, Group, Request } from "@/graphql/generated";
+import {
+  Carpool,
+  Group,
+  RequestWithChildrenAndParent,
+} from "@/graphql/generated";
 import { haversineDistance } from "@/utils/distance";
 import { useDirections } from "@/hooks/map/useDirections";
 import { areCoordinatesEqual } from "@/utils/equalCoorordinates";
@@ -38,6 +42,7 @@ import {
 import RadioGroupComponent from "@/components/carpool/carpoolFrequency";
 import { CreateCarpoolInput } from "@/graphql/generated";
 import GroupPicker from "@/components/carpool/groupSelector";
+import WaypointSelector from "@/components/carpool/waypointSelector";
 
 const CreateRide = () => {
   const {
@@ -75,8 +80,6 @@ const CreateRide = () => {
     setDescription,
     selectedVehicleIndex,
     setSelectedVehicleIndex,
-    selectedSeatsIndex,
-    setSelectedSeatsIndex,
     activeRoute,
     setActiveRoute,
     previousRoutes,
@@ -90,23 +93,63 @@ const CreateRide = () => {
     new IndexPath(0)
   );
   const [groupId, setGroupId] = useState<string | null>(null);
+  const [selectedWaypoints, setSelectedWaypoints] = useState<
+    RequestWithChildrenAndParent[]
+  >([]);
+
+  const hasInitialDirectionsLoadedRef = useRef(false);
 
   const [createCarpool] = useMutation<
     { createCarpool: Carpool },
     { input: CreateCarpoolInput }
   >(CREATE_CARPOOL);
 
-  const [requests, setRequests] = useState<Request[]>([]);
+  const [requests, setRequests] = useState<RequestWithChildrenAndParent[]>([]);
   const user = auth.currentUser;
   const userId = user?.uid;
 
-  const seatsLeft =
-    vehicles[selectedVehicleIndex.row]?.seats - selectedChildren.length || 0;
-
-  const seatsAvailable = Array.from(
-    { length: seatsLeft },
-    (_, i) => seatsLeft - i
+  const totalSeatsTakenByWaypoints = selectedWaypoints.reduce(
+    (acc, waypoint) => {
+      return acc + waypoint.children.length;
+    },
+    0
   );
+
+  const [seatsLeft, setSeatsLeft] = useState(0);
+  const [seatsAvailable, setSeatsAvailable] = useState<number[]>([]);
+  const [selectedSeatsIndex, setSelectedSeatsIndex] = useState(
+    new IndexPath(0)
+  );
+
+  useEffect(() => {
+    const newSeatsLeft =
+      (vehicles[selectedVehicleIndex.row]?.seats || 0) -
+      selectedChildren.length -
+      totalSeatsTakenByWaypoints;
+
+    setSeatsLeft(newSeatsLeft);
+
+    const newSeatsAvailable =
+      newSeatsLeft > 0
+        ? Array.from({ length: newSeatsLeft + 1 }, (_, i) => newSeatsLeft - i)
+        : [0];
+
+    setSeatsAvailable(newSeatsAvailable);
+
+    setSelectedSeatsIndex((prevIndex) => {
+      if (newSeatsAvailable.length === 1 && newSeatsAvailable[0] === 0) {
+        return new IndexPath(0);
+      }
+      return prevIndex.row < newSeatsAvailable.length
+        ? prevIndex
+        : new IndexPath(newSeatsAvailable.length - 1);
+    });
+  }, [
+    selectedVehicleIndex,
+    selectedChildren,
+    totalSeatsTakenByWaypoints,
+    vehicles,
+  ]);
 
   interface LatLng {
     lat: number;
@@ -155,27 +198,27 @@ const CreateRide = () => {
   }, [startingAddress, endingAddress, dateAndTime, time]);
 
   const sortRequestsByDistance = (
-    requests: Request[],
+    requests: RequestWithChildrenAndParent[],
     startingLatLng: LatLng
   ) => {
-    return [...requests].sort((a: Request, b: Request) => {
-      const distanceA = haversineDistance(startingLatLng, {
-        lat: a.startingLat,
-        lon: a.startingLon,
-      });
-      const distanceB = haversineDistance(startingLatLng, {
-        lat: b.startingLat,
-        lon: b.startingLon,
-      });
-      return distanceA - distanceB;
-    });
+    return [...requests].sort(
+      (a: RequestWithChildrenAndParent, b: RequestWithChildrenAndParent) => {
+        const distanceA = haversineDistance(startingLatLng, {
+          lat: parseFloat(a.startingLat),
+          lon: parseFloat(a.startingLon),
+        });
+        const distanceB = haversineDistance(startingLatLng, {
+          lat: parseFloat(b.startingLat),
+          lon: parseFloat(b.startingLon),
+        });
+        return distanceA - distanceB;
+      }
+    );
   };
 
   const { data } = useQuery(GET_GROUPS, {
     onCompleted: (data) => {
-      console.log("Data", data);
       if (data) {
-        console.log("Groups", data.getGroups);
         setGroups(data.getGroups);
       }
     },
@@ -198,7 +241,13 @@ const CreateRide = () => {
       time,
       endingAddress,
     },
-    skip: !canSubmit,
+    skip:
+      !canSubmit ||
+      !groupId ||
+      !dateAndTime ||
+      !time ||
+      !endingAddress ||
+      !startingAddress,
     onCompleted: (data) => {
       if (data?.getCarpoolersByGroupWithoutApprovedRequests) {
         const sortedRequests = sortRequestsByDistance(
@@ -249,34 +298,73 @@ const CreateRide = () => {
   const { coordinates, getDirections, predictedTime } = useDirections();
   const mapRef = useRef<MapView>(null);
 
+  const waypoints = useMemo(() => {
+    const points = [];
+    let cumulativeSeatsTaken = 0;
+    const seatLimit = seatsAvailable[selectedSeatsIndex.row];
+
+    for (const request of requests) {
+      const seatsTakenByRequest = request.children.length;
+      if (cumulativeSeatsTaken + seatsTakenByRequest <= seatLimit) {
+        points.push({
+          latitude: parseFloat(request.startingLat),
+          longitude: parseFloat(request.startingLon),
+        });
+        cumulativeSeatsTaken += seatsTakenByRequest;
+      }
+      if (cumulativeSeatsTaken >= seatLimit) break;
+    }
+    return points;
+  }, [requests, seatsAvailable[selectedSeatsIndex.row]]);
+
+  const selectedRequests = useMemo(() => {
+    const selected = [];
+    let cumulativeSeatsTaken = 0;
+    const seatLimit = seatsAvailable[selectedSeatsIndex.row];
+
+    for (const request of requests) {
+      const seatsTakenByRequest = request.children.length;
+      if (cumulativeSeatsTaken + seatsTakenByRequest <= seatLimit) {
+        selected.push(request);
+        cumulativeSeatsTaken += seatsTakenByRequest;
+      }
+      if (cumulativeSeatsTaken >= seatLimit) break;
+    }
+    return selected;
+  }, [requests, seatsAvailable[selectedSeatsIndex.row]]);
+
   useEffect(() => {
-    if (startingAddress && endingAddress && requests.length > 0) {
-      const waypoints = requests.map((request) => ({
-        latitude: request.startingLat,
-        longitude: request.startingLon,
+    if (selectedWaypoints.length === 0 && selectedRequests.length > 0) {
+      setSelectedWaypoints(selectedRequests);
+    }
+  }, [selectedRequests, selectedWaypoints]);
+
+  useEffect(() => {
+    if (startingAddress && endingAddress && selectedWaypoints.length > 0) {
+      const waypointsForDirections = selectedWaypoints.map((wp) => ({
+        latitude: parseFloat(wp.startingLat),
+        longitude: parseFloat(wp.startingLon),
       }));
 
       getDirections(
         startingLatLng,
         endingLatLng,
-        waypoints.slice(0, seatsAvailable[selectedSeatsIndex.row]),
+        waypointsForDirections,
         new Date()
       ).then(({ coordinates: newCoordinates, predictedTime }) => {
         if (newCoordinates.length > 0) {
-          if (activeRoute.coordinates.length > 0) {
-            const isDuplicate = previousRoutes.some((route) =>
-              areCoordinatesEqual(route.coordinates, activeRoute.coordinates)
-            );
+          const isDuplicate = previousRoutes.some((route) =>
+            areCoordinatesEqual(route.coordinates, activeRoute.coordinates)
+          );
 
-            if (!isDuplicate) {
-              setPreviousRoutes((prevRoutes) => [
-                ...prevRoutes,
-                {
-                  coordinates: activeRoute.coordinates,
-                  predictedTime: activeRoute.predictedTime,
-                },
-              ]);
-            }
+          if (!isDuplicate) {
+            setPreviousRoutes((prevRoutes) => [
+              ...prevRoutes,
+              {
+                coordinates: activeRoute.coordinates,
+                predictedTime: activeRoute.predictedTime,
+              },
+            ]);
           }
 
           setActiveRoute({ coordinates: newCoordinates, predictedTime });
@@ -287,17 +375,17 @@ const CreateRide = () => {
               animated: true,
             });
           }
+
+          hasInitialDirectionsLoadedRef.current = true;
         }
       });
     }
   }, [
     startingAddress,
     endingAddress,
-    requests,
-    seatsLeft,
-    selectedChildren,
-    selectedSeatsIndex,
-    selectedGroupIndex,
+    selectedWaypoints,
+    startingLatLng,
+    endingLatLng,
   ]);
 
   const textColor = useThemeColor({}, "placeholder");
@@ -386,6 +474,16 @@ const CreateRide = () => {
           styles={styles}
           isActiveRoute={isActiveRoute}
           areCoordinatesEqual={areCoordinatesEqual}
+        />
+
+        <WaypointSelector
+          requests={requests}
+          selectedWaypoints={selectedWaypoints}
+          seatsAvailable={seatsLeft}
+          setSelectedWaypoints={setSelectedWaypoints}
+          vehicles={vehicles}
+          selectedVehicleIndex={selectedVehicleIndex}
+          selectedChildren={selectedChildren}
         />
 
         <Text

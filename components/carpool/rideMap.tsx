@@ -1,15 +1,11 @@
+import { RequestWithChildrenAndParent } from "@/graphql/generated";
 import React from "react";
 import { View, Text, Image } from "react-native";
 import MapView, { Marker, Polyline } from "react-native-maps";
 
 type RideMapProps = {
   mapRef: React.RefObject<MapView>;
-  requests: Array<{
-    id: string;
-    startingLat: number;
-    startingLon: number;
-    startAddress: string;
-  }>;
+  requests: RequestWithChildrenAndParent[];
   startingLatLng: { lat: number; lon: number };
   endingLatLng: { lat: number; lon: number };
   startingAddress: string;
@@ -76,8 +72,8 @@ const RideMap: React.FC<RideMapProps> = ({
           <Marker
             key={request.id}
             coordinate={{
-              latitude: request.startingLat,
-              longitude: request.startingLon,
+              latitude: parseFloat(request.startingLat),
+              longitude: parseFloat(request.startingLon),
             }}
             title={request.startAddress}
             anchor={{ x: 0.5, y: 0.5 }}

@@ -6,7 +6,7 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import { router } from "expo-router";
 import { getAuth } from "firebase/auth";
 import { useQuery, useMutation } from "@apollo/client";
-import { GET_USER, UPDATE_USER } from "@/graphql/queries";
+import { GET_USER, UPDATE_USER } from "@/graphql/user/queries";
 
 function ParentForm(): JSX.Element {
   const auth = getAuth();
