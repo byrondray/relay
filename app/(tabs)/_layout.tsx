@@ -2,7 +2,21 @@ import { Tabs } from "expo-router";
 import React from "react";
 import { TabBarIcon } from "@/components/navigation/TabBarIcon";
 import { useColorScheme } from "@/hooks/useColorScheme";
-import { StyleSheet } from "react-native";
+import { StyleSheet, View, Image } from "react-native";
+import { Text } from "@ui-kitten/components";
+import Relay from "@/assets/images/Relay.svg";
+
+function Header() {
+  return (
+    <View style={styles.headerContainer}>
+      <Image
+        source={require("@/assets/images/RelayLogo.png")}
+        style={{ width: 30 }}
+      />
+      <Relay style={{ marginLeft: 5 }} />
+    </View>
+  );
+}
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
@@ -14,7 +28,8 @@ export default function TabLayout() {
         tabBarInactiveTintColor: "#777",
         tabBarStyle: styles.navContainer,
         tabBarLabelStyle: styles.navText,
-        headerShown: false,
+        headerShown: true,
+        header: () => <Header />,
       }}
     >
       <Tabs.Screen
@@ -99,6 +114,14 @@ export default function TabLayout() {
 }
 
 const styles = StyleSheet.create({
+  headerContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    borderBottomWidth: 1,
+    height: 50,
+    borderBottomColor: "#ddd",
+  },
   navContainer: {
     flexDirection: "row",
     justifyContent: "space-around",

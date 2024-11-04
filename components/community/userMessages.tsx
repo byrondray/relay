@@ -16,7 +16,7 @@ const UserMessageCard = ({ profile }: { profile: Profile }) => (
     style={{
       flexDirection: "row",
       alignItems: "center",
-      padding: 1,
+      padding: 10,
       backgroundColor: "#fff",
       borderRadius: 40,
       marginTop: 10,
