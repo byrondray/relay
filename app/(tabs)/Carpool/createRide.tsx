@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { ThemedAddressCompletionInput } from "@/components/ThemedAddressCompletionInput";
 import { useThemeColor } from "@/hooks/useThemeColor";
-import MapView from "react-native-maps";
+import MapView, { LongPressEvent, MapPressEvent } from "react-native-maps";
 import { LinearGradient } from "expo-linear-gradient";
 import { Button, IndexPath, Layout, Popover } from "@ui-kitten/components";
 import ChildSelector from "@/components/carpool/childSelector";
@@ -37,12 +37,21 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
+  TouchableOpacity,
+  Animated,
+  PanResponder,
   StyleSheet,
+  Dimensions,
 } from "react-native";
 import RadioGroupComponent from "@/components/carpool/carpoolFrequency";
 import { CreateCarpoolInput } from "@/graphql/generated";
 import GroupPicker from "@/components/carpool/groupSelector";
 import WaypointSelector from "@/components/carpool/waypointSelector";
+import { Marker } from "react-native-maps";
+import { Image } from "react-native";
+import { Polyline } from "react-native-maps";
+
+const { height: deviceHeight } = Dimensions.get("window");
 
 const CreateRide = () => {
   const {
@@ -96,6 +105,7 @@ const CreateRide = () => {
   const [selectedWaypoints, setSelectedWaypoints] = useState<
     RequestWithChildrenAndParent[]
   >([]);
+  const [isFullScreen, setIsFullScreen] = useState(false);
 
   const hasInitialDirectionsLoadedRef = useRef(false);
 
@@ -388,6 +398,67 @@ const CreateRide = () => {
     endingLatLng,
   ]);
 
+  const getAddress = async (
+    latitude: number,
+    longitude: number
+  ): Promise<string> => {
+    try {
+      const response = await fetch(
+        `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${process.env.EXPO_PUBLIC_GOOGLE_MAPS_API}`
+      );
+      const data = await response.json();
+      if (data.results && data.results[0]) {
+        return data.results[0].formatted_address;
+      }
+      return "Address not found";
+    } catch (error) {
+      console.error(error);
+      return "Error fetching address";
+    }
+  };
+
+  const mapHeight = useRef(new Animated.Value(300)).current;
+
+  const toggleFullScreen = (expand: boolean) => {
+    const newHeight = expand ? deviceHeight : 300;
+    setIsFullScreen(expand);
+    Animated.timing(mapHeight, {
+      toValue: newHeight,
+      duration: 300,
+      useNativeDriver: false,
+    }).start();
+  };
+
+  const panResponder = useRef(
+    PanResponder.create({
+      onStartShouldSetPanResponder: () => true,
+      onPanResponderMove: (_, gestureState) => {
+        if (gestureState.dy > 50 && !isFullScreen) {
+          toggleFullScreen(true);
+        } else if (gestureState.dy < -50 && isFullScreen) {
+          toggleFullScreen(false);
+        }
+      },
+    })
+  ).current;
+
+  const handleLongPress = async (e: LongPressEvent) => {
+    const { latitude, longitude } = e.nativeEvent.coordinate;
+    console.log("Long press detected at:", latitude, longitude);
+
+    if (startingLatLng.lat === 0 && startingLatLng.lon === 0) {
+      setStartingLatLng({ lat: latitude, lon: longitude });
+      const address = await getAddress(latitude, longitude);
+      setStartingAddress(address);
+    } else if (endingLatLng.lat === 0 && endingLatLng.lon === 0) {
+      setEndingLatLng({ lat: latitude, lon: longitude });
+      const address = await getAddress(latitude, longitude);
+      setEndingAddress(address);
+    } else {
+      console.log("Both pins are already set.");
+    }
+  };
+
   const textColor = useThemeColor({}, "placeholder");
 
   return (
@@ -397,221 +468,389 @@ const CreateRide = () => {
     >
       <ScrollView
         contentContainerStyle={{
-          padding: 15,
           backgroundColor: "#ffffff",
           flexGrow: 1,
         }}
       >
-        <View>
-          <Text style={{ fontSize: 32, fontWeight: "bold", marginBottom: 20 }}>
-            Create a ride
-          </Text>
-        </View>
-        <Text style={{ color: "#FF6A00", fontSize: 22, marginBottom: 15 }}>
-          Itinerary
-        </Text>
-        <RadioGroupComponent
-          selectedIndex={selectedIndex}
-          setSelectedIndex={setSelectedIndex}
-        />
-        <Text style={{ color: textColor, marginBottom: 5 }}>From</Text>
-        <ThemedAddressCompletionInput
-          value={startingAddress}
-          onChangeText={(text) => setStartingAddress(text)}
-          onSuggestionSelect={(address) => {
-            setStartingAddress(address);
-          }}
-          onLatLonSelect={(lat, lon) => {
-            setStartingLatLng({ lat, lon });
-          }}
-          placeholder="Enter Origin"
-        />
-        <Text style={{ color: textColor, marginBottom: 5, marginTop: 15 }}>
-          To
-        </Text>
-        <ThemedAddressCompletionInput
-          value={endingAddress}
-          onChangeText={(text) => {
-            setEndingAddress(text);
-          }}
-          onSuggestionSelect={setEndingAddress}
-          onLatLonSelect={(lat, lon) => {
-            setEndingLatLng({ lat, lon });
-          }}
-          placeholder="Enter Destination"
-        />
-        <RideDateTimePicker
-          selectedDate={selectedDate}
-          handleDateSelect={handleDateSelect}
-          selectedTime={time}
-          handleTimeSelect={handleTimeConfirm}
-          textColor={textColor}
-        />
+        <View style={{ flex: 1 }}>
+          <Animated.View style={{ height: mapHeight }}>
+            <MapView
+              style={{ width: "100%", height: "100%" }}
+              initialRegion={{
+                latitude: 49.25,
+                longitude: -123.0014,
+                latitudeDelta: 0.01,
+                longitudeDelta: 0.01,
+              }}
+              onLongPress={handleLongPress}
+            >
+              {requests.map((request, index) => (
+                <Marker
+                  key={request.id}
+                  coordinate={{
+                    latitude: parseFloat(request.startingLat),
+                    longitude: parseFloat(request.startingLon),
+                  }}
+                  title={request.startAddress}
+                  anchor={{ x: 0.5, y: 0.5 }}
+                >
+                  <View style={styles.markerContainer}>
+                    <Image
+                      source={require("@/assets/images/pin-icon.png")}
+                      style={styles.markerImage}
+                    />
+                    <View style={styles.letterContainer}>
+                      <Text
+                        style={[styles.letterText, { fontFamily: "Comfortaa" }]}
+                      >
+                        {index + 1}
+                      </Text>
+                    </View>
+                  </View>
+                </Marker>
+              ))}
 
-        <Text style={{ color: textColor, marginBottom: 10, marginTop: 15 }}>
-          Seats Occupied
-        </Text>
-        <ChildSelector onSelectedChildrenChange={setSelectedChildren} />
-        <GroupPicker
-          groups={groups}
-          selectedGroupIndex={selectedGroupIndex}
-          setSelectedGroupIndex={setSelectedGroupIndex}
-          textColor={textColor}
-        />
-        <MapAiInfo />
-        <RideMap
-          mapRef={mapRef}
-          requests={requests}
-          startingLatLng={startingLatLng}
-          endingLatLng={endingLatLng}
-          startingAddress={startingAddress}
-          endingAddress={endingAddress}
-          previousRoutes={previousRoutes}
-          coordinates={coordinates}
-          activeRoute={activeRoute}
-          setActiveRoute={setActiveRoute}
-          setPreviousRoutes={setPreviousRoutes}
-          styles={styles}
-          isActiveRoute={isActiveRoute}
-          areCoordinatesEqual={areCoordinatesEqual}
-        />
+              {startingLatLng.lat !== 0 && (
+                <Marker
+                  coordinate={{
+                    latitude: startingLatLng.lat,
+                    longitude: startingLatLng.lon,
+                  }}
+                  title={startingAddress}
+                  anchor={{ x: 0.5, y: 0.5 }}
+                >
+                  <View
+                    style={{ alignItems: "center", justifyContent: "center" }}
+                  >
+                    <Image
+                      source={require("@/assets/images/starting-pin.png")}
+                      style={{ width: 40, height: 40, resizeMode: "contain" }}
+                    />
+                  </View>
+                </Marker>
+              )}
+              {endingLatLng.lat !== 0 && (
+                <Marker
+                  coordinate={{
+                    latitude: endingLatLng.lat,
+                    longitude: endingLatLng.lon,
+                  }}
+                  title={endingAddress}
+                  anchor={{ x: 0.5, y: 0.5 }}
+                >
+                  <View
+                    style={{ alignItems: "center", justifyContent: "center" }}
+                  >
+                    <Image
+                      source={require("@/assets/images/ending-pin.png")}
+                      style={{ width: 40, height: 40, resizeMode: "contain" }}
+                    />
+                  </View>
+                </Marker>
+              )}
 
-        <WaypointSelector
-          requests={requests}
-          selectedWaypoints={selectedWaypoints}
-          seatsAvailable={seatsLeft}
-          setSelectedWaypoints={setSelectedWaypoints}
-          vehicles={vehicles}
-          selectedVehicleIndex={selectedVehicleIndex}
-          selectedChildren={selectedChildren}
-        />
+              {previousRoutes.map((route, index) => (
+                <Polyline
+                  key={`previous-route-${index}`}
+                  coordinates={route.coordinates}
+                  strokeColor={isActiveRoute(route) ? "#FF6A00" : "#ff9950"}
+                  strokeWidth={isActiveRoute(route) ? 5 : 4}
+                  lineDashPattern={isActiveRoute(route) ? [] : [10, 10]}
+                  tappable={true}
+                />
+              ))}
 
-        <Text
-          style={{
-            color: "#8F9BB3",
-            textAlign: "left",
-            marginTop: 5,
-            marginBottom: 5,
-          }}
-        >
-          You choose the below passenger(s)
-        </Text>
-        <View style={{ width: "100%", marginBottom: 40 }}>
-          <CarpoolPickerBar />
-          <VehicleDetailsPicker
-            selectedVehicleIndex={selectedVehicleIndex}
-            selectedSeatsIndex={selectedSeatsIndex}
-            vehicles={vehicles}
-            seatsAvailable={seatsAvailable}
-            setSelectedVehicleIndex={setSelectedVehicleIndex}
-            setSelectedSeatsIndex={setSelectedSeatsIndex}
-            textColor={textColor}
-          />
-          <Text
-            style={{
-              color: "#FF6A00",
-              fontSize: 22,
-              marginTop: 15,
-            }}
-          >
-            Pricing
-          </Text>
-          <CarFeaturesCheckbox
-            extraCarseatChecked={extraCarseatChecked}
-            winterTiresChecked={winterTiresChecked}
-            setExtraCarseatChecked={setExtraCarseatChecked}
-            setWinterTiresChecked={setWinterTiresChecked}
-          />
-          <PaymentInfo />
-          <Text
-            style={{
-              color: "#FF6A00",
-              fontSize: 22,
-              marginTop: 15,
-            }}
-          >
-            Trip Preferences
-          </Text>
-          <TripDescriptionInput
-            textColor={textColor}
-            description={description}
-            setDescription={setDescription}
-          />
-        </View>
-        <View
-          style={{
-            flex: 1,
-            justifyContent: "center",
-            alignItems: "center",
-            paddingHorizontal: 16,
-            backgroundColor: "#fff",
-          }}
-        >
-          <LinearGradient
-            colors={["#ff8833", "#e24a4a"]}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 0 }}
+              {coordinates.length > 0 && (
+                <Polyline
+                  coordinates={coordinates.map((coord) => ({
+                    latitude: coord.latitude,
+                    longitude: coord.longitude,
+                  }))}
+                  fillColor="#FFC195"
+                  strokeColor="#FF6A00"
+                  strokeWidth={5}
+                />
+              )}
+            </MapView>
+          </Animated.View>
+
+          <View
+            {...panResponder.panHandlers}
             style={{
               width: "100%",
-              borderRadius: 15,
-              overflow: "hidden",
+              alignItems: "center",
+              paddingVertical: 10,
+              backgroundColor: "white",
             }}
           >
-            <Button
+            <View
               style={{
-                width: "100%",
-                paddingVertical: 12,
+                width: 60,
+                height: 5,
+                backgroundColor: "#FF8833",
+                borderRadius: 3,
               }}
-              appearance="ghost"
-              onPress={() => {
-                // createCarpool({
-                //   variables: {
-                //     input: {
-                //       driverId: userId!,
-                //       startLat: startingLatLng.lat,
-                //       startLon: startingLatLng.lon,
-                //       endLat: endingLatLng.lat,
-                //       endLon: endingLatLng.lon,
-                //       startAddress: startingAddress,
-                //       endAddress: endingAddress,
-                //       departureDate: dateAndTime,
-                //       departureTime: time,
-                //       tripPreferences: description,
-                //       vehicleId: vehicles[selectedVehicleIndex.row].id,
-                //       extraCarseat: extraCarseatChecked,
-                //       winterTires: winterTiresChecked,
-                //       children: selectedChildren.map((child) => child.id),
-                //       payment: {
-                //         amount: 10,
-                //         currency: "USD",
-                //       },
-                //     },
-                //   },
-                // });
+            />
+          </View>
+
+          {isFullScreen && (
+            <TouchableOpacity
+              style={{
+                position: "absolute",
+                top: 40,
+                right: 20,
+                backgroundColor: "white",
+                borderRadius: 20,
+                padding: 10,
+                elevation: 5,
+              }}
+              onPress={() => toggleFullScreen(false)}
+            >
+              <Image
+                source={{
+                  uri: "https://img.icons8.com/ios-filled/50/000000/close-window.png",
+                }}
+                style={{ width: 24, height: 24 }}
+              />
+            </TouchableOpacity>
+          )}
+
+          {activeRoute.predictedTime && (
+            <View style={styles.predictedTimeBox}>
+              <Text
+                style={[styles.predictedTimeText, { fontFamily: "Comfortaa" }]}
+              >
+                {`Estimated Time: ${activeRoute.predictedTime}`}
+              </Text>
+            </View>
+          )}
+        </View>
+        <View style={{ padding: 15 }}>
+          <View>
+            <Text
+              style={{ fontSize: 32, fontWeight: "bold", marginBottom: 20 }}
+            >
+              Create a ride
+            </Text>
+          </View>
+          <Text style={{ color: "#FF6A00", fontSize: 22, marginBottom: 15 }}>
+            Itinerary
+          </Text>
+          <RadioGroupComponent
+            selectedIndex={selectedIndex}
+            setSelectedIndex={setSelectedIndex}
+          />
+          <Text style={{ color: textColor, marginBottom: 5 }}>From</Text>
+          <ThemedAddressCompletionInput
+            value={startingAddress}
+            onChangeText={(text) => setStartingAddress(text)}
+            onSuggestionSelect={(address) => {
+              setStartingAddress(address);
+            }}
+            onLatLonSelect={(lat, lon) => {
+              setStartingLatLng({ lat, lon });
+            }}
+            placeholder="Enter Origin"
+          />
+          <Text style={{ color: textColor, marginBottom: 5, marginTop: 15 }}>
+            To
+          </Text>
+          <ThemedAddressCompletionInput
+            value={endingAddress}
+            onChangeText={(text) => {
+              setEndingAddress(text);
+            }}
+            onSuggestionSelect={setEndingAddress}
+            onLatLonSelect={(lat, lon) => {
+              setEndingLatLng({ lat, lon });
+            }}
+            placeholder="Enter Destination"
+          />
+          <RideDateTimePicker
+            selectedDate={selectedDate}
+            handleDateSelect={handleDateSelect}
+            selectedTime={time}
+            handleTimeSelect={handleTimeConfirm}
+            textColor={textColor}
+          />
+          <Text style={{ color: textColor, marginBottom: 10, marginTop: 15 }}>
+            Seats Occupied
+          </Text>
+          <ChildSelector onSelectedChildrenChange={setSelectedChildren} />
+          <GroupPicker
+            groups={groups}
+            selectedGroupIndex={selectedGroupIndex}
+            setSelectedGroupIndex={setSelectedGroupIndex}
+            textColor={textColor}
+          />
+          <MapAiInfo />
+          <RideMap
+            mapRef={mapRef}
+            requests={requests}
+            startingLatLng={startingLatLng}
+            endingLatLng={endingLatLng}
+            startingAddress={startingAddress}
+            endingAddress={endingAddress}
+            previousRoutes={previousRoutes}
+            coordinates={coordinates}
+            activeRoute={activeRoute}
+            setActiveRoute={setActiveRoute}
+            setPreviousRoutes={setPreviousRoutes}
+            styles={styles}
+            isActiveRoute={isActiveRoute}
+            areCoordinatesEqual={areCoordinatesEqual}
+            setSelectedWaypoints={setSelectedWaypoints}
+          />
+          <WaypointSelector
+            requests={requests}
+            selectedWaypoints={selectedWaypoints}
+            seatsAvailable={seatsLeft}
+            setSelectedWaypoints={setSelectedWaypoints}
+            vehicles={vehicles}
+            selectedVehicleIndex={selectedVehicleIndex}
+            selectedChildren={selectedChildren}
+          />
+          <Text
+            style={{
+              color: "#8F9BB3",
+              textAlign: "left",
+              marginTop: 5,
+              marginBottom: 5,
+              fontFamily: "Comfortaa",
+            }}
+          >
+            You choose the below passenger(s)
+          </Text>
+          <View style={{ width: "100%", marginBottom: 40 }}>
+            <CarpoolPickerBar
+              selectedWaypoints={selectedWaypoints}
+              sortedRequests={requests}
+            />
+            <VehicleDetailsPicker
+              selectedVehicleIndex={selectedVehicleIndex}
+              selectedSeatsIndex={selectedSeatsIndex}
+              vehicles={vehicles}
+              seatsAvailable={seatsAvailable}
+              setSelectedVehicleIndex={setSelectedVehicleIndex}
+              setSelectedSeatsIndex={setSelectedSeatsIndex}
+              textColor={textColor}
+            />
+            <Text
+              style={{
+                color: "#FF6A00",
+                fontSize: 22,
+                marginTop: 15,
+                fontFamily: "Comfortaa",
               }}
             >
-              {() => (
-                <Text style={{ color: "#fff", fontSize: 16 }}>Submit</Text>
-              )}
-            </Button>
-          </LinearGradient>
-          <Popover
-            backdropStyle={styles.backdrop}
-            visible={visible}
-            anchor={() => renderToggleButton()}
-            onBackdropPress={() => setVisible(false)}
+              Pricing
+            </Text>
+            <CarFeaturesCheckbox
+              extraCarseatChecked={extraCarseatChecked}
+              winterTiresChecked={winterTiresChecked}
+              setExtraCarseatChecked={setExtraCarseatChecked}
+              setWinterTiresChecked={setWinterTiresChecked}
+            />
+            <PaymentInfo />
+            <Text
+              style={{
+                color: "#FF6A00",
+                fontSize: 22,
+                marginTop: 15,
+                fontFamily: "Comfortaa",
+              }}
+            >
+              Trip Preferences
+            </Text>
+            <TripDescriptionInput
+              textColor={textColor}
+              description={description}
+              setDescription={setDescription}
+            />
+          </View>
+          <View
             style={{
-              marginBottom: 400,
-              maxWidth: 330,
-              height: 80,
-              padding: 20,
-              borderRadius: 10,
+              flex: 1,
+              justifyContent: "center",
+              alignItems: "center",
+              paddingHorizontal: 16,
+              backgroundColor: "#fff",
             }}
           >
-            <Layout style={styles.content}>
-              <Text>Your ride has been successfully created👍</Text>
-            </Layout>
-          </Popover>
+            <LinearGradient
+              colors={["#ff8833", "#e24a4a"]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              style={{
+                width: "100%",
+                borderRadius: 15,
+                overflow: "hidden",
+              }}
+            >
+              <Button
+                style={{
+                  width: "100%",
+                  paddingVertical: 12,
+                }}
+                appearance="ghost"
+                onPress={() => {
+                  // createCarpool({
+                  //   variables: {
+                  //     input: {
+                  //       driverId: userId!,
+                  //       startLat: startingLatLng.lat,
+                  //       startLon: startingLatLng.lon,
+                  //       endLat: endingLatLng.lat,
+                  //       endLon: endingLatLng.lon,
+                  //       startAddress: startingAddress,
+                  //       endAddress: endingAddress,
+                  //       departureDate: dateAndTime,
+                  //       departureTime: time,
+                  //       tripPreferences: description,
+                  //       vehicleId: vehicles[selectedVehicleIndex.row].id,
+                  //       extraCarseat: extraCarseatChecked,
+                  //       winterTires: winterTiresChecked,
+                  //       children: selectedChildren.map((child) => child.id),
+                  //       payment: {
+                  //         amount: 10,
+                  //         currency: "USD",
+                  //       },
+                  //     },
+                  //   },
+                  // });
+                }}
+              >
+                {() => (
+                  <Text
+                    style={{
+                      color: "#fff",
+                      fontSize: 16,
+                      fontFamily: "Comfortaa",
+                    }}
+                  >
+                    Submit
+                  </Text>
+                )}
+              </Button>
+            </LinearGradient>
+            <Popover
+              backdropStyle={styles.backdrop}
+              visible={visible}
+              anchor={() => renderToggleButton()}
+              onBackdropPress={() => setVisible(false)}
+              style={{
+                marginBottom: 400,
+                maxWidth: 330,
+                height: 80,
+                padding: 20,
+                borderRadius: 10,
+              }}
+            >
+              <Layout style={styles.content}>
+                <Text>Your ride has been successfully created👍</Text>
+              </Layout>
+            </Popover>
+          </View>
         </View>
       </ScrollView>
     </KeyboardAvoidingView>

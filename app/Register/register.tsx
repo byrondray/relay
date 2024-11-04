@@ -52,6 +52,7 @@ export default function RegisterScreen(): JSX.Element {
                   alignSelf: "flex-start",
                   marginBottom: 5,
                   marginLeft: 10,
+                  fontFamily: "Comfortaa",
                 }}
               >
                 Name
@@ -60,7 +61,10 @@ export default function RegisterScreen(): JSX.Element {
                 placeholder="Name"
                 value={name}
                 onChangeText={setName}
-                style={[styles.input, { marginBottom: 10 }]}
+                style={[
+                  styles.input,
+                  { marginBottom: 10, fontFamily: "Comfortaa" },
+                ]}
                 placeholderTextColor="#b0b0b0"
               />
 
@@ -70,6 +74,7 @@ export default function RegisterScreen(): JSX.Element {
                   alignSelf: "flex-start",
                   marginBottom: 5,
                   marginLeft: 10,
+                  fontFamily: "Comfortaa",
                 }}
               >
                 Email
@@ -78,7 +83,10 @@ export default function RegisterScreen(): JSX.Element {
                 placeholder="Email"
                 value={email.toLowerCase()}
                 onChangeText={setEmail}
-                style={[styles.input, { marginBottom: 10 }]}
+                style={[
+                  styles.input,
+                  { marginBottom: 10, fontFamily: "Comfortaa" },
+                ]}
                 placeholderTextColor="#b0b0b0"
               />
 
@@ -88,6 +96,7 @@ export default function RegisterScreen(): JSX.Element {
                   alignSelf: "flex-start",
                   marginBottom: 5,
                   marginLeft: 10,
+                  fontFamily: "Comfortaa",
                 }}
               >
                 Password
@@ -97,7 +106,7 @@ export default function RegisterScreen(): JSX.Element {
                 value={password}
                 onChangeText={setPassword}
                 secureTextEntry
-                style={styles.input}
+                style={[styles.input, { fontFamily: "Comfortaa" }]}
                 placeholderTextColor="#b0b0b0"
               />
 
@@ -119,7 +128,9 @@ export default function RegisterScreen(): JSX.Element {
                     marginHorizontal: 10,
                   }}
                 />
-                <Text style={{ color: "white" }}>Or Sign Up With</Text>
+                <Text style={{ color: "white", fontFamily: "Comfortaa" }}>
+                  Or Sign Up With
+                </Text>
                 <View
                   style={{
                     flex: 1,
@@ -225,6 +236,7 @@ const styles = StyleSheet.create({
   buttonText: {
     color: "black",
     fontSize: 16,
+    fontFamily: "Comfortaa",
   },
   link: {
     textDecorationLine: "underline",

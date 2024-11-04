@@ -27,10 +27,12 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "#8F9BB3",
     fontWeight: "600",
+    fontFamily: "Comfortaa",
   },
   requiredText: {
     fontSize: 14,
     color: "#8F9BB3",
+    fontFamily: "Comfortaa",
   },
 });
 

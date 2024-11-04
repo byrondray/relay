@@ -111,11 +111,18 @@ function HomeScreen() {
                   fontSize: 20,
                   fontWeight: "semibold",
                   marginBottom: 3,
+                  fontFamily: "Comfortaa",
                 }}
               >
                 I'm a driver
               </Text>
-              <Text style={{ color: "#8F9BB3", fontSize: 16 }}>
+              <Text
+                style={{
+                  color: "#8F9BB3",
+                  fontSize: 16,
+                  fontFamily: "Comfortaa",
+                }}
+              >
                 I'm available to carpool other kids.
               </Text>
             </View>
@@ -156,11 +163,18 @@ function HomeScreen() {
                   fontSize: 20,
                   fontWeight: "semibold",
                   marginBottom: 3,
+                  fontFamily: "Comfortaa",
                 }}
               >
                 Looking for a ride for my kid
               </Text>
-              <Text style={{ color: "#8F9BB3", fontSize: 16 }}>
+              <Text
+                style={{
+                  color: "#8F9BB3",
+                  fontSize: 16,
+                  fontFamily: "Comfortaa",
+                }}
+              >
                 Notify me when a ride matches
               </Text>
             </View>

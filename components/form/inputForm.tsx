@@ -36,6 +36,7 @@ const styles = StyleSheet.create({
     paddingLeft: 20,
     fontSize: 16,
     color: "#A0A3BD",
+    fontFamily: "Comfortaa",
   },
 });
 

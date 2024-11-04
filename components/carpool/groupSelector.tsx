@@ -22,11 +22,16 @@ const GroupPicker = ({
           fontSize: 22,
           marginBottom: 15,
           marginTop: 15,
+          fontFamily: "Comfortaa",
         }}
       >
         Select Group
       </Text>
-      <Text style={{ color: textColor, marginBottom: 5 }}>Groups</Text>
+      <Text
+        style={{ color: textColor, marginBottom: 5, fontFamily: "Comfortaa" }}
+      >
+        Groups
+      </Text>
       <View
         style={{
           backgroundColor: "#F7F9FC",

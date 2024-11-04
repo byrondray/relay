@@ -12,7 +12,14 @@ const TripDescriptionInput = ({
 }) => {
   return (
     <View>
-      <Text style={{ color: textColor, marginBottom: 5, marginTop: 10 }}>
+      <Text
+        style={{
+          color: textColor,
+          marginBottom: 5,
+          marginTop: 10,
+          fontFamily: "Comfortaa",
+        }}
+      >
         Description
       </Text>
       <TextInput
@@ -25,6 +32,7 @@ const TripDescriptionInput = ({
           height: 100,
           paddingLeft: 30,
           paddingRight: 30,
+          fontFamily: "Comfortaa",
         }}
         placeholder="Any preferences for trips? (e.g., preferred age range of kids, allowed stopovers, special requests)"
         multiline={true}

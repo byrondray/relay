@@ -20,7 +20,14 @@ const PaymentInfo = ({}) => {
         marginTop: 20,
       }}
     >
-      <Text style={{ fontSize: 16, color: "#222B45", padding: 7 }}>
+      <Text
+        style={{
+          fontSize: 16,
+          color: "#222B45",
+          padding: 7,
+          fontFamily: "Comfortaa",
+        }}
+      >
         Please note that Relay does not handle payment processing. Any costs
         shared between users are arranged directly between them.
       </Text>

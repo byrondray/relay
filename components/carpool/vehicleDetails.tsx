@@ -27,11 +27,16 @@ const VehicleDetailsPicker = ({
           fontSize: 22,
           marginBottom: 15,
           marginTop: 15,
+          fontFamily: "Comfortaa",
         }}
       >
         Vehicle Details
       </Text>
-      <Text style={{ color: textColor, marginBottom: 5 }}>Select Vehicle</Text>
+      <Text
+        style={{ color: textColor, marginBottom: 5, fontFamily: "Comfortaa" }}
+      >
+        Select Vehicle
+      </Text>
       <View>
         <View
           style={{
@@ -66,7 +71,9 @@ const VehicleDetailsPicker = ({
           </Select>
         </View>
 
-        <Text style={{ color: textColor, marginBottom: 5 }}>
+        <Text
+          style={{ color: textColor, marginBottom: 5, fontFamily: "Comfortaa" }}
+        >
           Seats Available
         </Text>
         <View

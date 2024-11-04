@@ -97,7 +97,9 @@ const WaypointSelector = ({
               style={styles.checkmarkIcon}
             />
           ) : (
-            <Text style={styles.badgeText}>{index + 1}</Text>
+            <Text style={[styles.badgeText, { fontFamily: "Comfortaa" }]}>
+              {index + 1}
+            </Text>
           )}
         </View>
 
@@ -107,10 +109,12 @@ const WaypointSelector = ({
             { backgroundColor: "#fff", borderWidth: 1, borderColor: "#FF6A00" },
           ]}
         >
-          <Text style={styles.initialsText}>{initials}</Text>
+          <Text style={[styles.initialsText, { fontFamily: "Comfortaa" }]}>
+            {initials}
+          </Text>
         </View>
 
-        <Text style={styles.seatRequestText}>
+        <Text style={[styles.seatRequestText, { fontFamily: "Comfortaa" }]}>
           {seatRequestCount} seat request{seatRequestCount > 1 ? "s" : ""}
         </Text>
       </TouchableOpacity>

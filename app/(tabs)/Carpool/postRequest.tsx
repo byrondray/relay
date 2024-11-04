@@ -132,7 +132,11 @@ const RequestRide = () => {
       appearance="ghost"
       onPress={handleSubmit}
     >
-      {() => <Text style={{ color: "#fff", fontSize: 16 }}>Submit</Text>}
+      {() => (
+        <Text style={{ color: "#fff", fontSize: 16, fontFamily: "Comfortaa" }}>
+          Submit
+        </Text>
+      )}
     </Button>
   );
 
@@ -149,7 +153,14 @@ const RequestRide = () => {
         }}
       >
         <View>
-          <Text style={{ fontSize: 32, fontWeight: "bold", marginBottom: 20 }}>
+          <Text
+            style={{
+              fontSize: 32,
+              fontWeight: "bold",
+              marginBottom: 20,
+              fontFamily: "Comfortaa",
+            }}
+          >
             Post a request
           </Text>
         </View>
@@ -160,8 +171,24 @@ const RequestRide = () => {
         />
 
         <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-          <Text style={{ color: textColor, marginBottom: 5 }}>From</Text>
-          <Text style={{ color: textColor, marginBottom: 5 }}>* Required</Text>
+          <Text
+            style={{
+              color: textColor,
+              marginBottom: 5,
+              fontFamily: "Comfortaa",
+            }}
+          >
+            From
+          </Text>
+          <Text
+            style={{
+              color: textColor,
+              marginBottom: 5,
+              fontFamily: "Comfortaa",
+            }}
+          >
+            * Required
+          </Text>
         </View>
 
         <ThemedAddressCompletionInput
@@ -200,7 +227,14 @@ const RequestRide = () => {
           handleTimeSelect={handleTimeConfirm}
           textColor={textColor}
         />
-        <Text style={{ color: textColor, marginBottom: 10, marginTop: 15 }}>
+        <Text
+          style={{
+            color: textColor,
+            marginBottom: 10,
+            marginTop: 15,
+            fontFamily: "Comfortaa",
+          }}
+        >
           Seats Occupied
         </Text>
         <ChildSelector

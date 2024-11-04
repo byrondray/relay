@@ -21,7 +21,14 @@ const RideDateTimePicker = ({
   return (
     <View>
       {/* Date Section */}
-      <Text style={{ marginBottom: 5, marginTop: 15, color: "#8F9BB3" }}>
+      <Text
+        style={{
+          marginBottom: 5,
+          marginTop: 15,
+          color: "#8F9BB3",
+          fontFamily: "Comfortaa",
+        }}
+      >
         Date & Time of Ride
       </Text>
       <View
@@ -68,7 +75,14 @@ const RideDateTimePicker = ({
             source={require("@/assets/images/calendar-icon.png")}
             style={{ marginTop: 2 }}
           />
-          <Text style={{ marginLeft: 15, color: textColor, marginRight: 25 }}>
+          <Text
+            style={{
+              marginLeft: 15,
+              color: textColor,
+              marginRight: 25,
+              fontFamily: "Comfortaa",
+            }}
+          >
             {selectedTime ? selectedTime : "Select Date & Time"}
           </Text>
         </View>

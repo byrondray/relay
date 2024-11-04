@@ -111,9 +111,15 @@ function ChildForm(): JSX.Element {
       style={styles.container}
       behavior={Platform.OS === "ios" ? "padding" : undefined}
     >
-      <Text style={styles.heading}>Kid Info</Text>
+      <Text style={[styles.heading, { fontFamily: "Comfortaa" }]}>
+        Kid Info
+      </Text>
 
-      {errorMessage && <Text style={styles.errorText}>{errorMessage}</Text>}
+      {errorMessage && (
+        <Text style={[styles.errorText, { fontFamily: "Comfortaa" }]}>
+          {errorMessage}
+        </Text>
+      )}
 
       {children.map((child, index) => (
         <View key={index} style={{ marginBottom: 20 }}>
@@ -157,7 +163,9 @@ function ChildForm(): JSX.Element {
                   <TouchableOpacity
                     onPress={() => handleSchoolSelect(index, item.name)}
                   >
-                    <Text style={styles.schoolResult}>
+                    <Text
+                      style={[styles.schoolResult, { fontFamily: "Comfortaa" }]}
+                    >
                       {item.name} - {item.city}
                     </Text>
                   </TouchableOpacity>
@@ -187,7 +195,10 @@ function ChildForm(): JSX.Element {
           marginBottom: 20,
         }}
       >
-        <Text style={{ color: "#8F9BB3" }} onPress={handleAddKid}>
+        <Text
+          style={{ color: "#8F9BB3", fontFamily: "Comfortaa" }}
+          onPress={handleAddKid}
+        >
           + Add Kid
         </Text>
       </View>
@@ -219,6 +230,7 @@ function ChildForm(): JSX.Element {
                 textAlign: "center",
                 fontSize: 20,
                 fontWeight: "semibold",
+                fontFamily: "Comfortaa",
               }}
             >
               Next

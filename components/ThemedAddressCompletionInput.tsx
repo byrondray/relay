@@ -86,7 +86,11 @@ export function ThemedAddressCompletionInput({
   return (
     <View style={style}>
       <TextInput
-        style={[styles.input, { color: textColor, paddingLeft: 15 }, style]}
+        style={[
+          styles.input,
+          { color: textColor, paddingLeft: 15, fontFamily: "Comfortaa" },
+          style,
+        ]}
         value={value}
         onChangeText={(text) => {
           if (!isSuggestionSelected) {
@@ -133,5 +137,6 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     backgroundColor: "#F7F9FC",
     borderColor: "#E4E9F2",
+    fontFamily: "Comfortaa",
   },
 });

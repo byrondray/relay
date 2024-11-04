@@ -77,15 +77,25 @@ function VehicleForm(): JSX.Element {
   }
 
   if (vehicleError) {
-    return <Text style={styles.errorText}>Error loading vehicle data.</Text>;
+    return (
+      <Text style={[styles.errorText, { fontFamily: "Comfortaa" }]}>
+        Error loading vehicle data.
+      </Text>
+    );
   }
 
   return (
     <ScrollView>
       <View style={[styles.container, { backgroundColor: "#ffffff" }]}>
-        <Text style={styles.heading}>Vehicle Information</Text>
+        <Text style={[styles.heading, { fontFamily: "Comfortaa" }]}>
+          Vehicle Information
+        </Text>
 
-        {errorMessage && <Text style={styles.errorText}>{errorMessage}</Text>}
+        {errorMessage && (
+          <Text style={[styles.errorText, { fontFamily: "Comfortaa" }]}>
+            {errorMessage}
+          </Text>
+        )}
 
         <View style={{ marginBottom: 20 }}>
           <ParentFormLabel label="Make" />
@@ -161,7 +171,7 @@ function VehicleForm(): JSX.Element {
                 borderColor: "#E4E9F2",
               }}
             >
-              <Text style={{ color: "#8F9BB3" }}>
+              <Text style={{ color: "#8F9BB3", fontFamily: "Comfortaa" }}>
                 Press here to upload photo of insurance details
               </Text>
             </View>
@@ -192,6 +202,7 @@ function VehicleForm(): JSX.Element {
                   textAlign: "center",
                   fontSize: 20,
                   fontWeight: "semibold",
+                  fontFamily: "Comfortaa",
                 }}
               >
                 Next

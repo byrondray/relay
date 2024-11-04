@@ -48,16 +48,16 @@ function ParentForm(): JSX.Element {
     }
 
     try {
-    //   await updateUser({
-    //     variables: {
-    //       id: auth.currentUser?.uid,
-    //       firstName,
-    //       lastName,
-    //       phoneNumber,
-    //       email,
-    //       city: location,
-    //     },
-    //   });
+      //   await updateUser({
+      //     variables: {
+      //       id: auth.currentUser?.uid,
+      //       firstName,
+      //       lastName,
+      //       phoneNumber,
+      //       email,
+      //       city: location,
+      //     },
+      //   });
       router.push("/OnboardForms/child");
     } catch (err) {
       setSubmissionError("Failed to update user info. Please try again.");
@@ -70,12 +70,20 @@ function ParentForm(): JSX.Element {
 
   return (
     <View style={[styles.container, { backgroundColor: "#ffffff" }]}>
-      <Text style={styles.heading}>Parent Info</Text>
+      <Text style={[styles.heading, { fontFamily: "Comfortaa" }]}>
+        Parent Info
+      </Text>
 
-      {errorMessage && <Text style={styles.errorText}>{errorMessage}</Text>}
+      {errorMessage && (
+        <Text style={[styles.errorText, { fontFamily: "Comfortaa" }]}>
+          {errorMessage}
+        </Text>
+      )}
 
       {submissionError && (
-        <Text style={styles.errorText}>{submissionError}</Text>
+        <Text style={[styles.errorText, { fontFamily: "Comfortaa" }]}>
+          {submissionError}
+        </Text>
       )}
 
       <View style={{ marginBottom: 20 }}>
@@ -151,6 +159,7 @@ function ParentForm(): JSX.Element {
                 textAlign: "center",
                 fontSize: 20,
                 fontWeight: "semibold",
+                fontFamily: "Comfortaa",
               }}
             >
               Next

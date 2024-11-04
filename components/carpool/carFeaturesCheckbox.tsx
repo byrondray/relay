@@ -41,7 +41,9 @@ const CarFeaturesCheckbox = ({
           checked={winterTiresChecked}
           onChange={(nextChecked) => setWinterTiresChecked(nextChecked)}
         />
-        <Text style={{ marginLeft: 8 }}>With Winter Tires</Text>
+        <Text style={{ marginLeft: 8, fontFamily: "Comfortaa" }}>
+          With Winter Tires
+        </Text>
       </View>
     </View>
   );

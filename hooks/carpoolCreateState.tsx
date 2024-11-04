@@ -2,7 +2,6 @@ import { useState } from "react";
 import { IndexPath } from "@ui-kitten/components";
 import { Vehicle } from "@/graphql/generated";
 
-
 export interface LatLng {
   lat: number;
   lon: number;
@@ -32,16 +31,21 @@ export const useRideState = () => {
   const [selectedVehicleIndex, setSelectedVehicleIndex] = useState(
     new IndexPath(0)
   );
-  
+
   const [activeRoute, setActiveRoute] = useState<{
-    coordinates: any[];
+    coordinates: { latitude: number; longitude: number }[];
     predictedTime?: string;
   }>({
     coordinates: [],
   });
+
   const [previousRoutes, setPreviousRoutes] = useState<
-    { coordinates: any[]; predictedTime?: string }[]
+    Array<{
+      coordinates: { latitude: number; longitude: number }[];
+      predictedTime?: string;
+    }>
   >([]);
+
   const [selectedIndex, setSelectedIndex] = useState(0);
 
   return {

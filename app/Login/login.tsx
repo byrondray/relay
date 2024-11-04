@@ -50,6 +50,7 @@ export default function LoginScreen(): JSX.Element {
                   alignSelf: "flex-start",
                   marginBottom: 5,
                   marginLeft: 10,
+                  fontFamily: "Comfortaa",
                 }}
               >
                 Email
@@ -68,6 +69,7 @@ export default function LoginScreen(): JSX.Element {
                   alignSelf: "flex-start",
                   marginBottom: 5,
                   marginLeft: 10,
+                  fontFamily: "Comfortaa",
                 }}
               >
                 Password
@@ -79,7 +81,7 @@ export default function LoginScreen(): JSX.Element {
                 value={password}
                 onChangeText={setPassword}
                 secureTextEntry
-                style={styles.input}
+                style={[styles.input, { fontFamily: "Comfortaa" }]}
                 placeholderTextColor="#b0b0b0"
               />
 
@@ -89,6 +91,7 @@ export default function LoginScreen(): JSX.Element {
                   marginRight: 10,
                   color: "#F4C542",
                   marginBottom: 12,
+                  fontFamily: "Comfortaa",
                 }}
               >
                 Forgot Password?
@@ -99,7 +102,9 @@ export default function LoginScreen(): JSX.Element {
                 onPress={handleEmailPasswordSignIn}
                 style={styles.button}
               >
-                <Text style={styles.buttonText}>Sign In</Text>
+                <Text style={[styles.buttonText, { fontFamily: "Comfortaa" }]}>
+                  Sign In
+                </Text>
               </TouchableOpacity>
               <View style={{ flex: 1, flexDirection: "row", width: "100%" }}>
                 <View
@@ -110,7 +115,9 @@ export default function LoginScreen(): JSX.Element {
                     marginHorizontal: 10,
                   }}
                 />
-                <Text style={{ color: "white" }}>Or Sign In With</Text>
+                <Text style={{ color: "white", fontFamily: "Comfortaa" }}>
+                  Or Sign In With
+                </Text>
                 <View
                   style={{
                     flex: 1,
@@ -159,11 +166,13 @@ export default function LoginScreen(): JSX.Element {
                 Don't have an account? Sign Up
               </Link>
 
-              {error ? <Text style={{ color: "red" }}>{error}</Text> : null}
+              {error ? (
+                <Text style={{ color: "red", fontFamily: "Comfortaa" }}>
+                  {error}
+                </Text>
+              ) : null}
             </View>
           )}
-
-          {/* Social Buttons */}
         </View>
       </LinearGradient>
     </ImageBackground>

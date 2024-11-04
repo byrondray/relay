@@ -38,6 +38,7 @@ type RideMapProps = {
     coords1: Array<{ latitude: number; longitude: number }>,
     coords2: Array<{ latitude: number; longitude: number }>
   ) => boolean;
+  setSelectedWaypoints: (waypoints: RequestWithChildrenAndParent[]) => void;
 };
 
 const RideMap: React.FC<RideMapProps> = ({
@@ -55,6 +56,7 @@ const RideMap: React.FC<RideMapProps> = ({
   styles,
   isActiveRoute,
   areCoordinatesEqual,
+  setSelectedWaypoints,
 }) => {
   return (
     <View style={{ flex: 1 }}>
@@ -84,7 +86,9 @@ const RideMap: React.FC<RideMapProps> = ({
                 style={styles.markerImage}
               />
               <View style={styles.letterContainer}>
-                <Text style={styles.letterText}>{index + 1}</Text>
+                <Text style={[styles.letterText, { fontFamily: "Comfortaa" }]}>
+                  {index + 1}
+                </Text>
               </View>
             </View>
           </Marker>
@@ -132,24 +136,40 @@ const RideMap: React.FC<RideMapProps> = ({
             coordinates={route.coordinates}
             strokeColor={isActiveRoute(route) ? "#FF6A00" : "#ff9950"}
             strokeWidth={isActiveRoute(route) ? 5 : 4}
-            lineDashPattern={isActiveRoute(route) ? [] : [5, 5]}
+            lineDashPattern={isActiveRoute(route) ? [] : [10, 10]}
             tappable={true}
             onPress={() => {
-              if (activeRoute.coordinates.length > 0) {
-                const isDuplicate = previousRoutes.some((r) =>
-                  areCoordinatesEqual(r.coordinates, activeRoute.coordinates)
-                );
-                if (!isDuplicate) {
-                  setPreviousRoutes([
-                    ...previousRoutes,
-                    { coordinates: activeRoute.coordinates },
-                  ]);
-                }
+              if (route.coordinates && route.coordinates.length > 0) {
+                setActiveRoute({
+                  coordinates: route.coordinates,
+                  predictedTime: route.predictedTime,
+                });
               }
-              setActiveRoute({
-                coordinates: route.coordinates,
-                predictedTime: route.predictedTime,
-              });
+
+              const newSelectedWaypoints = requests.filter((request) =>
+                route.coordinates.some(
+                  (coord) =>
+                    parseFloat(request.startingLat) === coord.latitude &&
+                    parseFloat(request.startingLon) === coord.longitude
+                )
+              );
+
+              setSelectedWaypoints(newSelectedWaypoints);
+
+              if (
+                activeRoute.coordinates.length > 0 &&
+                !previousRoutes.some((r) =>
+                  areCoordinatesEqual(r.coordinates, activeRoute.coordinates)
+                )
+              ) {
+                setPreviousRoutes([
+                  ...previousRoutes,
+                  {
+                    coordinates: activeRoute.coordinates,
+                    predictedTime: activeRoute.predictedTime,
+                  },
+                ]);
+              }
             }}
           />
         ))}
@@ -169,7 +189,7 @@ const RideMap: React.FC<RideMapProps> = ({
 
       {activeRoute.predictedTime && (
         <View style={styles.predictedTimeBox}>
-          <Text style={styles.predictedTimeText}>
+          <Text style={[styles.predictedTimeText, { fontFamily: "Comfortaa" }]}>
             {`Estimated Time: ${activeRoute.predictedTime}`}
           </Text>
         </View>
