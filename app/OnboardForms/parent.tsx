@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Text, View, StyleSheet, ActivityIndicator } from "react-native";
+import { Text, View, StyleSheet, ActivityIndicator, Image } from "react-native";
 import ParentFormLabel from "@/components/form/inputLabel";
 import ParentFormInput from "@/components/form/inputForm";
 import { TouchableOpacity } from "react-native-gesture-handler";
@@ -7,6 +7,11 @@ import { router } from "expo-router";
 import { getAuth } from "firebase/auth";
 import { useQuery, useMutation } from "@apollo/client";
 import { GET_USER, UPDATE_USER } from "@/graphql/user/queries";
+import * as ImagePicker from "expo-image-picker";
+import UploadIcon from "@/assets/images/uploadIcon.svg";
+import { Toggle } from "@ui-kitten/components";
+import { LinearGradient } from "expo-linear-gradient";
+import ImageUpload from "@/components/carpool/uploadImageInput";
 
 function ParentForm(): JSX.Element {
   const auth = getAuth();
@@ -17,6 +22,23 @@ function ParentForm(): JSX.Element {
   const [location, setLocation] = useState("");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [submissionError, setSubmissionError] = useState<string | null>(null);
+  const [profileImage, setProfileImage] = useState<string | null>(null);
+  const [checked, setChecked] = React.useState(false);
+
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    console.log(result);
+
+    if (!result.canceled) {
+      setProfileImage(result.assets[0].uri);
+    }
+  };
 
   const {
     data: userData,
@@ -48,16 +70,16 @@ function ParentForm(): JSX.Element {
     }
 
     try {
-      //   await updateUser({
-      //     variables: {
-      //       id: auth.currentUser?.uid,
-      //       firstName,
-      //       lastName,
-      //       phoneNumber,
-      //       email,
-      //       city: location,
-      //     },
-      //   });
+      await updateUser({
+        variables: {
+          id: auth.currentUser?.uid,
+          firstName,
+          lastName,
+          phoneNumber,
+          email,
+          city: location,
+        },
+      });
       router.push("/OnboardForms/child");
     } catch (err) {
       setSubmissionError("Failed to update user info. Please try again.");
@@ -67,6 +89,12 @@ function ParentForm(): JSX.Element {
   if (loadingUser) {
     return <ActivityIndicator size="large" color="#0000ff" />;
   }
+
+  const onCheckedChange = (
+    isChecked: boolean | ((prevState: boolean) => boolean)
+  ): void => {
+    setChecked(isChecked);
+  };
 
   return (
     <View style={[styles.container, { backgroundColor: "#ffffff" }]}>
@@ -86,12 +114,13 @@ function ParentForm(): JSX.Element {
         </Text>
       )}
 
+      <ParentFormLabel label="Profile Image" />
+      <ImageUpload profileImage={profileImage} pickImage={pickImage} />
       <View style={{ marginBottom: 20 }}>
         <ParentFormLabel label="First Name" />
         <ParentFormInput
           placeholder="First Name"
-          // value={firstName.slice(0, 1).toUpperCase() + firstName.slice(1)}
-          value={"Bill"}
+          value={firstName.slice(0, 1).toUpperCase() + firstName.slice(1)}
           onChangeText={setFirstName}
         />
       </View>
@@ -100,8 +129,7 @@ function ParentForm(): JSX.Element {
         <ParentFormLabel label="Last Name" />
         <ParentFormInput
           placeholder="Last Name"
-          // value={lastName.slice(0, 1).toUpperCase() + lastName.slice(1)}
-          value={"Holland"}
+          value={lastName.slice(0, 1).toUpperCase() + lastName.slice(1)}
           onChangeText={setLastName}
         />
       </View>
@@ -110,8 +138,7 @@ function ParentForm(): JSX.Element {
         <ParentFormLabel label="Phone Number" />
         <ParentFormInput
           placeholder="Phone Number"
-          // value={phoneNumber}
-          value={"6043421096"}
+          value={phoneNumber}
           onChangeText={setPhoneNumber}
         />
       </View>
@@ -120,32 +147,53 @@ function ParentForm(): JSX.Element {
         <ParentFormLabel label="Email" />
         <ParentFormInput
           placeholder="Email"
-          // value={email}
-          value={"billholland@gmail.com"}
+          value={email}
           onChangeText={setEmail}
         />
       </View>
 
-      <View style={{ marginBottom: 40 }}>
+      <View style={{ marginBottom: 10 }}>
         <ParentFormLabel label="Location" />
         <ParentFormInput
           placeholder="City you live in"
-          // value={location}
-          value={"Vancouver"}
+          value={location}
           onChangeText={setLocation}
         />
       </View>
-
       <View
-        style={{ flex: 1, flexDirection: "row", justifyContent: "flex-end" }}
+        style={{
+          flexDirection: "row",
+          marginVertical: 10,
+        }}
+      >
+        <Text style={{ flex: 1, flexWrap: "wrap", width: "98%" }}>
+          If you're a parent interested in becoming a carpool driver to help
+          pick up and drop off kids in your community.{" "}
+          <Text
+            style={{
+              color: "#FF6A00",
+              textDecorationLine: "none",
+            }}
+          >
+            Sign up to be a Driver!
+          </Text>
+        </Text>
+        <Toggle
+          checked={checked}
+          onChange={onCheckedChange}
+          style={{ marginTop: -5 }}
+        />
+      </View>
+
+      <LinearGradient
+        colors={["#ff8833", "#e24a4a"]}
+        style={{ width: "100%", borderRadius: 50 }}
       >
         <TouchableOpacity
           style={{
-            backgroundColor: loadingUpdate ? "#cccccc" : "#FF8833",
-            padding: 10,
-            borderRadius: 50,
-            marginRight: 10,
-            width: 100,
+            paddingVertical: 12,
+            alignItems: "center",
+            justifyContent: "center",
           }}
           onPress={handleSubmit}
           disabled={loadingUpdate}
@@ -166,7 +214,7 @@ function ParentForm(): JSX.Element {
             </Text>
           )}
         </TouchableOpacity>
-      </View>
+      </LinearGradient>
     </View>
   );
 }

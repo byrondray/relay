@@ -16,6 +16,9 @@ import { useMutation, useLazyQuery } from "@apollo/client";
 import { FILTER_SCHOOLS_BY_NAME } from "@/graphql/map/queries";
 import { CREATE_CHILD } from "@/graphql/user/queries";
 import debounce from "lodash.debounce";
+import ImageUpload from "@/components/carpool/uploadImageInput";
+import * as ImagePicker from "expo-image-picker";
+import { LinearGradient } from "expo-linear-gradient";
 
 function ChildForm(): JSX.Element {
   const [children, setChildren] = useState([
@@ -27,6 +30,7 @@ function ChildForm(): JSX.Element {
   const [schoolResults, setSchoolResults] = useState<
     { id: string; name: string; city: string }[]
   >([]);
+  const [profileImage, setProfileImage] = useState<string | null>(null);
 
   const [createChild] = useMutation(CREATE_CHILD);
   const [filterSchoolsByName, { data: schoolsData }] = useLazyQuery(
@@ -89,20 +93,34 @@ function ChildForm(): JSX.Element {
   const handleSubmit = async () => {
     setLoading(true);
     try {
-      for (let child of children) {
-        // await createChild({
-        //   variables: {
-        //     firstName: child.firstName,
-        //     schoolName: child.school,
-        //     schoolEmailAddress: child.schoolEmail,
-        //   },
-        // });
-      }
+      // for (let child of children) {
+      //   await createChild({
+      //     variables: {
+      //       firstName: child.firstName,
+      //       schoolName: child.school,
+      //       schoolEmailAddress: child.schoolEmail,
+      //     },
+      //   });
+      // }
       router.push("/OnboardForms/vehicle");
     } catch (error) {
       setErrorMessage("Failed to add children. Please try again.");
     } finally {
       setLoading(false);
+    }
+  };
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    console.log(result);
+
+    if (!result.canceled) {
+      setProfileImage(result.assets[0].uri);
     }
   };
 
@@ -115,12 +133,10 @@ function ChildForm(): JSX.Element {
         Kid Info
       </Text>
 
-      {errorMessage && (
-        <Text style={[styles.errorText, { fontFamily: "Comfortaa" }]}>
-          {errorMessage}
-        </Text>
-      )}
 
+      {errorMessage && <Text style={[styles.errorText, {fontFamily: "Comfortaa"}]}>{errorMessage}</Text>}
+      <ParentFormLabel label="Profile Image" />
+      <ImageUpload profileImage={profileImage} pickImage={pickImage} />
       {children.map((child, index) => (
         <View key={index} style={{ marginBottom: 20 }}>
           <View style={{ marginBottom: 20 }}>
@@ -133,12 +149,12 @@ function ChildForm(): JSX.Element {
               }
             />
           </View>
+
           <View style={{ marginBottom: 20 }}>
             <ParentFormLabel label="Last Name" />
             <ParentFormInput
               placeholder="Last Name"
-              // value={child.lastName}
-              value={"Holland"}
+              value={child.lastName}
               onChangeText={(text) =>
                 handleInputChange(index, "lastName", text)
               }
@@ -148,8 +164,7 @@ function ChildForm(): JSX.Element {
             <ParentFormLabel label="School" />
             <ParentFormInput
               placeholder="School"
-              // value={child.school}
-              value={"Edmonds Community School"}
+              value={child.school}
               onChangeText={(text) => handleInputChange(index, "school", text)}
             />
             {schoolLoading && (
@@ -178,8 +193,7 @@ function ChildForm(): JSX.Element {
             <ParentFormLabel label="School Email Address" />
             <ParentFormInput
               placeholder="School Email"
-              // value={child.schoolEmail}
-              value={"jholland@sd41.com"}
+              value={child.schoolEmail}
               onChangeText={(text) =>
                 handleInputChange(index, "schoolEmail", text)
               }
@@ -203,20 +217,15 @@ function ChildForm(): JSX.Element {
         </Text>
       </View>
 
-      <View
-        style={{
-          flexDirection: "row",
-          justifyContent: "flex-end",
-          marginBottom: 40,
-        }}
+      <LinearGradient
+        colors={["#ff8833", "#e24a4a"]}
+        style={{ width: "100%", borderRadius: 50 }}
       >
         <TouchableOpacity
           style={{
-            backgroundColor: loading ? "#cccccc" : "#FF8833",
-            padding: 10,
-            borderRadius: 50,
-            marginRight: 10,
-            width: 100,
+            paddingVertical: 12,
+            alignItems: "center",
+            justifyContent: "center",
           }}
           onPress={handleSubmit}
           disabled={loading}
@@ -237,7 +246,7 @@ function ChildForm(): JSX.Element {
             </Text>
           )}
         </TouchableOpacity>
-      </View>
+      </LinearGradient>
     </KeyboardAvoidingView>
   );
 }
