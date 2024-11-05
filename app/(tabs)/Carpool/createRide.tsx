@@ -343,11 +343,14 @@ const CreateRide = () => {
     return selected;
   }, [requests, seatsAvailable[selectedSeatsIndex.row]]);
 
+  const isInitialLoad = useRef(true);
+
   useEffect(() => {
-    if (selectedWaypoints.length === 0 && selectedRequests.length > 0) {
+    if (isInitialLoad.current && selectedRequests.length > 0) {
       setSelectedWaypoints(selectedRequests);
+      isInitialLoad.current = false;
     }
-  }, [selectedRequests, selectedWaypoints]);
+  }, [selectedRequests]);
 
   useEffect(() => {
     if (startingAddress && endingAddress && selectedWaypoints.length > 0) {
@@ -364,15 +367,15 @@ const CreateRide = () => {
       ).then(({ coordinates: newCoordinates, predictedTime }) => {
         if (newCoordinates.length > 0) {
           const isDuplicate = previousRoutes.some((route) =>
-            areCoordinatesEqual(route.coordinates, activeRoute.coordinates)
+            areCoordinatesEqual(route.coordinates, newCoordinates)
           );
 
           if (!isDuplicate) {
             setPreviousRoutes((prevRoutes) => [
               ...prevRoutes,
               {
-                coordinates: activeRoute.coordinates,
-                predictedTime: activeRoute.predictedTime,
+                coordinates: newCoordinates,
+                predictedTime,
               },
             ]);
           }
@@ -794,30 +797,28 @@ const CreateRide = () => {
                 }}
                 appearance="ghost"
                 onPress={() => {
-                  // createCarpool({
-                  //   variables: {
-                  //     input: {
-                  //       driverId: userId!,
-                  //       startLat: startingLatLng.lat,
-                  //       startLon: startingLatLng.lon,
-                  //       endLat: endingLatLng.lat,
-                  //       endLon: endingLatLng.lon,
-                  //       startAddress: startingAddress,
-                  //       endAddress: endingAddress,
-                  //       departureDate: dateAndTime,
-                  //       departureTime: time,
-                  //       tripPreferences: description,
-                  //       vehicleId: vehicles[selectedVehicleIndex.row].id,
-                  //       extraCarseat: extraCarseatChecked,
-                  //       winterTires: winterTiresChecked,
-                  //       children: selectedChildren.map((child) => child.id),
-                  //       payment: {
-                  //         amount: 10,
-                  //         currency: "USD",
-                  //       },
-                  //     },
-                  //   },
-                  // });
+                  createCarpool({
+                    variables: {
+                      input: {
+                        driverId: userId!,
+                        startLat: startingLatLng.lat,
+                        startLon: startingLatLng.lon,
+                        endLat: endingLatLng.lat,
+                        endLon: endingLatLng.lon,
+                        startAddress: startingAddress,
+                        endAddress: endingAddress,
+                        departureDate: dateAndTime,
+                        departureTime: time,
+                        tripPreferences: description,
+                        vehicleId: vehicles[selectedVehicleIndex.row].id,
+                        extraCarSeat: extraCarseatChecked,
+                        winterTires: winterTiresChecked,
+                        requestIds: selectedWaypoints.map((child) => child.id),
+                        driverChildIds: selectedChildren.map((child) => child),
+                        groupId: groupId!,
+                      },
+                    },
+                  });
                 }}
               >
                 {() => (
