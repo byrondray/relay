@@ -111,8 +111,8 @@ const Sidebar = () => (
           shadowColor: "#000",
           shadowOffset: { width: 0, height: 2 },
           shadowOpacity: 0.25,
-          shadowRadius: 4,
-          elevation: 4,
+          shadowRadius: 2,
+          elevation: 2,
         }}
         appearance="ghost"
         accessoryLeft={() => <FriendButton width={48} height={48} />}
@@ -139,9 +139,9 @@ const Sidebar = () => (
             borderRadius: 24,
             marginBottom: 10,
             shadowColor: "#000",
-            shadowOffset: { width: 0, height: 2 },
+            shadowOffset: { width: 2, height: 2 },
             shadowOpacity: 0.25,
-            shadowRadius: 4,
+            shadowRadius: 1,
             elevation: 4,
           }}
           appearance="ghost"

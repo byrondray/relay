@@ -15,6 +15,16 @@ const UserProfileCard = ({ profile }: { profile: Profile }) => {
     <View
       style={{
         marginHorizontal: 10,
+        backgroundColor: "#fff",
+        paddingTop: 15,
+        paddingBottom: 8,
+        paddingHorizontal: 15,
+        borderRadius: 16,
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.25,
+        shadowRadius: 2,
+        elevation: 2,
       }}
     >
       <Image
@@ -28,8 +38,8 @@ const UserProfileCard = ({ profile }: { profile: Profile }) => {
       <View
         style={{
           position: "absolute",
-          top: -6,
-          right: -6,
+          top: 10,
+          right: 10,
           width: 7,
           height: 7,
           borderRadius: 5,
@@ -55,7 +65,6 @@ const FriendsList = ({ profiles }: { profiles: Profile[] }) => (
       showsHorizontalScrollIndicator={false}
       contentContainerStyle={{
         flexDirection: "row",
-        backgroundColor: "#f0f0f0",
         paddingTop: 25,
         paddingBottom: 10,
       }}
