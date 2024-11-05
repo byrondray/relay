@@ -32,6 +32,14 @@ const friendsList: Friend[] = [
   { name: 'Grace', class: 'From theater', initial: 'G' },
 ];
 
+// Define spacing constants directly in the component
+const spacing = {
+  small: 8,
+  medium: 16,
+  large: 24,
+  xLarge: 32,
+};
+
 const groupFriendsByInitial = (friends: Friend[]) => {
   return friends.reduce((acc: { [key: string]: Friend[] }, friend) => {
     const initial = friend.initial;
@@ -68,6 +76,9 @@ export default function SelectPassengerScreen() {
         ))}
       </ScrollView>
 
+      {/* Adding margin to create space below the image scroll */}
+      <View style={styles.spacingBelowImages} />
+
       <Text style={styles.searchText}>Search from friend list</Text>
       <TextInput
         style={styles.searchBar}
@@ -101,12 +112,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#FFFFFF',
-    paddingHorizontal: 20,
-    paddingTop: 40,
+    paddingHorizontal: spacing.medium,
+    paddingTop: spacing.large,
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    marginBottom: spacing.large,
   },
   cancelText: {
     color: '#FF6C00',
@@ -119,64 +131,65 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    marginTop: 10,
+    marginTop: spacing.medium,
   },
   subtitle: {
     fontSize: 16,
     color: '#888',
-    marginVertical: 15,
+    marginVertical: spacing.large,
   },
   imageContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
-    marginBottom: 20,
-    paddingHorizontal: 10,
+    marginBottom: 250,
+
   },
   imageWrapper: {
     alignItems: 'center',
-    marginHorizontal: 10,
-    marginRight: 2,
+    marginHorizontal: spacing.small,
   },
   image: {
     width: 85,
     height: 85,
     borderRadius: 45,
-    marginBottom: 10,
+    marginBottom: 5,
   },
   name: {
     fontSize: 14,
     color: '#888',
-    marginBottom: 275,
   },
   searchText: {
     fontSize: 16,
     color: '#888',
-    marginBottom: 10,
+    marginBottom: spacing.small,
   },
   searchBar: {
-    height: 120,
+    height: 50,
     borderWidth: 1,
     borderColor: '#E0E0E0',
     borderRadius: 20,
-    paddingLeft: 15,
+    paddingLeft: spacing.medium,
     backgroundColor: '#F7F7F7',
-    marginBottom: 10,
+    marginBottom: spacing.medium,
+  },
+  spacingBelowImages: {
+    height: 20, // Adjust this height to create enough space
   },
   friendsList: {
-    paddingVertical: 10,
+    paddingVertical: spacing.small,
   },
   initialHeader: {
     fontSize: 18,
     color: '#888',
-    marginTop: 15,
-    marginBottom: 5,
-    marginLeft: 15,
+    marginTop: spacing.medium,
+    marginBottom: spacing.small,
+    marginLeft: spacing.medium,
   },
   friendWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 12,
-    paddingHorizontal: 15,
+    paddingVertical: spacing.small,
+    paddingHorizontal: spacing.medium,
     borderBottomWidth: 1,
     borderBottomColor: '#E0E0E0',
   },
@@ -194,7 +207,7 @@ const styles = StyleSheet.create({
     lineHeight: 40,
     fontSize: 16,
     fontWeight: 'bold',
-    marginRight: 10,
+    marginRight: spacing.small,
   },
   friendName: {
     fontSize: 16,
