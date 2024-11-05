@@ -3,7 +3,9 @@ import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import NavBar from '../../../components/NavBar';
 
-const NewRideScreen: React.FC = () => {
+const NewRideScreen: React.FC<{ hasFilledDriverInfo: boolean }> = ({ hasFilledDriverInfo }) => {
+  if (hasFilledDriverInfo) return null;
+
   return (
     <View style={styles.container}>
       <View style={styles.content}>
