@@ -38,8 +38,10 @@ const UserMessageCard = ({ profile }: { profile: Profile }) => (
       }}
     />
     <View style={{ flex: 1 }}>
-      <Text style={{ fontWeight: "bold" }}>{profile.userName}</Text>
-      <Text style={{ color: "#666" }}>
+      <Text style={{ fontWeight: "bold", fontFamily: "Comfortaa" }}>
+        {profile.userName}
+      </Text>
+      <Text style={{ color: "#666", fontFamily: "Comfortaa" }}>
         {" "}
         {truncateMessage(profile.latestMessage)}
       </Text>
@@ -56,6 +58,7 @@ const UserMessageCard = ({ profile }: { profile: Profile }) => (
             paddingHorizontal: 6,
             paddingVertical: 2,
             fontSize: 12,
+            fontFamily: "Comfortaa",
           }}
         >
           {profile.notifications}

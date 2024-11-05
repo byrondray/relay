@@ -103,6 +103,14 @@ export default function TabLayout() {
       />
 
       <Tabs.Screen
+        name="Carpool/NewRide"
+        options={{
+          title: "NewRide",
+          tabBarButton: () => null,
+        }}
+      />
+
+      <Tabs.Screen
         name="temp"
         options={{
           title: "Message",
@@ -121,6 +129,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     height: 50,
     borderBottomColor: "#ddd",
+    backgroundColor: "#fff",
   },
   navContainer: {
     flexDirection: "row",

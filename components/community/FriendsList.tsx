@@ -50,6 +50,7 @@ const UserProfileCard = ({ profile }: { profile: Profile }) => {
         style={{
           fontSize: 14,
           textAlign: "center",
+          fontFamily: "Comfortaa",
         }}
       >
         {firstName}

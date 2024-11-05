@@ -230,7 +230,7 @@ const Community = () => (
     <Sidebar />
     <ScrollView style={{ flex: 1, padding: 16, backgroundColor: "#f7f9fc" }}>
       <FriendsList profiles={userProfiles} />
-      <Text category="h1" style={{ marginTop: 0 }}>
+      <Text category="h1" style={{ marginTop: 0, fontFamily: "Comfortaa" }}>
         Friends
       </Text>
       <View
@@ -249,6 +249,7 @@ const Community = () => (
             marginRight: 10,
             backgroundColor: "#fff",
             borderRadius: 24,
+            fontFamily: "Comfortaa",
           }}
         />
 
