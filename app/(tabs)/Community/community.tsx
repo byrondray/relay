@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Image } from "react-native";
+import { View, Image, ScrollView } from "react-native";
 import {
   ApplicationProvider,
   Layout,
@@ -15,6 +15,7 @@ import AddFriendsIcon from "@/assets/images/addFriendsIcon.svg";
 import SearchIcon from "@/assets/images/search.svg";
 import MessageIcon from "@/assets/images/message-square.svg";
 import UserMessageCard from "@/components/community/userMessages";
+import FriendsList from "@/components/community/FriendsList";
 
 const groups = [
   { id: 1, name: "Group 1", imageUrl: "https://picsum.photos/200" },
@@ -27,18 +28,56 @@ const userProfiles = [
     userName: "John Doe",
     latestMessage: "Hey! Are we still on for lunch tomorrow?",
     notifications: 12,
+    status: true,
   },
   {
     profilePicture: "https://picsum.photos/200",
     userName: "Jane Smith",
     latestMessage: "Just finished the report, take a look!",
     notifications: 1,
+    status: false,
   },
   {
     profilePicture: "https://picsum.photos/200",
     userName: "Mike Johnson",
     latestMessage: "Don't forget about the meeting at 3 PM.",
     notifications: 5,
+    status: false,
+  },
+  {
+    profilePicture: "https://picsum.photos/200",
+    userName: "Mike Johnson",
+    latestMessage: "Don't forget about the meeting at 3 PM.",
+    notifications: 5,
+    status: false,
+  },
+  {
+    profilePicture: "https://picsum.photos/200",
+    userName: "Mike Johnson",
+    latestMessage: "Don't forget about the meeting at 3 PM.",
+    notifications: 5,
+    status: true,
+  },
+  {
+    profilePicture: "https://picsum.photos/200",
+    userName: "Mike Johnson",
+    latestMessage: "Don't forget about the meeting at 3 PM.",
+    notifications: 5,
+    status: false,
+  },
+  {
+    profilePicture: "https://picsum.photos/200",
+    userName: "Mike Johnson",
+    latestMessage: "Don't forget about the meeting at 3 PM.",
+    notifications: 5,
+    status: true,
+  },
+  {
+    profilePicture: "https://picsum.photos/200",
+    userName: "Mike Johnson",
+    latestMessage: "Don't forget about the meeting at 3 PM.",
+    notifications: 5,
+    status: true,
   },
 ];
 
@@ -189,9 +228,11 @@ const Sidebar = () => (
 const Community = () => (
   <Layout style={{ flex: 1, flexDirection: "row" }}>
     <Sidebar />
-    <Layout style={{ flex: 1, padding: 16, backgroundColor: "#f7f9fc" }}>
-      <Text category="h1">Friends</Text>
-
+    <ScrollView style={{ flex: 1, padding: 16, backgroundColor: "#f7f9fc" }}>
+      <FriendsList profiles={userProfiles} />
+      <Text category="h1" style={{ marginTop: 0 }}>
+        Friends
+      </Text>
       <View
         style={{
           flexDirection: "row",
@@ -231,12 +272,12 @@ const Community = () => (
           <MessageIcon width={24} height={24} />
         </Button>
       </View>
-      <View style={{ marginTop: 20 }}>
+      <View style={{ marginTop: 10 }}>
         {userProfiles.map((profile, index) => (
           <UserMessageCard key={index} profile={profile} />
         ))}
       </View>
-    </Layout>
+    </ScrollView>
   </Layout>
 );
 
