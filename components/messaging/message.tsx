@@ -1,0 +1,62 @@
+import { DetailedMessage as MessageType } from "@/graphql/generated";
+import React from "react";
+import { View, Image, Text } from "react-native";
+import TextWithFont from "../text/textWithFont";
+import { format, formatRelative, isToday, isYesterday } from "date-fns";
+
+const Message = ({ message }: { message: MessageType }) => {
+  const createdAtDate = new Date(message.createdAt);
+  const formattedDate = isToday(createdAtDate)
+    ? `Today ${format(createdAtDate, "h:mm a")}`
+    : isYesterday(createdAtDate)
+    ? `Yesterday ${format(createdAtDate, "h:mm a")}`
+    : format(createdAtDate, "MM/dd/yyyy");
+
+  return (
+    <View
+      style={{
+        marginTop: 20,
+        width: "100%",
+        flexDirection: "row",
+        alignItems: "center",
+      }}
+    >
+      {message.sender.imageUrl && (
+        <Image
+          source={{ uri: message.sender.imageUrl }}
+          style={{ width: 40, height: 40, borderRadius: 20, marginRight: 10 }}
+        />
+      )}
+      <View style={{ flex: 1 }}>
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            marginBottom: 3,
+          }}
+        >
+          <Text
+            style={{
+              color: "#000",
+              fontSize: 14,
+              fontFamily: "Comfortaa-semibold",
+              fontWeight: "600",
+            }}
+          >
+            {message.sender.firstName}
+          </Text>
+          <TextWithFont
+            style={{ fontSize: 10, color: "#333333", marginLeft: 5 }}
+          >
+            {formattedDate}
+          </TextWithFont>
+        </View>
+        <TextWithFont style={{ color: "#000", fontSize: 11 }}>
+          {message.text}
+        </TextWithFont>
+      </View>
+    </View>
+  );
+};
+
+export default Message;

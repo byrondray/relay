@@ -22,6 +22,7 @@ const groups = [
   { id: 2, name: "Group 2", imageUrl: "https://picsum.photos/200" },
   { id: 3, name: "Group 3", imageUrl: "https://picsum.photos/200" },
 ];
+
 const userProfiles = [
   {
     profilePicture: "https://picsum.photos/200",

@@ -143,6 +143,15 @@ export type DeleteMemberFromGroupResponse = {
   message: Scalars['String']['output'];
 };
 
+export type DetailedMessage = {
+  __typename?: 'DetailedMessage';
+  createdAt: Scalars['String']['output'];
+  id: Scalars['ID']['output'];
+  recipient: User;
+  sender: User;
+  text: Scalars['String']['output'];
+};
+
 export type Group = {
   __typename?: 'Group';
   communityCenterId?: Maybe<Scalars['String']['output']>;
@@ -298,6 +307,7 @@ export type MutationUpdateUserInfoArgs = {
   email?: InputMaybe<Scalars['String']['input']>;
   firstName?: InputMaybe<Scalars['String']['input']>;
   id: Scalars['String']['input'];
+  imageUrl?: InputMaybe<Scalars['String']['input']>;
   insuranceImageUrl?: InputMaybe<Scalars['String']['input']>;
   lastName?: InputMaybe<Scalars['String']['input']>;
   licenseImageUrl?: InputMaybe<Scalars['String']['input']>;
@@ -483,6 +493,7 @@ export type User = {
   expoPushToken?: Maybe<Scalars['String']['output']>;
   firstName: Scalars['String']['output'];
   id: Scalars['ID']['output'];
+  imageUrl?: Maybe<Scalars['String']['output']>;
   insuranceImageUrl?: Maybe<Scalars['String']['output']>;
   lastName?: Maybe<Scalars['String']['output']>;
   licenseImageUrl?: Maybe<Scalars['String']['output']>;
@@ -559,7 +570,7 @@ export type GetCarpoolersWithoutApprovedRequestsQueryVariables = Exact<{
 }>;
 
 
-export type GetCarpoolersWithoutApprovedRequestsQuery = { __typename?: 'Query', getCarpoolersByGroupWithoutApprovedRequests?: Array<{ __typename?: 'RequestWithChildrenAndParent', id: string, carpoolId?: string | null, parentId: string, groupId: string, isApproved: number, startAddress: string, endAddress: string, startingLat: string, startingLon: string, endingLat: string, endingLon: string, pickupTime: string, createdAt: string, children: Array<{ __typename?: 'ChildWithParent', id: string, firstName: string, schoolId: string, schoolEmailAddress?: string | null, imageUrl?: string | null, parent: { __typename?: 'User', id: string, firstName: string, lastName?: string | null, email: string, phoneNumber?: string | null, licenseImageUrl?: string | null, insuranceImageUrl?: string | null, city?: string | null, createdAt?: string | null, expoPushToken?: string | null } }> }> | null };
+export type GetCarpoolersWithoutApprovedRequestsQuery = { __typename?: 'Query', getCarpoolersByGroupWithoutApprovedRequests?: Array<{ __typename?: 'RequestWithChildrenAndParent', id: string, carpoolId?: string | null, parentId: string, groupId: string, isApproved: number, startAddress: string, endAddress: string, startingLat: string, startingLon: string, endingLat: string, endingLon: string, pickupTime: string, createdAt: string, children: Array<{ __typename?: 'ChildWithParent', id: string, firstName: string, schoolId: string, schoolEmailAddress?: string | null, imageUrl?: string | null, parent: { __typename?: 'User', id: string, firstName: string, lastName?: string | null, email: string, phoneNumber?: string | null, imageUrl?: string | null, licenseImageUrl?: string | null, insuranceImageUrl?: string | null, city?: string | null, createdAt?: string | null, expoPushToken?: string | null } }> }> | null };
 
 export type GetGroupQueryVariables = Exact<{
   id: Scalars['ID']['input'];
@@ -683,14 +694,14 @@ export type CreateGroupMessageMutation = { __typename?: 'Mutation', createGroupM
 export type GetUsersQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetUsersQuery = { __typename?: 'Query', getUsers: Array<{ __typename?: 'User', id: string, firstName: string, lastName?: string | null, email: string, phoneNumber?: string | null, city?: string | null, licenseImageUrl?: string | null, insuranceImageUrl?: string | null }> };
+export type GetUsersQuery = { __typename?: 'Query', getUsers: Array<{ __typename?: 'User', id: string, firstName: string, lastName?: string | null, email: string, phoneNumber?: string | null, city?: string | null, imageUrl?: string | null, licenseImageUrl?: string | null, insuranceImageUrl?: string | null }> };
 
 export type GetUserQueryVariables = Exact<{
   id: Scalars['ID']['input'];
 }>;
 
 
-export type GetUserQuery = { __typename?: 'Query', getUser?: { __typename?: 'User', id: string, firstName: string, lastName?: string | null, email: string, phoneNumber?: string | null, city?: string | null, licenseImageUrl?: string | null, insuranceImageUrl?: string | null } | null };
+export type GetUserQuery = { __typename?: 'Query', getUser?: { __typename?: 'User', id: string, firstName: string, lastName?: string | null, email: string, phoneNumber?: string | null, city?: string | null, imageUrl?: string | null, licenseImageUrl?: string | null, insuranceImageUrl?: string | null } | null };
 
 export type CreateUserMutationVariables = Exact<{
   firstName: Scalars['String']['input'];
@@ -781,12 +792,13 @@ export type UpdateUserInfoMutationVariables = Exact<{
   email?: InputMaybe<Scalars['String']['input']>;
   phoneNumber?: InputMaybe<Scalars['String']['input']>;
   city?: InputMaybe<Scalars['String']['input']>;
+  imageUrl?: InputMaybe<Scalars['String']['input']>;
   licenseImageUrl?: InputMaybe<Scalars['String']['input']>;
   insuranceImageUrl?: InputMaybe<Scalars['String']['input']>;
 }>;
 
 
-export type UpdateUserInfoMutation = { __typename?: 'Mutation', updateUserInfo: { __typename?: 'User', id: string, firstName: string, lastName?: string | null, email: string, phoneNumber?: string | null, city?: string | null, licenseImageUrl?: string | null, insuranceImageUrl?: string | null } };
+export type UpdateUserInfoMutation = { __typename?: 'Mutation', updateUserInfo: { __typename?: 'User', id: string, firstName: string, lastName?: string | null, email: string, phoneNumber?: string | null, city?: string | null, imageUrl?: string | null, licenseImageUrl?: string | null, insuranceImageUrl?: string | null } };
 
 export type HasUserOnBoardedQueryVariables = Exact<{ [key: string]: never; }>;
 

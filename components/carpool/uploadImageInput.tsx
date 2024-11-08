@@ -55,6 +55,7 @@ const styles = StyleSheet.create({
     color: "#888",
     fontSize: 16,
     textAlign: "center",
+    fontFamily: "Comfortaa",
   },
 });
 

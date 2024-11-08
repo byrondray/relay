@@ -82,6 +82,8 @@ const WaypointSelector = ({
       .toUpperCase()
       .substring(0, 2);
 
+    const profileImageUrl = request.children[0].parent.imageUrl;
+
     const seatRequestCount = request.children.length;
     const isSelected = selectedWaypointIds.includes(request.id);
 
@@ -103,16 +105,32 @@ const WaypointSelector = ({
           )}
         </View>
 
-        <View
-          style={[
-            styles.initialsCircle,
-            { backgroundColor: "#fff", borderWidth: 1, borderColor: "#FF6A00" },
-          ]}
-        >
-          <Text style={[styles.initialsText, { fontFamily: "Comfortaa" }]}>
-            {initials}
-          </Text>
-        </View>
+        {request.children[0].parent.imageUrl ? (
+          <Image
+            source={{
+              uri: profileImageUrl || undefined,
+            }}
+            style={[
+              styles.initialsCircle,
+              { borderWidth: 1, borderColor: "#FF6A00" },
+            ]}
+          />
+        ) : (
+          <View
+            style={[
+              styles.initialsCircle,
+              {
+                backgroundColor: "#fff",
+                borderWidth: 1,
+                borderColor: "#FF6A00",
+              },
+            ]}
+          >
+            <Text style={[styles.initialsText, { fontFamily: "Comfortaa" }]}>
+              {initials}
+            </Text>
+          </View>
+        )}
 
         <Text style={[styles.seatRequestText, { fontFamily: "Comfortaa" }]}>
           {seatRequestCount} seat request{seatRequestCount > 1 ? "s" : ""}

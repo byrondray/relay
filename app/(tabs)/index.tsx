@@ -14,6 +14,8 @@ import { GET_CHILDREN_FOR_USER } from "@/graphql/user/queries";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { processFontFamily } from "expo-font";
 import { auth } from "@/firebaseConfig";
+import Message from "@/components/messaging/message";
+import { DetailedMessage as MessageType } from "@/graphql/generated";
 
 function HomeScreen() {
   const [hasOnboarded, setHasOnboarded] = useState<boolean | null>(null);
@@ -79,6 +81,24 @@ function HomeScreen() {
       </View>
     );
   }
+
+  const message: MessageType = {
+    id: "1",
+    recipient: {
+      email: "",
+      firstName: "Bob",
+      id: "",
+      imageUrl: "https://thispersondoesnotexist.com/",
+    },
+    sender: {
+      email: "",
+      firstName: "Sandy",
+      id: "",
+      imageUrl: "https://thispersondoesnotexist.com/",
+    },
+    text: "Hello, how are you?",
+    createdAt: new Date().toISOString(),
+  };
 
   return (
     <View style={styles.container}>
@@ -188,6 +208,8 @@ function HomeScreen() {
             />
           </View>
         </TouchableOpacity>
+        <Message message={message} />
+        {/* <Image source={{ uri: "https://thispersondoesnotexist.com/" }} style={{width: "100%", height: 100}} /> */}
       </View>
     </View>
   );

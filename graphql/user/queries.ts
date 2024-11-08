@@ -9,6 +9,7 @@ export const GET_USERS = gql`
       email
       phoneNumber
       city
+      imageUrl
       licenseImageUrl
       insuranceImageUrl
     }
@@ -25,6 +26,7 @@ export const GET_USER = gql`
       email
       phoneNumber
       city
+      imageUrl
       licenseImageUrl
       insuranceImageUrl
     }
@@ -234,6 +236,7 @@ export const UPDATE_USER = gql`
     $email: String
     $phoneNumber: String
     $city: String
+    $imageUrl: String
     $licenseImageUrl: String
     $insuranceImageUrl: String
   ) {
@@ -244,6 +247,7 @@ export const UPDATE_USER = gql`
       email: $email
       phoneNumber: $phoneNumber
       city: $city
+      imageUrl: $imageUrl
       licenseImageUrl: $licenseImageUrl
       insuranceImageUrl: $insuranceImageUrl
     ) {
@@ -253,6 +257,7 @@ export const UPDATE_USER = gql`
       email
       phoneNumber
       city
+      imageUrl
       licenseImageUrl
       insuranceImageUrl
     }

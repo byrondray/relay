@@ -95,6 +95,22 @@ export default function TabLayout() {
       />
 
       <Tabs.Screen
+        name="Carpool/selectPassenger"
+        options={{
+          title: "Message",
+          tabBarButton: () => null,
+        }}
+      />
+
+      <Tabs.Screen
+        name="Carpool/selectPassengerList"
+        options={{
+          title: "Message",
+          tabBarButton: () => null,
+        }}
+      />
+
+      <Tabs.Screen
         name="messages/[userId]"
         options={{
           title: "Message",

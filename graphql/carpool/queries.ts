@@ -179,6 +179,7 @@ export const GET_CARPOOLERS_WITHOUT_APPROVED_REQUESTS = gql`
           lastName
           email
           phoneNumber
+          imageUrl
           licenseImageUrl
           insuranceImageUrl
           city
