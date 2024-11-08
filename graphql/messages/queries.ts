@@ -6,14 +6,27 @@ export const GET_CONVERSATIONS_FOR_USER = gql`
       recipientName
       messages {
         id
-        senderId
-        recipientId
         text
         createdAt
+        sender {
+          id
+          firstName
+          lastName
+          email
+          imageUrl
+        }
+        recipient {
+          id
+          firstName
+          lastName
+          email
+          imageUrl
+        }
       }
     }
   }
 `;
+
 
 // Query to get a private conversation between two users
 export const GET_PRIVATE_MESSAGE_CONVERSATION = gql`
@@ -26,13 +39,26 @@ export const GET_PRIVATE_MESSAGE_CONVERSATION = gql`
       recipientId: $recipientId
     ) {
       id
-      senderId
-      recipientId
       text
       createdAt
+      sender {
+        id
+        firstName
+        lastName
+        email
+        imageUrl
+      }
+      recipient {
+        id
+        firstName
+        lastName
+        email
+        imageUrl
+      }
     }
   }
 `;
+
 
 // Mutation to create a new message between two users
 export const CREATE_MESSAGE = gql`
@@ -43,26 +69,52 @@ export const CREATE_MESSAGE = gql`
   ) {
     createMessage(senderId: $senderId, recipientId: $recipientId, text: $text) {
       id
-      senderId
-      recipientId
       text
       createdAt
+      sender {
+        id
+        firstName
+        lastName
+        email
+        imageUrl
+      }
+      recipient {
+        id
+        firstName
+        lastName
+        email
+        imageUrl
+      }
     }
   }
 `;
+
 
 // Subscription to listen for new messages
 export const MESSAGE_SENT_SUBSCRIPTION = gql`
   subscription OnMessageSent($recipientId: String!) {
     messageSent(recipientId: $recipientId) {
       id
-      senderId
-      recipientId
       text
       createdAt
+      sender {
+        id
+        firstName
+        lastName
+        email
+        imageUrl
+      }
+      recipient {
+        id
+        firstName
+        lastName
+        email
+        imageUrl
+      }
     }
   }
 `;
+
 
 export const GET_GROUP_MESSAGES = gql`
   query GetGroupMessages($groupId: String!) {

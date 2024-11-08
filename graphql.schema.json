@@ -962,7 +962,7 @@
                   "name": null,
                   "ofType": {
                     "kind": "OBJECT",
-                    "name": "Message",
+                    "name": "DetailedMessage",
                     "ofType": null
                   }
                 }
@@ -1618,6 +1618,18 @@
                 "name": "ID",
                 "ofType": null
               }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "imageUrl",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
             },
             "isDeprecated": false,
             "deprecationReason": null
@@ -2320,7 +2332,7 @@
               "name": null,
               "ofType": {
                 "kind": "OBJECT",
-                "name": "Message",
+                "name": "DetailedMessage",
                 "ofType": null
               }
             },
@@ -3559,7 +3571,7 @@
                   "name": null,
                   "ofType": {
                     "kind": "OBJECT",
-                    "name": "Message",
+                    "name": "DetailedMessage",
                     "ofType": null
                   }
                 }
@@ -4357,7 +4369,7 @@
               "name": null,
               "ofType": {
                 "kind": "OBJECT",
-                "name": "Message",
+                "name": "DetailedMessage",
                 "ofType": null
               }
             },

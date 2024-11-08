@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { View, Image, ScrollView } from "react-native";
 import {
   ApplicationProvider,
@@ -7,6 +7,7 @@ import {
   Button,
   Input,
   Icon,
+  Spinner,
 } from "@ui-kitten/components";
 import * as eva from "@eva-design/eva";
 import FriendButton from "@/assets/images/friendButton.svg";
@@ -16,12 +17,15 @@ import SearchIcon from "@/assets/images/search.svg";
 import MessageIcon from "@/assets/images/message-square.svg";
 import UserMessageCard from "@/components/community/userMessages";
 import FriendsList from "@/components/community/FriendsList";
-
-const groups = [
-  { id: 1, name: "Group 1", imageUrl: "https://picsum.photos/200" },
-  { id: 2, name: "Group 2", imageUrl: "https://picsum.photos/200" },
-  { id: 3, name: "Group 3", imageUrl: "https://picsum.photos/200" },
-];
+import { GET_GROUPS } from "@/graphql/group/queries";
+import { useQuery } from "@apollo/client";
+import { Group } from "@/graphql/generated";
+import groupIcon from "@/assets/images/group-icon.svg";
+// const groups = [
+//   { id: 1, name: "Group 1", imageUrl: "https://picsum.photos/200" },
+//   { id: 2, name: "Group 2", imageUrl: "https://picsum.photos/200" },
+//   { id: 3, name: "Group 3", imageUrl: "https://picsum.photos/200" },
+// ];
 
 const userProfiles = [
   {
@@ -82,149 +86,165 @@ const userProfiles = [
   },
 ];
 
-const Sidebar = () => (
-  <View>
-    <Layout
-      style={{
-        display: "flex",
-        width: 72,
-        height: "84%",
-        paddingVertical: 19,
-        flexDirection: "column",
-        alignItems: "center",
-        backgroundColor: "rgba(251, 104, 86, 0.3)",
-        gap: 10,
-        flexShrink: 0,
-        borderRadius: 50,
-        marginLeft: 10,
-        marginTop: 19,
-      }}
-    >
-      <Button
+const Sidebar = () => {
+  const [groups, setGroups] = useState<Group[]>([]);
+  const {
+    data: groupsData,
+    error,
+    loading,
+  } = useQuery(GET_GROUPS, {
+    onCompleted: (data) => {
+      console.log(data, "groups");
+      setGroups(data.getGroups);
+    },
+  });
+
+  return (
+    <View>
+      <Layout
         style={{
-          width: 48,
-          height: 48,
-          justifyContent: "center",
+          display: "flex",
+          width: 72,
+          height: "84%",
+          paddingVertical: 19,
+          flexDirection: "column",
           alignItems: "center",
+          backgroundColor: "rgba(251, 104, 86, 0.3)",
+          gap: 10,
           flexShrink: 0,
-          backgroundColor: "#444",
-          borderRadius: 24,
-          shadowColor: "#000",
-          shadowOffset: { width: 0, height: 2 },
-          shadowOpacity: 0.25,
-          shadowRadius: 2,
-          elevation: 2,
+          borderRadius: 50,
+          marginLeft: 10,
+          marginTop: 19,
         }}
-        appearance="ghost"
-        accessoryLeft={() => <FriendButton width={48} height={48} />}
-        onPress={() => console.log(`Friends list`)}
-      />
-
-      <View
-        style={{
-          width: "45%",
-          height: 1,
-          backgroundColor: "#555",
-        }}
-      />
-
-      {groups.map((group) => (
+      >
         <Button
-          key={group.id}
           style={{
             width: 48,
             height: 48,
             justifyContent: "center",
             alignItems: "center",
             flexShrink: 0,
+            backgroundColor: "#444",
             borderRadius: 24,
-            marginBottom: 10,
             shadowColor: "#000",
-            shadowOffset: { width: 2, height: 2 },
+            shadowOffset: { width: 0, height: 2 },
             shadowOpacity: 0.25,
-            shadowRadius: 1,
+            shadowRadius: 2,
+            elevation: 2,
+          }}
+          appearance="ghost"
+          accessoryLeft={() => <FriendButton width={48} height={48} />}
+          onPress={() => console.log(`Friends list`)}
+        />
+
+        <View
+          style={{
+            width: "45%",
+            height: 1,
+            backgroundColor: "#555",
+          }}
+        />
+
+        {groups.map((group) => (
+          <Button
+            key={group.id}
+            style={{
+              width: 48,
+              height: 48,
+              justifyContent: "center",
+              alignItems: "center",
+              flexShrink: 0,
+              borderRadius: 24,
+              marginBottom: 10,
+              shadowColor: "#000",
+              shadowOffset: { width: 2, height: 2 },
+              shadowOpacity: 0.25,
+              shadowRadius: 1,
+              elevation: 4,
+            }}
+            appearance="ghost"
+            accessoryLeft={() => (
+              <Image
+                source={{
+                  uri: group.imageUrl ?? "https://thispersondoesnotexist.com/",
+                }} // the svg that Zeno gave us is the fallback option
+                style={{
+                  width: 40,
+                  height: 40,
+                  borderRadius: 20,
+                }}
+              />
+            )}
+            onPress={() => console.log(`Selected ${group.name}`)}
+          />
+        ))}
+        <View
+          style={{
+            width: "45%",
+            height: 1,
+            backgroundColor: "#555",
+          }}
+        />
+        <Button
+          style={{
+            width: 48,
+            height: 48,
+            padding: 4,
+            justifyContent: "center",
+            alignItems: "center",
+            flexShrink: 0,
+            borderRadius: 24,
+            backgroundColor: "#f5674d",
+            marginVertical: 8,
+            shadowColor: "#000",
+            shadowOffset: { width: 0, height: 2 },
+            shadowOpacity: 0.25,
+            shadowRadius: 4,
             elevation: 4,
           }}
           appearance="ghost"
-          accessoryLeft={() => (
-            <Image
-              source={{ uri: group.imageUrl }}
-              style={{
-                width: 40,
-                height: 40,
-                borderRadius: 20,
-              }}
-            />
-          )}
-          onPress={() => console.log(`Selected ${group.name}`)}
-        />
-      ))}
-      <View
+          onPress={() => console.log(`Add a new group`)}
+          accessoryLeft={() => <PlusIcon width={24} height={24} />}
+        ></Button>
+      </Layout>
+      <Layout
         style={{
-          width: "45%",
-          height: 1,
-          backgroundColor: "#555",
-        }}
-      />
-      <Button
-        style={{
-          width: 48,
-          height: 48,
-          padding: 4,
+          width: 72,
+          height: 72,
           justifyContent: "center",
           alignItems: "center",
-          flexShrink: 0,
-          borderRadius: 24,
-          backgroundColor: "#f5674d",
-          marginVertical: 8,
-          shadowColor: "#000",
-          shadowOffset: { width: 0, height: 2 },
-          shadowOpacity: 0.25,
-          shadowRadius: 4,
-          elevation: 4,
+          borderRadius: 50,
+          backgroundColor: "rgba(251, 104, 86, 0.3)",
+          marginTop: 10,
+          marginBottom: 20,
+          marginLeft: 10,
         }}
-        appearance="ghost"
-        onPress={() => console.log(`Add a new group`)}
-        accessoryLeft={() => <PlusIcon width={24} height={24} />}
-      ></Button>
-    </Layout>
-    <Layout
-      style={{
-        width: 72,
-        height: 72,
-        justifyContent: "center",
-        alignItems: "center",
-        borderRadius: 50,
-        backgroundColor: "rgba(251, 104, 86, 0.3)",
-        marginTop: 10,
-        marginBottom: 20,
-        marginLeft: 10,
-      }}
-    >
-      <Button
-        style={{
-          width: 48,
-          height: 48,
-          padding: 4,
-          justifyContent: "center",
-          alignItems: "center",
-          flexShrink: 0,
-          borderRadius: 24,
-          backgroundColor: "#f5674d",
-          marginVertical: 8,
-          shadowColor: "#000",
-          shadowOffset: { width: 0, height: 2 },
-          shadowOpacity: 0.25,
-          shadowRadius: 4,
-          elevation: 4,
-        }}
-        appearance="ghost"
-        onPress={() => console.log(`Add a new group`)}
-        accessoryLeft={() => <AddFriendsIcon width={24} height={24} />}
-      ></Button>
-    </Layout>
-  </View>
-);
+      >
+        <Button
+          style={{
+            width: 48,
+            height: 48,
+            padding: 4,
+            justifyContent: "center",
+            alignItems: "center",
+            flexShrink: 0,
+            borderRadius: 24,
+            backgroundColor: "#f5674d",
+            marginVertical: 8,
+            shadowColor: "#000",
+            shadowOffset: { width: 0, height: 2 },
+            shadowOpacity: 0.25,
+            shadowRadius: 4,
+            elevation: 4,
+          }}
+          appearance="ghost"
+          onPress={() => console.log(`Add a new group`)}
+          accessoryLeft={() => <AddFriendsIcon width={24} height={24} />}
+        ></Button>
+      </Layout>
+    </View>
+  );
+};
 
 const Community = () => (
   <Layout style={{ flex: 1, flexDirection: "row" }}>

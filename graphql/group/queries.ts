@@ -7,6 +7,7 @@ export const GET_GROUP = gql`
       name
       schoolId
       communityCenterId
+      imageUrl
     }
   }
 `;
@@ -24,6 +25,7 @@ export const GET_GROUPS = gql`
         firstName
         lastName
         email
+        imageUrl
       }
     }
   }
@@ -37,6 +39,7 @@ export const GET_GROUP_WITH_USERS = gql`
       name
       schoolId
       communityCenterId
+      imageUrl
       members {
         id
         firstName
@@ -54,6 +57,7 @@ export const CREATE_GROUP = gql`
       name
       schoolId
       communityCenterId
+      imageUrl
     }
   }
 `;

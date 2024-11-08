@@ -208,8 +208,7 @@ function HomeScreen() {
             />
           </View>
         </TouchableOpacity>
-        <Message message={message} />
-        {/* <Image source={{ uri: "https://thispersondoesnotexist.com/" }} style={{width: "100%", height: 100}} /> */}
+        {/* <Message message={message} /> */}
       </View>
     </View>
   );

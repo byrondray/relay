@@ -42,7 +42,6 @@ const UserMessageCard = ({ profile }: { profile: Profile }) => (
         {profile.userName}
       </Text>
       <Text style={{ color: "#666", fontFamily: "Comfortaa" }}>
-        {" "}
         {truncateMessage(profile.latestMessage)}
       </Text>
     </View>

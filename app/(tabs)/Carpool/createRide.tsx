@@ -226,7 +226,7 @@ const CreateRide = () => {
     );
   };
 
-  const { data } = useQuery(GET_GROUPS, {
+  const { data, loading: groupsLoading } = useQuery(GET_GROUPS, {
     onCompleted: (data) => {
       if (data) {
         setGroups(data.getGroups);
@@ -276,7 +276,11 @@ const CreateRide = () => {
     }
   }, [startingLatLng]);
 
-  const { data: getVehicleForUser } = useQuery(GET_VEHICLE_FOR_USER, {
+  const {
+    data: getVehicleForUser,
+    error: vehcilesError,
+    loading: vehiclesLoading,
+  } = useQuery(GET_VEHICLE_FOR_USER, {
     variables: {
       userId,
     },
@@ -286,7 +290,7 @@ const CreateRide = () => {
         setVehicles(data.getVehicleForUser);
       }
     },
-  });
+  });  
 
   const handleDateSelect = (nextDate: Date) => {
     setSelectedDate(nextDate);

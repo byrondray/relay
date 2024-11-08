@@ -17,10 +17,11 @@ import {
   useMessageSubscription,
   useFetchUser,
 } from "../../../hooks/messages/useMessages";
-import { Message } from "@/graphql/generated";
+import { DetailedMessage } from "@/graphql/generated";
+import Message from "@/components/messaging/message";
 
 export default function MessageScreen() {
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [messages, setMessages] = useState<DetailedMessage[]>([]);
   const [newMessage, setNewMessage] = useState("");
   const [user, setUser] = useState<null | any>(null);
   const { userId, recipientId } = useLocalSearchParams();
@@ -85,11 +86,23 @@ export default function MessageScreen() {
           setMessages((prevMessages) => [
             ...prevMessages,
             {
-              text,
-              senderId: messageSenderId,
               id: new Date().getTime().toString(),
+              text,
               createdAt: new Date().toISOString(),
-              recipientId: userIdString,
+              sender: {
+                id: messageSenderId,
+                firstName: "Sender Name",
+                lastName: "",
+                email: "",
+                imageUrl: "",
+              }, // Replace with actual sender details if available
+              recipient: {
+                id: userIdString,
+                firstName: "Recipient Name",
+                lastName: "",
+                email: "",
+                imageUrl: "",
+              }, // Replace with actual recipient details
             },
           ]);
 
@@ -131,16 +144,7 @@ export default function MessageScreen() {
         data={messages}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => {
-          return (
-            <View
-              style={[
-                styles.message,
-                item.senderId === userIdString && styles.otherMessage,
-              ]}
-            >
-              <Text style={styles.messageText}>{item.text}</Text>
-            </View>
-          );
+          return <Message message={item} />;
         }}
       />
 

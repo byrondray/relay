@@ -12,13 +12,13 @@ import {
 import { MESSAGE_SENT_SUBSCRIPTION } from "@/graphql/messages/queries";
 import { GET_USER } from "@/graphql/user/queries";
 import { Alert } from "react-native";
-import { Message } from "@/graphql/generated";
+import { DetailedMessage } from "@/graphql/generated";
 import { useEffect } from "react";
 
 export const useFetchMessages = (
   senderId: string,
   recipientId: string,
-  setMessages: (messages: Message[]) => void
+  setMessages: (messages: DetailedMessage[]) => void
 ) => {
   const { data, loading, error, refetch } = useQuery(
     GET_PRIVATE_MESSAGE_CONVERSATION,
@@ -27,11 +27,11 @@ export const useFetchMessages = (
       skip: !senderId || !recipientId,
       fetchPolicy: "network-only",
       onCompleted: async (data: {
-        getPrivateMessageConversation: Message[];
+        getPrivateMessageConversation: DetailedMessage[];
       }) => {
         const fetchedMessages = data.getPrivateMessageConversation;
 
-        const prevMessages: Message[] = [];
+        const prevMessages: DetailedMessage[] = [];
         const combinedMessages = [...prevMessages, ...fetchedMessages];
         const uniqueMessages = Array.from(
           new Map(combinedMessages.map((msg) => [msg.id, msg])).values()
@@ -50,15 +50,16 @@ export const useFetchMessages = (
           `messages_${recipientId}`
         );
         if (cachedMessages) {
-          const cachedMessagesParsed: Message[] = JSON.parse(cachedMessages);
-          const prevMessages: Message[] = [];
-          const combinedMessages: Message[] = [
+          const cachedMessagesParsed: DetailedMessage[] =
+            JSON.parse(cachedMessages);
+          const prevMessages: DetailedMessage[] = [];
+          const combinedMessages: DetailedMessage[] = [
             ...prevMessages,
             ...cachedMessagesParsed,
           ];
-          const uniqueMessages: Message[] = Array.from(
+          const uniqueMessages: DetailedMessage[] = Array.from(
             new Map(
-              combinedMessages.map((msg: Message) => [msg.id, msg])
+              combinedMessages.map((msg: DetailedMessage) => [msg.id, msg])
             ).values()
           );
           setMessages(uniqueMessages);
@@ -94,9 +95,11 @@ export const useSendMessage = (
   senderId: string,
   recipientId: string,
   setMessages: (
-    messages: Message[] | ((prevMessages: Message[]) => Message[])
+    messages:
+      | DetailedMessage[]
+      | ((prevMessages: DetailedMessage[]) => DetailedMessage[])
   ) => void,
-  messages: Message[],
+  messages: DetailedMessage[],
   newMessage: string,
   setNewMessage: (message: string) => void,
   setIsMessageSent: (status: boolean) => void
@@ -112,17 +115,33 @@ export const useSendMessage = (
       };
 
       try {
-        await createMessage({ variables: messageData });
+        const { data } = await createMessage({ variables: messageData });
+
+        const createdMessage = data?.createMessage;
+
         setNewMessage("");
         setIsMessageSent(true);
+
         setMessages((prevMessages) => [
           ...prevMessages,
           {
-            id: new Date().getTime().toString(),
-            senderId,
-            recipientId,
-            text: newMessage,
-            createdAt: new Date().toISOString(),
+            id: createdMessage.id,
+            text: createdMessage.text,
+            createdAt: createdMessage.createdAt,
+            sender: {
+              id: createdMessage.sender.id,
+              firstName: createdMessage.sender.firstName,
+              lastName: createdMessage.sender.lastName,
+              email: createdMessage.sender.email,
+              imageUrl: createdMessage.sender.imageUrl,
+            },
+            recipient: {
+              id: createdMessage.recipient.id,
+              firstName: createdMessage.recipient.firstName,
+              lastName: createdMessage.recipient.lastName,
+              email: createdMessage.recipient.email,
+              imageUrl: createdMessage.recipient.imageUrl,
+            },
           },
         ]);
       } catch (error) {
@@ -141,9 +160,11 @@ export const useSendMessage = (
 export const useMessageSubscription = (
   recipientId: string,
   setMessages: (
-    messages: Message[] | ((prevMessages: Message[]) => Message[])
+    messages:
+      | DetailedMessage[]
+      | ((prevMessages: DetailedMessage[]) => DetailedMessage[])
   ) => void,
-  messages: Message[]
+  messages: DetailedMessage[]
 ) => {
   const { data, error } = useSubscription(MESSAGE_SENT_SUBSCRIPTION, {
     variables: { recipientId },
@@ -152,7 +173,7 @@ export const useMessageSubscription = (
 
   useEffect(() => {
     if (data?.messageSent) {
-      setMessages((prevMessages: Message[]) => [
+      setMessages((prevMessages: DetailedMessage[]) => [
         ...prevMessages,
         data.messageSent,
       ]);
