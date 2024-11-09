@@ -363,7 +363,7 @@ export type Query = {
   getCommunityCenters: Array<CommunityCenter>;
   getConversationsForUser: Array<Conversation>;
   getCurrentCarpools?: Maybe<Array<Carpool>>;
-  getFriend: Friend;
+  getFriend: FriendsWithUserInfo;
   getFriends: Array<FriendsWithUserInfo>;
   getGroup?: Maybe<Group>;
   getGroupMessages: Array<GroupMessage>;
@@ -425,7 +425,6 @@ export type QueryGetCurrentCarpoolsArgs = {
 
 export type QueryGetFriendArgs = {
   friendId: Scalars['String']['input'];
-  userId: Scalars['String']['input'];
 };
 
 
@@ -616,6 +615,13 @@ export type GetCarpoolersWithoutApprovedRequestsQueryVariables = Exact<{
 
 
 export type GetCarpoolersWithoutApprovedRequestsQuery = { __typename?: 'Query', getCarpoolersByGroupWithoutApprovedRequests?: Array<{ __typename?: 'RequestWithChildrenAndParent', id: string, carpoolId?: string | null, parentId: string, groupId: string, isApproved: number, startAddress: string, endAddress: string, startingLat: string, startingLon: string, endingLat: string, endingLon: string, pickupTime: string, createdAt: string, children: Array<{ __typename?: 'ChildWithParent', id: string, firstName: string, schoolId: string, schoolEmailAddress?: string | null, imageUrl?: string | null, parent: { __typename?: 'User', id: string, firstName: string, lastName?: string | null, email: string, phoneNumber?: string | null, imageUrl?: string | null, licenseImageUrl?: string | null, insuranceImageUrl?: string | null, city?: string | null, createdAt?: string | null, expoPushToken?: string | null } }> }> | null };
+
+export type GetFriendQueryVariables = Exact<{
+  friendId: Scalars['String']['input'];
+}>;
+
+
+export type GetFriendQuery = { __typename?: 'Query', getFriend: { __typename?: 'FriendsWithUserInfo', id: string, userId: string, createdAt: string, friends: { __typename?: 'Friend', id: string, firstName: string, lastName?: string | null, email: string, phoneNumber?: string | null, licenseImageUrl?: string | null, insuranceImageUrl?: string | null, city?: string | null, createdAt?: string | null, imageUrl?: string | null } } };
 
 export type GetFriendsQueryVariables = Exact<{ [key: string]: never; }>;
 
