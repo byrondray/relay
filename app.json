@@ -2,7 +2,7 @@
   "expo": {
     "name": "relay-rideshare",
     "slug": "relay",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "com.relay",
@@ -24,10 +24,16 @@
       "infoPlist": {
         "NSAppTransportSecurity": {
           "NSAllowsArbitraryLoads": true,
+          "NSAllowsLocalNetworking": true,
           "NSExceptionDomains": {
+            "192.168.56.1": {
+              "NSExceptionAllowsInsecureHTTPLoads": true,
+              "NSIncludesSubdomains": true,
+              "NSExceptionRequiresForwardSecrecy": false
+            },
             "relay-api-ibel.onrender.com": {
               "NSIncludesSubdomains": true,
-              "NSExceptionAllowsInsecureHTTPLoads": false,
+              "NSExceptionAllowsInsecureHTTPLoads": true,
               "NSExceptionRequiresForwardSecrecy": true
             }
           }
@@ -43,7 +49,7 @@
         "NSLocationAlwaysUsageDescription": "This app needs location access even when running in the background.",
         "NSBluetoothPeripheralUsageDescription": "This app needs access to Bluetooth to interact with devices."
       },
-      "buildNumber": "1.0.1"
+      "buildNumber": "2"
     },
     "android": {
       "package": "com.relay",
@@ -59,7 +65,7 @@
         "INTERNET",
         "RECEIVE_BOOT_COMPLETED"
       ],
-      "versionCode": 2
+      "versionCode": 3
     },
     "web": {
       "output": "static",

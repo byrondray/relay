@@ -48,11 +48,6 @@ export default ({ config }) => ({
     ...appJson.expo.ios,
     googleServicesFile:
       process.env.GOOGLE_SERVICE_INFO_PLIST || "./GoogleService-Info.plist",
-    infoPlist: {
-      NSAppTransportSecurity: {
-        NSAllowsArbitraryLoads: true,
-      },
-    },
   },
   android: {
     ...appJson.expo.android,
