@@ -166,13 +166,21 @@ function ParentForm(): JSX.Element {
           marginVertical: 10,
         }}
       >
-        <Text style={{ flex: 1, flexWrap: "wrap", width: "98%" }}>
+        <Text
+          style={{
+            flex: 1,
+            flexWrap: "wrap",
+            width: "98%",
+            fontFamily: "Comfortaa",
+          }}
+        >
           If you're a parent interested in becoming a carpool driver to help
           pick up and drop off kids in your community.{" "}
           <Text
             style={{
               color: "#FF6A00",
               textDecorationLine: "none",
+              fontFamily: "Comfortaa",
             }}
           >
             Sign up to be a Driver!
@@ -206,8 +214,7 @@ function ParentForm(): JSX.Element {
                 color: "white",
                 textAlign: "center",
                 fontSize: 20,
-                fontWeight: "semibold",
-                fontFamily: "Comfortaa",
+                fontFamily: "Comfortaa-semibold",
               }}
             >
               Next
@@ -228,10 +235,12 @@ const styles = StyleSheet.create({
     fontSize: 32,
     fontWeight: "bold",
     marginBottom: 20,
+    fontFamily: "Comfortaa",
   },
   errorText: {
     color: "red",
     marginBottom: 10,
+    fontFamily: "Comfortaa",
   },
 });
 

@@ -2,7 +2,7 @@
   "expo": {
     "name": "relay-rideshare",
     "slug": "relay",
-    "version": "1.0.2",
+    "version": "1.0.1",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "com.relay",
@@ -14,13 +14,10 @@
     },
     "ios": {
       "config": {
-        "googleSignIn": {
-          "reservedClientId": "com.googleusercontent.apps.282407202899-qum38oc4b66oe3b2lg3jpvo3r1d8hidb"
-        }
       },
       "supportsTablet": true,
       "googleServicesFile": "./GoogleService-Info.plist",
-      "bundleIdentifier": "com.relay",
+      "bundleIdentifier": "com.byron.relay",
       "infoPlist": {
         "NSAppTransportSecurity": {
           "NSAllowsArbitraryLoads": true,
@@ -49,7 +46,7 @@
         "NSLocationAlwaysUsageDescription": "This app needs location access even when running in the background.",
         "NSBluetoothPeripheralUsageDescription": "This app needs access to Bluetooth to interact with devices."
       },
-      "buildNumber": "2"
+      "buildNumber": "1"
     },
     "android": {
       "package": "com.relay",

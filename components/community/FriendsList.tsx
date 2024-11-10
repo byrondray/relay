@@ -1,4 +1,5 @@
 import { Friend, FriendsWithUserInfo, User } from "@/graphql/generated";
+import { Link } from "expo-router";
 import React from "react";
 import { View, Text, Image, ScrollView } from "react-native";
 
@@ -71,10 +72,16 @@ const FriendsList = ({ profiles }: { profiles: FriendsWithUserInfo[] }) => (
     >
       {profiles.length > 0 ? (
         profiles.map((profile) => (
-          <UserProfileCard
-            key={profile.friends.firstName}
-            profile={profile.friends}
-          />
+          <Link
+            key={profile.friends.id}
+            href={{
+              pathname: "/messages/[userId]",
+              params: { userId: profile.friends.id },
+            }}
+            asChild
+          >
+            <UserProfileCard profile={profile.friends} />
+          </Link>
         ))
       ) : (
         <Text>No friends available</Text>

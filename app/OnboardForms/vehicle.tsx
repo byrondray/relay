@@ -231,7 +231,14 @@ function VehicleForm(): JSX.Element {
             checked={checked}
             onChange={(nextChecked) => setChecked(nextChecked)}
           />
-          <Text style={{ fontSize: 12, color: "#000", marginLeft: 8 }}>
+          <Text
+            style={{
+              fontSize: 12,
+              color: "#000",
+              marginLeft: 8,
+              fontFamily: "Comfortaa",
+            }}
+          >
             By checking this box, you agree to our Terms and Conditions and
             acknowledge that you have read and understood the Carpool Agreement.
           </Text>
@@ -258,8 +265,7 @@ function VehicleForm(): JSX.Element {
                   color: "white",
                   textAlign: "center",
                   fontSize: 20,
-                  fontWeight: "semibold",
-                  fontFamily: "Comfortaa",
+                  fontFamily: "Comfortaa-semibold",
                 }}
               >
                 Submit
@@ -281,10 +287,12 @@ const styles = StyleSheet.create({
     fontSize: 32,
     fontWeight: "bold",
     marginBottom: 20,
+    fontFamily: "Comfortaa",
   },
   errorText: {
     color: "red",
     marginBottom: 10,
+    fontFamily: "Comfortaa",
   },
 });
 
