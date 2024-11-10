@@ -152,6 +152,28 @@ export type DetailedMessage = {
   text: Scalars['String']['output'];
 };
 
+export type Friend = {
+  __typename?: 'Friend';
+  city?: Maybe<Scalars['String']['output']>;
+  createdAt?: Maybe<Scalars['String']['output']>;
+  email: Scalars['String']['output'];
+  firstName: Scalars['String']['output'];
+  id: Scalars['ID']['output'];
+  imageUrl?: Maybe<Scalars['String']['output']>;
+  insuranceImageUrl?: Maybe<Scalars['String']['output']>;
+  lastName?: Maybe<Scalars['String']['output']>;
+  licenseImageUrl?: Maybe<Scalars['String']['output']>;
+  phoneNumber?: Maybe<Scalars['String']['output']>;
+};
+
+export type FriendsWithUserInfo = {
+  __typename?: 'FriendsWithUserInfo';
+  createdAt: Scalars['String']['output'];
+  friends: Friend;
+  id: Scalars['ID']['output'];
+  userId: Scalars['String']['output'];
+};
+
 export type Group = {
   __typename?: 'Group';
   communityCenterId?: Maybe<Scalars['String']['output']>;
@@ -190,6 +212,7 @@ export type Message = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  addFriend: Friend;
   addMemberToGroup: AddMemberToGroupResponse;
   approveRequest: Request;
   createCarpool: Carpool;
@@ -200,11 +223,18 @@ export type Mutation = {
   createRequest: Request;
   createUser: AuthPayload;
   createVehicle: Vehicle;
+  deleteFriend: Friend;
   deleteMemberFromGroup: DeleteMemberFromGroupResponse;
   login: AuthPayload;
   sendLocation?: Maybe<LocationData>;
   updateExpoPushToken: User;
   updateUserInfo: User;
+};
+
+
+export type MutationAddFriendArgs = {
+  friendId: Scalars['String']['input'];
+  userId: Scalars['String']['input'];
 };
 
 
@@ -277,6 +307,12 @@ export type MutationCreateVehicleArgs = {
 };
 
 
+export type MutationDeleteFriendArgs = {
+  friendId: Scalars['String']['input'];
+  userId: Scalars['String']['input'];
+};
+
+
 export type MutationDeleteMemberFromGroupArgs = {
   groupId: Scalars['String']['input'];
   userId: Scalars['String']['input'];
@@ -327,6 +363,8 @@ export type Query = {
   getCommunityCenters: Array<CommunityCenter>;
   getConversationsForUser: Array<Conversation>;
   getCurrentCarpools?: Maybe<Array<Carpool>>;
+  getFriend: FriendsWithUserInfo;
+  getFriends: Array<FriendsWithUserInfo>;
   getGroup?: Maybe<Group>;
   getGroupMessages: Array<GroupMessage>;
   getGroupWithUsers: Group;
@@ -382,6 +420,11 @@ export type QueryGetConversationsForUserArgs = {
 
 export type QueryGetCurrentCarpoolsArgs = {
   userId: Scalars['String']['input'];
+};
+
+
+export type QueryGetFriendArgs = {
+  friendId: Scalars['String']['input'];
 };
 
 
@@ -572,6 +615,18 @@ export type GetCarpoolersWithoutApprovedRequestsQueryVariables = Exact<{
 
 
 export type GetCarpoolersWithoutApprovedRequestsQuery = { __typename?: 'Query', getCarpoolersByGroupWithoutApprovedRequests?: Array<{ __typename?: 'RequestWithChildrenAndParent', id: string, carpoolId?: string | null, parentId: string, groupId: string, isApproved: number, startAddress: string, endAddress: string, startingLat: string, startingLon: string, endingLat: string, endingLon: string, pickupTime: string, createdAt: string, children: Array<{ __typename?: 'ChildWithParent', id: string, firstName: string, schoolId: string, schoolEmailAddress?: string | null, imageUrl?: string | null, parent: { __typename?: 'User', id: string, firstName: string, lastName?: string | null, email: string, phoneNumber?: string | null, imageUrl?: string | null, licenseImageUrl?: string | null, insuranceImageUrl?: string | null, city?: string | null, createdAt?: string | null, expoPushToken?: string | null } }> }> | null };
+
+export type GetFriendQueryVariables = Exact<{
+  friendId: Scalars['String']['input'];
+}>;
+
+
+export type GetFriendQuery = { __typename?: 'Query', getFriend: { __typename?: 'FriendsWithUserInfo', id: string, userId: string, createdAt: string, friends: { __typename?: 'Friend', id: string, firstName: string, lastName?: string | null, email: string, phoneNumber?: string | null, licenseImageUrl?: string | null, insuranceImageUrl?: string | null, city?: string | null, createdAt?: string | null, imageUrl?: string | null } } };
+
+export type GetFriendsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetFriendsQuery = { __typename?: 'Query', getFriends: Array<{ __typename?: 'FriendsWithUserInfo', id: string, userId: string, createdAt: string, friends: { __typename?: 'Friend', id: string, firstName: string, lastName?: string | null, email: string, phoneNumber?: string | null, licenseImageUrl?: string | null, insuranceImageUrl?: string | null, city?: string | null, createdAt?: string | null, imageUrl?: string | null } }> };
 
 export type GetGroupQueryVariables = Exact<{
   id: Scalars['ID']['input'];

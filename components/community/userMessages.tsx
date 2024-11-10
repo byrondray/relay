@@ -1,17 +1,12 @@
+import { Friend, FriendsWithUserInfo, User } from "@/graphql/generated";
 import React from "react";
 import { View, Text, Image } from "react-native";
 
-interface Profile {
-  profilePicture: string;
-  userName: string;
-  latestMessage: string;
-  notifications: number;
-}
 const truncateMessage = (message: string) => {
   return message.length > 25 ? `${message.substring(0, 25)}...` : message;
 };
 
-const UserMessageCard = ({ profile }: { profile: Profile }) => (
+const UserMessageCard = ({ profile }: { profile: FriendsWithUserInfo }) => (
   <View
     style={{
       flexDirection: "row",
@@ -29,7 +24,9 @@ const UserMessageCard = ({ profile }: { profile: Profile }) => (
     }}
   >
     <Image
-      source={{ uri: profile.profilePicture }}
+      source={{
+        uri: profile.friends.imageUrl ?? "https://thispersondoesnotexist.com/",
+      }}
       style={{
         width: 48,
         height: 48,
@@ -39,16 +36,16 @@ const UserMessageCard = ({ profile }: { profile: Profile }) => (
     />
     <View style={{ flex: 1 }}>
       <Text style={{ fontWeight: "bold", fontFamily: "Comfortaa" }}>
-        {profile.userName}
+        {profile.friends.firstName}
       </Text>
       <Text style={{ color: "#666", fontFamily: "Comfortaa" }}>
-        {truncateMessage(profile.latestMessage)}
+        {/* {truncateMessage(profile.latestMessage)} */}
       </Text>
     </View>
     <View
       style={{ marginLeft: 10, justifyContent: "center", alignItems: "center" }}
     >
-      {profile.notifications > 0 && (
+      {/* {profile.notifications > 0 && (
         <Text
           style={{
             backgroundColor: "#e24949",
@@ -62,7 +59,7 @@ const UserMessageCard = ({ profile }: { profile: Profile }) => (
         >
           {profile.notifications}
         </Text>
-      )}
+      )} */}
     </View>
   </View>
 );

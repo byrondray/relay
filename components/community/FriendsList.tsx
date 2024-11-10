@@ -1,15 +1,11 @@
+import { Friend, FriendsWithUserInfo, User } from "@/graphql/generated";
 import React from "react";
 import { View, Text, Image, ScrollView } from "react-native";
 
-interface Profile {
-  profilePicture: string;
-  userName: string;
-  notifications: number;
-  status: boolean;
-}
-
-const UserProfileCard = ({ profile }: { profile: Profile }) => {
-  const firstName = profile.userName.split(" ")[0];
+const UserProfileCard = ({ profile }: { profile: Friend }) => {
+  const firstName = profile.firstName.split(" ")[0];
+  const truncatedFirstName =
+    firstName.length > 5 ? firstName.slice(0, 5) + ".." : firstName;
 
   return (
     <View
@@ -28,7 +24,9 @@ const UserProfileCard = ({ profile }: { profile: Profile }) => {
       }}
     >
       <Image
-        source={{ uri: profile.profilePicture }}
+        source={{
+          uri: profile.imageUrl ?? "https://thispersondoesnotexist.com/",
+        }}
         style={{
           width: 48,
           height: 48,
@@ -43,6 +41,7 @@ const UserProfileCard = ({ profile }: { profile: Profile }) => {
           width: 7,
           height: 7,
           borderRadius: 5,
+          // @ts-ignore
           backgroundColor: profile.status ? "#11aa00" : "#d9d9d9",
         }}
       />
@@ -53,13 +52,13 @@ const UserProfileCard = ({ profile }: { profile: Profile }) => {
           fontFamily: "Comfortaa",
         }}
       >
-        {firstName}
+        {truncatedFirstName}
       </Text>
     </View>
   );
 };
 
-const FriendsList = ({ profiles }: { profiles: Profile[] }) => (
+const FriendsList = ({ profiles }: { profiles: FriendsWithUserInfo[] }) => (
   <View>
     <ScrollView
       horizontal={true}
@@ -70,9 +69,16 @@ const FriendsList = ({ profiles }: { profiles: Profile[] }) => (
         paddingBottom: 10,
       }}
     >
-      {profiles.map((profile) => (
-        <UserProfileCard key={profile.userName} profile={profile} />
-      ))}
+      {profiles.length > 0 ? (
+        profiles.map((profile) => (
+          <UserProfileCard
+            key={profile.friends.firstName}
+            profile={profile.friends}
+          />
+        ))
+      ) : (
+        <Text>No friends available</Text>
+      )}
     </ScrollView>
   </View>
 );
