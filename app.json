@@ -13,8 +13,7 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "config": {
-      },
+      "config": {},
       "supportsTablet": true,
       "googleServicesFile": "./GoogleService-Info.plist",
       "bundleIdentifier": "com.byron.relay",
@@ -38,9 +37,9 @@
         "UIBackgroundModes": [
           "fetch",
           "remote-notification",
-          "processing",
           "location"
         ],
+        "BGTaskSchedulerPermittedIdentifiers": ["com.relay.backgroundtask"],
         "NSLocationWhenInUseUsageDescription": "We need your location to provide services while the app is running in the background.",
         "NSLocationAlwaysAndWhenInUseUsageDescription": "This app needs location access to function correctly even when the app is not active.",
         "NSLocationAlwaysUsageDescription": "This app needs location access even when running in the background.",

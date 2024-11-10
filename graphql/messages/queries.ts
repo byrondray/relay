@@ -27,7 +27,6 @@ export const GET_CONVERSATIONS_FOR_USER = gql`
   }
 `;
 
-
 // Query to get a private conversation between two users
 export const GET_PRIVATE_MESSAGE_CONVERSATION = gql`
   query GetPrivateMessageConversation(
@@ -59,7 +58,6 @@ export const GET_PRIVATE_MESSAGE_CONVERSATION = gql`
   }
 `;
 
-
 // Mutation to create a new message between two users
 export const CREATE_MESSAGE = gql`
   mutation CreateMessage(
@@ -89,7 +87,6 @@ export const CREATE_MESSAGE = gql`
   }
 `;
 
-
 // Subscription to listen for new messages
 export const MESSAGE_SENT_SUBSCRIPTION = gql`
   subscription OnMessageSent($recipientId: String!) {
@@ -114,7 +111,6 @@ export const MESSAGE_SENT_SUBSCRIPTION = gql`
     }
   }
 `;
-
 
 export const GET_GROUP_MESSAGES = gql`
   query GetGroupMessages($groupId: String!) {

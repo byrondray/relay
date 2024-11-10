@@ -635,7 +635,7 @@ const CreateRide = () => {
         <View style={{ padding: 15 }}>
           <View>
             <Text
-              style={{ fontSize: 32, fontWeight: "bold", marginBottom: 20 }}
+              style={{ fontSize: 32, marginBottom: 20, fontFamily: "Comfortaa-semibold" }}
             >
               Create a ride
             </Text>
