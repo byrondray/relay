@@ -166,6 +166,11 @@ export type Friend = {
   phoneNumber?: Maybe<Scalars['String']['output']>;
 };
 
+export type FriendResponse = {
+  __typename?: 'FriendResponse';
+  message: Scalars['String']['output'];
+};
+
 export type FriendsWithUserInfo = {
   __typename?: 'FriendsWithUserInfo';
   createdAt: Scalars['String']['output'];
@@ -190,6 +195,7 @@ export type GroupMessage = {
   groupId: Scalars['String']['output'];
   id: Scalars['ID']['output'];
   message: Scalars['String']['output'];
+  sender: User;
   userId: Scalars['String']['output'];
 };
 
@@ -212,7 +218,7 @@ export type Message = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  addFriend: Friend;
+  addFriend: FriendResponse;
   addMemberToGroup: AddMemberToGroupResponse;
   approveRequest: Request;
   createCarpool: Carpool;
@@ -223,7 +229,7 @@ export type Mutation = {
   createRequest: Request;
   createUser: AuthPayload;
   createVehicle: Vehicle;
-  deleteFriend: Friend;
+  deleteFriend: FriendResponse;
   deleteMemberFromGroup: DeleteMemberFromGroupResponse;
   login: AuthPayload;
   sendLocation?: Maybe<LocationData>;
@@ -234,7 +240,6 @@ export type Mutation = {
 
 export type MutationAddFriendArgs = {
   friendId: Scalars['String']['input'];
-  userId: Scalars['String']['input'];
 };
 
 
@@ -309,7 +314,6 @@ export type MutationCreateVehicleArgs = {
 
 export type MutationDeleteFriendArgs = {
   friendId: Scalars['String']['input'];
-  userId: Scalars['String']['input'];
 };
 
 
@@ -515,8 +519,14 @@ export type School = {
 
 export type Subscription = {
   __typename?: 'Subscription';
+  groupMessageSent: GroupMessage;
   locationReceived?: Maybe<LocationData>;
   messageSent: DetailedMessage;
+};
+
+
+export type SubscriptionGroupMessageSentArgs = {
+  groupId: Scalars['String']['input'];
 };
 
 
@@ -627,6 +637,20 @@ export type GetFriendsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type GetFriendsQuery = { __typename?: 'Query', getFriends: Array<{ __typename?: 'FriendsWithUserInfo', id: string, userId: string, createdAt: string, friends: { __typename?: 'Friend', id: string, firstName: string, lastName?: string | null, email: string, phoneNumber?: string | null, licenseImageUrl?: string | null, insuranceImageUrl?: string | null, city?: string | null, createdAt?: string | null, imageUrl?: string | null } }> };
+
+export type AddFriendMutationVariables = Exact<{
+  friendId: Scalars['String']['input'];
+}>;
+
+
+export type AddFriendMutation = { __typename?: 'Mutation', addFriend: { __typename?: 'FriendResponse', message: string } };
+
+export type DeleteFriendMutationVariables = Exact<{
+  friendId: Scalars['String']['input'];
+}>;
+
+
+export type DeleteFriendMutation = { __typename?: 'Mutation', deleteFriend: { __typename?: 'FriendResponse', message: string } };
 
 export type GetGroupQueryVariables = Exact<{
   id: Scalars['ID']['input'];
