@@ -49,7 +49,7 @@ const styles = StyleSheet.create({
   },
   profileContainer: {
     alignItems: 'center',
-    marginRight: 15, // Control spacing between profiles
+    marginRight: 15,
   },
   imageWrapper: {
     position: 'relative',
