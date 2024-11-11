@@ -8,7 +8,7 @@ import {
 } from "react-native";
 import { ThemedAddressCompletionInput } from "@/components/ThemedAddressCompletionInput";
 import { LinearGradient } from "expo-linear-gradient";
-import { Button, IndexPath } from "@ui-kitten/components";
+import { Button, IndexPath, Popover, Layout } from "@ui-kitten/components";
 import ChildSelector from "@/components/carpool/childSelector";
 import RideDateTimePicker from "@/components/carpool/dateAndTimePicker";
 import TripDescriptionInput from "@/components/carpool/carpoolDescription";
@@ -48,6 +48,7 @@ const RequestRide = () => {
   const [groups, setGroups] = useState<Group[]>([]);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [selectedChildren, setSelectedChildren] = useState<string[]>([]);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [date, setDate] = useState(new Date());
   const [selectedGroupIndex, setSelectedGroupIndex] = useState<IndexPath>(
     new IndexPath(0)
@@ -113,6 +114,8 @@ const RequestRide = () => {
       };
 
       await createRequest({ variables: { input } });
+      setErrorMessage(null);
+      setSuccessMessage("A driver has been found! 🎉");
       setVisible(true);
     } catch (error) {
       console.error("Error creating request:", error);
@@ -120,6 +123,8 @@ const RequestRide = () => {
         (error as ApolloError).message ||
           "An error occurred while creating the request."
       );
+      setSuccessMessage(null);
+      setVisible(true);
     }
   };
 
@@ -275,6 +280,34 @@ const RequestRide = () => {
           >
             {renderSubmitButton()}
           </LinearGradient>
+          <Popover
+            backdropStyle={{ backgroundColor: "rgba(0, 0, 0, 0.5)", flex: 1 }}
+            visible={visible}
+            anchor={() => renderSubmitButton()}
+            onBackdropPress={() => setVisible(false)}
+            style={{
+              marginBottom: 400,
+              maxWidth: 300,
+              height: 80,
+              padding: 20,
+              borderRadius: 10,
+            }}
+          >
+            <Layout
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                paddingHorizontal: 4,
+                paddingVertical: 8,
+              }}
+            >
+              <Text>
+                {errorMessage ||
+                  successMessage ||
+                  "There is no driver available. We'll notify you when one is ready 👍"}
+              </Text>
+            </Layout>
+          </Popover>
         </View>
       </ScrollView>
     </KeyboardAvoidingView>

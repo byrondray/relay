@@ -290,7 +290,7 @@ const CreateRide = () => {
         setVehicles(data.getVehicleForUser);
       }
     },
-  });  
+  });
 
   const handleDateSelect = (nextDate: Date) => {
     setSelectedDate(nextDate);
@@ -801,6 +801,7 @@ const CreateRide = () => {
                 }}
                 appearance="ghost"
                 onPress={() => {
+                  handleModelSubmit();
                   createCarpool({
                     variables: {
                       input: {
