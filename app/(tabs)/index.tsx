@@ -15,6 +15,7 @@ import { router, Href } from "expo-router";
 import { auth } from "@/firebaseConfig";
 import withAuthCheck from "../../components/WithAuthCheck";
 import { ThemedText } from "@/components/ThemedText";
+import FriendsList from "@/components/FriendsList";
 
 function HomeScreen() {
   const [hasOnboarded, setHasOnboarded] = useState<boolean | null>(null);
@@ -82,6 +83,7 @@ function HomeScreen() {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>New Ride</Text>
+      {/* <FriendsList /> */}
 
       <View style={styles.content}>
         <TouchableOpacity

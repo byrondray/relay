@@ -169,7 +169,9 @@ const Sidebar = () => {
             accessoryLeft={() => (
               <Image
                 source={{
-                  uri: group.imageUrl ?? "https://thispersondoesnotexist.com/",
+                  uri:
+                    group.imageUrl ??
+                    "https://banner2.cleanpng.com/20190125/vlo/kisspng-computer-icons-icon-design-desktop-wallpaper-clip-pepsi-clipart-pinart-coca-cola-stock-photos-i-5c4ab6b0b3b732.2697186115484003047361.jpg",
                 }} // the svg that Zeno gave us is the fallback option
                 style={{
                   width: 40,

@@ -98,6 +98,7 @@ export default function TabLayout() {
         name="Carpool/selectPassenger"
         options={{
           title: "Message",
+          tabBarButton: () => null,
         }}
       />
 
@@ -105,6 +106,7 @@ export default function TabLayout() {
         name="Carpool/selectPassengerList"
         options={{
           title: "Message",
+          tabBarButton: () => null,
         }}
       />
 
