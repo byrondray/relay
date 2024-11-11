@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Image, ScrollView } from "react-native";
+import { View, Image, ScrollView, TouchableOpacity } from "react-native";
 import {
   ApplicationProvider,
   Layout,
@@ -22,6 +22,7 @@ import { useQuery } from "@apollo/client";
 import { FriendsWithUserInfo, Group } from "@/graphql/generated";
 import groupIcon from "@/assets/images/group-icon.svg";
 import { GET_FRIENDS } from "@/graphql/friends/queries";
+import { Link, router } from "expo-router";
 
 // const groups = [
 //   { id: 1, name: "Group 1", imageUrl: "https://picsum.photos/200" },
@@ -308,7 +309,14 @@ const Community = () => {
         <View style={{ marginTop: 10 }}>
           {friends.length > 0 ? (
             friends.map((profile, index) => (
-              <UserMessageCard key={index} profile={profile} />
+              <TouchableOpacity
+                key={profile.friends.id}
+                onPress={() => {
+                  router.push(`/messages/${profile.friends.id}`);
+                }}
+              >
+                <UserMessageCard key={index} profile={profile} />
+              </TouchableOpacity>
             ))
           ) : (
             <Text>No friends available</Text>

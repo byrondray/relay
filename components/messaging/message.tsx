@@ -24,7 +24,7 @@ const Message = ({ message }: { message: MessageType }) => {
       {message.sender.imageUrl && (
         <Image
           source={{ uri: message.sender.imageUrl }}
-          style={{ width: 40, height: 40, borderRadius: 20, marginRight: 10 }}
+          style={{ width: 40, height: 40, borderRadius: 20, marginRight: 10, alignSelf: "flex-start", marginTop: 5 }}
         />
       )}
       <View style={{ flex: 1 }}>
@@ -39,7 +39,7 @@ const Message = ({ message }: { message: MessageType }) => {
             style={{
               color: "#000",
               fontSize: 14,
-              fontFamily: "Comfortaa-semibold",
+              fontFamily: "Comfortaa",
               fontWeight: "600",
             }}
           >

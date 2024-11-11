@@ -31,16 +31,14 @@ export const useFetchMessages = (
       }) => {
         const fetchedMessages = data.getPrivateMessageConversation;
 
-        const prevMessages: DetailedMessage[] = [];
-        const combinedMessages = [...prevMessages, ...fetchedMessages];
         const uniqueMessages = Array.from(
-          new Map(combinedMessages.map((msg) => [msg.id, msg])).values()
+          new Map(fetchedMessages.map((msg) => [msg.id, msg])).values()
         );
         setMessages(uniqueMessages);
 
         await AsyncStorage.setItem(
           `messages_${recipientId}`,
-          JSON.stringify(fetchedMessages)
+          JSON.stringify(uniqueMessages)
         );
       },
       onError: async (error: ApolloError) => {
@@ -52,14 +50,9 @@ export const useFetchMessages = (
         if (cachedMessages) {
           const cachedMessagesParsed: DetailedMessage[] =
             JSON.parse(cachedMessages);
-          const prevMessages: DetailedMessage[] = [];
-          const combinedMessages: DetailedMessage[] = [
-            ...prevMessages,
-            ...cachedMessagesParsed,
-          ];
           const uniqueMessages: DetailedMessage[] = Array.from(
             new Map(
-              combinedMessages.map((msg: DetailedMessage) => [msg.id, msg])
+              cachedMessagesParsed.map((msg: DetailedMessage) => [msg.id, msg])
             ).values()
           );
           setMessages(uniqueMessages);
@@ -84,7 +77,7 @@ export const useFetchUser = (userId: string) => {
     fetchPolicy: "network-only",
     onError: (error) => {
       console.error("Failed to fetch user:", error);
-      console.log("Error", "Failed to load user information.");
+      Alert.alert("Error", "Failed to load user information.");
     },
   });
 
@@ -115,35 +108,34 @@ export const useSendMessage = (
       };
 
       try {
+        console.log("Sending message:", messageData);
         const { data } = await createMessage({ variables: messageData });
 
         const createdMessage = data?.createMessage;
 
-        setNewMessage("");
-        setIsMessageSent(true);
+        if (createdMessage) {
+          setNewMessage("");
+          setIsMessageSent(true);
 
-        setMessages((prevMessages) => [
-          ...prevMessages,
-          {
-            id: createdMessage.id,
-            text: createdMessage.text,
-            createdAt: createdMessage.createdAt,
-            sender: {
-              id: createdMessage.sender.id,
-              firstName: createdMessage.sender.firstName,
-              lastName: createdMessage.sender.lastName,
-              email: createdMessage.sender.email,
-              imageUrl: createdMessage.sender.imageUrl,
+          setMessages((prevMessages) => [
+            ...prevMessages,
+            {
+              id: createdMessage.id,
+              text: createdMessage.text,
+              createdAt: createdMessage.createdAt,
+              sender: createdMessage.sender,
+              recipient: createdMessage.recipient,
             },
-            recipient: {
-              id: createdMessage.recipient.id,
-              firstName: createdMessage.recipient.firstName,
-              lastName: createdMessage.recipient.lastName,
-              email: createdMessage.recipient.email,
-              imageUrl: createdMessage.recipient.imageUrl,
-            },
-          },
-        ]);
+          ]);
+
+          AsyncStorage.setItem(
+            `messages_${recipientId}`,
+            JSON.stringify([...messages, createdMessage])
+          );
+        } else {
+          console.error("Failed to create message: No message returned");
+          Alert.alert("Error", "Message creation failed on the server.");
+        }
       } catch (error) {
         console.error("Send message error:", error);
         Alert.alert(
@@ -173,13 +165,16 @@ export const useMessageSubscription = (
 
   useEffect(() => {
     if (data?.messageSent) {
+      const newMessage = data.messageSent;
+
       setMessages((prevMessages: DetailedMessage[]) => [
         ...prevMessages,
-        data.messageSent,
+        newMessage,
       ]);
+
       AsyncStorage.setItem(
         `messages_${recipientId}`,
-        JSON.stringify([...messages, data.messageSent])
+        JSON.stringify([...messages, newMessage])
       );
     }
   }, [data]);

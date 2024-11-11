@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { View } from "react-native";
+import { Touchable, TouchableOpacity, View } from "react-native";
 import ChildImage from "./childImage";
 import { useQuery } from "@apollo/client";
 import { GET_CHILDREN_FOR_USER } from "@/graphql/user/queries";
 import { Spinner } from "@ui-kitten/components";
 import { Image } from "react-native";
 import { Child } from "@/graphql/generated";
+import { router } from "expo-router";
 
 const ChildSelector = ({
   onSelectedChildrenChange,
@@ -66,25 +67,29 @@ const ChildSelector = ({
           onPress={() => toggleSelection(child.id)}
         />
       ))}
-      <View
-        style={{
-          width: 90,
-          height: 90,
-          backgroundColor: "#F7F9FC",
-          borderRadius: 50,
-          justifyContent: "center",
-          alignItems: "center",
-          borderColor: "#8F9BB3",
-          borderWidth: 1,
-        }}
+      <TouchableOpacity
+        onPress={() => router.push("/(tabs)/Carpool/selectPassenger")}
       >
-        <Image
+        <View
           style={{
-            resizeMode: "contain",
+            width: 90,
+            height: 90,
+            backgroundColor: "#F7F9FC",
+            borderRadius: 50,
+            justifyContent: "center",
+            alignItems: "center",
+            borderColor: "#8F9BB3",
+            borderWidth: 1,
           }}
-          source={require("../../assets/images/add-member-icon.png")}
-        />
-      </View>
+        >
+          <Image
+            style={{
+              resizeMode: "contain",
+            }}
+            source={require("../../assets/images/add-member-icon.png")}
+          />
+        </View>
+      </TouchableOpacity>
     </View>
   );
 };

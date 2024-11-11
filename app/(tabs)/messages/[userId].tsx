@@ -6,8 +6,13 @@ import {
   Button,
   FlatList,
   StyleSheet,
+  KeyboardAvoidingView,
+  Platform,
+  TouchableWithoutFeedback,
+  Keyboard,
+  TouchableOpacity,
 } from "react-native";
-import { useRouter, useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Notifications from "expo-notifications";
 import { auth } from "@/firebaseConfig";
@@ -19,27 +24,23 @@ import {
 } from "../../../hooks/messages/useMessages";
 import { DetailedMessage } from "@/graphql/generated";
 import Message from "@/components/messaging/message";
+import { Spinner } from "@ui-kitten/components";
+import { LinearGradient } from "expo-linear-gradient";
 
 export default function MessageScreen() {
   const [messages, setMessages] = useState<DetailedMessage[]>([]);
   const [newMessage, setNewMessage] = useState("");
-  const [user, setUser] = useState<null | any>(null);
-  const { userId, recipientId } = useLocalSearchParams();
-  const userIdString = Array.isArray(userId) ? userId[0] : userId;
-  const recipientIdString = Array.isArray(recipientId)
-    ? recipientId[0]
-    : recipientId;
-
-  const [isMessageSent, setIsMessageSent] = useState(false);
-
-  const router = useRouter();
-  const senderId = auth.currentUser?.uid || "";
+  const { userId } = useLocalSearchParams();
+  const recipientIdString = Array.isArray(userId) ? userId[0] : userId;
+  const currentUser = auth.currentUser;
 
   const { data: recipientData, loading: recipientLoading } =
     useFetchUser(recipientIdString);
+  const senderId = auth.currentUser?.uid || "";
+  const { data: senderData, loading: senderLoading } = useFetchUser(senderId);
 
   const { loading, error, refetch } = useFetchMessages(
-    userIdString,
+    currentUser?.uid || "",
     recipientIdString,
     setMessages
   );
@@ -51,23 +52,10 @@ export default function MessageScreen() {
     messages,
     newMessage,
     setNewMessage,
-    setIsMessageSent
+    () => {}
   );
 
-  useMessageSubscription(userIdString, setMessages, messages);
-
-  useEffect(() => {
-    const loadUser = async () => {
-      const firebaseUser = auth.currentUser;
-      if (!firebaseUser) {
-        router.replace("/Login/login");
-      } else {
-        setUser(firebaseUser);
-      }
-    };
-
-    loadUser();
-  }, [userId]);
+  useMessageSubscription(currentUser?.uid || "", setMessages, messages);
 
   useEffect(() => {
     const requestNotificationPermission = async () => {
@@ -82,36 +70,38 @@ export default function MessageScreen() {
         const data = notification.request.content.data;
         const { senderId: messageSenderId, text } = data;
 
-        if (messageSenderId === userId) {
-          setMessages((prevMessages) => [
-            ...prevMessages,
-            {
-              id: new Date().getTime().toString(),
-              text,
-              createdAt: new Date().toISOString(),
-              sender: {
-                id: messageSenderId,
-                firstName: "Sender Name",
-                lastName: "",
-                email: "",
-                imageUrl: "",
-              }, // Replace with actual sender details if available
-              recipient: {
-                id: userIdString,
-                firstName: "Recipient Name",
-                lastName: "",
-                email: "",
-                imageUrl: "",
-              }, // Replace with actual recipient details
+        if (messageSenderId && text) {
+          const newMessage = {
+            id: new Date().getTime().toString(),
+            text,
+            createdAt: new Date().toISOString(),
+            sender: {
+              id: messageSenderId,
+              firstName: senderData?.getUser.firstName || "Unknown",
+              lastName: senderData?.getUser.lastName || "",
+              email: senderData?.getUser.email || "",
+              imageUrl: senderData?.getUser.imageUrl || "",
             },
-          ]);
+            recipient: {
+              id: currentUser?.uid || "",
+              firstName: recipientData?.getUser.firstName || "Recipient",
+              lastName: recipientData?.getUser.lastName || "",
+              email: recipientData?.getUser.email || "",
+              imageUrl: recipientData?.getUser.imageUrl || "",
+            },
+          };
 
-          AsyncStorage.setItem(
-            `messages_${userId}`,
-            JSON.stringify([...messages, { text, senderId: messageSenderId }])
-          );
-        } else {
-          console.log("New Message", `Message from another user: ${text}`);
+          setMessages((prevMessages) => {
+            const updatedMessages = [...prevMessages, newMessage];
+            const uniqueMessages = Array.from(
+              new Map(updatedMessages.map((msg) => [msg.id, msg])).values()
+            );
+            AsyncStorage.setItem(
+              `messages_${currentUser?.uid || ""}`,
+              JSON.stringify(uniqueMessages)
+            );
+            return uniqueMessages;
+          });
         }
       });
 
@@ -122,48 +112,72 @@ export default function MessageScreen() {
         handleForegroundNotification
       );
     };
-  }, [userId, messages]);
+  }, [currentUser?.uid || "", messages, senderData, recipientData]);
 
-  if (recipientLoading) {
+  if (recipientLoading || senderLoading) {
     return (
       <View style={styles.container}>
-        <Text>Loading recipient information...</Text>
+        <Spinner />
       </View>
     );
   }
 
   return (
-    <View style={styles.container}>
-      {recipientData && (
-        <Text style={styles.recipientName}>
-          Chat with {recipientData.getUser.name.split(" ")[0]}
-        </Text>
-      )}
-
-      <FlatList
-        data={messages}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => {
-          return <Message message={item} />;
-        }}
+    <KeyboardAvoidingView
+      style={styles.flexContainer}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      keyboardVerticalOffset={Platform.OS === "ios" ? 90 : 0}
+    >
+      <LinearGradient
+        colors={["#E6574C1A", "#F7B06033"]}
+        start={{ x: 0.1, y: 0 }}
+        end={{ x: 0.91, y: 1 }}
+        style={styles.gradientBackground}
       />
 
-      <TextInput
-        value={newMessage}
-        onChangeText={setNewMessage}
-        style={styles.input}
-        placeholder="Type a message..."
-      />
-      <Button title="Send" onPress={() => sendMessage()} />
-    </View>
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <View style={[styles.container, { flex: 1 }]}>
+          <FlatList
+            data={messages}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item }) => <Message message={item} />}
+            contentContainerStyle={{ paddingBottom: 10 }}
+          />
+
+          <View style={styles.inputContainer}>
+            <TextInput
+              value={newMessage}
+              onChangeText={setNewMessage}
+              style={[styles.input, { backgroundColor: "white" }]}
+              placeholder="Message..."
+            />
+            <TouchableOpacity onPress={() => sendMessage()}>
+              <Text style={styles.sendButtonText}>Send</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </TouchableWithoutFeedback>
+    </KeyboardAvoidingView>
   );
 }
 
 const styles = StyleSheet.create({
+  flexContainer: {
+    flex: 1,
+  },
+  sendButtonText: {
+    color: "#FB812A",
+    fontSize: 16,
+    fontFamily: "Comfortaa",
+  },
+  gradientBackground: {
+    position: "absolute",
+    width: "100%",
+    height: "100%",
+  },
   container: {
     flex: 1,
     padding: 10,
-    backgroundColor: "#fff",
     paddingHorizontal: 10,
   },
   recipientName: {
@@ -171,23 +185,18 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: 10,
   },
-  message: {
-    padding: 10,
-    marginVertical: 5,
-    backgroundColor: "#f1f1f1",
-    borderRadius: 5,
-  },
-  otherMessage: {
-    backgroundColor: "#e1f5fe",
-  },
-  messageText: {
-    fontSize: 16,
+  inputContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: 5,
+    paddingHorizontal: 10,
   },
   input: {
+    flex: 1,
     borderWidth: 1,
-    padding: 10,
-    borderRadius: 5,
     borderColor: "#ddd",
-    marginBottom: 10,
+    borderRadius: 20,
+    padding: 10,
+    marginRight: 10,
   },
 });
