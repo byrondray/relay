@@ -39,7 +39,7 @@ const Message = ({ message }: { message: MessageType }) => {
             style={{
               color: "#000",
               fontSize: 14,
-              fontFamily: "Comfortaa-semibold",
+              fontFamily: "Comfortaa",
               fontWeight: "600",
             }}
           >
