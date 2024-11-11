@@ -1,51 +1,69 @@
-import React from "react";
-import { View, Text, TouchableOpacity, StyleSheet, Image } from "react-native";
-import { LinearGradient } from "expo-linear-gradient";
+import React from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 
-const NewRideScreen: React.FC<{ hasFilledDriverInfo: boolean }> = ({ hasFilledDriverInfo }) => {
-  if (hasFilledDriverInfo) return null;
+const NewRideScreen: React.FC = () => {
+  const hasFilledDriverInfo = true;
 
   return (
     <View style={styles.container}>
       <View style={styles.content}>
         <Text style={styles.title}>New Ride</Text>
-
-        <TouchableOpacity style={styles.disabledButton} disabled>
+        
+        <TouchableOpacity
+          style={[
+            styles.button,
+            hasFilledDriverInfo ? styles.requestButton : styles.disabledButton
+          ]}
+          disabled={!hasFilledDriverInfo}
+        >
           <View style={styles.buttonContent}>
             <View style={styles.textContainer}>
-              <Text style={styles.disabledButtonText}>I'm a driver</Text>
-              <Text style={styles.subText}>I'm available to carpool kids.</Text>
+              <Text
+                style={[
+                  hasFilledDriverInfo ? styles.requestButtonText : styles.disabledButtonText
+                ]}
+              >
+                I'm a driver
+              </Text>
+              <Text style={[styles.subText, hasFilledDriverInfo && styles.requestSubText]}>
+                I'm available to carpool kids.
+              </Text>
             </View>
             <Image
               source={require("@/assets/images/arrow-circle-right.png")}
-              style={[styles.arrowIcon, { tintColor: "#aaa" }]}
+              style={[
+                styles.arrowIcon,
+                !hasFilledDriverInfo && styles.disabledArrowIcon
+              ]}
             />
           </View>
         </TouchableOpacity>
 
-        <Text style={styles.signupText}>
-          Interested in becoming a carpool driver to help drive kids in your
-          community?
-        </Text>
+        {!hasFilledDriverInfo && (
+          <>
+            <Text style={styles.signupText}>
+              Interested in becoming a carpool driver to help drive kids in your community?
+            </Text>
 
-        <TouchableOpacity style={styles.signUpButtonContainer}>
-          <LinearGradient
-            colors={["#FFA726", "#EF5350"]}
-            style={styles.signUpButton}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 0 }}
-          >
-            <Text style={styles.signUpButtonText}>Sign up to be a Driver</Text>
-          </LinearGradient>
-        </TouchableOpacity>
+            <TouchableOpacity style={styles.signUpButtonContainer}>
+              <LinearGradient
+                colors={['#FFA726', '#EF5350']}
+                style={styles.signUpButton}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }}
+              >
+                <Text style={styles.signUpButtonText}>Sign up to be a Driver</Text>
+              </LinearGradient>
+            </TouchableOpacity>
+          </>
+        )}
 
         <TouchableOpacity style={styles.requestButton}>
           <View style={styles.buttonContent}>
             <View style={styles.textContainer}>
-              <Text style={styles.requestButtonText}>
-                Need a ride for my kid
-              </Text>
-              <Text style={styles.subText}>Notify me when a ride matches</Text>
+              <Text style={styles.requestButtonText}>Need a ride for my kid</Text>
+              <Text style={styles.requestSubText}>Notify me when a ride matches</Text>
             </View>
             <Image
               source={require("@/assets/images/arrow-circle-right.png")}
@@ -57,7 +75,6 @@ const NewRideScreen: React.FC<{ hasFilledDriverInfo: boolean }> = ({ hasFilledDr
         <Text style={styles.activeRequestText}>Active Request</Text>
       </View>
 
-      <View style={styles.navBarContainer}></View>
     </View>
   );
 };
@@ -77,11 +94,13 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: 20,
   },
-  disabledButton: {
-    backgroundColor: "#f0f0f0",
+  button: {
     borderRadius: 10,
     padding: 20,
     marginBottom: 10,
+  },
+  disabledButton: {
+    backgroundColor: '#f0f0f0',
   },
   buttonContent: {
     flexDirection: "row",
@@ -131,21 +150,23 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: "#333",
   },
+  requestSubText: {
+    fontSize: 14,
+    color: '#333',
+    marginTop: 5,
+  },
   activeRequestText: {
     fontSize: 24,
     fontWeight: "bold",
     marginTop: 20,
   },
-  navBarContainer: {
-    width: "100%",
-    position: "absolute",
-    bottom: 0,
-    left: 0,
-  },
   arrowIcon: {
     width: 40,
     height: 40,
     marginLeft: 10,
+  },
+  disabledArrowIcon: {
+    tintColor: '#aaa',
   },
 });
 
