@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import FriendCard from '@/components/FriendCard'; // Adjust this import based on your file structure
+import FriendCard from '@/components/FriendCard';
 
 const NewRideScreen: React.FC = () => {
   const hasFilledDriverInfo = true;
