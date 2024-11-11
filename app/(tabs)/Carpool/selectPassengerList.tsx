@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, TextInput, Image, StyleSheet, ScrollView } from 'react-native';
 
 type Friend = {
@@ -32,6 +32,13 @@ const friendsList: Friend[] = [
   { name: 'Grace', class: 'From theater', initial: 'G' },
 ];
 
+const spacing = {
+  small: 8,
+  medium: 16,
+  large: 24,
+  xLarge: 32,
+};
+
 const groupFriendsByInitial = (friends: Friend[]) => {
   return friends.reduce((acc: { [key: string]: Friend[] }, friend) => {
     const initial = friend.initial;
@@ -44,7 +51,19 @@ const groupFriendsByInitial = (friends: Friend[]) => {
 };
 
 export default function SelectPassengerScreen() {
+  const [searchTerm, setSearchTerm] = useState<string>('');
   const groupedFriends = groupFriendsByInitial(friendsList);
+
+  // Filter the friends list based on the search term
+  const filteredFriends = Object.keys(groupedFriends).reduce((acc, initial) => {
+    const filteredFriendsByInitial = groupedFriends[initial].filter(friend =>
+      friend.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    if (filteredFriendsByInitial.length > 0) {
+      acc[initial] = filteredFriendsByInitial;
+    }
+    return acc;
+  }, {} as { [key: string]: Friend[] });
 
   return (
     <View style={styles.container}>
@@ -52,47 +71,56 @@ export default function SelectPassengerScreen() {
         <Text style={styles.cancelText}>Cancel</Text>
         <Text style={styles.saveText}>Save</Text>
       </View>
+      
       <Text style={styles.title}>Select Passenger</Text>
       <Text style={styles.subtitle}>Select from recent chat</Text>
 
-      <ScrollView
-        contentContainerStyle={styles.imageContainer}
-        horizontal
-        showsHorizontalScrollIndicator={false}
-      >
-        {passengers.map((passenger, index) => (
-          <View key={index} style={styles.imageWrapper}>
-            <Image source={passenger.image} style={styles.image} />
-            <Text style={styles.name}>{passenger.name}</Text>
-          </View>
-        ))}
-      </ScrollView>
+      {/* Recent Passengers Section */}
+      <View style={styles.recentPassengersContainer}>
+        <ScrollView
+          contentContainerStyle={styles.imageContainer}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+        >
+          {passengers.map((passenger, index) => (
+            <View key={index} style={styles.imageWrapper}>
+              <Image source={passenger.image} style={styles.image} />
+              <Text style={styles.name}>{passenger.name}</Text>
+            </View>
+          ))}
+        </ScrollView>
+      </View>
 
-      <Text style={styles.searchText}>Search from friend list</Text>
-      <TextInput
-        style={styles.searchBar}
-        placeholder="Search from friend list"
-        placeholderTextColor="#B0B0B0"
-      />
+      {/* Friends Container (Search Bar + Friends List) */}
+      <View style={styles.friendsContainer}>
+        <Text style={styles.searchText}>Search from friend list</Text>
+        <TextInput
+          style={styles.searchBar}
+          placeholder="Search from friend list"
+          placeholderTextColor="#B0B0B0"
+          value={searchTerm}
+          onChangeText={setSearchTerm} // Update search term on text input change
+        />
 
-      <ScrollView contentContainerStyle={styles.friendsList}>
-        {Object.keys(groupedFriends).map((initial) => (
-          <View key={initial}>
-            <Text style={styles.initialHeader}>{initial}</Text>
-            {groupedFriends[initial].map((friend, index) => (
-              <View key={index} style={styles.friendWrapper}>
-                <View style={styles.friendInfo}>
-                  <Text style={styles.friendInitial}>{friend.initial}</Text>
-                  <View>
-                    <Text style={styles.friendName}>{friend.name}</Text>
-                    <Text style={styles.friendClass}>{friend.class}</Text>
+        <ScrollView contentContainerStyle={styles.friendsList}>
+          {Object.keys(filteredFriends).map((initial) => (
+            <View key={initial} style={styles.initialSection}>
+              <Text style={styles.initialHeader}>{initial}</Text>
+              {filteredFriends[initial].map((friend, index) => (
+                <View key={index} style={styles.friendWrapper}>
+                  <View style={styles.friendInfo}>
+                    <Text style={styles.friendInitial}>{friend.initial}</Text>
+                    <View>
+                      <Text style={styles.friendName}>{friend.name}</Text>
+                      <Text style={styles.friendClass}>{friend.class}</Text>
+                    </View>
                   </View>
                 </View>
-              </View>
-            ))}
-          </View>
-        ))}
-      </ScrollView>
+              ))}
+            </View>
+          ))}
+        </ScrollView>
+      </View>
     </View>
   );
 }
@@ -119,64 +147,68 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    marginTop: 10,
+    marginTop: spacing.small,
   },
   subtitle: {
     fontSize: 16,
     color: '#888',
-    marginVertical: 15,
+    marginVertical: spacing.small,
+  },
+  recentPassengersContainer: {
+    marginBottom: spacing.large,
   },
   imageContainer: {
     flexDirection: 'row',
-    justifyContent: 'center',
-    marginBottom: 20,
-    paddingHorizontal: 10,
+    marginBottom: spacing.medium,
   },
   imageWrapper: {
     alignItems: 'center',
-    marginHorizontal: 10,
-    marginRight: 2,
+    marginHorizontal: spacing.small,
   },
   image: {
     width: 85,
     height: 85,
-    borderRadius: 45,
-    marginBottom: 10,
+    borderRadius: 42.5,
+    marginBottom: 5,
   },
   name: {
     fontSize: 14,
     color: '#888',
-    marginBottom: 275,
+    textAlign: 'center',
+  },
+  friendsContainer: {
+    flex: 1,
+    paddingTop: spacing.medium,
   },
   searchText: {
     fontSize: 16,
     color: '#888',
-    marginBottom: 10,
+    marginBottom: 5,
   },
   searchBar: {
-    height: 120,
+    height: 40,
     borderWidth: 1,
     borderColor: '#E0E0E0',
     borderRadius: 20,
-    paddingLeft: 15,
+    paddingLeft: spacing.medium,
     backgroundColor: '#F7F7F7',
-    marginBottom: 10,
+    marginBottom: spacing.medium,
+    marginHorizontal: spacing.small,
   },
   friendsList: {
-    paddingVertical: 10,
+    paddingVertical: spacing.small,
+  },
+  initialSection: {
+    paddingVertical: spacing.small,
   },
   initialHeader: {
     fontSize: 18,
     color: '#888',
-    marginTop: 15,
-    marginBottom: 5,
-    marginLeft: 15,
+    paddingHorizontal: spacing.medium,
   },
   friendWrapper: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 12,
-    paddingHorizontal: 15,
+    paddingHorizontal: spacing.medium,
+    paddingVertical: spacing.small,
     borderBottomWidth: 1,
     borderBottomColor: '#E0E0E0',
   },
@@ -194,7 +226,7 @@ const styles = StyleSheet.create({
     lineHeight: 40,
     fontSize: 16,
     fontWeight: 'bold',
-    marginRight: 10,
+    marginRight: spacing.small,
   },
   friendName: {
     fontSize: 16,
