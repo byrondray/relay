@@ -32,7 +32,6 @@ const friendsList: Friend[] = [
   { name: 'Grace', class: 'From theater', initial: 'G' },
 ];
 
-// Define spacing constants directly in the component
 const spacing = {
   small: 8,
   medium: 16,
@@ -60,50 +59,54 @@ export default function SelectPassengerScreen() {
         <Text style={styles.cancelText}>Cancel</Text>
         <Text style={styles.saveText}>Save</Text>
       </View>
+      
       <Text style={styles.title}>Select Passenger</Text>
       <Text style={styles.subtitle}>Select from recent chat</Text>
 
-      <ScrollView
-        contentContainerStyle={styles.imageContainer}
-        horizontal
-        showsHorizontalScrollIndicator={false}
-      >
-        {passengers.map((passenger, index) => (
-          <View key={index} style={styles.imageWrapper}>
-            <Image source={passenger.image} style={styles.image} />
-            <Text style={styles.name}>{passenger.name}</Text>
-          </View>
-        ))}
-      </ScrollView>
+      {/* Recent Passengers Section */}
+      <View style={styles.recentPassengersContainer}>
+        <ScrollView
+          contentContainerStyle={styles.imageContainer}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+        >
+          {passengers.map((passenger, index) => (
+            <View key={index} style={styles.imageWrapper}>
+              <Image source={passenger.image} style={styles.image} />
+              <Text style={styles.name}>{passenger.name}</Text>
+            </View>
+          ))}
+        </ScrollView>
+      </View>
 
-      {/* Adding margin to create space below the image scroll */}
-      <View style={styles.spacingBelowImages} />
-
+      {/* Friends Container (Search Bar + Friends List) */}
+      <View style={styles.friendsContainer}>
       <Text style={styles.searchText}>Search from friend list</Text>
-      <TextInput
-        style={styles.searchBar}
-        placeholder="Search from friend list"
-        placeholderTextColor="#B0B0B0"
-      />
+        <TextInput
+          style={styles.searchBar}
+          placeholder="Search from friend list"
+          placeholderTextColor="#B0B0B0"
+        />
 
-      <ScrollView contentContainerStyle={styles.friendsList}>
-        {Object.keys(groupedFriends).map((initial) => (
-          <View key={initial}>
-            <Text style={styles.initialHeader}>{initial}</Text>
-            {groupedFriends[initial].map((friend, index) => (
-              <View key={index} style={styles.friendWrapper}>
-                <View style={styles.friendInfo}>
-                  <Text style={styles.friendInitial}>{friend.initial}</Text>
-                  <View>
-                    <Text style={styles.friendName}>{friend.name}</Text>
-                    <Text style={styles.friendClass}>{friend.class}</Text>
+        <ScrollView contentContainerStyle={styles.friendsList}>
+          {Object.keys(groupedFriends).map((initial) => (
+            <View key={initial} style={styles.initialSection}>
+              <Text style={styles.initialHeader}>{initial}</Text>
+              {groupedFriends[initial].map((friend, index) => (
+                <View key={index} style={styles.friendWrapper}>
+                  <View style={styles.friendInfo}>
+                    <Text style={styles.friendInitial}>{friend.initial}</Text>
+                    <View>
+                      <Text style={styles.friendName}>{friend.name}</Text>
+                      <Text style={styles.friendClass}>{friend.class}</Text>
+                    </View>
                   </View>
                 </View>
-              </View>
-            ))}
-          </View>
-        ))}
-      </ScrollView>
+              ))}
+            </View>
+          ))}
+        </ScrollView>
+      </View>
     </View>
   );
 }
@@ -112,13 +115,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#FFFFFF',
-    paddingHorizontal: spacing.medium,
-    paddingTop: spacing.large,
+    paddingHorizontal: 20,
+    paddingTop: 40,
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: spacing.large,
   },
   cancelText: {
     color: '#FF6C00',
@@ -131,18 +133,19 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    marginTop: spacing.medium,
+    marginTop: spacing.small,
   },
   subtitle: {
     fontSize: 16,
     color: '#888',
-    marginVertical: spacing.large,
+    marginVertical: spacing.small,
+  },
+  recentPassengersContainer: {
+    marginBottom: spacing.large,
   },
   imageContainer: {
     flexDirection: 'row',
-    justifyContent: 'center',
-    marginBottom: 250,
-
+    marginBottom: spacing.medium,
   },
   imageWrapper: {
     alignItems: 'center',
@@ -151,45 +154,47 @@ const styles = StyleSheet.create({
   image: {
     width: 85,
     height: 85,
-    borderRadius: 45,
+    borderRadius: 42.5,
     marginBottom: 5,
   },
   name: {
     fontSize: 14,
     color: '#888',
+    textAlign: 'center',
+  },
+  friendsContainer: {
+    flex: 1,
+    paddingTop: spacing.medium,
   },
   searchText: {
     fontSize: 16,
-    color: '#888',
-    marginBottom: spacing.small,
+    color: '#888', // Changed to grey for subtle appearance
+    marginBottom: 5,
   },
   searchBar: {
-    height: 50,
+    height: 40,
     borderWidth: 1,
     borderColor: '#E0E0E0',
     borderRadius: 20,
     paddingLeft: spacing.medium,
     backgroundColor: '#F7F7F7',
     marginBottom: spacing.medium,
-  },
-  spacingBelowImages: {
-    height: 20, // Adjust this height to create enough space
+    marginHorizontal: spacing.small,
   },
   friendsList: {
+    paddingVertical: spacing.small,
+  },
+  initialSection: {
     paddingVertical: spacing.small,
   },
   initialHeader: {
     fontSize: 18,
     color: '#888',
-    marginTop: spacing.medium,
-    marginBottom: spacing.small,
-    marginLeft: spacing.medium,
+    paddingHorizontal: spacing.medium,
   },
   friendWrapper: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: spacing.small,
     paddingHorizontal: spacing.medium,
+    paddingVertical: spacing.small,
     borderBottomWidth: 1,
     borderBottomColor: '#E0E0E0',
   },
