@@ -10,6 +10,7 @@ import {
   Platform,
   TouchableWithoutFeedback,
   Keyboard,
+  TouchableOpacity,
 } from "react-native";
 import { useLocalSearchParams } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -24,6 +25,7 @@ import {
 import { DetailedMessage } from "@/graphql/generated";
 import Message from "@/components/messaging/message";
 import { Spinner } from "@ui-kitten/components";
+import { LinearGradient } from "expo-linear-gradient";
 
 export default function MessageScreen() {
   const [messages, setMessages] = useState<DetailedMessage[]>([]);
@@ -122,24 +124,23 @@ export default function MessageScreen() {
 
   return (
     <KeyboardAvoidingView
-      style={{ flex: 1 }}
+      style={styles.flexContainer}
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       keyboardVerticalOffset={Platform.OS === "ios" ? 90 : 0}
     >
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <View style={styles.container}>
-          {recipientData && (
-            <Text style={styles.recipientName}>
-              Chat with {recipientData.getUser.firstName}
-            </Text>
-          )}
+      <LinearGradient
+        colors={["#E6574C1A", "#F7B06033"]}
+        start={{ x: 0.1, y: 0 }}
+        end={{ x: 0.91, y: 1 }}
+        style={styles.gradientBackground}
+      />
 
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <View style={[styles.container, { flex: 1 }]}>
           <FlatList
             data={messages}
             keyExtractor={(item) => item.id}
-            renderItem={({ item }) => {
-              return <Message message={item} />;
-            }}
+            renderItem={({ item }) => <Message message={item} />}
             contentContainerStyle={{ paddingBottom: 10 }}
           />
 
@@ -147,10 +148,12 @@ export default function MessageScreen() {
             <TextInput
               value={newMessage}
               onChangeText={setNewMessage}
-              style={styles.input}
-              placeholder="Type a message..."
+              style={[styles.input, { backgroundColor: "white" }]}
+              placeholder="Message..."
             />
-            <Button title="Send" onPress={() => sendMessage()} />
+            <TouchableOpacity onPress={() => sendMessage()}>
+              <Text style={styles.sendButtonText}>Send</Text>
+            </TouchableOpacity>
           </View>
         </View>
       </TouchableWithoutFeedback>
@@ -159,10 +162,22 @@ export default function MessageScreen() {
 }
 
 const styles = StyleSheet.create({
+  flexContainer: {
+    flex: 1,
+  },
+  sendButtonText: {
+    color: "#FB812A",
+    fontSize: 16,
+    fontFamily: "Comfortaa",
+  },
+  gradientBackground: {
+    position: "absolute",
+    width: "100%",
+    height: "100%",
+  },
   container: {
     flex: 1,
     padding: 10,
-    backgroundColor: "#fff",
     paddingHorizontal: 10,
   },
   recipientName: {
@@ -173,11 +188,8 @@ const styles = StyleSheet.create({
   inputContainer: {
     flexDirection: "row",
     alignItems: "center",
-    borderTopWidth: 1,
-    borderColor: "#ccc",
     paddingVertical: 5,
     paddingHorizontal: 10,
-    backgroundColor: "#fff",
   },
   input: {
     flex: 1,
