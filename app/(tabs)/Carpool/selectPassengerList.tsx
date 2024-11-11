@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, TextInput, Image, StyleSheet, ScrollView } from 'react-native';
 
 type Friend = {
@@ -51,7 +51,19 @@ const groupFriendsByInitial = (friends: Friend[]) => {
 };
 
 export default function SelectPassengerScreen() {
+  const [searchTerm, setSearchTerm] = useState<string>('');
   const groupedFriends = groupFriendsByInitial(friendsList);
+
+  // Filter the friends list based on the search term
+  const filteredFriends = Object.keys(groupedFriends).reduce((acc, initial) => {
+    const filteredFriendsByInitial = groupedFriends[initial].filter(friend =>
+      friend.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    if (filteredFriendsByInitial.length > 0) {
+      acc[initial] = filteredFriendsByInitial;
+    }
+    return acc;
+  }, {} as { [key: string]: Friend[] });
 
   return (
     <View style={styles.container}>
@@ -81,18 +93,20 @@ export default function SelectPassengerScreen() {
 
       {/* Friends Container (Search Bar + Friends List) */}
       <View style={styles.friendsContainer}>
-      <Text style={styles.searchText}>Search from friend list</Text>
+        <Text style={styles.searchText}>Search from friend list</Text>
         <TextInput
           style={styles.searchBar}
           placeholder="Search from friend list"
           placeholderTextColor="#B0B0B0"
+          value={searchTerm}
+          onChangeText={setSearchTerm} // Update search term on text input change
         />
 
         <ScrollView contentContainerStyle={styles.friendsList}>
-          {Object.keys(groupedFriends).map((initial) => (
+          {Object.keys(filteredFriends).map((initial) => (
             <View key={initial} style={styles.initialSection}>
               <Text style={styles.initialHeader}>{initial}</Text>
-              {groupedFriends[initial].map((friend, index) => (
+              {filteredFriends[initial].map((friend, index) => (
                 <View key={index} style={styles.friendWrapper}>
                   <View style={styles.friendInfo}>
                     <Text style={styles.friendInitial}>{friend.initial}</Text>
@@ -168,7 +182,7 @@ const styles = StyleSheet.create({
   },
   searchText: {
     fontSize: 16,
-    color: '#888', // Changed to grey for subtle appearance
+    color: '#888',
     marginBottom: 5,
   },
   searchBar: {
