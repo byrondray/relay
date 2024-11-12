@@ -6,8 +6,6 @@ import {
   Text,
   Button,
   Input,
-  Icon,
-  Spinner,
 } from "@ui-kitten/components";
 import * as eva from "@eva-design/eva";
 import FriendButton from "@/assets/images/friendButton.svg";
@@ -22,7 +20,7 @@ import { useQuery } from "@apollo/client";
 import { FriendsWithUserInfo, Group } from "@/graphql/generated";
 import groupIcon from "@/assets/images/group-icon.svg";
 import { GET_FRIENDS } from "@/graphql/friends/queries";
-import { Link, router } from "expo-router";
+import { router } from "expo-router";
 
 // const groups = [
 //   { id: 1, name: "Group 1", imageUrl: "https://picsum.photos/200" },
