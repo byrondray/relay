@@ -3,7 +3,13 @@ import { ThemedAddressCompletionInput } from "@/components/ThemedAddressCompleti
 import { useThemeColor } from "@/hooks/useThemeColor";
 import MapView, { LongPressEvent, MapPressEvent } from "react-native-maps";
 import { LinearGradient } from "expo-linear-gradient";
-import { Button, IndexPath, Layout, Popover } from "@ui-kitten/components";
+import {
+  Button,
+  IndexPath,
+  Layout,
+  Popover,
+  Spinner,
+} from "@ui-kitten/components";
 import ChildSelector from "@/components/carpool/childSelector";
 import { useQuery } from "@apollo/client";
 import { auth } from "@/firebaseConfig";
@@ -468,6 +474,20 @@ const CreateRide = () => {
   };
 
   const textColor = useThemeColor({}, "placeholder");
+
+  if (loading) {
+    return (
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <Spinner />
+      </View>
+    );
+  }
 
   return (
     <KeyboardAvoidingView

@@ -6,6 +6,7 @@ import {
   Text,
   Button,
   Input,
+  Spinner,
 } from "@ui-kitten/components";
 import * as eva from "@eva-design/eva";
 import FriendButton from "@/assets/images/friendButton.svg";
@@ -288,12 +289,31 @@ const Community = () => {
       setGroupIcon(result.assets[0].uri);
     }
   };
-  const { data: friendsData } = useQuery(GET_FRIENDS, {
+  const {
+    data: friendsData,
+    loading,
+    error,
+  } = useQuery(GET_FRIENDS, {
     onCompleted: (data) => {
       console.log(data, "friends");
       setFriends(data.getFriends);
     },
   });
+
+  if (loading) {
+    return (
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <Spinner />
+      </View>
+    );
+  }
+
   return (
     <Layout style={{ flex: 1, flexDirection: "row" }}>
       <Sidebar />
@@ -433,3 +453,5 @@ export default function App() {
     </ApplicationProvider>
   );
 }
+
+import { FlexAlignType } from "react-native";

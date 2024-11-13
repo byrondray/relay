@@ -161,7 +161,7 @@ const RequestRide = () => {
           <Text
             style={{
               fontSize: 32,
-              fontWeight: "bold",
+              // fontWeight: "bold",
               marginBottom: 20,
               fontFamily: "Comfortaa",
             }}
