@@ -1,5 +1,11 @@
 import React, { useState } from "react";
-import { View, Image, ScrollView, TouchableOpacity } from "react-native";
+import {
+  View,
+  Image,
+  ScrollView,
+  TouchableOpacity,
+  TextInput,
+} from "react-native";
 import {
   ApplicationProvider,
   Layout,
@@ -314,6 +320,9 @@ const Community = () => {
     );
   }
 
+  const [searchText, setSearchText] = useState("");
+  const textColor = useThemeColor({}, "placeholder");
+
   return (
     <Layout style={{ flex: 1, flexDirection: "row" }}>
       <Sidebar />
@@ -367,16 +376,46 @@ const Community = () => {
           onClose={() => setIsPanelVisible(false)}
         >
           <Text
-            category="h5"
-            style={{ marginTop: 0, marginBottom: 10, fontFamily: "Comfortaa" }}
+            // category="h5"
+            style={{
+              marginTop: 0,
+              marginBottom: 12,
+              fontFamily: "Comfortaa",
+              fontSize: 22,
+            }}
           >
             Create New Group
           </Text>
-          <FriendProfile
-            id={""}
-            name={"Bob"}
-            imageUrl={"https://thispersondoesnotexist.com/"}
-          />
+          <Text
+            style={{
+              fontFamily: "Comfortaa",
+              color: textColor,
+              fontSize: 12,
+              marginBottom: 15,
+            }}
+          >
+            Members Invited
+          </Text>
+          <ScrollView
+            horizontal={true}
+            style={{ marginLeft: 5, marginBottom: 10 }}
+          >
+            <FriendProfile
+              id={""}
+              name={"Bob"}
+              imageUrl={"https://thispersondoesnotexist.com/"}
+            />
+            <FriendProfile
+              id={""}
+              name={"Bob"}
+              imageUrl={"https://thispersondoesnotexist.com/"}
+            />
+            <FriendProfile
+              id={""}
+              name={"Bob"}
+              imageUrl={"https://thispersondoesnotexist.com/"}
+            />
+          </ScrollView>
           <Input
             placeholder="Group Name"
             style={{
@@ -423,11 +462,76 @@ const Community = () => {
             </Text>
           </Button>
           <Text
-            category="h5"
-            style={{ marginTop: 10, marginBottom: 10, fontFamily: "Comfortaa" }}
+            style={{
+              marginTop: 10,
+              marginBottom: 10,
+              fontFamily: "Comfortaa",
+              fontSize: 18,
+            }}
           >
             Select From Friend List
           </Text>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              backgroundColor: "#f2f2f2",
+              borderRadius: 20,
+              paddingHorizontal: 12,
+              paddingVertical: 10,
+              marginBottom: 16,
+            }}
+          >
+            <Ionicons
+              name="search"
+              size={20}
+              color="#aaa"
+              style={{ marginRight: 8 }}
+            />
+            <TextInput
+              style={{ flex: 1, height: 20, fontFamily: "Comfortaa" }}
+              placeholder="Search friend by name or email address"
+              value={searchText}
+              onChangeText={setSearchText}
+            />
+          </View>
+          <ScrollView
+            style={{
+              borderColor: "#8F9BB333",
+              borderWidth: 2,
+              borderRadius: 15,
+              shadowColor: "#000",
+              shadowOffset: { width: 0, height: 4 },
+              shadowOpacity: 0.2,
+              shadowRadius: 2,
+              elevation: 2,
+            }}
+          >
+            <FriendCard
+              id={""}
+              name={"Bob"}
+              source={"Basketball"}
+              imageUrl={"https://thispersondoesnotexist.com/"}
+            />
+            <FriendCard
+              id={""}
+              name={"Bob"}
+              source={"Basketball"}
+              imageUrl={"https://thispersondoesnotexist.com/"}
+            />
+            <FriendCard
+              id={""}
+              name={"Bob"}
+              source={"Basketball"}
+              imageUrl={"https://thispersondoesnotexist.com/"}
+            />
+            <FriendCard
+              id={""}
+              name={"Bob"}
+              source={"Basketball"}
+              imageUrl={"https://thispersondoesnotexist.com/"}
+            />
+          </ScrollView>
         </FriendsExpandablePanel>
         <View style={{ marginTop: 10 }}>
           {friends.length > 0 ? (
@@ -460,3 +564,8 @@ export default function App() {
 
 import { FlexAlignType } from "react-native";
 import FriendProfile from "@/components/FriendProfile";
+import TextWithFont from "@/components/text/textWithFont";
+import { useTheme } from "react-native-paper";
+import { useThemeColor } from "@/hooks/useThemeColor";
+import FriendCard from "@/components/FriendCard";
+import { Ionicons } from "@expo/vector-icons";
