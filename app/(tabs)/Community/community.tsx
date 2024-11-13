@@ -246,6 +246,9 @@ const Community = () => {
     },
   });
 
+  const [searchText, setSearchText] = useState("");
+  const textColor = useThemeColor({}, "placeholder");
+
   if (loading) {
     return (
       <View
@@ -259,9 +262,6 @@ const Community = () => {
       </View>
     );
   }
-
-  const [searchText, setSearchText] = useState("");
-  const textColor = useThemeColor({}, "placeholder");
 
   return (
     <Layout style={{ flex: 1, flexDirection: "row" }}>

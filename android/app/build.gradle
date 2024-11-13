@@ -195,8 +195,8 @@ dependencies {
         implementation jscFlavor
     }
 
-    // Added dependency for google-services
-    classpath 'com.google.gms:google-services:4.4.2' // Added as per your request
 }
 
 if (rnVersion < versionToNumber(0, 75, 0)) {
+    apply from: file("../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesAppBuildGradle(project)
+}

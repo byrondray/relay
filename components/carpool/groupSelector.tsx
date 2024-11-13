@@ -52,6 +52,7 @@ const GroupPicker = ({
           }}
           value={groups[selectedGroupIndex?.row]?.name || "Select Group"}
           placeholder="Select Group"
+          style={{ borderColor: "transparent" }}
         >
           {groups.map((group, index) => (
             <SelectItem title={group.name} key={group.id} />

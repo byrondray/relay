@@ -21,25 +21,19 @@
       "supportsTablet": true,
       "googleServicesFile": "./GoogleService-Info.plist",
       "bundleIdentifier": "com.byron.relay",
+      "buildNumber": "1",
       "infoPlist": {
         "NSAppTransportSecurity": {
-          "NSAllowsArbitraryLoads": true,
-          "NSAllowsLocalNetworking": true,
+          "NSAllowsArbitraryLoads": false,
           "NSExceptionDomains": {
-            "192.168.56.1": {
-              "NSExceptionAllowsInsecureHTTPLoads": true,
-              "NSIncludesSubdomains": true,
-              "NSExceptionRequiresForwardSecrecy": false
-            },
             "relay-api-ibel.onrender.com": {
               "NSIncludesSubdomains": true,
-              "NSExceptionAllowsInsecureHTTPLoads": true,
+              "NSExceptionAllowsInsecureHTTPLoads": false,
               "NSExceptionRequiresForwardSecrecy": true
             }
           }
         }
-      },
-      "buildNumber": "1"
+      }
     },
     "android": {
       "package": "com.relay",

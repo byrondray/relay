@@ -29,7 +29,7 @@ const Message = ({ message }: { message: UnifiedMessage }) => {
     : format(createdAtDate, "MM/dd/yyyy");
 
   return (
-    <View
+  <View
       style={{
         marginTop: 20,
         width: "100%",
