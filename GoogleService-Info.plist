@@ -34,36 +34,5 @@
     <string>${GOOGLE_APP_ID}</string>
     <key>DATABASE_URL</key>
     <string>${DATABASE_URL}</string>
-
-    <key>NSAppTransportSecurity</key>
-    <dict>
-        <key>NSAllowsArbitraryLoads</key>
-        <true/>
-        <key>NSExceptionDomains</key>
-        <dict>
-            <key>relay-api-ibel.onrender.com</key>
-            <dict>
-                <key>NSIncludesSubdomains</key>
-                <true/>
-                <key>NSExceptionAllowsInsecureHTTPLoads</key>
-                <false/>
-                <key>NSExceptionRequiresForwardSecrecy</key>
-                <true/>
-            </dict>
-        </dict>
-    </dict>
-
-    <key>UIBackgroundModes</key>
-    <array>
-        <string>fetch</string>
-        <string>remote-notification</string>
-        <string>processing</string>
-        <string>location</string>
-    </array>
-
-    <key>BGTaskSchedulerPermittedIdentifiers</key>
-    <array>
-        <string>com.yourdomain.app.backgroundtask</string>
-    </array>
 </dict>
 </plist>

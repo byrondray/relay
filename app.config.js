@@ -71,13 +71,5 @@ export default ({ config }) => ({
           "com.googleusercontent.apps.282407202899-qum38oc4b66oe3b2lg3jpvo3r1d8hidb",
       },
     ],
-    // [
-    //   "expo-font",
-    //   {
-    //     fonts: {
-    //       Comfortaa: "./assets/fonts/Comfortaa-VariableFont_wght.ttf",
-    //     },
-    //   },
-    // ],
   ],
 });

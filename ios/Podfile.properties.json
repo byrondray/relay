@@ -1,0 +1,14 @@
+{
+  "platform": "ios",
+  "version": "12.0",
+  "use_modular_headers": true,
+  "targets": {
+    "relay-rideshare": {
+      "pods": [
+        { "name": "Firebase/Core" },
+        { "name": "Firebase/Auth" },
+        { "name": "GoogleUtilities" }
+      ]
+    }
+  }
+}

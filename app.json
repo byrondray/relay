@@ -4,7 +4,11 @@
     "slug": "relay",
     "version": "1.0.1",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/images/RelayLogo.png",
+    "notification": {
+      "icon": "./assets/images/RelayLogo.png",
+      "color": "#FB6856"
+    },
     "scheme": "com.relay",
     "userInterfaceStyle": "automatic",
     "splash": {
@@ -33,17 +37,7 @@
               "NSExceptionRequiresForwardSecrecy": true
             }
           }
-        },
-        "UIBackgroundModes": [
-          "fetch",
-          "remote-notification",
-          "location"
-        ],
-        "BGTaskSchedulerPermittedIdentifiers": ["com.relay.backgroundtask"],
-        "NSLocationWhenInUseUsageDescription": "We need your location to provide services while the app is running in the background.",
-        "NSLocationAlwaysAndWhenInUseUsageDescription": "This app needs location access to function correctly even when the app is not active.",
-        "NSLocationAlwaysUsageDescription": "This app needs location access even when running in the background.",
-        "NSBluetoothPeripheralUsageDescription": "This app needs access to Bluetooth to interact with devices."
+        }
       },
       "buildNumber": "1"
     },
@@ -57,7 +51,6 @@
         "ACCESS_FINE_LOCATION",
         "ACCESS_COARSE_LOCATION",
         "FOREGROUND_SERVICE",
-        "BACKGROUND_LOCATION",
         "INTERNET",
         "RECEIVE_BOOT_COMPLETED"
       ],

@@ -236,7 +236,3 @@ expo-env.d.ts
 
 # Ignore the google-services.json and GoogleService-Info.plist files
 /google-services.json
-
-# Ignore the entire android and ios folders
-/android/
-/ios/

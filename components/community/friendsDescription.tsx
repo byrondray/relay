@@ -18,6 +18,7 @@ const FriendsInviteDescription = ({
           marginBottom: 5,
           marginTop: 10,
           fontFamily: "Comfortaa",
+          fontSize: 12,
         }}
       >
         You can write a message to invite your friends

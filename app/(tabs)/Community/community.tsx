@@ -34,74 +34,14 @@ import InviteFriendDropdown from "@/components/community/InviteFriends";
 import FriendsInviteDescription from "@/components/community/friendsDescription";
 import { LinearGradient } from "expo-linear-gradient";
 import { Link, router } from "expo-router";
-
-// const groups = [
-//   { id: 1, name: "Group 1", imageUrl: "https://picsum.photos/200" },
-//   { id: 2, name: "Group 2", imageUrl: "https://picsum.photos/200" },
-//   { id: 3, name: "Group 3", imageUrl: "https://picsum.photos/200" },
-// ];
-
-// const userProfiles = [
-//   {
-//     profilePicture: "https://picsum.photos/200",
-//     userName: "John Doe",
-//     latestMessage: "Hey! Are we still on for lunch tomorrow?",
-//     notifications: 12,
-//     status: true,
-//   },
-//   {
-//     profilePicture: "https://picsum.photos/200",
-//     userName: "Jane Smith",
-//     latestMessage: "Just finished the report, take a look!",
-//     notifications: 1,
-//     status: false,
-//   },
-//   {
-//     profilePicture: "https://picsum.photos/200",
-//     userName: "Mike Johnson",
-//     latestMessage: "Don't forget about the meeting at 3 PM.",
-//     notifications: 5,
-//     status: false,
-//   },
-//   {
-//     profilePicture: "https://picsum.photos/200",
-//     userName: "Mike Johnson",
-//     latestMessage: "Don't forget about the meeting at 3 PM.",
-//     notifications: 5,
-//     status: false,
-//   },
-//   {
-//     profilePicture: "https://picsum.photos/200",
-//     userName: "Mike Johnson",
-//     latestMessage: "Don't forget about the meeting at 3 PM.",
-//     notifications: 5,
-//     status: true,
-//   },
-//   {
-//     profilePicture: "https://picsum.photos/200",
-//     userName: "Mike Johnson",
-//     latestMessage: "Don't forget about the meeting at 3 PM.",
-//     notifications: 5,
-//     status: false,
-//   },
-//   {
-//     profilePicture: "https://picsum.photos/200",
-//     userName: "Mike Johnson",
-//     latestMessage: "Don't forget about the meeting at 3 PM.",
-//     notifications: 5,
-//     status: true,
-//   },
-//   {
-//     profilePicture: "https://picsum.photos/200",
-//     userName: "Mike Johnson",
-//     latestMessage: "Don't forget about the meeting at 3 PM.",
-//     notifications: 5,
-//     status: true,
-//   },
-// ];
+import { useThemeColor } from "@/hooks/useThemeColor";
+import { Ionicons } from "@expo/vector-icons";
+import FriendProfile from "@/components/FriendProfile";
+import FriendCard from "@/components/FriendCard";
 
 const Sidebar = () => {
   const [groups, setGroups] = useState<Group[]>([]);
+
   const {
     data: groupsData,
     error,
@@ -376,7 +316,6 @@ const Community = () => {
           onClose={() => setIsPanelVisible(false)}
         >
           <Text
-            // category="h5"
             style={{
               marginTop: 0,
               marginBottom: 12,
@@ -427,9 +366,10 @@ const Community = () => {
 
           <Text
             style={{
-              color: "#000",
               marginBottom: 10,
               marginTop: 15,
+              fontSize: 12,
+              color: textColor,
               fontFamily: "Comfortaa",
             }}
           >
@@ -438,18 +378,19 @@ const Community = () => {
           <ImageUpload profileImage={groupIcon} pickImage={pickImage} />
           <InviteFriendDropdown onInvite={handleInvite} />
           <FriendsInviteDescription
-            textColor={"#000"}
+            textColor={textColor}
             description={description}
             setDescription={setDescription}
           />
           <Button
             style={{
               flexDirection: "row",
-
+              alignItems: "center",
               alignSelf: "flex-end",
               marginTop: 10,
               width: 130,
-              height: 45,
+              height: 25,
+              paddingTop: 10,
               justifyContent: "center",
               paddingHorizontal: 10,
               backgroundColor: "#FB812A",
@@ -561,11 +502,3 @@ export default function App() {
     </ApplicationProvider>
   );
 }
-
-import { FlexAlignType } from "react-native";
-import FriendProfile from "@/components/FriendProfile";
-import TextWithFont from "@/components/text/textWithFont";
-import { useTheme } from "react-native-paper";
-import { useThemeColor } from "@/hooks/useThemeColor";
-import FriendCard from "@/components/FriendCard";
-import { Ionicons } from "@expo/vector-icons";

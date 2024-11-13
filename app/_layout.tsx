@@ -3,7 +3,7 @@ import { ApolloProvider, useMutation, useQuery } from "@apollo/client";
 import client from "../graphql/client";
 import { router, SplashScreen, Stack } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { ApplicationProvider } from "@ui-kitten/components";
+import { ApplicationProvider, Spinner } from "@ui-kitten/components";
 import * as eva from "@eva-design/eva";
 import * as Notifications from "expo-notifications";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
@@ -70,6 +70,16 @@ export default function RootLayout() {
     }
   }, [userLoading, userData]);
 
+  Notifications.setNotificationHandler({
+    handleNotification: async (notification) => {
+      return {
+        shouldShowAlert: true,
+        shouldPlaySound: true,
+        shouldSetBadge: true,
+      };
+    },
+  });
+
   useEffect(() => {
     const requestUserPermission = async () => {
       try {
@@ -128,7 +138,7 @@ export default function RootLayout() {
   if (isLoading || userLoading || updateTokenLoading || !fontsLoaded) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#0000ff" />
+        <ActivityIndicator />
       </View>
     );
   }
