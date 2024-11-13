@@ -50,6 +50,7 @@ import WaypointSelector from "@/components/carpool/waypointSelector";
 import { Marker } from "react-native-maps";
 import { Image } from "react-native";
 import { Polyline } from "react-native-maps";
+import GestureMap from "@/components/carpool/gestureMap";
 
 const { height: deviceHeight } = Dimensions.get("window");
 
@@ -479,163 +480,29 @@ const CreateRide = () => {
           flexGrow: 1,
         }}
       >
-        <View style={{ flex: 1 }}>
-          <Animated.View style={{ height: mapHeight }}>
-            <MapView
-              style={{ width: "100%", height: "100%" }}
-              initialRegion={{
-                latitude: 49.25,
-                longitude: -123.0014,
-                latitudeDelta: 0.01,
-                longitudeDelta: 0.01,
-              }}
-              onLongPress={handleLongPress}
-            >
-              {requests.map((request, index) => (
-                <Marker
-                  key={request.id}
-                  coordinate={{
-                    latitude: parseFloat(request.startingLat),
-                    longitude: parseFloat(request.startingLon),
-                  }}
-                  title={request.startAddress}
-                  anchor={{ x: 0.5, y: 0.5 }}
-                >
-                  <View style={styles.markerContainer}>
-                    <Image
-                      source={require("@/assets/images/pin-icon.png")}
-                      style={styles.markerImage}
-                    />
-                    <View style={styles.letterContainer}>
-                      <Text
-                        style={[styles.letterText, { fontFamily: "Comfortaa" }]}
-                      >
-                        {index + 1}
-                      </Text>
-                    </View>
-                  </View>
-                </Marker>
-              ))}
-
-              {startingLatLng.lat !== 0 && (
-                <Marker
-                  coordinate={{
-                    latitude: startingLatLng.lat,
-                    longitude: startingLatLng.lon,
-                  }}
-                  title={startingAddress}
-                  anchor={{ x: 0.5, y: 0.5 }}
-                >
-                  <View
-                    style={{ alignItems: "center", justifyContent: "center" }}
-                  >
-                    <Image
-                      source={require("@/assets/images/starting-pin.png")}
-                      style={{ width: 40, height: 40, resizeMode: "contain" }}
-                    />
-                  </View>
-                </Marker>
-              )}
-              {endingLatLng.lat !== 0 && (
-                <Marker
-                  coordinate={{
-                    latitude: endingLatLng.lat,
-                    longitude: endingLatLng.lon,
-                  }}
-                  title={endingAddress}
-                  anchor={{ x: 0.5, y: 0.5 }}
-                >
-                  <View
-                    style={{ alignItems: "center", justifyContent: "center" }}
-                  >
-                    <Image
-                      source={require("@/assets/images/ending-pin.png")}
-                      style={{ width: 40, height: 40, resizeMode: "contain" }}
-                    />
-                  </View>
-                </Marker>
-              )}
-
-              {previousRoutes.map((route, index) => (
-                <Polyline
-                  key={`previous-route-${index}`}
-                  coordinates={route.coordinates}
-                  strokeColor={isActiveRoute(route) ? "#FF6A00" : "#ff9950"}
-                  strokeWidth={isActiveRoute(route) ? 5 : 4}
-                  lineDashPattern={isActiveRoute(route) ? [] : [10, 10]}
-                  tappable={true}
-                />
-              ))}
-
-              {coordinates.length > 0 && (
-                <Polyline
-                  coordinates={coordinates.map((coord) => ({
-                    latitude: coord.latitude,
-                    longitude: coord.longitude,
-                  }))}
-                  fillColor="#FFC195"
-                  strokeColor="#FF6A00"
-                  strokeWidth={5}
-                />
-              )}
-            </MapView>
-          </Animated.View>
-
-          <View
-            {...panResponder.panHandlers}
-            style={{
-              width: "100%",
-              alignItems: "center",
-              paddingVertical: 10,
-              backgroundColor: "white",
-            }}
-          >
-            <View
-              style={{
-                width: 60,
-                height: 5,
-                backgroundColor: "#FF8833",
-                borderRadius: 3,
-              }}
-            />
-          </View>
-
-          {isFullScreen && (
-            <TouchableOpacity
-              style={{
-                position: "absolute",
-                top: 40,
-                right: 20,
-                backgroundColor: "white",
-                borderRadius: 20,
-                padding: 10,
-                elevation: 5,
-              }}
-              onPress={() => toggleFullScreen(false)}
-            >
-              <Image
-                source={{
-                  uri: "https://img.icons8.com/ios-filled/50/000000/close-window.png",
-                }}
-                style={{ width: 24, height: 24 }}
-              />
-            </TouchableOpacity>
-          )}
-
-          {activeRoute.predictedTime && (
-            <View style={styles.predictedTimeBox}>
-              <Text
-                style={[styles.predictedTimeText, { fontFamily: "Comfortaa" }]}
-              >
-                {`Estimated Time: ${activeRoute.predictedTime}`}
-              </Text>
-            </View>
-          )}
-        </View>
+        <GestureMap
+          mapHeight={mapHeight}
+          activeRoute={activeRoute}
+          coordinates={coordinates}
+          endingAddress={endingAddress}
+          endingLatLng={endingLatLng}
+          handleLongPress={handleLongPress}
+          isFullScreen={isFullScreen}
+          panResponder={panResponder}
+          previousRoutes={previousRoutes}
+          requests={requests}
+          startingAddress={startingAddress}
+          startingLatLng={startingLatLng}
+          toggleFullScreen={toggleFullScreen}
+        />
         <View style={{ padding: 15 }}>
           <View>
             <Text
-              style={{ fontSize: 32, marginBottom: 20, fontFamily: "Comfortaa-semibold" }}
+              style={{
+                fontSize: 32,
+                marginBottom: 20,
+                fontFamily: "Comfortaa-semibold",
+              }}
             >
               Create a ride
             </Text>
