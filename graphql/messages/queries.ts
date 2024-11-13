@@ -112,27 +112,59 @@ export const MESSAGE_SENT_SUBSCRIPTION = gql`
   }
 `;
 
+// Query to get group messages with sender and recipients
 export const GET_GROUP_MESSAGES = gql`
   query GetGroupMessages($groupId: String!) {
     getGroupMessages(groupId: $groupId) {
       id
       groupId
-      userId
       message
       createdAt
+      sender {
+        id
+        firstName
+        lastName
+        imageUrl
+      }
     }
   }
 `;
 
-// Mutation to create a group message
+
+// Mutation to create a group message with sender and recipients in response
 export const CREATE_GROUP_MESSAGE = gql`
   mutation CreateGroupMessage($groupId: String!, $message: String!) {
     createGroupMessage(groupId: $groupId, message: $message) {
       id
       groupId
-      userId
       message
       createdAt
+      sender {
+        id
+        firstName
+        lastName
+        imageUrl
+      }
     }
   }
 `;
+
+
+// Subscription to listen for new group messages
+export const GROUP_MESSAGE_SENT = gql`
+  subscription GroupMessageSent($groupId: String!) {
+    groupMessageSent(groupId: $groupId) {
+      id
+      groupId
+      message
+      createdAt
+      sender {
+        id
+        firstName
+        lastName
+        imageUrl
+      }
+    }
+  }
+`;
+

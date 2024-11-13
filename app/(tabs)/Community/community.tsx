@@ -20,7 +20,7 @@ import { useQuery } from "@apollo/client";
 import { FriendsWithUserInfo, Group } from "@/graphql/generated";
 import groupIcon from "@/assets/images/group-icon.svg";
 import { GET_FRIENDS } from "@/graphql/friends/queries";
-import { router } from "expo-router";
+import { Link, router } from "expo-router";
 
 // const groups = [
 //   { id: 1, name: "Group 1", imageUrl: "https://picsum.photos/200" },
@@ -147,39 +147,48 @@ const Sidebar = () => {
         />
 
         {groups.map((group) => (
-          <Button
+          <Link
             key={group.id}
-            style={{
-              width: 48,
-              height: 48,
-              justifyContent: "center",
-              alignItems: "center",
-              flexShrink: 0,
-              borderRadius: 24,
-              marginBottom: 10,
-              shadowColor: "#000",
-              shadowOffset: { width: 2, height: 2 },
-              shadowOpacity: 0.25,
-              shadowRadius: 1,
-              elevation: 4,
+            href={{
+              pathname: "/messages/group/[groupId]",
+              params: { groupId: group.id },
             }}
-            appearance="ghost"
-            accessoryLeft={() => (
-              <Image
-                source={{
-                  uri:
-                    group.imageUrl ??
-                    "https://banner2.cleanpng.com/20190125/vlo/kisspng-computer-icons-icon-design-desktop-wallpaper-clip-pepsi-clipart-pinart-coca-cola-stock-photos-i-5c4ab6b0b3b732.2697186115484003047361.jpg",
-                }} // the svg that Zeno gave us is the fallback option
-                style={{
-                  width: 40,
-                  height: 40,
-                  borderRadius: 20,
-                }}
-              />
-            )}
-            onPress={() => console.log(`Selected ${group.name}`)}
-          />
+            asChild
+          >
+            <Button
+              key={group.id}
+              style={{
+                width: 48,
+                height: 48,
+                justifyContent: "center",
+                alignItems: "center",
+                flexShrink: 0,
+                borderRadius: 24,
+                marginBottom: 10,
+                shadowColor: "#000",
+                shadowOffset: { width: 2, height: 2 },
+                shadowOpacity: 0.25,
+                shadowRadius: 1,
+                elevation: 4,
+              }}
+              appearance="ghost"
+              accessoryLeft={() => (
+                <Image
+                  source={{
+                    uri:
+                      group.imageUrl ??
+                      "https://banner2.cleanpng.com/20190125/vlo/kisspng-computer-icons-icon-design-desktop-wallpaper-clip-pepsi-clipart-pinart-coca-cola-stock-photos-i-5c4ab6b0b3b732.2697186115484003047361.jpg",
+                  }} // the svg that Zeno gave us is the fallback option
+                  style={{
+                    width: 40,
+                    height: 40,
+                    borderRadius: 20,
+                  }}
+                />
+              )}
+              onPress={() => console.log(`Selected ${group.name}`)}
+            />
+          </Link>
         ))}
         <View
           style={{

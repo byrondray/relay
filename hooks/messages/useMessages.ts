@@ -15,6 +15,9 @@ import { Alert } from "react-native";
 import { DetailedMessage } from "@/graphql/generated";
 import { useEffect } from "react";
 
+import { useFocusEffect } from "@react-navigation/native";
+import { useCallback } from "react";
+
 export const useFetchMessages = (
   senderId: string,
   recipientId: string,
@@ -65,6 +68,14 @@ export const useFetchMessages = (
         }
       },
     }
+  );
+
+  useFocusEffect(
+    useCallback(() => {
+      if (senderId && recipientId) {
+        refetch();
+      }
+    }, [senderId, recipientId])
   );
 
   return { data, loading, error, refetch };

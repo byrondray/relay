@@ -3,7 +3,6 @@ import {
   View,
   Text,
   TextInput,
-  Button,
   FlatList,
   StyleSheet,
   KeyboardAvoidingView,
@@ -17,37 +16,31 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Notifications from "expo-notifications";
 import { auth } from "@/firebaseConfig";
 import {
-  useFetchMessages,
-  useSendMessage,
-  useMessageSubscription,
-  useFetchUser,
-} from "../../../hooks/messages/useMessages";
-import { DetailedMessage } from "@/graphql/generated";
+  useFetchGroupMessages,
+  useSendGroupMessage,
+  useGroupMessageSubscription,
+} from "../../../../hooks/messages/useGroupMessages";
+import { GroupMessage } from "@/graphql/generated";
 import Message from "@/components/messaging/message";
 import { Spinner } from "@ui-kitten/components";
 import { LinearGradient } from "expo-linear-gradient";
 
-export default function MessageScreen() {
-  const [messages, setMessages] = useState<DetailedMessage[]>([]);
+export default function GroupMessageScreen() {
+  const [messages, setMessages] = useState<GroupMessage[]>([]);
   const [newMessage, setNewMessage] = useState("");
-  const { userId } = useLocalSearchParams();
-  const recipientIdString = Array.isArray(userId) ? userId[0] : userId;
+  const { groupId } = useLocalSearchParams();
+  const groupIdString = Array.isArray(groupId) ? groupId[0] : groupId;
   const currentUser = auth.currentUser;
+  const userId = currentUser?.uid || "";
 
-  const { data: recipientData, loading: recipientLoading } =
-    useFetchUser(recipientIdString);
-  const senderId = auth.currentUser?.uid || "";
-  const { data: senderData, loading: senderLoading } = useFetchUser(senderId);
-
-  const { loading, error, refetch } = useFetchMessages(
-    currentUser?.uid || "",
-    recipientIdString,
+  const { loading, error, refetch } = useFetchGroupMessages(
+    groupIdString,
     setMessages
   );
 
-  const { sendMessage } = useSendMessage(
-    senderId,
-    recipientIdString,
+  const { sendMessage } = useSendGroupMessage(
+    groupIdString,
+    userId,
     setMessages,
     messages,
     newMessage,
@@ -55,7 +48,7 @@ export default function MessageScreen() {
     () => {}
   );
 
-  useMessageSubscription(currentUser?.uid || "", setMessages, messages);
+  useGroupMessageSubscription(groupIdString, setMessages);
 
   useEffect(() => {
     const requestNotificationPermission = async () => {
@@ -71,23 +64,15 @@ export default function MessageScreen() {
         const { senderId: messageSenderId, text } = data;
 
         if (messageSenderId && text) {
-          const newMessage = {
-            id: new Date().getTime().toString(),
-            text,
+          const newMessage: GroupMessage = {
+            groupId: groupIdString,
+            message: text,
             createdAt: new Date().toISOString(),
+            id: new Date().getTime().toString(),
             sender: {
-              id: messageSenderId,
-              firstName: senderData?.getUser.firstName || "Unknown",
-              lastName: senderData?.getUser.lastName || "",
-              email: senderData?.getUser.email || "",
-              imageUrl: senderData?.getUser.imageUrl || "",
-            },
-            recipient: {
+              email: currentUser?.email || "",
+              firstName: currentUser?.displayName || "",
               id: currentUser?.uid || "",
-              firstName: recipientData?.getUser.firstName || "Recipient",
-              lastName: recipientData?.getUser.lastName || "",
-              email: recipientData?.getUser.email || "",
-              imageUrl: recipientData?.getUser.imageUrl || "",
             },
           };
 
@@ -97,7 +82,7 @@ export default function MessageScreen() {
               new Map(updatedMessages.map((msg) => [msg.id, msg])).values()
             );
             AsyncStorage.setItem(
-              `messages_${currentUser?.uid || ""}`,
+              `group_messages_${groupIdString}`,
               JSON.stringify(uniqueMessages)
             );
             return uniqueMessages;
@@ -112,9 +97,9 @@ export default function MessageScreen() {
         handleForegroundNotification
       );
     };
-  }, [currentUser?.uid || "", messages, senderData, recipientData]);
+  }, [groupId, messages]);
 
-  if (recipientLoading || senderLoading) {
+  if (loading) {
     return (
       <View style={styles.spinnerContainer}>
         <Spinner />

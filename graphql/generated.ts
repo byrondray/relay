@@ -196,7 +196,6 @@ export type GroupMessage = {
   id: Scalars['ID']['output'];
   message: Scalars['String']['output'];
   sender: User;
-  userId: Scalars['String']['output'];
 };
 
 export type LocationData = {
@@ -761,7 +760,7 @@ export type GetGroupMessagesQueryVariables = Exact<{
 }>;
 
 
-export type GetGroupMessagesQuery = { __typename?: 'Query', getGroupMessages: Array<{ __typename?: 'GroupMessage', id: string, groupId: string, userId: string, message: string, createdAt: string }> };
+export type GetGroupMessagesQuery = { __typename?: 'Query', getGroupMessages: Array<{ __typename?: 'GroupMessage', id: string, groupId: string, message: string, createdAt: string, sender: { __typename?: 'User', id: string, firstName: string, lastName?: string | null, imageUrl?: string | null } }> };
 
 export type CreateGroupMessageMutationVariables = Exact<{
   groupId: Scalars['String']['input'];
@@ -769,7 +768,14 @@ export type CreateGroupMessageMutationVariables = Exact<{
 }>;
 
 
-export type CreateGroupMessageMutation = { __typename?: 'Mutation', createGroupMessage: { __typename?: 'GroupMessage', id: string, groupId: string, userId: string, message: string, createdAt: string } };
+export type CreateGroupMessageMutation = { __typename?: 'Mutation', createGroupMessage: { __typename?: 'GroupMessage', id: string, groupId: string, message: string, createdAt: string, sender: { __typename?: 'User', id: string, firstName: string, lastName?: string | null, imageUrl?: string | null } } };
+
+export type GroupMessageSentSubscriptionVariables = Exact<{
+  groupId: Scalars['String']['input'];
+}>;
+
+
+export type GroupMessageSentSubscription = { __typename?: 'Subscription', groupMessageSent: { __typename?: 'GroupMessage', id: string, groupId: string, message: string, createdAt: string, sender: { __typename?: 'User', id: string, firstName: string, lastName?: string | null, imageUrl?: string | null } } };
 
 export type GetUsersQueryVariables = Exact<{ [key: string]: never; }>;
 
