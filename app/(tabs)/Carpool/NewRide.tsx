@@ -1,29 +1,33 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import FriendCard from '@/components/FriendCard';
 
 const NewRideScreen: React.FC = () => {
   const hasFilledDriverInfo = true;
+
+  // Sample data for friends
+  const sampleFriends = [
+    { id: '1', name: 'Emily Thompson', source: 'From dancing class', imageUrl: 'https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=600', showCheckmark: true },
+    { id: '2', name: 'Grace Lam', source: 'From dancing class', imageUrl: '', showCheckmark: false },
+    { id: '3', name: 'Laura Nguyen', source: 'From dancing class', imageUrl: '', showCheckmark: true },
+  ];
 
   return (
     <View style={styles.container}>
       <View style={styles.content}>
         <Text style={styles.title}>New Ride</Text>
-        
+
         <TouchableOpacity
           style={[
             styles.button,
-            hasFilledDriverInfo ? styles.requestButton : styles.disabledButton
+            hasFilledDriverInfo ? styles.requestButton : styles.disabledButton,
           ]}
           disabled={!hasFilledDriverInfo}
         >
           <View style={styles.buttonContent}>
             <View style={styles.textContainer}>
-              <Text
-                style={[
-                  hasFilledDriverInfo ? styles.requestButtonText : styles.disabledButtonText
-                ]}
-              >
+              <Text style={hasFilledDriverInfo ? styles.requestButtonText : styles.disabledButtonText}>
                 I'm a driver
               </Text>
               <Text style={[styles.subText, hasFilledDriverInfo && styles.requestSubText]}>
@@ -32,10 +36,7 @@ const NewRideScreen: React.FC = () => {
             </View>
             <Image
               source={require("@/assets/images/arrow-circle-right.png")}
-              style={[
-                styles.arrowIcon,
-                !hasFilledDriverInfo && styles.disabledArrowIcon
-              ]}
+              style={[styles.arrowIcon, !hasFilledDriverInfo && styles.disabledArrowIcon]}
             />
           </View>
         </TouchableOpacity>
@@ -73,8 +74,19 @@ const NewRideScreen: React.FC = () => {
         </TouchableOpacity>
 
         <Text style={styles.activeRequestText}>Active Request</Text>
-      </View>
 
+        {/* Sample FriendCard components */}
+        {sampleFriends.map(friend => (
+          <FriendCard
+            key={friend.id}
+            id={friend.id}
+            name={friend.name}
+            source={friend.source}
+            imageUrl={friend.imageUrl}
+            showCheckmark={friend.showCheckmark}
+          />
+        ))}
+      </View>
     </View>
   );
 };
@@ -103,6 +115,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#f0f0f0',
   },
   buttonContent: {
+<<<<<<< HEAD
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
@@ -110,6 +123,15 @@ const styles = StyleSheet.create({
   textContainer: {
     flex: 1,
     justifyContent: "center",
+=======
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  textContainer: {
+    flex: 1,
+    justifyContent: 'center',
+>>>>>>> origin/develop/evann/privategroup
   },
   disabledButtonText: {
     fontSize: 18,
