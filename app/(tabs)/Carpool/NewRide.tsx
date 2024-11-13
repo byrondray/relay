@@ -1,16 +1,35 @@
-import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
-import FriendCard from '@/components/FriendCard';
+import React from "react";
+import { View, Text, TouchableOpacity, StyleSheet, Image } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
+import FriendCard from "@/components/FriendCard";
 
 const NewRideScreen: React.FC = () => {
   const hasFilledDriverInfo = true;
 
   // Sample data for friends
   const sampleFriends = [
-    { id: '1', name: 'Emily Thompson', source: 'From dancing class', imageUrl: 'https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=600', showCheckmark: true },
-    { id: '2', name: 'Grace Lam', source: 'From dancing class', imageUrl: '', showCheckmark: false },
-    { id: '3', name: 'Laura Nguyen', source: 'From dancing class', imageUrl: '', showCheckmark: true },
+    {
+      id: "1",
+      name: "Emily Thompson",
+      source: "From dancing class",
+      imageUrl:
+        "https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=600",
+      showCheckmark: true,
+    },
+    {
+      id: "2",
+      name: "Grace Lam",
+      source: "From dancing class",
+      imageUrl: "",
+      showCheckmark: false,
+    },
+    {
+      id: "3",
+      name: "Laura Nguyen",
+      source: "From dancing class",
+      imageUrl: "",
+      showCheckmark: true,
+    },
   ];
 
   return (
@@ -27,16 +46,30 @@ const NewRideScreen: React.FC = () => {
         >
           <View style={styles.buttonContent}>
             <View style={styles.textContainer}>
-              <Text style={hasFilledDriverInfo ? styles.requestButtonText : styles.disabledButtonText}>
+              <Text
+                style={
+                  hasFilledDriverInfo
+                    ? styles.requestButtonText
+                    : styles.disabledButtonText
+                }
+              >
                 I'm a driver
               </Text>
-              <Text style={[styles.subText, hasFilledDriverInfo && styles.requestSubText]}>
+              <Text
+                style={[
+                  styles.subText,
+                  hasFilledDriverInfo && styles.requestSubText,
+                ]}
+              >
                 I'm available to carpool kids.
               </Text>
             </View>
             <Image
               source={require("@/assets/images/arrow-circle-right.png")}
-              style={[styles.arrowIcon, !hasFilledDriverInfo && styles.disabledArrowIcon]}
+              style={[
+                styles.arrowIcon,
+                !hasFilledDriverInfo && styles.disabledArrowIcon,
+              ]}
             />
           </View>
         </TouchableOpacity>
@@ -44,17 +77,20 @@ const NewRideScreen: React.FC = () => {
         {!hasFilledDriverInfo && (
           <>
             <Text style={styles.signupText}>
-              Interested in becoming a carpool driver to help drive kids in your community?
+              Interested in becoming a carpool driver to help drive kids in your
+              community?
             </Text>
 
             <TouchableOpacity style={styles.signUpButtonContainer}>
               <LinearGradient
-                colors={['#FFA726', '#EF5350']}
+                colors={["#FFA726", "#EF5350"]}
                 style={styles.signUpButton}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 0 }}
               >
-                <Text style={styles.signUpButtonText}>Sign up to be a Driver</Text>
+                <Text style={styles.signUpButtonText}>
+                  Sign up to be a Driver
+                </Text>
               </LinearGradient>
             </TouchableOpacity>
           </>
@@ -63,8 +99,12 @@ const NewRideScreen: React.FC = () => {
         <TouchableOpacity style={styles.requestButton}>
           <View style={styles.buttonContent}>
             <View style={styles.textContainer}>
-              <Text style={styles.requestButtonText}>Need a ride for my kid</Text>
-              <Text style={styles.requestSubText}>Notify me when a ride matches</Text>
+              <Text style={styles.requestButtonText}>
+                Need a ride for my kid
+              </Text>
+              <Text style={styles.requestSubText}>
+                Notify me when a ride matches
+              </Text>
             </View>
             <Image
               source={require("@/assets/images/arrow-circle-right.png")}
@@ -76,7 +116,7 @@ const NewRideScreen: React.FC = () => {
         <Text style={styles.activeRequestText}>Active Request</Text>
 
         {/* Sample FriendCard components */}
-        {sampleFriends.map(friend => (
+        {sampleFriends.map((friend) => (
           <FriendCard
             key={friend.id}
             id={friend.id}
@@ -112,10 +152,9 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   disabledButton: {
-    backgroundColor: '#f0f0f0',
+    backgroundColor: "#f0f0f0",
   },
   buttonContent: {
-<<<<<<< HEAD
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
@@ -123,15 +162,6 @@ const styles = StyleSheet.create({
   textContainer: {
     flex: 1,
     justifyContent: "center",
-=======
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  textContainer: {
-    flex: 1,
-    justifyContent: 'center',
->>>>>>> origin/develop/evann/privategroup
   },
   disabledButtonText: {
     fontSize: 18,
@@ -174,7 +204,7 @@ const styles = StyleSheet.create({
   },
   requestSubText: {
     fontSize: 14,
-    color: '#333',
+    color: "#333",
     marginTop: 5,
   },
   activeRequestText: {
@@ -188,7 +218,7 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
   disabledArrowIcon: {
-    tintColor: '#aaa',
+    tintColor: "#aaa",
   },
 });
 

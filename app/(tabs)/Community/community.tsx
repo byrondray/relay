@@ -372,7 +372,11 @@ const Community = () => {
           >
             Create New Group
           </Text>
-
+          <FriendProfile
+            id={""}
+            name={"Bob"}
+            imageUrl={"https://thispersondoesnotexist.com/"}
+          />
           <Input
             placeholder="Group Name"
             style={{
@@ -455,3 +459,4 @@ export default function App() {
 }
 
 import { FlexAlignType } from "react-native";
+import FriendProfile from "@/components/FriendProfile";
