@@ -21,6 +21,12 @@ import { FriendsWithUserInfo, Group } from "@/graphql/generated";
 import groupIcon from "@/assets/images/group-icon.svg";
 import { GET_FRIENDS } from "@/graphql/friends/queries";
 import { router } from "expo-router";
+import * as ImagePicker from "expo-image-picker";
+import FriendsExpandablePanel from "@/components/community/AddFriends";
+import ImageUpload from "@/components/carpool/uploadImageInput";
+import InviteFriendDropdown from "@/components/community/InviteFriends";
+import FriendsInviteDescription from "@/components/community/friendsDescription";
+import { LinearGradient } from "expo-linear-gradient";
 
 // const groups = [
 //   { id: 1, name: "Group 1", imageUrl: "https://picsum.photos/200" },
@@ -251,7 +257,28 @@ const Sidebar = () => {
 
 const Community = () => {
   const [friends, setFriends] = useState<FriendsWithUserInfo[]>([]);
+  const [isPanelVisible, setIsPanelVisible] = useState(false);
+  const [groupIcon, setGroupIcon] = useState<string | null>(null);
+  const [description, setDescription] = useState("");
 
+  const handleInvite = (email: string) => {
+    console.log(`Invite sent to: ${email}`);
+  };
+
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    console.log(result);
+
+    if (!result.canceled) {
+      setGroupIcon(result.assets[0].uri);
+    }
+  };
   const { data: friendsData } = useQuery(GET_FRIENDS, {
     onCompleted: (data) => {
       console.log(data, "friends");
@@ -301,11 +328,74 @@ const Community = () => {
               elevation: 4,
             }}
             appearance="ghost"
-            onPress={() => console.log("Start new message")}
+            onPress={() => setIsPanelVisible(true)}
           >
             <MessageIcon width={24} height={24} />
           </Button>
         </View>
+        <FriendsExpandablePanel
+          isVisible={isPanelVisible}
+          onClose={() => setIsPanelVisible(false)}
+        >
+          <Text
+            category="h5"
+            style={{ marginTop: 0, marginBottom: 10, fontFamily: "Comfortaa" }}
+          >
+            Create New Group
+          </Text>
+
+          <Input
+            placeholder="Group Name"
+            style={{
+              backgroundColor: "#fff",
+              borderRadius: 24,
+              fontFamily: "Comfortaa",
+            }}
+          ></Input>
+
+          <Text
+            style={{
+              color: "#000",
+              marginBottom: 10,
+              marginTop: 15,
+              fontFamily: "Comfortaa",
+            }}
+          >
+            Group Icon
+          </Text>
+          <ImageUpload profileImage={groupIcon} pickImage={pickImage} />
+          <InviteFriendDropdown onInvite={handleInvite} />
+          <FriendsInviteDescription
+            textColor={"#000"}
+            description={description}
+            setDescription={setDescription}
+          />
+          <Button
+            style={{
+              flexDirection: "row",
+
+              alignSelf: "flex-end",
+              marginTop: 10,
+              width: 130,
+              height: 45,
+              justifyContent: "center",
+              paddingHorizontal: 10,
+              backgroundColor: "#FB812A",
+              borderRadius: 24,
+              borderWidth: 0,
+            }}
+          >
+            <Text style={{ fontFamily: "Comfortaa", color: "white" }}>
+              Invite friend
+            </Text>
+          </Button>
+          <Text
+            category="h5"
+            style={{ marginTop: 10, marginBottom: 10, fontFamily: "Comfortaa" }}
+          >
+            Select From Friend List
+          </Text>
+        </FriendsExpandablePanel>
         <View style={{ marginTop: 10 }}>
           {friends.length > 0 ? (
             friends.map((profile, index) => (
