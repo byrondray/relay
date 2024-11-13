@@ -20,17 +20,13 @@ import { useQuery } from "@apollo/client";
 import { FriendsWithUserInfo, Group } from "@/graphql/generated";
 import groupIcon from "@/assets/images/group-icon.svg";
 import { GET_FRIENDS } from "@/graphql/friends/queries";
-<<<<<<< HEAD
-import { router } from "expo-router";
 import * as ImagePicker from "expo-image-picker";
 import FriendsExpandablePanel from "@/components/community/AddFriends";
 import ImageUpload from "@/components/carpool/uploadImageInput";
 import InviteFriendDropdown from "@/components/community/InviteFriends";
 import FriendsInviteDescription from "@/components/community/friendsDescription";
 import { LinearGradient } from "expo-linear-gradient";
-=======
 import { Link, router } from "expo-router";
->>>>>>> aa1884d22c87578b0dff127c21245cb062842b0f
 
 // const groups = [
 //   { id: 1, name: "Group 1", imageUrl: "https://picsum.photos/200" },
