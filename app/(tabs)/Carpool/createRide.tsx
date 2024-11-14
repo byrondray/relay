@@ -43,7 +43,6 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
-  TouchableOpacity,
   Animated,
   PanResponder,
   StyleSheet,
@@ -53,9 +52,6 @@ import RadioGroupComponent from "@/components/carpool/carpoolFrequency";
 import { CreateCarpoolInput } from "@/graphql/generated";
 import GroupPicker from "@/components/carpool/groupSelector";
 import WaypointSelector from "@/components/carpool/waypointSelector";
-import { Marker } from "react-native-maps";
-import { Image } from "react-native";
-import { Polyline } from "react-native-maps";
 import GestureMap from "@/components/carpool/gestureMap";
 
 const { height: deviceHeight } = Dimensions.get("window");
@@ -264,7 +260,8 @@ const CreateRide = () => {
       !dateAndTime ||
       !time ||
       !endingAddress ||
-      !startingAddress,
+      !startingAddress ||
+      !vehicles,
     onCompleted: (data) => {
       if (data?.getCarpoolersByGroupWithoutApprovedRequests) {
         const sortedRequests = sortRequestsByDistance(
@@ -273,6 +270,9 @@ const CreateRide = () => {
         );
         setRequests(sortedRequests);
       }
+    },
+    onError: (error) => {
+      console.error(error);
     },
   });
 
@@ -410,6 +410,7 @@ const CreateRide = () => {
     selectedWaypoints,
     startingLatLng,
     endingLatLng,
+    vehicles,
   ]);
 
   const getAddress = async (
@@ -577,6 +578,15 @@ const CreateRide = () => {
             setSelectedGroupIndex={setSelectedGroupIndex}
             textColor={textColor}
           />
+          <VehicleDetailsPicker
+            selectedVehicleIndex={selectedVehicleIndex}
+            selectedSeatsIndex={selectedSeatsIndex}
+            vehicles={vehicles}
+            seatsAvailable={seatsAvailable}
+            setSelectedVehicleIndex={setSelectedVehicleIndex}
+            setSelectedSeatsIndex={setSelectedSeatsIndex}
+            textColor={textColor}
+          />
           <MapAiInfo />
           <RideMap
             mapRef={mapRef}
@@ -620,15 +630,7 @@ const CreateRide = () => {
               selectedWaypoints={selectedWaypoints}
               sortedRequests={requests}
             />
-            <VehicleDetailsPicker
-              selectedVehicleIndex={selectedVehicleIndex}
-              selectedSeatsIndex={selectedSeatsIndex}
-              vehicles={vehicles}
-              seatsAvailable={seatsAvailable}
-              setSelectedVehicleIndex={setSelectedVehicleIndex}
-              setSelectedSeatsIndex={setSelectedSeatsIndex}
-              textColor={textColor}
-            />
+
             <Text
               style={{
                 color: "#FF6A00",

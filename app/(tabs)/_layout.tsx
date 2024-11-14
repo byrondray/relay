@@ -3,7 +3,6 @@ import React from "react";
 import { TabBarIcon } from "@/components/navigation/TabBarIcon";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { StyleSheet, View, Image } from "react-native";
-import { Text } from "@ui-kitten/components";
 import Relay from "@/assets/images/Relay.svg";
 
 function Header() {
@@ -161,6 +160,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#f8f8f8",
     borderTopWidth: 1,
     borderTopColor: "#ddd",
+    width: "100%",
+    alignSelf: "stretch"
   },
   navItem: {
     alignItems: "center",
