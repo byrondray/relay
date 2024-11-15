@@ -15,8 +15,22 @@ import { router, Href } from "expo-router";
 import { auth } from "@/firebaseConfig";
 import withAuthCheck from "../../components/WithAuthCheck";
 import { ThemedText } from "@/components/ThemedText";
-import FriendsList from "@/components/FriendsList";
-
+// import FriendsList from "@/components/FriendsList";
+import ActiveRiderCard from "@/components/cards/activeCard";
+const cardData = {
+  id: "T202403220043",
+  state: "pending",
+  date: "2024-12-12T12:30:00",
+  startLocation: "Vancouver, BC",
+  startTime: "10:00am",
+  endLocation: "Toronto, ON",
+  endTime: "6:00pm",
+  images: [
+    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQO7NzvmUTqpxsiA6-c1OwaXC7bTUn9DBhscA&s",
+    "https://maggiesmilk.com/wp-content/uploads/2015/09/IMG_4878.jpg",
+  ],
+  recurrence: "one time",
+};
 function HomeScreen() {
   const [hasOnboarded, setHasOnboarded] = useState<boolean | null>(null);
   const hasFilledDriverInfo = true;
@@ -84,7 +98,6 @@ function HomeScreen() {
     <View style={styles.container}>
       <Text style={styles.title}>New Ride</Text>
       {/* <FriendsList /> */}
-
       <View style={styles.content}>
         <TouchableOpacity
           style={[
@@ -168,6 +181,7 @@ function HomeScreen() {
 
         <Text style={styles.activeRequestText}>Active Request</Text>
       </View>
+      <ActiveRiderCard {...cardData} />
     </View>
   );
 }
