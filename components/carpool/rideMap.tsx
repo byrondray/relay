@@ -1,6 +1,9 @@
 import { RequestWithChildrenAndParent } from "@/graphql/generated";
 import React from "react";
-import { View, Text, Image } from "react-native";
+import { View, Text, Image, StyleSheet } from "react-native";
+import StartingPin from '@/assets/images/starting-pin.svg';
+import EndingPin from '@/assets/images/ending-pin.svg';
+import RequestPin from '@/assets/images/request-pin.svg';
 import MapView, { Marker, Polyline } from "react-native-maps";
 
 type RideMapProps = {
@@ -81,10 +84,11 @@ const RideMap: React.FC<RideMapProps> = ({
             anchor={{ x: 0.5, y: 0.5 }}
           >
             <View style={styles.markerContainer}>
-              <Image
+              {/* <Image
                 source={require("@/assets/images/pin-icon.png")}
                 style={styles.markerImage}
-              />
+              /> */}
+              <RequestPin width={30} height={30} />
               <View style={styles.letterContainer}>
                 <Text style={[styles.letterText, { fontFamily: "Comfortaa" }]}>
                   {index + 1}
@@ -104,10 +108,11 @@ const RideMap: React.FC<RideMapProps> = ({
             anchor={{ x: 0.5, y: 0.5 }}
           >
             <View style={styles.markerContainer}>
-              <Image
+              {/* <Image
                 source={require("@/assets/images/starting-pin.png")}
                 style={styles.markerImage}
-              />
+              /> */}
+              <StartingPin width={40} height={40} />
             </View>
           </Marker>
         )}
@@ -122,21 +127,64 @@ const RideMap: React.FC<RideMapProps> = ({
             anchor={{ x: 0.5, y: 0.5 }}
           >
             <View style={styles.markerContainer}>
-              <Image
+              {/* <Image
                 source={require("@/assets/images/ending-pin.png")}
                 style={styles.markerImage}
-              />
+              /> */}
+              <EndingPin width={40} height={40} />
             </View>
           </Marker>
         )}
 
         {previousRoutes.map((route, index) => (
+          <>
           <Polyline
             key={`previous-route-${index}`}
             coordinates={route.coordinates}
-            strokeColor={isActiveRoute(route) ? "#FF6A00" : "#ff9950"}
-            strokeWidth={isActiveRoute(route) ? 5 : 4}
-            lineDashPattern={isActiveRoute(route) ? [] : [10, 10]}
+            strokeColor={isActiveRoute(route) ? "#FF6A00" : "#FF6A00"}
+            strokeWidth={isActiveRoute(route) ? 8 : 6}
+            // lineDashPattern={isActiveRoute(route) ? [] : [10, 10]}
+            tappable={true}
+            onPress={() => {
+              if (route.coordinates && route.coordinates.length > 0) {
+                setActiveRoute({
+                  coordinates: route.coordinates,
+                  predictedTime: route.predictedTime,
+                });
+              }
+
+              const newSelectedWaypoints = requests.filter((request) =>
+                route.coordinates.some(
+                  (coord) =>
+                    parseFloat(request.startingLat) === coord.latitude &&
+                    parseFloat(request.startingLon) === coord.longitude
+                )
+              );z
+
+              setSelectedWaypoints(newSelectedWaypoints);
+
+              if (
+                activeRoute.coordinates.length > 0 &&
+                !previousRoutes.some((r) =>
+                  areCoordinatesEqual(r.coordinates, activeRoute.coordinates)
+                )
+              ) {
+                setPreviousRoutes([
+                  ...previousRoutes,
+                  {
+                    coordinates: activeRoute.coordinates,
+                    predictedTime: activeRoute.predictedTime,
+                  },
+                ]);
+              }
+            }}
+          />
+          <Polyline
+            key={`previous-route-${index}`}
+            coordinates={route.coordinates}
+            strokeColor={isActiveRoute(route) ? "#FFC195" : "# FFF2E9"}
+            strokeWidth={isActiveRoute(route) ? 6 : 4}
+            // lineDashPattern={isActiveRoute(route) ? [] : [10, 10]}
             tappable={true}
             onPress={() => {
               if (route.coordinates && route.coordinates.length > 0) {
@@ -172,6 +220,7 @@ const RideMap: React.FC<RideMapProps> = ({
               }
             }}
           />
+          </>
         ))}
 
         {coordinates.length > 0 && (
@@ -197,5 +246,13 @@ const RideMap: React.FC<RideMapProps> = ({
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  markerImage: {
+    width: 26,
+    height: 26
+  }
+});
+
 
 export default RideMap;
