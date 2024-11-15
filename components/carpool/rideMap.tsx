@@ -1,6 +1,6 @@
 import { RequestWithChildrenAndParent } from "@/graphql/generated";
 import React from "react";
-import { View, Text, Image, StyleSheet } from "react-native";
+import { View, Text, Image } from "react-native";
 import StartingPin from '@/assets/images/starting-pin.svg';
 import EndingPin from '@/assets/images/ending-pin.svg';
 import RequestPin from '@/assets/images/request-pin.svg';
@@ -246,13 +246,5 @@ const RideMap: React.FC<RideMapProps> = ({
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  markerImage: {
-    width: 26,
-    height: 26
-  }
-});
-
 
 export default RideMap;
