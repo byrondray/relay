@@ -15,11 +15,12 @@ import { router, Href } from "expo-router";
 import { auth } from "@/firebaseConfig";
 import withAuthCheck from "../../components/WithAuthCheck";
 import { ThemedText } from "@/components/ThemedText";
-import FriendsList from "@/components/FriendsList";
+// import FriendsList from "@/components/FriendsList";
 
 function HomeScreen() {
   const [hasOnboarded, setHasOnboarded] = useState<boolean | null>(null);
-  const hasFilledDriverInfo = true;
+
+  const hasFilledDriverInfo = false;
 
   const {
     data,

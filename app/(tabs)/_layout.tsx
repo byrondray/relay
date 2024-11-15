@@ -161,7 +161,6 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: "#ddd",
     width: "100%",
-    alignSelf: "stretch"
   },
   navItem: {
     alignItems: "center",
