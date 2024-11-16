@@ -8,6 +8,7 @@ import RedMarker from "@/assets/images/RedMarker.svg";
 import StackedProfilePictures from "./stackedProfile";
 import RepeatIcon from "@/assets/images/repeat.svg";
 import ArrowUp from "@/assets/images/arrow-up.svg";
+import { useThemeColor } from "@/hooks/useThemeColor";
 
 interface CardData {
   id: string;
@@ -39,6 +40,7 @@ const ActiveRiderCard = ({
     day: "numeric",
     year: "numeric",
   });
+  const textColor = useThemeColor({}, "placeholder");
 
   return (
     <View
@@ -66,7 +68,15 @@ const ActiveRiderCard = ({
             alignItems: "center",
           }}
         >
-          <Text style={{ fontSize: 10, alignSelf: "center" }}>RN: {id}</Text>
+          <Text
+            style={{
+              fontSize: 10,
+              alignSelf: "center",
+              fontFamily: "Comfortaa",
+            }}
+          >
+            RN: {id}
+          </Text>
 
           <View
             style={{
@@ -90,7 +100,13 @@ const ActiveRiderCard = ({
                 }}
               >
                 <TimeIcon width={16} height={16} style={{ marginRight: 5 }} />
-                <Text style={{ color: "#fff", alignSelf: "center" }}>
+                <Text
+                  style={{
+                    color: "#fff",
+                    alignSelf: "center",
+                    fontFamily: "Comfortaa",
+                  }}
+                >
                   {state}
                 </Text>
               </View>
@@ -110,7 +126,13 @@ const ActiveRiderCard = ({
                 }}
               >
                 <TimeIcon width={16} height={16} style={{ marginRight: 5 }} />
-                <Text style={{ color: "#fff", alignSelf: "center" }}>
+                <Text
+                  style={{
+                    color: "#fff",
+                    alignSelf: "center",
+                    fontFamily: "Comfortaa",
+                  }}
+                >
                   {state}
                 </Text>
               </View>
@@ -133,27 +155,51 @@ const ActiveRiderCard = ({
             fontSize: 20,
             fontWeight: "bold",
             letterSpacing: 0.2,
+            marginBottom: 6,
+            fontFamily: "Comfortaa",
           }}
         >
           {formatThisDate}
         </Text>
 
-        <View style={{ flexDirection: "row", alignItems: "center" }}>
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            marginBottom: 6,
+          }}
+        >
           <OrangeMarker
             width={20}
             height={20}
             style={{ marginRight: 8, width: 120 }}
           />
-          <Text>{startLocation}</Text>
-          <Text style={{ marginLeft: "auto", color: "#FF6A00" }}>
+          <Text style={{ fontFamily: "Comfortaa", color: textColor }}>
+            {startLocation}
+          </Text>
+          <Text
+            style={{
+              marginLeft: "auto",
+              color: "#FF6A00",
+              fontFamily: "Comfortaa",
+            }}
+          >
             Est: {startTime}
           </Text>
         </View>
 
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           <RedMarker width={20} height={20} style={{ marginRight: 8 }} />
-          <Text>{endLocation}</Text>
-          <Text style={{ marginLeft: "auto", color: "#E24949" }}>
+          <Text style={{ fontFamily: "Comfortaa", color: textColor }}>
+            {endLocation}
+          </Text>
+          <Text
+            style={{
+              marginLeft: "auto",
+              color: "#E24949",
+              fontFamily: "Comfortaa",
+            }}
+          >
             Est: {endTime}
           </Text>
         </View>
@@ -180,12 +226,16 @@ const ActiveRiderCard = ({
                 height={16}
                 style={{ marginHorizontal: 10 }}
               />
-              <Text style={{ color: "#FF6A00" }}>{recurrence}</Text>
+              <Text style={{ color: "#FF6A00", fontFamily: "Comfortaa" }}>
+                {recurrence}
+              </Text>
             </>
           ) : (
             <>
               <ArrowUp width={16} height={16} style={{ marginRight: 10 }} />
-              <Text style={{ color: "#FF6A00" }}>{recurrence}</Text>
+              <Text style={{ color: "#FF6A00", fontFamily: "Comfortaa" }}>
+                {recurrence}
+              </Text>
             </>
           )}
         </View>

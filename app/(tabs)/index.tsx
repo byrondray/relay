@@ -182,6 +182,7 @@ function HomeScreen() {
 
         <Text style={styles.activeRequestText}>Active Request</Text>
       </View>
+      <ActiveRiderCard {...cardData} />\
       <ScheduleActiveCard {...cardData} />
     </View>
   );
