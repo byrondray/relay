@@ -34,7 +34,8 @@ const cardData = {
 };
 function HomeScreen() {
   const [hasOnboarded, setHasOnboarded] = useState<boolean | null>(null);
-  const hasFilledDriverInfo = true;
+
+  const hasFilledDriverInfo = false;
 
   const {
     data,

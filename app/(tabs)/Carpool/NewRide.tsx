@@ -33,7 +33,7 @@ const NewRideScreen: React.FC = () => {
   ];
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container]}>
       <View style={styles.content}>
         <Text style={styles.title}>New Ride</Text>
 
