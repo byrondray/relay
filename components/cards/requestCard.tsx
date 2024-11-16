@@ -1,8 +1,8 @@
 import { Button } from "@ui-kitten/components";
 import React from "react";
-import { View, Text } from "react-native";
+import { View, Text, TouchableOpacity } from "react-native";
 import TimeIcon from "@/assets/images/timeIcon.svg";
-import Trash from "@/assets/images/trash.svg";
+import Trash from "@/assets/images/trach_icon.svg";
 import OrangeMarker from "@/assets/images/OrangeMarker.svg";
 import RedMarker from "@/assets/images/RedMarker.svg";
 import StackedProfilePictures from "./stackedProfile";
@@ -58,81 +58,104 @@ const ActiveRiderCard = ({
         paddingVertical: 15,
       }}
     >
-      <View style={{ paddingHorizontal: 16, paddingVertical: 15 }}>
+      <View style={{ paddingHorizontal: 16, paddingVertical: 10 }}>
         <View
           style={{
             flexDirection: "row",
             justifyContent: "space-between",
+            alignItems: "center",
           }}
         >
-          <Text style={{ marginTop: 5 }}>RN: {id}</Text>
+          <Text style={{ fontSize: 10, alignSelf: "center" }}>RN: {id}</Text>
 
-          {state === "pending" ? (
-            <Button
-              onPress={() => {}}
-              style={{
-                width: 120,
-                height: 28,
-                backgroundColor: "#3366FF",
-                borderRadius: 16,
-                paddingHorizontal: 16,
-                paddingVertical: 6,
-                borderWidth: 0,
-              }}
-            >
-              <View style={{ flexDirection: "row" }}>
-                <TimeIcon style={{}} />
-                <Text style={{ color: "#fff", lineHeight: 28 }}>{state}</Text>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+            }}
+          >
+            {state === "pending" ? (
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "flex-end",
+                  alignItems: "center",
+                  alignSelf: "flex-end",
+                  backgroundColor: "#3366FF",
+                  borderRadius: 16,
+                  paddingHorizontal: 16,
+                  paddingVertical: 6,
+                  borderWidth: 0,
+                  marginRight: 8,
+                }}
+              >
+                <TimeIcon width={16} height={16} style={{ marginRight: 5 }} />
+                <Text style={{ color: "#fff", alignSelf: "center" }}>
+                  {state}
+                </Text>
               </View>
-            </Button>
-          ) : (
-            <Button
+            ) : (
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "flex-end",
+                  alignItems: "center",
+                  alignSelf: "flex-end",
+                  backgroundColor: "#D2D2D2",
+                  borderRadius: 16,
+                  paddingHorizontal: 16,
+                  paddingVertical: 6,
+                  borderWidth: 0,
+                  marginRight: 8,
+                }}
+              >
+                <TimeIcon width={16} height={16} style={{ marginRight: 5 }} />
+                <Text style={{ color: "#fff", alignSelf: "center" }}>
+                  {state}
+                </Text>
+              </View>
+            )}
+            <TouchableOpacity
               onPress={() => {}}
               style={{
-                width: 120,
-                height: 28,
-                backgroundColor: "#D2D2D2",
-                borderRadius: 16,
                 justifyContent: "center",
                 alignItems: "center",
-                paddingHorizontal: 16,
-                paddingVertical: 6,
-                borderWidth: 0,
               }}
             >
-              <View style={{ flexDirection: "row" }}>
-                <TimeIcon width={16} height={16} style={{ marginRight: 8 }} />
-                <Text style={{ color: "#fff", lineHeight: 28 }}>{state}</Text>
-              </View>
-            </Button>
-          )}
-          <Button
-            onPress={() => {}}
-            appearance="ghost"
-            accessoryLeft={() => <Trash width={24} height={24} />}
-            style={{
-              width: 40,
-              height: 40,
-              borderRadius: 20,
-              justifyContent: "center",
-              alignItems: "center",
-              padding: 0,
-            }}
-          />
+              <Trash width={24} height={24} />
+            </TouchableOpacity>
+          </View>
         </View>
 
-        <Text>{formatThisDate}</Text>
+        <Text
+          style={{
+            color: "#666666",
+            fontSize: 20,
+            fontWeight: "bold",
+            letterSpacing: 0.2,
+          }}
+        >
+          {formatThisDate}
+        </Text>
 
         <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <OrangeMarker width={20} height={20} style={{ marginRight: 8 }} />
+          <OrangeMarker
+            width={20}
+            height={20}
+            style={{ marginRight: 8, width: 120 }}
+          />
           <Text>{startLocation}</Text>
-          <Text style={{ marginLeft: "auto" }}>Est: {startTime}</Text>
+          <Text style={{ marginLeft: "auto", color: "#FF6A00" }}>
+            Est: {startTime}
+          </Text>
         </View>
 
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           <RedMarker width={20} height={20} style={{ marginRight: 8 }} />
           <Text>{endLocation}</Text>
-          <Text style={{ marginLeft: "auto" }}>Est: {endTime}</Text>
+          <Text style={{ marginLeft: "auto", color: "#E24949" }}>
+            Est: {endTime}
+          </Text>
         </View>
 
         <StackedProfilePictures images={images} />
@@ -140,53 +163,30 @@ const ActiveRiderCard = ({
         <View
           style={{
             flexDirection: "row",
-            justifyContent: "flex-end",
-            width: "100%",
+            alignSelf: "flex-end",
+            alignItems: "center",
+            backgroundColor: "rgba(255, 136, 51, 0.1)",
+            borderRadius: 16,
+            paddingHorizontal: 10,
+            paddingVertical: 5,
+            borderWidth: 0,
             marginTop: 10,
           }}
         >
           {recurrence === "one time" ? (
-            <Button
-              onPress={() => {}}
-              style={{
-                width: 120,
-                height: 28,
-                backgroundColor: "rgba(255, 136, 51, 0.1)",
-                borderRadius: 16,
-                paddingHorizontal: 10,
-                paddingVertical: 5,
-                borderWidth: 0,
-              }}
-            >
-              <View style={{ flexDirection: "row" }}>
-                <RepeatIcon
-                  width={16}
-                  height={16}
-                  style={{ marginRight: 10 }}
-                />
-                <Text style={{ color: "#FF6A00" }}>{recurrence}</Text>
-              </View>
-            </Button>
+            <>
+              <RepeatIcon
+                width={16}
+                height={16}
+                style={{ marginHorizontal: 10 }}
+              />
+              <Text style={{ color: "#FF6A00" }}>{recurrence}</Text>
+            </>
           ) : (
-            <Button
-              onPress={() => {}}
-              style={{
-                width: 104,
-                height: 26,
-                backgroundColor: "rgba(255, 136, 51, 0.1)",
-                borderRadius: 16,
-                justifyContent: "center",
-                alignItems: "center",
-                paddingHorizontal: 10,
-                paddingVertical: 5,
-                borderWidth: 0,
-              }}
-            >
-              <View style={{ flexDirection: "row" }}>
-                <ArrowUp width={16} height={16} style={{ marginRight: 10 }} />
-                <Text style={{ color: "#FF6A00" }}>{recurrence}</Text>
-              </View>
-            </Button>
+            <>
+              <ArrowUp width={16} height={16} style={{ marginRight: 10 }} />
+              <Text style={{ color: "#FF6A00" }}>{recurrence}</Text>
+            </>
           )}
         </View>
       </View>
