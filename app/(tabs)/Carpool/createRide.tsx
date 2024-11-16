@@ -53,6 +53,7 @@ import { CreateCarpoolInput } from "@/graphql/generated";
 import GroupPicker from "@/components/carpool/groupSelector";
 import WaypointSelector from "@/components/carpool/waypointSelector";
 import GestureMap from "@/components/carpool/gestureMap";
+import CarpoolOverview from "@/components/carpool/carpoolOverview";
 
 const { height: deviceHeight } = Dimensions.get("window");
 
@@ -630,6 +631,16 @@ const CreateRide = () => {
               selectedWaypoints={selectedWaypoints}
               sortedRequests={requests}
             />
+            <View style={{ marginTop: 20 }}>
+              <CarpoolOverview
+                startingAddress={startingAddress}
+                endingAddress={endingAddress}
+                selectedDate={selectedDate}
+                time={time}
+                selectedChildren={selectedChildren}
+                description={description}
+              />
+            </View>
 
             <Text
               style={{

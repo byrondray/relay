@@ -16,8 +16,8 @@ import { auth } from "@/firebaseConfig";
 import withAuthCheck from "../../components/WithAuthCheck";
 import { ThemedText } from "@/components/ThemedText";
 // import FriendsList from "@/components/FriendsList";
-import ActiveRiderCard from "@/components/cards/activeCard";
-import ScheduleActiveCard from "@/components/cards/scheduleCard";
+// import ActiveRiderCard from "@/components/cards/activeCard";
+// import ScheduleActiveCard from "@/components/cards/scheduleCard";
 const cardData = {
   id: "T202403220043",
   state: "pending",
@@ -183,8 +183,6 @@ function HomeScreen() {
 
         <Text style={styles.activeRequestText}>Active Request</Text>
       </View>
-      <ActiveRiderCard {...cardData} />\
-      <ScheduleActiveCard {...cardData} />
     </View>
   );
 }
