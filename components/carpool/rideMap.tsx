@@ -174,12 +174,10 @@ const RideMap: React.FC<RideMapProps> = ({
           />
         ))}
 
-        {coordinates.length > 0 && (
+        {activeRoute.coordinates.length > 0 && (
           <Polyline
-            coordinates={coordinates.map((coord) => ({
-              latitude: coord.latitude,
-              longitude: coord.longitude,
-            }))}
+            key={`active-route-${activeRoute.coordinates}`}
+            coordinates={activeRoute.coordinates}
             fillColor="#FFC195"
             strokeColor="#FF6A00"
             strokeWidth={5}

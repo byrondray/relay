@@ -501,7 +501,7 @@ const CreateRide = () => {
           flexGrow: 1,
         }}
       >
-        <GestureMap
+        {/* <GestureMap
           mapHeight={mapHeight}
           activeRoute={activeRoute}
           coordinates={coordinates}
@@ -515,7 +515,7 @@ const CreateRide = () => {
           startingAddress={startingAddress}
           startingLatLng={startingLatLng}
           toggleFullScreen={toggleFullScreen}
-        />
+        /> */}
         <View style={{ padding: 15 }}>
           <View>
             <Text

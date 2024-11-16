@@ -45,7 +45,7 @@ export default function TabLayout() {
       />
 
       <Tabs.Screen
-        name="Carpool/postRequest"
+        name="trips/listcarpool"
         options={{
           title: "Trips",
           tabBarIcon: ({ color, focused }) => (
@@ -67,6 +67,14 @@ export default function TabLayout() {
               color={color}
             />
           ),
+        }}
+      />
+
+      <Tabs.Screen
+        name="Carpool/postRequest"
+        options={{
+          title: "Message",
+          tabBarButton: () => null,
         }}
       />
 
@@ -111,6 +119,14 @@ export default function TabLayout() {
 
       <Tabs.Screen
         name="messages/[userId]"
+        options={{
+          title: "Message",
+          tabBarButton: () => null,
+        }}
+      />
+
+      <Tabs.Screen
+        name="trips/inProgress/[trip]"
         options={{
           title: "Message",
           tabBarButton: () => null,

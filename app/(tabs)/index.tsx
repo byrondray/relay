@@ -24,7 +24,7 @@ function HomeScreen() {
 
   const {
     data,
-    loading: onboardingLoading,
+    // loading: onboardingLoading,
     error,
   } = useQuery(HAS_USER_ON_BOARDED, {
     skip: hasOnboarded !== null,
@@ -63,13 +63,13 @@ function HomeScreen() {
     checkOnboardingStatus();
   }, [data]);
 
-  if (onboardingLoading || hasOnboarded === null) {
-    return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#0000ff" />
-      </View>
-    );
-  }
+  // if (onboardingLoading || hasOnboarded === null) {
+  //   return (
+  //     <View style={styles.loadingContainer}>
+  //       <ActivityIndicator size="large" color="#0000ff" />
+  //     </View>
+  //   );
+  // }
 
   if (error) {
     return (

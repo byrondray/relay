@@ -37,13 +37,12 @@ export const SEND_LOCATION = gql`
   }
 `;
 
-// Subscription to receive location updates from other carpool members
 export const LOCATION_RECEIVED_SUBSCRIPTION = gql`
-  subscription OnLocationReceived($recipientId: String!) {
+  subscription LocationReceived($recipientId: String!) {
     locationReceived(recipientId: $recipientId) {
+      senderId
       lat
       lon
-      senderId
       timestamp
     }
   }

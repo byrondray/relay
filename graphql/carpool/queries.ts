@@ -190,3 +190,67 @@ export const GET_CARPOOLERS_WITHOUT_APPROVED_REQUESTS = gql`
     }
   }
 `;
+
+export const GET_CARPOOL_WITH_REQUESTS = gql`
+  query GetCarpoolWithRequests($carpoolId: String!) {
+    getCarpoolWithRequests(carpoolId: $carpoolId) {
+      id
+      driverId
+      vehicleId
+      groupId
+      startAddress
+      endAddress
+      departureDate
+      departureTime
+      requests {
+        id
+        parent {
+          id
+          firstName
+          email
+          imageUrl
+        }
+        child {
+          id
+          firstName
+          schoolId
+          imageUrl
+        }
+      }
+    }
+  }
+`;
+
+export const GET_USER_CARPOOL_WITH_REQUESTS = gql`
+  query GetUserCarpoolsAndRequests($userId: String!) {
+    getUserCarpoolsAndRequests(userId: $userId) {
+      carpools {
+        id
+        startAddress
+        driverId
+        vehicleId
+        endAddress
+        departureDate
+        departureTime
+      }
+      requests {
+        id
+        carpoolId
+        pickupTime
+        startAddress
+        parent {
+          id
+          firstName
+          email
+          imageUrl
+        }
+        child {
+          id
+          firstName
+          schoolId
+          imageUrl
+        }
+      }
+    }
+  }
+`;

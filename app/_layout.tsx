@@ -25,6 +25,7 @@ import {
   DefaultTheme,
   ThemeProvider,
 } from "@react-navigation/native";
+import * as Location from "expo-location";
 
 export default function RootLayout() {
   const [fontsLoaded] = useFonts({
@@ -79,6 +80,19 @@ export default function RootLayout() {
       };
     },
   });
+
+  const requestPermissions = async () => {
+    const { status } = await Location.requestForegroundPermissionsAsync();
+    if (status !== "granted") {
+      console.error("Permission to access location was denied");
+      return;
+    }
+    console.log("Permission granted");
+  };
+
+  useEffect(() => {
+    requestPermissions();
+  }, []);
 
   useEffect(() => {
     const requestUserPermission = async () => {
