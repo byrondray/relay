@@ -517,25 +517,27 @@ const CreateRide = () => {
           toggleFullScreen={toggleFullScreen}
         />
         <View style={{ padding: 15 }}>
-          <View>
+          <View style={styles.container}>
             <Text
-              style={{
+            style={{
                 fontSize: 32,
                 marginBottom: 20,
-                fontFamily: "Comfortaa-semibold",
+                fontFamily: "Comfortaa-Bold",
+                fontWeight: 700,
+                letterSpacing: -1.2,
               }}
             >
               Create a ride
             </Text>
           </View>
-          <Text style={{ color: "#FF6A00", fontSize: 22, marginBottom: 15 }}>
+          <Text style={{ color: "#FF6A00", fontFamily: "Comfortaa-Regular", fontSize: 20, letterSpacing: -1, marginBottom: 15 }}>
             Itinerary
           </Text>
           <RadioGroupComponent
             selectedIndex={selectedIndex}
             setSelectedIndex={setSelectedIndex}
           />
-          <Text style={{ color: textColor, marginBottom: 5 }}>From</Text>
+          <Text style={{ color: textColor, marginBottom: 5, fontFamily: "Comfortaa-Regular", fontSize: 14, letterSpacing: .2 }}>From</Text>
           <ThemedAddressCompletionInput
             value={startingAddress}
             onChangeText={(text) => setStartingAddress(text)}
@@ -547,7 +549,7 @@ const CreateRide = () => {
             }}
             placeholder="Enter Origin"
           />
-          <Text style={{ color: textColor, marginBottom: 5, marginTop: 15 }}>
+          <Text style={{ color: textColor, marginBottom: 5, marginTop: 15, fontFamily: "Comfortaa-Regular", fontSize: 14, letterSpacing: .2 }}>
             To
           </Text>
           <ThemedAddressCompletionInput
@@ -620,7 +622,7 @@ const CreateRide = () => {
               textAlign: "left",
               marginTop: 5,
               marginBottom: 5,
-              fontFamily: "Comfortaa",
+              fontFamily: "Comfortaa-Regular",
             }}
           >
             You choose the below passenger(s)
