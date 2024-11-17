@@ -632,14 +632,14 @@ const CreateRide = () => {
               sortedRequests={requests}
             />
             <View style={{ marginTop: 20 }}>
-              <CarpoolOverview
+              {/* <CarpoolOverview
                 startingAddress={startingAddress}
                 endingAddress={endingAddress}
                 selectedDate={selectedDate}
                 time={time}
-                selectedChildren={selectedChildren}
+                selectedChildren={selectedChildren} // take in selected requests
                 description={description}
-              />
+              /> */}
             </View>
 
             <Text
