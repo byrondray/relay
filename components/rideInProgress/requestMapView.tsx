@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { View, StyleSheet, Text } from "react-native";
+import React, { useEffect, useRef, useState } from "react";
+import { View, StyleSheet } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 
 interface RequestMapViewProps {
@@ -17,25 +17,27 @@ const RequestMapView: React.FC<RequestMapViewProps> = ({ driverLocation }) => {
     longitudeDelta: 0.05,
   };
 
-  const [region, setRegion] = useState(defaultRegion);
+  const mapRef = useRef<MapView | null>(null);
+  const [hasCentered, setHasCentered] = useState(false);
 
   useEffect(() => {
-    // Update region when driverLocation changes
-    if (driverLocation) {
-      setRegion({
-        latitude: driverLocation.latitude,
-        longitude: driverLocation.longitude,
-        latitudeDelta: 0.05,
-        longitudeDelta: 0.05,
-      });
-    } else {
-      setRegion(defaultRegion);
+    if (driverLocation && !hasCentered && mapRef.current) {
+      mapRef.current.animateToRegion(
+        {
+          latitude: driverLocation.latitude,
+          longitude: driverLocation.longitude,
+          latitudeDelta: 0.05,
+          longitudeDelta: 0.05,
+        },
+        1000
+      );
+      setHasCentered(true);
     }
-  }, [driverLocation]);
+  }, [driverLocation, hasCentered]);
 
   return (
     <View style={styles.container}>
-      <MapView style={styles.map} region={region}>
+      <MapView ref={mapRef} style={styles.map} initialRegion={defaultRegion}>
         {driverLocation && (
           <Marker
             coordinate={{
@@ -46,9 +48,6 @@ const RequestMapView: React.FC<RequestMapViewProps> = ({ driverLocation }) => {
           />
         )}
       </MapView>
-      {!driverLocation && (
-        <MapView style={styles.map} region={region}></MapView>
-      )}
     </View>
   );
 };
@@ -59,17 +58,6 @@ const styles = StyleSheet.create({
     width: "100%",
     borderRadius: 8,
     overflow: "hidden",
-    marginBottom: 16,
-  },
-  noLocation: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "rgba(255, 255, 255, 0.7)",
   },
   map: {
     flex: 1,

@@ -1,0 +1,72 @@
+import React, { useState } from "react";
+import { Text, TouchableOpacity, View } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
+import { useSendFakeLocation } from "@/hooks/map/useSendFakeLocation";
+
+interface ShareFakeLocationButtonProps {
+  carpoolId: string;
+  polyline: { latitude: number; longitude: number }[];
+  onLocationUpdate: (
+    location: { latitude: number; longitude: number } | null
+  ) => void;
+}
+
+const ShareFakeLocationButton: React.FC<ShareFakeLocationButtonProps> = ({
+  carpoolId,
+  polyline,
+  onLocationUpdate,
+}) => {
+  const { startFakeLocationSharing, stopFakeLocationSharing, loading } =
+    useSendFakeLocation();
+  const [isSharing, setIsSharing] = useState(false);
+
+  const toggleFakeLocationSharing = () => {
+    if (isSharing) {
+      stopFakeLocationSharing();
+      onLocationUpdate(null);
+    } else {
+      startFakeLocationSharing(
+        carpoolId,
+        polyline,
+        (location: { latitude: number; longitude: number }) => {
+          onLocationUpdate(location);
+        }
+      );
+    }
+    setIsSharing(!isSharing);
+  };
+
+  return (
+    <LinearGradient
+      colors={["#e24a4a", "#ff8833"]}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 1, y: 0 }}
+      style={{
+        width: "100%",
+        borderRadius: 15,
+        overflow: "hidden",
+        marginBottom: 15,
+      }}
+    >
+      <TouchableOpacity onPress={toggleFakeLocationSharing} disabled={loading}>
+        <View style={{ padding: 10, alignItems: "center" }}>
+          <Text
+            style={{
+              color: "#fff",
+              fontSize: 16,
+              fontFamily: "Comfortaa",
+            }}
+          >
+            {loading
+              ? "Processing..."
+              : isSharing
+              ? "Stop Fake Location"
+              : "Start Fake Location"}
+          </Text>
+        </View>
+      </TouchableOpacity>
+    </LinearGradient>
+  );
+};
+
+export default ShareFakeLocationButton;

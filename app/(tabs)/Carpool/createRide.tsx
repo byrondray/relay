@@ -232,6 +232,7 @@ const CreateRide = () => {
   const { data, loading: groupsLoading } = useQuery(GET_GROUPS, {
     onCompleted: (data) => {
       if (data) {
+        console.log("Groups data:", data.getGroups);
         setGroups(data.getGroups);
       }
     },

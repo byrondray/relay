@@ -175,13 +175,16 @@ const RideMap: React.FC<RideMapProps> = ({
         ))}
 
         {activeRoute.coordinates.length > 0 && (
-          <Polyline
-            key={`active-route-${activeRoute.coordinates}`}
-            coordinates={activeRoute.coordinates}
-            fillColor="#FFC195"
-            strokeColor="#FF6A00"
-            strokeWidth={5}
-          />
+          <>
+            {console.log("Active Route Coordinates:", activeRoute.coordinates)}
+            <Polyline
+              key={`active-route-${activeRoute.coordinates}`}
+              coordinates={activeRoute.coordinates}
+              fillColor="#FFC195"
+              strokeColor="#FF6A00"
+              strokeWidth={5}
+            />
+          </>
         )}
       </MapView>
 

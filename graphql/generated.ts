@@ -671,7 +671,7 @@ export type GetCarpoolWithRequestsQueryVariables = Exact<{
 }>;
 
 
-export type GetCarpoolWithRequestsQuery = { __typename?: 'Query', getCarpoolWithRequests: { __typename?: 'CarpoolWithRequests', id: string, driverId: string, vehicleId: string, groupId: string, startAddress: string, endAddress: string, departureDate: string, departureTime: string, requests?: Array<{ __typename?: 'RequestWithParentAndChild', id: string, parent: { __typename?: 'User', id: string, firstName: string, email: string, imageUrl?: string | null }, child: { __typename?: 'Child', id: string, firstName: string, schoolId: string, imageUrl?: string | null } }> | null } };
+export type GetCarpoolWithRequestsQuery = { __typename?: 'Query', getCarpoolWithRequests: { __typename?: 'CarpoolWithRequests', id: string, driverId: string, vehicleId: string, groupId: string, startAddress: string, endAddress: string, departureDate: string, departureTime: string, requests?: Array<{ __typename?: 'RequestWithParentAndChild', id: string, startAddress: string, parent: { __typename?: 'User', id: string, firstName: string, email: string, imageUrl?: string | null }, child: { __typename?: 'Child', id: string, firstName: string, schoolId: string, imageUrl?: string | null } }> | null } };
 
 export type GetUserCarpoolsAndRequestsQueryVariables = Exact<{
   userId: Scalars['String']['input'];
@@ -772,12 +772,12 @@ export type SendLocationMutationVariables = Exact<{
 
 export type SendLocationMutation = { __typename?: 'Mutation', sendLocation?: { __typename?: 'LocationData', lat: number, lon: number, senderId: string, timestamp: string } | null };
 
-export type OnLocationReceivedSubscriptionVariables = Exact<{
+export type LocationReceivedSubscriptionVariables = Exact<{
   recipientId: Scalars['String']['input'];
 }>;
 
 
-export type OnLocationReceivedSubscription = { __typename?: 'Subscription', locationReceived?: { __typename?: 'LocationData', lat: number, lon: number, senderId: string, timestamp: string } | null };
+export type LocationReceivedSubscription = { __typename?: 'Subscription', locationReceived?: { __typename?: 'LocationData', senderId: string, lat: number, lon: number, timestamp: string } | null };
 
 export type GetConversationsForUserQueryVariables = Exact<{
   userId: Scalars['String']['input'];

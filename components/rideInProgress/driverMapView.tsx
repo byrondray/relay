@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { View, StyleSheet } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 
@@ -10,7 +10,6 @@ interface DriverMapViewProps {
 }
 
 const DriverMapView: React.FC<DriverMapViewProps> = ({ driverLocation }) => {
-  // Define the default region in case `driverLocation` is not available
   const defaultRegion = {
     latitude: 49.2827,
     longitude: -123.1207,
@@ -18,20 +17,28 @@ const DriverMapView: React.FC<DriverMapViewProps> = ({ driverLocation }) => {
     longitudeDelta: 0.05,
   };
 
-  // Use either the driver's location or the default region
-  const region = driverLocation
-    ? {
-        latitude: driverLocation.latitude,
-        longitude: driverLocation.longitude,
-        latitudeDelta: 0.05,
-        longitudeDelta: 0.05,
-      }
-    : defaultRegion;
+  const mapRef = useRef<MapView | null>(null);
+  const [isCentered, setIsCentered] = useState(false);
+
+  useEffect(() => {
+    if (driverLocation && !isCentered) {
+      // Center the map only once when the driver starts sharing the location
+      mapRef.current?.animateToRegion(
+        {
+          latitude: driverLocation.latitude,
+          longitude: driverLocation.longitude,
+          latitudeDelta: 0.05,
+          longitudeDelta: 0.05,
+        },
+        1000 // Animation duration in milliseconds
+      );
+      setIsCentered(true); // Prevent further centering
+    }
+  }, [driverLocation, isCentered]);
 
   return (
     <View style={styles.container}>
-      <MapView style={styles.map} initialRegion={region}>
-        {/* Render a marker if `driverLocation` is available */}
+      <MapView ref={mapRef} style={styles.map} initialRegion={defaultRegion}>
         {driverLocation && (
           <Marker
             coordinate={{
@@ -51,7 +58,7 @@ const styles = StyleSheet.create({
     height: 300,
     width: "100%",
     overflow: "hidden",
-    marginBottom: 16,
+    borderRadius: 0,
   },
   map: {
     flex: 1,

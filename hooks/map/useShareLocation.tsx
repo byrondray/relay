@@ -10,27 +10,6 @@ export const useSendLocation = () => {
   );
   const [permissionGranted, setPermissionGranted] = useState(false);
 
-  interface ShareLocationVariables {
-    carpoolId: string;
-    lat: number;
-    lon: number;
-  }
-
-  interface ShareLocationResult {
-    shareLocation: (
-      carpoolId: string,
-      onLocationUpdate: (location: {
-        latitude: number;
-        longitude: number;
-      }) => void
-    ) => void;
-    stopSharingLocation: () => void;
-    data: any;
-    loading: boolean;
-    error: any;
-  }
-
-  // Request location permissions on mount
   useEffect(() => {
     const requestPermissions = async () => {
       const { status } = await Location.requestForegroundPermissionsAsync();

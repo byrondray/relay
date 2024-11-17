@@ -87,7 +87,6 @@ export default function RootLayout() {
       console.error("Permission to access location was denied");
       return;
     }
-    console.log("Permission granted");
   };
 
   useEffect(() => {
