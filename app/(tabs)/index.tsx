@@ -16,9 +16,10 @@ import { auth } from "@/firebaseConfig";
 import withAuthCheck from "../../components/WithAuthCheck";
 import { ThemedText } from "@/components/ThemedText";
 // import FriendsList from "@/components/FriendsList";
-import ActiveRiderCard from "@/components/cards/activeCard";
-import ScheduleActiveCard from "@/components/cards/scheduleCard";
-import TimeCard from "@/components/cards/timeCard";
+// import ActiveRiderCard from "@/components/cards/activeCard";
+// import ScheduleActiveCard from "@/components/cards/scheduleCard";
+// import TimeCard from "@/components/cards/timeCard";
+import MapDriverCard from "@/components/cards/mapDriverCard";
 const cardData = {
   id: "T202403220043",
   state: "pending",
@@ -101,7 +102,24 @@ function HomeScreen() {
     <View style={styles.container}>
       <Text style={styles.title}>New Ride</Text>
       {/* <FriendsList /> */}
-      <TimeCard startTime="10:00am" endTime="6:00pm" />
+      <MapDriverCard
+        id="RN1234"
+        driverName="John Doe"
+        driveCount={60}
+        likes={300}
+        date={new Date("2024-11-17T12:30:00")}
+        duration="1hr 02min (32.0km)"
+        startLocation="4700 Kingsway, Burnaby, BC, V5H 4M5 "
+        startTime="10:00am"
+        endLocation="3700 Willingdon Ave, Burnaby, BC V5G 3H2"
+        endTime="2:00pm"
+        passengerImages={[
+          "https://t3.ftcdn.net/jpg/02/99/04/20/360_F_299042079_vGBD7wIlSeNl7vOevWHiL93G4koMM967.jpg",
+          "https://cdn.pixabay.com/photo/2016/11/29/13/14/attractive-1869761_1280.jpg",
+          "https://t3.ftcdn.net/jpg/02/43/12/34/360_F_243123463_zTooub557xEWABDLk0jJklDyLSGl2jrr.jpg",
+        ]}
+      />
+
       <View style={styles.content}>
         <TouchableOpacity
           style={[

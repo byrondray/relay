@@ -7,7 +7,7 @@ interface ProfilePicturesProps {
 
 const StackedProfilePictures = ({ images }: ProfilePicturesProps) => {
   return (
-    <View style={{ flexDirection: "row", position: "relative" }}>
+    <View style={{ flexDirection: "row", justifyContent: "flex-start" }}>
       {images.map((image, index) => (
         <Image
           key={index}
@@ -16,13 +16,8 @@ const StackedProfilePictures = ({ images }: ProfilePicturesProps) => {
             width: 40,
             height: 40,
             borderRadius: 20,
-            borderWidth: 0,
-            position: "absolute",
-            left: index * 10,
-            top: index * 10,
-            zIndex: images.length - index,
-            marginLeft: index > 0 ? -20 : 9,
-            marginTop: index > 0 ? -1 : 9,
+            marginLeft: index === 0 ? 0 : -10,
+            zIndex: index,
           }}
         />
       ))}

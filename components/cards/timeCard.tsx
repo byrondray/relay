@@ -20,7 +20,6 @@ const TimeCard = ({ startTime, endTime }: TimeCardProps) => {
           flexDirection: "row",
           alignItems: "center",
           justifyContent: "space-between",
-          width: 398,
           height: 86,
           backgroundColor: "#FFFFFF",
           borderRadius: 12,
@@ -35,6 +34,7 @@ const TimeCard = ({ startTime, endTime }: TimeCardProps) => {
         <View
           style={{
             justifyContent: "center",
+            marginRight: 10,
           }}
         >
           <Text
@@ -50,7 +50,7 @@ const TimeCard = ({ startTime, endTime }: TimeCardProps) => {
           </Text>
           <Text
             style={{
-              fontSize: 40,
+              fontSize: 35,
               fontFamily: "Comfortaa",
               fontWeight: "700",
               color: "#FB812A",
@@ -73,6 +73,7 @@ const TimeCard = ({ startTime, endTime }: TimeCardProps) => {
         <View
           style={{
             justifyContent: "center",
+            marginLeft: 10,
           }}
         >
           <Text
@@ -88,7 +89,7 @@ const TimeCard = ({ startTime, endTime }: TimeCardProps) => {
           </Text>
           <Text
             style={{
-              fontSize: 40,
+              fontSize: 35,
               fontFamily: "Comfortaa",
               fontWeight: "700",
               color: "#E24949",
