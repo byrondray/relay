@@ -18,6 +18,7 @@ import { ThemedText } from "@/components/ThemedText";
 // import FriendsList from "@/components/FriendsList";
 import ActiveRiderCard from "@/components/cards/activeCard";
 import ScheduleActiveCard from "@/components/cards/scheduleCard";
+import TimeCard from "@/components/cards/timeCard";
 const cardData = {
   id: "T202403220043",
   state: "pending",
@@ -100,6 +101,7 @@ function HomeScreen() {
     <View style={styles.container}>
       <Text style={styles.title}>New Ride</Text>
       {/* <FriendsList /> */}
+      <TimeCard startTime="10:00am" endTime="6:00pm" />
       <View style={styles.content}>
         <TouchableOpacity
           style={[
