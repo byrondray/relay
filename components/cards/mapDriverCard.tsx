@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity, Platform, Linking } from "react-native";
 import LikeIcon from "@/assets/images/heart.svg";
 import ClockIcon from "@/assets/images/whiteClock.svg";
 import DriverIcon from "@/assets/images/drives.svg";
@@ -53,6 +53,14 @@ const MapDriverCard = ({
 }: ScheduleActiveCardProps) => {
   const textColor = useThemeColor({}, "placeholder");
 
+  const makeCall = () => {
+    console.log("Calling driver");
+    if (Platform.OS === "android") {
+      Linking.openURL("tel:1234567890");
+    } else {
+      Linking.openURL("telprompt:1234567890");
+    }
+  };
   return (
     <View
       style={{
@@ -264,6 +272,7 @@ const MapDriverCard = ({
               borderRadius: 26,
               padding: 8,
             }}
+            onPress={() => makeCall()}
           >
             <PhoneIcon width={24} height={24} style={{ padding: 10 }} />
           </TouchableOpacity>
