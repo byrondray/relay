@@ -549,7 +549,7 @@ const CreateRide = () => {
             textColor={textColor}
           />
           <Text style={{ color: textColor, marginBottom: 10, marginTop: 15 }}>
-            Seats Occupied
+            Select which kid will join the ride
           </Text>
           <ChildSelector onSelectedChildrenChange={setSelectedChildren} />
           <GroupPicker
@@ -610,23 +610,14 @@ const CreateRide = () => {
               selectedWaypoints={selectedWaypoints}
               sortedRequests={requests}
             />
-
-            <Text
-              style={{
-                color: "#FF6A00",
-                fontSize: 22,
-                marginTop: 15,
-                fontFamily: "Comfortaa",
-              }}
-            >
-              Pricing
-            </Text>
-            <CarFeaturesCheckbox
-              extraCarseatChecked={extraCarseatChecked}
-              winterTiresChecked={winterTiresChecked}
-              setExtraCarseatChecked={setExtraCarseatChecked}
-              setWinterTiresChecked={setWinterTiresChecked}
-            />
+            <View style={{ marginVertical: 10}}>
+              <CarFeaturesCheckbox
+                extraCarseatChecked={extraCarseatChecked}
+                winterTiresChecked={winterTiresChecked}
+                setExtraCarseatChecked={setExtraCarseatChecked}
+                setWinterTiresChecked={setWinterTiresChecked}
+              />
+            </View>
             <PaymentInfo />
             <Text
               style={{
@@ -641,6 +632,7 @@ const CreateRide = () => {
             <TripDescriptionInput
               textColor={textColor}
               description={description}
+              placeholder="Any preferences for trips? (e.g., preferred age range of kids, allowed stopovers, special requests)"
               setDescription={setDescription}
             />
           </View>

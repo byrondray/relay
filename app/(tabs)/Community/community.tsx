@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import {
   View,
   Image,
@@ -33,7 +33,7 @@ import ImageUpload from "@/components/carpool/uploadImageInput";
 import InviteFriendDropdown from "@/components/community/InviteFriends";
 import FriendsInviteDescription from "@/components/community/friendsDescription";
 import { LinearGradient } from "expo-linear-gradient";
-import { Link, router } from "expo-router";
+import { Link, router, useFocusEffect } from "expo-router";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { Ionicons } from "@expo/vector-icons";
 import FriendProfile from "@/components/FriendProfile";
@@ -54,7 +54,7 @@ const Sidebar = () => {
   });
 
   return (
-    <View>
+    <View style={{ backgroundColor: "transparent"}}>
       <Layout
         style={{
           display: "flex",
@@ -239,12 +239,19 @@ const Community = () => {
     data: friendsData,
     loading,
     error,
+    refetch
   } = useQuery(GET_FRIENDS, {
     onCompleted: (data) => {
       console.log(data, "friends");
       setFriends(data.getFriends);
     },
   });
+
+  useFocusEffect(
+  useCallback(() => {
+    refetch();
+  }, [refetch])
+);
 
   const [searchText, setSearchText] = useState("");
   const textColor = useThemeColor({}, "placeholder");

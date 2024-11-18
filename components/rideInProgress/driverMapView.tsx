@@ -12,7 +12,7 @@ interface DriverMapViewProps {
     longitude: number;
   } | null;
   requests: RequestWithParentAndChild[];
-  polyline: { latitude: number; longitude: number }[]; // Array of coordinates for the polyline
+  polyline: { latitude: number; longitude: number }[]; 
   carpoolData: CarpoolWithRequests;
 }
 
@@ -34,7 +34,6 @@ const DriverMapView: React.FC<DriverMapViewProps> = ({
 
   useEffect(() => {
     if (driverLocation && !isCentered) {
-      // Center the map only once when the driver starts sharing the location
       mapRef.current?.animateToRegion(
         {
           latitude: driverLocation.latitude,
@@ -42,11 +41,20 @@ const DriverMapView: React.FC<DriverMapViewProps> = ({
           latitudeDelta: 0.05,
           longitudeDelta: 0.05,
         },
-        1000 // Animation duration in milliseconds
+        1000 
       );
-      setIsCentered(true); // Prevent further centering
+      setIsCentered(true); 
     }
   }, [driverLocation, isCentered]);
+
+  useEffect(() => {
+    if (polyline.length > 0) {
+      mapRef.current?.fitToCoordinates(polyline, {
+        edgePadding: { top: 50, right: 50, bottom: 50, left: 50 },
+        animated: true,
+      });
+    }
+  }, [polyline]);
 
   return (
     <View style={styles.container}>

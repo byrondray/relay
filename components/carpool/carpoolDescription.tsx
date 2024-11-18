@@ -5,9 +5,11 @@ const TripDescriptionInput = ({
   textColor,
   description,
   setDescription,
+  placeholder,
 }: {
   textColor: string;
   description: string;
+  placeholder: string;
   setDescription: (text: string) => void;
 }) => {
   return (
@@ -34,7 +36,7 @@ const TripDescriptionInput = ({
           paddingRight: 30,
           fontFamily: "Comfortaa",
         }}
-        placeholder="Any preferences for trips? (e.g., preferred age range of kids, allowed stopovers, special requests)"
+        placeholder={placeholder}
         multiline={true}
         value={description}
         onChangeText={setDescription}

@@ -240,7 +240,7 @@ const RequestRide = () => {
             fontFamily: "Comfortaa",
           }}
         >
-          Seats Occupied
+          Select which kid will join the ride
         </Text>
         <ChildSelector
           onSelectedChildrenChange={(selectedChildren) =>
@@ -256,6 +256,7 @@ const RequestRide = () => {
         <TripDescriptionInput
           textColor={textColor}
           description={description}
+          placeholder="Let drivers know about any special arrangements, e.g., extra car seats or large instruments."
           setDescription={setDescription}
         />
         <View

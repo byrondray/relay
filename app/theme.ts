@@ -3,6 +3,7 @@ import defaultTheme from '@eva-design/eva';
 export const myTheme = {
   ...defaultTheme,
 
+  // Define your color palette
   "color-primary-100": "#FFF0D6",
   "color-primary-200": "#FFDDAD",
   "color-primary-300": "#FFC584",
@@ -47,5 +48,21 @@ export const myTheme = {
   "color-danger-600": "#DB5941",
   "color-danger-700": "#B7382C",
   "color-danger-800": "#931D1C",
-  "color-danger-900": "#7A1117"
+  "color-danger-900": "#7A1117",
+
+  // Extend the theme to customize specific components
+  components: {
+    ...defaultTheme,
+
+    Datepicker: {
+      appearances: {
+        default: {
+          mapping: {
+            borderWidth: 0, // Removes the border
+            borderColor: 'transparent', // Ensures the border is invisible
+          },
+        },
+      },
+    },
+  },
 };

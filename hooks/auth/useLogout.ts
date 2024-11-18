@@ -11,7 +11,7 @@ export const useLogout = () => {
     try {
       await auth.signOut();
 
-      await AsyncStorage.removeItem("firebaseToken");
+      await AsyncStorage.clear();
 
       router.replace("/Login/login");
     } catch (error) {

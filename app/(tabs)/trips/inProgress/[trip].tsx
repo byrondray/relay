@@ -420,7 +420,7 @@ const CarpoolScreen: React.FC = () => {
           )}
           {driverData && driverData.id === currentUser?.uid && (
             <>
-              {/* <ShareFakeLocationButton
+              <ShareFakeLocationButton
                 carpoolId={carpoolData?.id ?? ""}
                 polyline={polyline}
                 nextStop={{
@@ -435,7 +435,7 @@ const CarpoolScreen: React.FC = () => {
                   setDriverLocation(location);
                 }}
                 isFinalDestination={isTripCompleted}
-              /> */}
+              />
             </>
           )}
         </View>

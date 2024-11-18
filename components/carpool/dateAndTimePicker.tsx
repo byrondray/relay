@@ -51,7 +51,7 @@ const RideDateTimePicker = ({
         <Datepicker
           date={selectedDate || undefined}
           onSelect={handleDateSelect}
-          style={{ marginRight: 5 }}
+          style={{ marginRight: 5, borderColor: "transparent", borderWidth: 0 }}
         />
       </View>
 
