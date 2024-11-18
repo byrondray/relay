@@ -147,7 +147,6 @@ export default function RootLayout() {
                 : { ...eva.light, ...myTheme }
             }
           >
-            {/* Wrapping the whole app with ThemeProvider from ThemeContext */}
             <ThemeProvider>
               <View
                 style={

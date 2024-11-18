@@ -2,7 +2,7 @@ import React from "react";
 import { View, Text, TouchableOpacity, StyleSheet, Image } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import FriendCard from "@/components/FriendCard";
-import { useTheme } from "@/contexts/ThemeContext"; // Import theme context
+import { useTheme } from "@/contexts/ThemeContext";
 
 const NewRideScreen: React.FC = () => {
   const { currentColors } = useTheme(); // Access the current theme colors

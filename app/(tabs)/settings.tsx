@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Text, Switch, StyleSheet } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import { useTheme } from "@/contexts/ThemeContext";  // Importing useTheme for theme state
+import { useTheme } from "@/contexts/ThemeContext";
 import { useLogout } from "@/hooks/auth/useLogout";
 
 const LogoutButton = () => {
@@ -15,7 +15,7 @@ const LogoutButton = () => {
 };
 
 const Settings = () => {
-  const { theme, setTheme, currentColors } = useTheme();  // Access theme context and colors
+  const { theme, setTheme, currentColors } = useTheme(); 
   const toggleSwitch = () => setTheme(theme === "light" ? "dark" : "light"); // Toggle between light and dark
 
   return (

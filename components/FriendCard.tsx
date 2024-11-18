@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
-import { useTheme } from '@/contexts/ThemeContext'; // Import theme context
+import { useTheme } from '@/contexts/ThemeContext';
 
 type FriendCardProps = {
   id: string;
@@ -18,7 +18,7 @@ const FriendCard: React.FC<FriendCardProps> = ({
   showCheckmark = true,
 }) => {
   const [selected, setSelected] = useState(false);
-  const { currentColors } = useTheme(); // Access current theme colors
+  const { currentColors } = useTheme();
 
   const toggleSelection = () => {
     setSelected((prevSelected) => !prevSelected);
@@ -28,7 +28,7 @@ const FriendCard: React.FC<FriendCardProps> = ({
     <View
       style={[
         styles.friendItem,
-        { backgroundColor: currentColors.background }, // Dynamic background color based on theme
+        { backgroundColor: currentColors.background },
       ]}
     >
       <View style={styles.profileImage}>
@@ -42,7 +42,7 @@ const FriendCard: React.FC<FriendCardProps> = ({
         <Text
           style={[
             styles.friendName,
-            { color: currentColors.text }, // Dynamic text color based on theme
+            { color: currentColors.text },
           ]}
         >
           {name}
@@ -50,7 +50,7 @@ const FriendCard: React.FC<FriendCardProps> = ({
         <Text
           style={[
             styles.friendSource,
-            { color: currentColors.text }, // Dynamic text color for source
+            { color: currentColors.text },
           ]}
         >
           {source}
@@ -62,7 +62,7 @@ const FriendCard: React.FC<FriendCardProps> = ({
             style={[
               styles.checkboxSquare,
               selected && styles.checkboxSquareSelected,
-              { borderColor: currentColors.text }, // Dynamic border color based on theme
+              { borderColor: currentColors.text },
             ]}
           />
         </TouchableOpacity>
