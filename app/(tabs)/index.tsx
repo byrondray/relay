@@ -1,12 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-  StyleSheet,
-  ActivityIndicator,
-  Text,
-  View,
-  Image,
-  TouchableOpacity,
-} from "react-native";
+import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
 import { useQuery } from "@apollo/client";
 import { LinearGradient } from "expo-linear-gradient";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -20,7 +13,7 @@ import { ThemedText } from "@/components/ThemedText";
 function HomeScreen() {
   const [hasOnboarded, setHasOnboarded] = useState<boolean | null>(null);
 
-  const hasFilledDriverInfo = false;
+  const hasFilledDriverInfo = true;
 
   const {
     data,
@@ -33,9 +26,8 @@ function HomeScreen() {
   useEffect(() => {
     const checkOnboardingStatus = async () => {
       try {
-        const storedOnboardingStatus = await AsyncStorage.getItem(
-          "hasOnboarded"
-        );
+        const storedOnboardingStatus =
+          await AsyncStorage.getItem("hasOnboarded");
         const currentUserId = auth.currentUser?.uid;
 
         if (currentUserId === "wcBP7eHQU3XDOnkjtWQpt6qYb9z2") {

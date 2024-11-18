@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   View,
   Text,
@@ -11,7 +11,7 @@ import {
   Keyboard,
   TouchableOpacity,
 } from "react-native";
-import { useLocalSearchParams } from "expo-router";
+import { useFocusEffect, useLocalSearchParams } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Notifications from "expo-notifications";
 import { auth } from "@/firebaseConfig";
@@ -36,6 +36,12 @@ export default function GroupMessageScreen() {
   const { loading, error, refetch } = useFetchGroupMessages(
     groupIdString,
     setMessages
+  );
+
+  useFocusEffect(
+    useCallback(() => {
+      refetch();
+    }, [refetch])
   );
 
   const { sendMessage } = useSendGroupMessage(

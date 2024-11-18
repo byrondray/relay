@@ -1,5 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
-import { View, StyleSheet } from "react-native";
+import {
+  View,
+  StyleSheet,
+  Animated,
+  Dimensions,
+  TouchableOpacity,
+  Text,
+} from "react-native";
 import MapView, { Marker } from "react-native-maps";
 import {
   CarpoolWithRequests,
@@ -32,6 +39,22 @@ const RequestMapView: React.FC<RequestMapViewProps> = ({
 
   const mapRef = useRef<MapView | null>(null);
   const [hasCentered, setHasCentered] = useState(false);
+  const [isFullScreen, setIsFullScreen] = useState(false);
+
+  const screenHeight = Dimensions.get("window").height;
+
+  // Animated value for height
+  const animatedHeight = useRef(new Animated.Value(300)).current;
+
+  const toggleFullScreen = () => {
+    const toValue = isFullScreen ? 300 : screenHeight;
+    Animated.timing(animatedHeight, {
+      toValue,
+      duration: 300,
+      useNativeDriver: false, // Required for height animation
+    }).start();
+    setIsFullScreen((prev) => !prev);
+  };
 
   useEffect(() => {
     if (driverLocation && !hasCentered && mapRef.current) {
@@ -49,7 +72,7 @@ const RequestMapView: React.FC<RequestMapViewProps> = ({
   }, [driverLocation, hasCentered]);
 
   return (
-    <View style={styles.container}>
+    <Animated.View style={[styles.container, { height: animatedHeight }]}>
       <MapView ref={mapRef} style={styles.map} initialRegion={defaultRegion}>
         {driverLocation && (
           <Marker
@@ -90,7 +113,12 @@ const RequestMapView: React.FC<RequestMapViewProps> = ({
           </Marker>
         )}
       </MapView>
-    </View>
+      <TouchableOpacity style={styles.expandButton} onPress={toggleFullScreen}>
+        <Text style={styles.expandButtonText}>
+          {isFullScreen ? "Minimize" : "Expand"}
+        </Text>
+      </TouchableOpacity>
+    </Animated.View>
   );
 };
 
@@ -103,6 +131,19 @@ const styles = StyleSheet.create({
   },
   map: {
     flex: 1,
+  },
+  expandButton: {
+    position: "absolute",
+    top: 20,
+    right: 20,
+    backgroundColor: "rgba(0, 0, 0, 0.6)",
+    padding: 10,
+    borderRadius: 5,
+    zIndex: 10,
+  },
+  expandButtonText: {
+    color: "white",
+    fontSize: 16,
   },
   markerContainer: {
     alignItems: "center",

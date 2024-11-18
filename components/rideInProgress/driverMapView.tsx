@@ -3,7 +3,15 @@ import {
   RequestWithParentAndChild,
 } from "@/graphql/generated";
 import React, { useEffect, useRef, useState } from "react";
-import { View, StyleSheet, Image, Text } from "react-native";
+import {
+  View,
+  StyleSheet,
+  Image,
+  Text,
+  TouchableOpacity,
+  Dimensions,
+  Animated,
+} from "react-native";
 import MapView, { Marker, Polyline } from "react-native-maps";
 
 interface DriverMapViewProps {
@@ -12,7 +20,7 @@ interface DriverMapViewProps {
     longitude: number;
   } | null;
   requests: RequestWithParentAndChild[];
-  polyline: { latitude: number; longitude: number }[]; 
+  polyline: { latitude: number; longitude: number }[];
   carpoolData: CarpoolWithRequests;
 }
 
@@ -31,6 +39,22 @@ const DriverMapView: React.FC<DriverMapViewProps> = ({
 
   const mapRef = useRef<MapView | null>(null);
   const [isCentered, setIsCentered] = useState(false);
+  const [isFullScreen, setIsFullScreen] = useState(false);
+
+  const screenHeight = Dimensions.get("window").height;
+
+  // Animated value for height
+  const animatedHeight = useRef(new Animated.Value(300)).current;
+
+  const toggleFullScreen = () => {
+    const toValue = isFullScreen ? 300 : screenHeight;
+    Animated.timing(animatedHeight, {
+      toValue,
+      duration: 300, // Animation duration in ms
+      useNativeDriver: false, // Required for animating height
+    }).start();
+    setIsFullScreen((prev) => !prev);
+  };
 
   useEffect(() => {
     if (driverLocation && !isCentered) {
@@ -41,9 +65,9 @@ const DriverMapView: React.FC<DriverMapViewProps> = ({
           latitudeDelta: 0.05,
           longitudeDelta: 0.05,
         },
-        1000 
+        1000
       );
-      setIsCentered(true); 
+      setIsCentered(true);
     }
   }, [driverLocation, isCentered]);
 
@@ -57,7 +81,7 @@ const DriverMapView: React.FC<DriverMapViewProps> = ({
   }, [polyline]);
 
   return (
-    <View style={styles.container}>
+    <Animated.View style={[styles.container, { height: animatedHeight }]}>
       <MapView ref={mapRef} style={styles.map} initialRegion={defaultRegion}>
         {carpoolData?.startLat && carpoolData?.startLon && (
           <Marker
@@ -122,7 +146,7 @@ const DriverMapView: React.FC<DriverMapViewProps> = ({
               latitude: request.startLat,
               longitude: request.startLon,
             }}
-            pinColor="blue" // You can customize the pin color
+            pinColor="blue"
             title={`Stop ${index + 1}`}
             description={request.startAddress}
           />
@@ -135,7 +159,12 @@ const DriverMapView: React.FC<DriverMapViewProps> = ({
           />
         )}
       </MapView>
-    </View>
+      <TouchableOpacity style={styles.expandButton} onPress={toggleFullScreen}>
+        <Text style={styles.expandButtonText}>
+          {isFullScreen ? "Minimize" : "Expand"}
+        </Text>
+      </TouchableOpacity>
+    </Animated.View>
   );
 };
 
@@ -148,6 +177,19 @@ const styles = StyleSheet.create({
   },
   map: {
     flex: 1,
+  },
+  expandButton: {
+    position: "absolute",
+    top: 20,
+    right: 20,
+    backgroundColor: "rgba(0, 0, 0, 0.6)",
+    padding: 10,
+    borderRadius: 5,
+    zIndex: 10,
+  },
+  expandButtonText: {
+    color: "white",
+    fontSize: 16,
   },
   markerContainer: {
     alignItems: "center",

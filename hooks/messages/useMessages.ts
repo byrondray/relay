@@ -39,10 +39,10 @@ export const useFetchMessages = (
         );
         setMessages(uniqueMessages);
 
-        await AsyncStorage.setItem(
-          `messages_${recipientId}`,
-          JSON.stringify(uniqueMessages)
-        );
+        // await AsyncStorage.setItem(
+        //   `messages_${recipientId}`,
+        //   JSON.stringify(uniqueMessages)
+        // );
       },
       onError: async (error: ApolloError) => {
         console.error("Failed to fetch messages:", error);
@@ -59,7 +59,6 @@ export const useFetchMessages = (
             ).values()
           );
           setMessages(uniqueMessages);
-          Alert.alert("Offline Mode", "Loaded messages from cache.");
         } else {
           Alert.alert(
             "Error",
