@@ -6,7 +6,7 @@ import {
   Text,
   View,
   Image,
-  Touchable,
+  TouchableOpacity,
 } from "react-native";
 import withAuthCheck from "../../components/WithAuthCheck";
 import { ThemedView } from "@/components/ThemedView";
@@ -20,8 +20,6 @@ import { HAS_USER_ON_BOARDED } from "@/graphql/queries";
 import { router, Href } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { GET_CHILDREN_FOR_USER } from "@/graphql/queries";
-import { TouchableOpacity } from "react-native-gesture-handler";
-import { processFontFamily } from "expo-font";
 import { auth } from "@/firebaseConfig";
 
 function HomeScreen() {
@@ -36,34 +34,32 @@ function HomeScreen() {
   });
 
   useEffect(() => {
-    const checkOnboardingStatus = async () => {
-      try {
-        const storedOnboardingStatus = await AsyncStorage.getItem(
-          "hasOnboarded"
-        );
+    const checkOnboardingStatus = () => {
+      AsyncStorage.getItem("hasOnboarded")
+        .then((storedOnboardingStatus) => {
+          const currentUserId = auth.currentUser?.uid;
 
-        const currentUserId = auth.currentUser?.uid;
-
-        if (currentUserId === "wcBP7eHQU3XDOnkjtWQpt6qYb9z2") {
-          await AsyncStorage.setItem("hasOnboarded", "false");
-          router.push("/OnboardForms/parent");
-          return;
-        }
-
-        if (storedOnboardingStatus !== null) {
-          setHasOnboarded(storedOnboardingStatus === "true");
-        } else {
-          if (data && !data.hasUserOnBoarded) {
-            await AsyncStorage.setItem("hasOnboarded", "false");
+          if (currentUserId === "wcBP7eHQU3XDOnkjtWQpt6qYb9z2") {
+            AsyncStorage.setItem("hasOnboarded", "false");
             router.push("/OnboardForms/parent");
-          } else if (data?.hasUserOnBoarded) {
-            await AsyncStorage.setItem("hasOnboarded", "true");
-            setHasOnboarded(true);
+            return;
           }
-        }
-      } catch (error) {
-        console.error("Error checking onboarding status:", error);
-      }
+
+          if (storedOnboardingStatus !== null) {
+            setHasOnboarded(storedOnboardingStatus === "true");
+          } else {
+            if (data && !data.hasUserOnBoarded) {
+              AsyncStorage.setItem("hasOnboarded", "false");
+              router.push("/OnboardForms/parent");
+            } else if (data?.hasUserOnBoarded) {
+              AsyncStorage.setItem("hasOnboarded", "true");
+              setHasOnboarded(true);
+            }
+          }
+        })
+        .catch((error) => {
+          console.error("Error checking onboarding status:", error);
+        });
     };
 
     checkOnboardingStatus();
@@ -89,9 +85,7 @@ function HomeScreen() {
 
   return (
     <View style={styles.container}>
-      <Text style={[styles.heading, { fontFamily: "Comfortaa" }]}>
-        New Ride
-      </Text>
+      <Text style={[styles.heading, { fontFamily: "Comfortaa" }]}>New Ride</Text>
       <View style={{ marginBottom: 20 }}>
         <TouchableOpacity
           onPress={() => router.push("/(tabs)/Carpool/createRide")}
@@ -220,101 +214,3 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
 });
-
-{
-  /*   <ThemedAddressCompletionInput
-        value={origin}
-        onChangeText={setOrigin}
-        onSuggestionSelect={(address) => {
-          console.log("Selected Address:", address);
-        }}
-        onLatLonSelect={(lat, lon) => {
-          setStartingLatLng({ lat, lon });
-          console.log("Selected Lat/Lon:", lat, lon);
-        }}
-        placeholder="Enter Origin"
-      />
-      <ThemedAddressCompletionInput
-        value={destination}
-        onChangeText={setDestination}
-        onSuggestionSelect={setDestination}
-        onLatLonSelect={(lat, lon) => {
-          setEndingLatLng({ lat, lon });
-          console.log("Selected Lat/Lon:", lat, lon);
-        }}
-        placeholder="Enter Destination"
-      />
-      <ThemedAddressCompletionInput
-        value={waypoints}
-        onChangeText={setWaypoints}
-        onSuggestionSelect={setWaypoints}
-        onLatLonSelect={(lat, lon) => {
-          setLatLng({ lat, lon });
-          console.log("Selected Lat/Lon:", lat, lon);
-        }}
-        placeholder="Enter Waypoints (comma-separated)"
-      />
-
-      <Button
-        title="Get Directions"
-        onPress={() =>
-          getDirections(origin, destination, waypoints, departureTime)
-        }
-      />
-
-      <Button title="Logout" onPress={() => logout()} />
-      <Button
-        title="Forms"
-        onPress={() =>
-          router.push("/OnboardForms/parent" as Href<"/OnboardForms/parent">)
-        }
-      />
-
-      {predictedTime ? (
-        <ThemedView style={styles.predictedTimeContainer}>
-          <ThemedText>
-            Predicted Total Travel Time with Traffic: {predictedTime}
-          </ThemedText>
-        </ThemedView>
-      ) : null}
-
-      <MapView
-        style={styles.map}
-        region={mapRegion}
-        onRegionChangeComplete={(region) => setMapRegion(region)}
-      >
-        {communityCentersData?.getCommunityCenters?.map(
-          (center: CommunityCenter) => (
-            <Marker
-              key={center.id}
-              coordinate={{
-                latitude: center.lat,
-                longitude: center.lon,
-              }}
-              title={center.name}
-              description={center.address}
-              pinColor="green"
-            />
-          )
-        )}
-
-        <Marker
-          coordinate={{
-            latitude: userLocation.latitude,
-            longitude: userLocation.longitude,
-          }}
-          title="You are here"
-          pinColor="blue"
-        />
-
-        {coordinates.length > 0 && (
-          <Polyline
-            coordinates={coordinates}
-            strokeColor="#000"
-            strokeWidth={4}
-          />
-        )}
-
-        
-      </MapView> */
-}

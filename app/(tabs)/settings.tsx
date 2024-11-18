@@ -1,6 +1,7 @@
 import React from "react";
 import { View, Text, Switch, StyleSheet } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
+import { useTheme } from "@/contexts/ThemeContext";  // Importing useTheme for theme state
 import { useLogout } from "@/hooks/auth/useLogout";
 
 const LogoutButton = () => {
@@ -14,24 +15,34 @@ const LogoutButton = () => {
 };
 
 const Settings = () => {
+  const { theme, setTheme, currentColors } = useTheme();  // Access theme context and colors
+  const toggleSwitch = () => setTheme(theme === "light" ? "dark" : "light"); // Toggle between light and dark
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.header}>Settings</Text>
+    <View style={[styles.container, { backgroundColor: currentColors.background }]}>
+      <Text style={[styles.header, { color: currentColors.text }]}>Settings</Text>
 
       <View style={styles.settingItem}>
-        <Text style={styles.settingText}>Enable Notifications</Text>
+        <Text style={[styles.settingText, { color: currentColors.text }]}>
+          Enable Notifications
+        </Text>
         <Switch value={false} onValueChange={() => {}} />
       </View>
 
       <View style={styles.settingItem}>
-        <Text style={styles.settingText}>Dark Mode</Text>
-        <Switch value={false} onValueChange={() => {}} />
+        <Text style={[styles.settingText, { color: currentColors.text }]}>
+          Dark Mode
+        </Text>
+        <Switch value={theme === "dark"} onValueChange={toggleSwitch} />
       </View>
 
       <View style={styles.settingItem}>
-        <Text style={styles.settingText}>Location Access</Text>
+        <Text style={[styles.settingText, { color: currentColors.text }]}>
+          Location Access
+        </Text>
         <Switch value={false} onValueChange={() => {}} />
       </View>
+
       <LinearGradient
         colors={["#ff8833", "#e24a4a"]}
         start={{ x: 0, y: 0 }}
@@ -54,7 +65,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: "#fff",
   },
   header: {
     fontSize: 24,

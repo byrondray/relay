@@ -4,7 +4,7 @@ import client from "../graphql/client";
 import {
   DarkTheme,
   DefaultTheme,
-  ThemeProvider,
+  ThemeProvider as NavigationThemeProvider,
 } from "@react-navigation/native";
 import { router, SplashScreen, Stack } from "expo-router";
 import {
@@ -26,6 +26,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { myTheme } from "./theme";
 import { useFonts } from "expo-font";
 import { LogBox } from "react-native";
+import { ThemeProvider, useTheme } from "@/contexts/ThemeContext"; // Import the ThemeProvider
 
 export default function RootLayout() {
   const [fontsLoaded] = useFonts({
@@ -146,9 +147,8 @@ export default function RootLayout() {
                 : { ...eva.light, ...myTheme }
             }
           >
-            <ThemeProvider
-              value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
-            >
+            {/* Wrapping the whole app with ThemeProvider from ThemeContext */}
+            <ThemeProvider>
               <View
                 style={
                   colorScheme === "dark"
@@ -156,33 +156,37 @@ export default function RootLayout() {
                     : styles.lightContainer
                 }
               >
-                <Stack>
-                  <Stack.Screen
-                    name="(tabs)"
-                    options={{ headerShown: false }}
-                  />
-                  <Stack.Screen
-                    name="Login/login"
-                    options={{ headerShown: false }}
-                  />
-                  <Stack.Screen
-                    name="Register/register"
-                    options={{ headerShown: false }}
-                  />
-                  <Stack.Screen
-                    name="OnboardForms/parent"
-                    options={{ headerShown: false }}
-                  />
-                  <Stack.Screen
-                    name="OnboardForms/child"
-                    options={{ headerShown: false }}
-                  />
-                  <Stack.Screen
-                    name="OnboardForms/vehicle"
-                    options={{ headerShown: false }}
-                  />
-                  <Stack.Screen name="+not-found" />
-                </Stack>
+                <NavigationThemeProvider
+                  value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
+                >
+                  <Stack>
+                    <Stack.Screen
+                      name="(tabs)"
+                      options={{ headerShown: false }}
+                    />
+                    <Stack.Screen
+                      name="Login/login"
+                      options={{ headerShown: false }}
+                    />
+                    <Stack.Screen
+                      name="Register/register"
+                      options={{ headerShown: false }}
+                    />
+                    <Stack.Screen
+                      name="OnboardForms/parent"
+                      options={{ headerShown: false }}
+                    />
+                    <Stack.Screen
+                      name="OnboardForms/child"
+                      options={{ headerShown: false }}
+                    />
+                    <Stack.Screen
+                      name="OnboardForms/vehicle"
+                      options={{ headerShown: false }}
+                    />
+                    <Stack.Screen name="+not-found" />
+                  </Stack>
+                </NavigationThemeProvider>
               </View>
             </ThemeProvider>
           </ApplicationProvider>
