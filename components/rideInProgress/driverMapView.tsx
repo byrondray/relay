@@ -3,7 +3,7 @@ import {
   RequestWithParentAndChild,
 } from "@/graphql/generated";
 import React, { useEffect, useRef, useState } from "react";
-import { View, StyleSheet, Image } from "react-native";
+import { View, StyleSheet, Image, Text } from "react-native";
 import MapView, { Marker, Polyline } from "react-native-maps";
 
 interface DriverMapViewProps {
@@ -93,8 +93,19 @@ const DriverMapView: React.FC<DriverMapViewProps> = ({
               latitude: driverLocation.latitude,
               longitude: driverLocation.longitude,
             }}
-            title="Driver's Location"
-          />
+          >
+            <View
+              style={{
+                backgroundColor: "red",
+                padding: 10,
+                borderRadius: 20,
+                borderWidth: 2,
+                borderColor: "white",
+              }}
+            >
+              <Text style={{ fontSize: 14, color: "white" }}>🚗</Text>
+            </View>
+          </Marker>
         )}
         {requests.map((request, index) => (
           <Marker

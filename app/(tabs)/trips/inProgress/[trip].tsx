@@ -400,40 +400,43 @@ const CarpoolScreen: React.FC = () => {
         </View>
         <View style={{ padding: 15 }}>
           {driverData?.id === currentUser?.uid && (
-            // <ShareLocationButton
-            //   carpoolId={carpoolData?.id ?? ""}
-            //   onLocationUpdate={(location) => {
-            //     setDriverLocation(location);
-            //   }}
-            //   nextStop={{
-            //     address: nextStop?.startAddress ?? "",
-            //     requestId: nextStop?.id ?? "",
-            //   }}
-            //   timeToNextStop={nextStop?.timeToNextStop ?? ""}
-            //   totalTime={totalPredictedTime}
-            //   timeUntilNextStop={nextStop?.timeToNextStop ?? ""}
-            //   isLeaving={isLeaving}
-            //   isFinalDestination={isTripCompleted}
-            // />
-            <></>
+            <>
+              <ShareLocationButton
+                carpoolId={carpoolData?.id ?? ""}
+                onLocationUpdate={(location) => {
+                  setDriverLocation(location);
+                }}
+                nextStop={{
+                  address: nextStop?.startAddress ?? "",
+                  requestId: nextStop?.id ?? "",
+                }}
+                timeToNextStop={nextStop?.timeToNextStop ?? ""}
+                totalTime={totalPredictedTime}
+                timeUntilNextStop={nextStop?.timeToNextStop ?? ""}
+                isLeaving={isLeaving}
+                isFinalDestination={isTripCompleted}
+              />
+            </>
           )}
           {driverData && driverData.id === currentUser?.uid && (
-            <ShareFakeLocationButton
-              carpoolId={carpoolData?.id ?? ""}
-              polyline={polyline}
-              nextStop={{
-                address: nextStop?.startAddress ?? "",
-                requestId: nextStop?.id ?? "",
-              }}
-              timeToNextStop={nextStop?.timeToNextStop ?? ""}
-              totalTime={totalPredictedTime}
-              timeUntilNextStop={nextStop?.timeToNextStop ?? ""}
-              isLeaving={isLeaving}
-              onLocationUpdate={(location) => {
-                setDriverLocation(location);
-              }}
-              isFinalDestination={isTripCompleted}
-            />
+            <>
+              {/* <ShareFakeLocationButton
+                carpoolId={carpoolData?.id ?? ""}
+                polyline={polyline}
+                nextStop={{
+                  address: nextStop?.startAddress ?? "",
+                  requestId: nextStop?.id ?? "",
+                }}
+                timeToNextStop={nextStop?.timeToNextStop ?? ""}
+                totalTime={totalPredictedTime}
+                timeUntilNextStop={nextStop?.timeToNextStop ?? ""}
+                isLeaving={isLeaving}
+                onLocationUpdate={(location) => {
+                  setDriverLocation(location);
+                }}
+                isFinalDestination={isTripCompleted}
+              /> */}
+            </>
           )}
         </View>
         <View style={{ paddingHorizontal: 15, marginBottom: 15 }}>

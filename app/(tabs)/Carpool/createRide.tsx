@@ -1,15 +1,9 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { ThemedAddressCompletionInput } from "@/components/ThemedAddressCompletionInput";
 import { useThemeColor } from "@/hooks/useThemeColor";
-import MapView, { LongPressEvent, MapPressEvent } from "react-native-maps";
+import MapView, { LongPressEvent } from "react-native-maps";
 import { LinearGradient } from "expo-linear-gradient";
-import {
-  Button,
-  IndexPath,
-  Layout,
-  Popover,
-  Spinner,
-} from "@ui-kitten/components";
+import { Button, IndexPath, Layout, Popover } from "@ui-kitten/components";
 import ChildSelector from "@/components/carpool/childSelector";
 import { useQuery } from "@apollo/client";
 import { auth } from "@/firebaseConfig";
@@ -52,7 +46,6 @@ import RadioGroupComponent from "@/components/carpool/carpoolFrequency";
 import { CreateCarpoolInput } from "@/graphql/generated";
 import GroupPicker from "@/components/carpool/groupSelector";
 import WaypointSelector from "@/components/carpool/waypointSelector";
-import GestureMap from "@/components/carpool/gestureMap";
 
 const { height: deviceHeight } = Dimensions.get("window");
 
