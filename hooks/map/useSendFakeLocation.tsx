@@ -10,11 +10,17 @@ export const useSendFakeLocation = () => {
   const startFakeLocationSharing = (
     carpoolId: string,
     polyline: { latitude: number; longitude: number }[],
+    nextStop: { address: string; requestId: string },
+    timeToNextStop: string,
+    totalTime: string,
+    timeUntilNextStop: string,
+    isLeaving: boolean,
+    isFinalDestination: boolean,
     onLocationUpdate: (location: {
       latitude: number;
       longitude: number;
     }) => void,
-    interval: number = 1000
+    interval: number
   ): void => {
     if (isSending.current) {
       console.warn("Fake location sharing is already in progress.");
@@ -38,8 +44,14 @@ export const useSendFakeLocation = () => {
           carpoolId,
           lat: currentLocation.latitude,
           lon: currentLocation.longitude,
+          nextStop,
+          timeToNextStop,
+          totalTime,
+          timeUntilNextStop,
+          isLeaving,
+          isFinalDestination,
         },
-      });
+      }).catch((err) => console.error("Error sending fake location:", err));
 
       index++;
     }, interval);

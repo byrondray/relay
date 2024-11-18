@@ -5,8 +5,12 @@ import { useSendLocation } from "@/hooks/map/useShareLocation";
 
 interface ShareLocationButtonProps {
   carpoolId: string;
-  currentUser: any;
-  driverData: any;
+  nextStop: { address: string; requestId: string };
+  timeToNextStop: string;
+  totalTime: string;
+  timeUntilNextStop: string;
+  isLeaving: boolean;
+  isFinalDestination: boolean;
   onLocationUpdate: (
     location: { latitude: number; longitude: number } | null
   ) => void;
@@ -14,8 +18,12 @@ interface ShareLocationButtonProps {
 
 const ShareLocationButton: React.FC<ShareLocationButtonProps> = ({
   carpoolId,
-  currentUser,
-  driverData,
+  nextStop,
+  timeToNextStop,
+  totalTime,
+  timeUntilNextStop,
+  isLeaving,
+  isFinalDestination,
   onLocationUpdate,
 }) => {
   const { shareLocation, stopSharingLocation, loading } = useSendLocation();
@@ -28,46 +36,51 @@ const ShareLocationButton: React.FC<ShareLocationButtonProps> = ({
     } else {
       shareLocation(
         carpoolId,
-        (location: { latitude: number; longitude: number }) => {
+        isLeaving,
+        isFinalDestination,
+        nextStop,
+        timeToNextStop,
+        totalTime,
+        timeUntilNextStop,
+        (location) => {
           onLocationUpdate(location);
-        }
+        },
+        isSharing
       );
     }
     setIsSharing(!isSharing);
   };
 
   return (
-    driverData?.id === currentUser?.uid && (
-      <LinearGradient
-        colors={["#e24a4a", "#ff8833"]}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 0 }}
-        style={{
-          width: "100%",
-          borderRadius: 15,
-          overflow: "hidden",
-          marginBottom: 15,
-        }}
-      >
-        <TouchableOpacity onPress={toggleLocationSharing} disabled={loading}>
-          <View style={{ padding: 10, alignItems: "center" }}>
-            <Text
-              style={{
-                color: "#fff",
-                fontSize: 16,
-                fontFamily: "Comfortaa",
-              }}
-            >
-              {loading
-                ? "Processing..."
-                : isSharing
-                ? "Stop Sharing Location"
-                : "Start Sharing Location"}
-            </Text>
-          </View>
-        </TouchableOpacity>
-      </LinearGradient>
-    )
+    <LinearGradient
+      colors={["#e24a4a", "#ff8833"]}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 1, y: 0 }}
+      style={{
+        width: "100%",
+        borderRadius: 15,
+        overflow: "hidden",
+        marginBottom: 15,
+      }}
+    >
+      <TouchableOpacity onPress={toggleLocationSharing} disabled={loading}>
+        <View style={{ padding: 10, alignItems: "center" }}>
+          <Text
+            style={{
+              color: "#fff",
+              fontSize: 16,
+              fontFamily: "Comfortaa",
+            }}
+          >
+            {loading
+              ? "Processing..."
+              : isSharing
+              ? "Stop Sharing Location"
+              : "Start Sharing Location"}
+          </Text>
+        </View>
+      </TouchableOpacity>
+    </LinearGradient>
   );
 };
 

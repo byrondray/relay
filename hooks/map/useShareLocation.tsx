@@ -10,6 +10,7 @@ export const useSendLocation = () => {
   );
   const [permissionGranted, setPermissionGranted] = useState(false);
 
+  // Request location permissions
   useEffect(() => {
     const requestPermissions = async () => {
       const { status } = await Location.requestForegroundPermissionsAsync();
@@ -23,12 +24,22 @@ export const useSendLocation = () => {
     requestPermissions();
   }, []);
 
+  /**
+   * Start sharing location
+   */
   const shareLocation = async (
     carpoolId: string,
+    isLeaving: boolean,
+    isFinalDestination: boolean,
+    nextStop: { address: string; requestId: string },
+    timeToNextStop: string,
+    totalTime: string,
+    timeUntilNextStop: string,
     onLocationUpdate: (location: {
       latitude: number;
       longitude: number;
-    }) => void
+    }) => void,
+    isSharing: boolean
   ): Promise<void> => {
     if (!permissionGranted) {
       console.error("Location permissions are not granted.");
@@ -38,18 +49,32 @@ export const useSendLocation = () => {
     const subscription = await Location.watchPositionAsync(
       {
         accuracy: Location.Accuracy.High,
-        timeInterval: 1000,
-        distanceInterval: 1,
+        timeInterval: 1000, // 1 second
+        distanceInterval: 1, // 1 meter
       },
       (location) => {
         const { latitude, longitude } = location.coords;
-        onLocationUpdate({ latitude, longitude });
+
+        // Invoke the callback with updated location
+        if (onLocationUpdate) {
+          onLocationUpdate({ latitude, longitude });
+        }
+
+        // Send location to the server
         sendLocation({
           variables: {
             carpoolId,
             lat: latitude,
             lon: longitude,
+            isLeaving,
+            isFinalDestination,
+            nextStop,
+            timeToNextStop,
+            totalTime,
+            timeUntilNextStop,
           },
+        }).catch((err) => {
+          console.error("Error sending location:", err);
         });
       }
     );
@@ -57,6 +82,9 @@ export const useSendLocation = () => {
     setWatchId(subscription);
   };
 
+  /**
+   * Stop sharing location
+   */
   const stopSharingLocation = (): void => {
     if (watchId) {
       watchId.remove();
@@ -64,6 +92,7 @@ export const useSendLocation = () => {
     }
   };
 
+  // Cleanup on unmount
   useEffect(() => {
     return () => {
       if (watchId) {
@@ -72,5 +101,11 @@ export const useSendLocation = () => {
     };
   }, [watchId]);
 
-  return { shareLocation, stopSharingLocation, data, loading, error };
+  return {
+    shareLocation,
+    stopSharingLocation,
+    data,
+    loading,
+    error,
+  };
 };

@@ -5,6 +5,12 @@ import { useSendFakeLocation } from "@/hooks/map/useSendFakeLocation";
 
 interface ShareFakeLocationButtonProps {
   carpoolId: string;
+  nextStop: { address: string; requestId: string };
+  timeToNextStop: string;
+  totalTime: string;
+  timeUntilNextStop: string;
+  isLeaving: boolean;
+  isFinalDestination: boolean;
   polyline: { latitude: number; longitude: number }[];
   onLocationUpdate: (
     location: { latitude: number; longitude: number } | null
@@ -13,6 +19,12 @@ interface ShareFakeLocationButtonProps {
 
 const ShareFakeLocationButton: React.FC<ShareFakeLocationButtonProps> = ({
   carpoolId,
+  nextStop,
+  timeToNextStop,
+  totalTime,
+  timeUntilNextStop,
+  isLeaving,
+  isFinalDestination,
   polyline,
   onLocationUpdate,
 }) => {
@@ -28,10 +40,17 @@ const ShareFakeLocationButton: React.FC<ShareFakeLocationButtonProps> = ({
       startFakeLocationSharing(
         carpoolId,
         polyline,
+        nextStop,
+        timeToNextStop,
+        totalTime,
+        timeUntilNextStop,
+        isLeaving,
+        isFinalDestination,
         (location: { latitude: number; longitude: number }) => {
           onLocationUpdate(location);
-        }
-      );
+        },
+        1000
+      ); // Fixed interval
     }
     setIsSharing(!isSharing);
   };

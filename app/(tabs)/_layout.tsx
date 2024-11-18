@@ -2,7 +2,7 @@ import { Tabs } from "expo-router";
 import React from "react";
 import { TabBarIcon } from "@/components/navigation/TabBarIcon";
 import { useColorScheme } from "@/hooks/useColorScheme";
-import { StyleSheet, View, Image } from "react-native";
+import { StyleSheet, View, Image, Dimensions } from "react-native";
 import Relay from "@/assets/images/Relay.svg";
 
 function Header() {
@@ -71,14 +71,6 @@ export default function TabLayout() {
       />
 
       <Tabs.Screen
-        name="Carpool/postRequest"
-        options={{
-          title: "Message",
-          tabBarButton: () => null,
-        }}
-      />
-
-      <Tabs.Screen
         name="Community/community"
         options={{
           title: "Community",
@@ -102,10 +94,18 @@ export default function TabLayout() {
       />
 
       <Tabs.Screen
+        name="Carpool/postRequest"
+        options={{
+          title: "Post Request",
+          href: null,
+        }}
+      />
+
+      <Tabs.Screen
         name="Carpool/selectPassenger"
         options={{
           title: "Message",
-          tabBarButton: () => null,
+          href: null,
         }}
       />
 
@@ -113,7 +113,7 @@ export default function TabLayout() {
         name="Carpool/selectPassengerList"
         options={{
           title: "Message",
-          tabBarButton: () => null,
+          href: null,
         }}
       />
 
@@ -121,7 +121,7 @@ export default function TabLayout() {
         name="messages/[userId]"
         options={{
           title: "Message",
-          tabBarButton: () => null,
+          href: null,
         }}
       />
 
@@ -129,7 +129,7 @@ export default function TabLayout() {
         name="trips/inProgress/[trip]"
         options={{
           title: "Message",
-          tabBarButton: () => null,
+          href: null,
         }}
       />
 
@@ -137,7 +137,7 @@ export default function TabLayout() {
         name="messages/group/[groupId]"
         options={{
           title: "Message",
-          tabBarButton: () => null,
+          href: null,
         }}
       />
 
@@ -145,15 +145,14 @@ export default function TabLayout() {
         name="Carpool/NewRide"
         options={{
           title: "NewRide",
-          tabBarButton: () => null,
+          href: null,
         }}
       />
 
       <Tabs.Screen
         name="temp"
         options={{
-          title: "Message",
-          tabBarButton: () => null,
+          href: null,
         }}
       />
     </Tabs>
@@ -172,7 +171,7 @@ const styles = StyleSheet.create({
   },
   navContainer: {
     flexDirection: "row",
-    justifyContent: "space-around",
+    justifyContent: "center",
     backgroundColor: "#f8f8f8",
     borderTopWidth: 1,
     borderTopColor: "#ddd",

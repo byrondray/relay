@@ -17,7 +17,6 @@ const RequestCard = ({
     const randomNumber = Math.floor(100000 + Math.random() * 900000).toString();
     code = randomNumber.split("");
   }
-  console.log(request);
   return (
     <View style={[styles.card, isCurrentUser && styles.currentUserCard]}>
       {/* Header Section */}

@@ -477,20 +477,6 @@ const CreateRide = () => {
 
   const textColor = useThemeColor({}, "placeholder");
 
-  if (loading) {
-    return (
-      <View
-        style={{
-          flex: 1,
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <Spinner />
-      </View>
-    );
-  }
-
   return (
     <KeyboardAvoidingView
       style={{ flex: 1 }}

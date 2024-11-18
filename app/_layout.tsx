@@ -1,31 +1,34 @@
 import React, { useEffect, useState } from "react";
-import { ApolloProvider, useMutation, useQuery } from "@apollo/client";
+import {
+  StyleSheet,
+  View,
+  Text,
+  Animated,
+  Dimensions,
+  ActivityIndicator,
+  useColorScheme,
+} from "react-native";
+import { ApolloProvider, useSubscription } from "@apollo/client";
 import client from "../graphql/client";
 import { router, SplashScreen, Stack } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { ApplicationProvider, Spinner } from "@ui-kitten/components";
+import { ApplicationProvider } from "@ui-kitten/components";
 import * as eva from "@eva-design/eva";
-import * as Notifications from "expo-notifications";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { useFirebaseAuth } from "@/firebaseConfig";
-import { GET_USER, UPDATE_EXPO_PUSH_TOKEN } from "@/graphql/user/queries";
 import { auth } from "@/firebaseConfig";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { myTheme } from "./theme";
 import { useFonts } from "expo-font";
 import { LogBox } from "react-native";
 import {
-  StyleSheet,
-  useColorScheme,
-  View,
-  ActivityIndicator,
-} from "react-native";
-import {
   DarkTheme,
   DefaultTheme,
   ThemeProvider,
 } from "@react-navigation/native";
-import * as Location from "expo-location";
+import { FOREGROUND_NOTIFICATION_SUBSCRIPTION } from "@/graphql/map/queries";
+
+const { width } = Dimensions.get("window");
 
 export default function RootLayout() {
   const [fontsLoaded] = useFonts({
@@ -33,7 +36,9 @@ export default function RootLayout() {
   });
   const colorScheme = useColorScheme();
   const isLoading = useFirebaseAuth();
-  const [expoPushToken, setExpoPushToken] = useState<string | null>(null);
+  const [notification, setNotification] = useState<string | null>(null);
+  const [showNotification, setShowNotification] = useState(false);
+  const slideAnim = useState(new Animated.Value(-100))[0];
   const user = auth.currentUser;
   const userId = user?.uid;
 
@@ -47,108 +52,45 @@ export default function RootLayout() {
     }
   }, [fontsLoaded]);
 
-  const [updateExpoPushToken, { loading: updateTokenLoading }] = useMutation(
-    UPDATE_EXPO_PUSH_TOKEN,
-    { client }
+  const { data: notificationData } = useSubscription(
+    FOREGROUND_NOTIFICATION_SUBSCRIPTION,
+    {
+      variables: { recipientId: userId },
+      skip: !userId,
+      onError: (err) => console.error("Subscription Error:", err.message),
+      client: client,
+    }
   );
 
-  const {
-    data: userData,
-    loading: userLoading,
-    error: userError,
-  } = useQuery(GET_USER, {
-    variables: { id: userId },
-    client,
-    skip: !userId,
-  });
-
   useEffect(() => {
-    if (!userLoading && !userData?.getUser) {
-      auth.signOut().then(() => {
-        AsyncStorage.removeItem("firebaseToken");
-        router.replace("/Login/login");
-      });
+    if (notificationData?.foregroundNotification) {
+      const { message } = notificationData.foregroundNotification;
+      showAnimatedNotification(message);
     }
-  }, [userLoading, userData]);
+  }, [notificationData]);
 
-  Notifications.setNotificationHandler({
-    handleNotification: async (notification) => {
-      return {
-        shouldShowAlert: true,
-        shouldPlaySound: true,
-        shouldSetBadge: true,
-      };
-    },
-  });
+  const showAnimatedNotification = (message: string) => {
+    setNotification(message);
+    setShowNotification(true);
 
-  const requestPermissions = async () => {
-    const { status } = await Location.requestForegroundPermissionsAsync();
-    if (status !== "granted") {
-      console.error("Permission to access location was denied");
-      return;
-    }
+    Animated.timing(slideAnim, {
+      toValue: 0, // Slide in
+      duration: 500,
+      useNativeDriver: true,
+    }).start(() => {
+      setTimeout(() => {
+        Animated.timing(slideAnim, {
+          toValue: -100, // Slide out
+          duration: 500,
+          useNativeDriver: true,
+        }).start(() => {
+          setShowNotification(false);
+        });
+      }, 5000); // Show for 5 seconds
+    });
   };
 
-  useEffect(() => {
-    requestPermissions();
-  }, []);
-
-  useEffect(() => {
-    const requestUserPermission = async () => {
-      try {
-        const { status } = await Notifications.getPermissionsAsync();
-        if (status !== "granted") {
-          const { status: finalStatus } =
-            await Notifications.requestPermissionsAsync();
-          if (finalStatus !== "granted") {
-            return;
-          }
-        }
-
-        const token = (
-          await Notifications.getExpoPushTokenAsync({
-            projectId: "2999c675-2322-4719-814c-9b1f58cb15af",
-          })
-        ).data;
-
-        setExpoPushToken(token);
-
-        if (userId && token) {
-          await updateExpoPushToken({
-            variables: { userId, expoPushToken: token },
-          });
-        }
-      } catch (error) {
-        console.log("Error getting Expo Push Token:", error);
-      }
-    };
-
-    requestUserPermission();
-
-    const handleForegroundNotification =
-      Notifications.addNotificationReceivedListener((notification) => {
-        console.log("Received foreground notification:", notification);
-      });
-
-    const handleBackgroundNotification =
-      Notifications.addNotificationResponseReceivedListener((response) => {
-        console.log(
-          "Notification caused app to open from background:",
-          response.notification.request.content
-        );
-      });
-
-    return () => {
-      Notifications.removeNotificationSubscription(
-        handleForegroundNotification
-      );
-      Notifications.removeNotificationSubscription(
-        handleBackgroundNotification
-      );
-    };
-  }, [userId]);
-
-  if (isLoading || userLoading || updateTokenLoading || !fontsLoaded) {
+  if (isLoading || !fontsLoaded) {
     return (
       <View style={styles.loadingContainer}>
         <ActivityIndicator />
@@ -178,6 +120,16 @@ export default function RootLayout() {
                     : styles.lightContainer
                 }
               >
+                {showNotification && (
+                  <Animated.View
+                    style={[
+                      styles.notificationContainer,
+                      { transform: [{ translateY: slideAnim }] },
+                    ]}
+                  >
+                    <Text style={styles.notificationText}>{notification}</Text>
+                  </Animated.View>
+                )}
                 <Stack>
                   <Stack.Screen
                     name="(tabs)"
@@ -227,5 +179,26 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+  },
+  notificationContainer: {
+    position: "absolute",
+    top: 0,
+    width: width - 40,
+    marginHorizontal: 20,
+    padding: 15,
+    backgroundColor: "#333",
+    borderRadius: 10,
+    zIndex: 10,
+    elevation: 5,
+    shadowColor: "#000",
+    shadowOpacity: 0.3,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 4,
+  },
+  notificationText: {
+    color: "#fff",
+    fontSize: 16,
+    textAlign: "center",
+    fontFamily: "Comfortaa",
   },
 });

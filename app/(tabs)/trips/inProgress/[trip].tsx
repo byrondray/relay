@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import {
   View,
   Text,
@@ -13,8 +13,12 @@ import { GET_CARPOOL_WITH_REQUESTS } from "@/graphql/carpool/queries";
 import { Spinner } from "@ui-kitten/components";
 import { auth } from "@/firebaseConfig";
 import { useLocalSearchParams } from "expo-router";
-import { CarpoolWithRequests, User, Vehicle } from "@/graphql/generated";
-import { LinearGradient } from "react-native-svg";
+import {
+  CarpoolWithRequests,
+  RequestWithParentAndChild,
+  User,
+  Vehicle,
+} from "@/graphql/generated";
 import ShareLocationButton from "@/components/rideInProgress/shareLocationButton";
 import ShareFakeLocationButton from "@/components/rideInProgress/shareFakeLocationButton";
 import { useLocationSubscription } from "@/hooks/map/useGetLocation";
@@ -28,20 +32,106 @@ import TimeCard from "@/components/rideInProgress/driveTime";
 import LocationCard from "@/components/rideInProgress/carpoolAddress";
 import RequestCard from "@/components/rideInProgress/carpoolRequest";
 import ReviewInfo from "@/components/rideInProgress/reviewInfo";
-import { useThemeColor } from "@/hooks/useThemeColor";
+import { LatLng } from "react-native-maps";
+import { haversineDistance } from "@/utils/distance";
+import { useCarpoolProximity } from "@/hooks/map/detectIfDriverIsClose";
+import { useRealtimeDirections } from "@/hooks/map/useRealtimeDirections";
 
 const CarpoolScreen: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [driverData, setDriverData] = useState<User | null>(null);
   const [vehicleData, setVehicleData] = useState<Vehicle | null>(null);
-  const [carpoolData, setCarpoolData] = useState<CarpoolWithRequests | null>();
+  const [carpoolData, setCarpoolData] = useState<CarpoolWithRequests | null>(
+    null
+  );
+
+  const processedRequestsRef = useRef<string | null>(null);
+
   const [driverLocation, setDriverLocation] = useState<{
     latitude: number;
     longitude: number;
   } | null>(null);
-  const currentUser = auth.currentUser;
 
+  const [sortedRequests, setSortedRequests] = useState<RequestWithTime[]>([]);
+
+  type RequestWithTime = RequestWithParentAndChild & {
+    timeToNextStop?: string | null;
+  };
+
+  const [nextStop, setNextStop] = useState<RequestWithTime | null>(null);
+  const [currentIndex, setCurrentIndex] = useState<number>(0);
+  const [isTripCompleted, setIsTripCompleted] = useState<boolean>(false);
+  const [hasStartedSharingLocation, setHasStartedSharingLocation] =
+    useState<boolean>(false);
+  const [isLeaving, setIsLeaving] = useState<boolean>(false);
+  const currentUserRequest = sortedRequests.find(
+    (request) => request.parent.id === auth.currentUser?.uid
+  );
+
+  const handleStopReached = (stop: RequestWithParentAndChild) => {
+    console.log("Stop reached:", stop);
+
+    const nextIndex = currentIndex + 1;
+
+    if (nextIndex < sortedRequests.length) {
+      setCurrentIndex(nextIndex);
+      setNextStop(sortedRequests[nextIndex]);
+    } else {
+      console.log("No more stops left, reaching final destination.");
+      setNextStop(null);
+    }
+  };
+
+  const handleTripCompleted = () => {
+    console.log("Trip completed!");
+    setNextStop(null);
+    setIsTripCompleted(true);
+  };
+
+  useCarpoolProximity({
+    requests: sortedRequests,
+    endingLat: carpoolData?.endLat ?? 0,
+    endingLon: carpoolData?.endLon ?? 0,
+    onStopReached: handleStopReached,
+    onTripCompleted: handleTripCompleted,
+  });
+
+  useEffect(() => {
+    if (sortedRequests.length > 0) {
+      setNextStop(sortedRequests[0]);
+    }
+  }, [sortedRequests]);
+
+  const currentUser = auth.currentUser;
   const tripId = useLocalSearchParams().trip;
+
+  const sortCarpoolRequestsByDistance = (
+    carpoolRequests: RequestWithParentAndChild[],
+    startingLatLng: LatLng
+  ): RequestWithParentAndChild[] => {
+    console.log("Sorting requests with startingLatLng:", startingLatLng);
+
+    const uniqueRequests = Array.from(
+      new Map(carpoolRequests.map((request) => [request.id, request])).values()
+    );
+
+    return uniqueRequests.sort((a, b) => {
+      console.log("Request A:", a.startLat, a.startLon);
+      console.log("Request B:", b.startLat, b.startLon);
+
+      const distanceA = haversineDistance(
+        { lat: startingLatLng.latitude, lon: startingLatLng.longitude },
+        { lat: a.startLat, lon: a.startLon }
+      );
+      const distanceB = haversineDistance(
+        { lat: startingLatLng.latitude, lon: startingLatLng.longitude },
+        { lat: b.startLat, lon: b.startLon }
+      );
+
+      console.log(`Distance A: ${distanceA}, Distance B: ${distanceB}`);
+      return distanceA - distanceB;
+    });
+  };
 
   const {
     data: carpoolsData,
@@ -51,7 +141,29 @@ const CarpoolScreen: React.FC = () => {
     skip: !tripId,
     variables: { carpoolId: tripId },
     onCompleted: (data) => {
-      setCarpoolData(data.getCarpoolWithRequests);
+      if (data?.getCarpoolWithRequests) {
+        const carpool = data.getCarpoolWithRequests;
+        console.log("Carpool data:", carpool);
+        setCarpoolData(carpool);
+
+        if (carpool.requests) {
+          const sorted = sortCarpoolRequestsByDistance(carpool.requests, {
+            latitude: carpool?.startLat || carpool.startLat,
+            longitude: carpool?.startLon || carpool.startLon,
+          });
+
+          // @ts-ignore
+          const sortedRequestss: RequestWithTime[] = sorted.map((req) => ({
+            ...req,
+            timeToNextStop: null,
+          }));
+
+          if (sortedRequestss.length > 0) {
+            setSortedRequests(sortedRequestss);
+            setNextStop(sortedRequests[0]);
+          }
+        }
+      }
     },
   });
 
@@ -111,17 +223,79 @@ const CarpoolScreen: React.FC = () => {
   useEffect(() => {
     if (locationData && locationData.locationReceived) {
       const { lat, lon } = locationData.locationReceived;
+
       setDriverLocation({ latitude: lat, longitude: lon });
+
+      if (!hasStartedSharingLocation) {
+        setHasStartedSharingLocation(true);
+        setIsLeaving(true);
+      } else {
+        setIsLeaving(false);
+      }
     }
-  }, [locationData]);
+  }, [locationData, hasStartedSharingLocation]);
+
+  const {
+    polyline,
+    totalPredictedTime,
+    timeToNextStop,
+    directionsLog,
+    legs,
+    getRealtimeDirections,
+  } = useRealtimeDirections();
+
+  const memoizedGetRealtimeDirections = useCallback(getRealtimeDirections, [
+    getRealtimeDirections,
+  ]);
 
   useEffect(() => {
-    if (locationData) {
+    if (
+      carpoolData &&
+      carpoolData.startLat &&
+      carpoolData.startLon &&
+      carpoolData.endLat &&
+      carpoolData.endLon &&
+      sortedRequests.length > 0 &&
+      processedRequestsRef.current !== JSON.stringify(sortedRequests)
+    ) {
+      const waypoints = sortedRequests.map((req) => ({
+        latitude: req.startLat,
+        longitude: req.startLon,
+      }));
+
+      memoizedGetRealtimeDirections(
+        {
+          lat: carpoolData.startLat,
+          lon: carpoolData.startLon,
+        },
+        {
+          lat: carpoolData.endLat,
+          lon: carpoolData.endLon,
+        },
+        waypoints,
+        sortedRequests,
+        new Date()
+      )
+        .then((result) => {
+          if (result && result.legs.length > 0) {
+            const updatedRequests = sortedRequests.map((request, index) => ({
+              ...request,
+              timeToNextStop: result.legs[index]?.duration || "",
+            }));
+
+            setSortedRequests(updatedRequests);
+            setNextStop(updatedRequests[0]);
+
+            processedRequestsRef.current = JSON.stringify(sortedRequests);
+          }
+        })
+        .catch((error) => {
+          console.error("Error fetching directions:", error);
+        });
+    } else {
+      console.log("Conditions not met for fetching directions");
     }
-    if (locationError) {
-      console.error("Location Subscription Error:", locationError);
-    }
-  }, [locationData, locationError]);
+  }, [carpoolData, sortedRequests, memoizedGetRealtimeDirections]);
 
   if (error) {
     return (
@@ -139,20 +313,32 @@ const CarpoolScreen: React.FC = () => {
     );
   }
 
-  const uniqueRequests = carpoolData?.requests?.filter(
-    (request: any, index: number, self: any[]) =>
-      self.findIndex((r) => r.id === request.id) === index
-  );
-
   const date = formatDate({ date: new Date() });
+
+  const uniqueRequests = Array.from(
+    new Map(
+      (carpoolData?.requests ?? []).map((request) => [request.id, request])
+    ).values()
+  );
 
   return (
     <ScrollView>
-      {carpoolData?.driverId === currentUser?.uid ? (
-        <DriverMapView driverLocation={driverLocation} />
-      ) : (
-        <RequestMapView driverLocation={driverLocation} />
-      )}
+      {carpoolData &&
+        (carpoolData?.driverId === currentUser?.uid ? (
+          <DriverMapView
+            driverLocation={driverLocation}
+            requests={sortedRequests}
+            polyline={polyline}
+            carpoolData={carpoolData}
+          />
+        ) : (
+          <RequestMapView
+            driverLocation={driverLocation}
+            currentUserRequest={currentUserRequest || null}
+            polyline={polyline}
+            carpoolData={carpoolData}
+          />
+        ))}
       <View
         style={{
           borderTopLeftRadius: 20,
@@ -216,18 +402,37 @@ const CarpoolScreen: React.FC = () => {
           {driverData?.id === currentUser?.uid && (
             // <ShareLocationButton
             //   carpoolId={carpoolData?.id ?? ""}
-            //   currentUser={currentUser}
-            //   driverData={driverData}
             //   onLocationUpdate={(location) => {
             //     setDriverLocation(location);
             //   }}
+            //   nextStop={{
+            //     address: nextStop?.startAddress ?? "",
+            //     requestId: nextStop?.id ?? "",
+            //   }}
+            //   timeToNextStop={nextStop?.timeToNextStop ?? ""}
+            //   totalTime={totalPredictedTime}
+            //   timeUntilNextStop={nextStop?.timeToNextStop ?? ""}
+            //   isLeaving={isLeaving}
+            //   isFinalDestination={isTripCompleted}
             // />
+            <></>
+          )}
+          {driverData && driverData.id === currentUser?.uid && (
             <ShareFakeLocationButton
               carpoolId={carpoolData?.id ?? ""}
-              polyline={fakeDirections}
+              polyline={polyline}
+              nextStop={{
+                address: nextStop?.startAddress ?? "",
+                requestId: nextStop?.id ?? "",
+              }}
+              timeToNextStop={nextStop?.timeToNextStop ?? ""}
+              totalTime={totalPredictedTime}
+              timeUntilNextStop={nextStop?.timeToNextStop ?? ""}
+              isLeaving={isLeaving}
               onLocationUpdate={(location) => {
                 setDriverLocation(location);
               }}
+              isFinalDestination={isTripCompleted}
             />
           )}
         </View>
@@ -255,7 +460,7 @@ const CarpoolScreen: React.FC = () => {
               />
             </View>
           );
-        })}{" "}
+        })}
         <View style={{ paddingHorizontal: 15, marginBottom: 15 }}>
           <ReviewInfo />
         </View>

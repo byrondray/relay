@@ -202,9 +202,15 @@ export const GET_CARPOOL_WITH_REQUESTS = gql`
       endAddress
       departureDate
       departureTime
+      startLat
+      startLon
+      endLat
+      endLon
       requests {
         id
         startAddress
+        startLat
+        startLon
         parent {
           id
           firstName

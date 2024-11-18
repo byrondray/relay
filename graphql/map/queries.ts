@@ -27,12 +27,36 @@ export const FILTER_SCHOOLS_BY_NAME = gql`
 `;
 
 export const SEND_LOCATION = gql`
-  mutation SendLocation($carpoolId: String!, $lat: Float!, $lon: Float!) {
-    sendLocation(carpoolId: $carpoolId, lat: $lat, lon: $lon) {
+  mutation SendLocation(
+    $carpoolId: String!
+    $lat: Float!
+    $lon: Float!
+    $nextStop: NextStopInput!
+    $timeToNextStop: String!
+    $totalTime: String!
+    $timeUntilNextStop: String!
+    $isLeaving: Boolean!
+    $isFinalDestination: Boolean!
+  ) {
+    sendLocation(
+      carpoolId: $carpoolId
+      lat: $lat
+      lon: $lon
+      nextStop: $nextStop
+      timeToNextStop: $timeToNextStop
+      totalTime: $totalTime
+      timeUntilNextStop: $timeUntilNextStop
+      isLeaving: $isLeaving
+      isFinalDestination: $isFinalDestination
+    ) {
+      senderId
       lat
       lon
-      senderId
       timestamp
+      nextStop {
+        address
+        requestId
+      }
     }
   }
 `;
@@ -44,6 +68,20 @@ export const LOCATION_RECEIVED_SUBSCRIPTION = gql`
       lat
       lon
       timestamp
+      nextStop {
+        address
+        requestId
+      }
+    }
+  }
+`;
+
+export const FOREGROUND_NOTIFICATION_SUBSCRIPTION = gql`
+  subscription ForegroundNotification($recipientId: String!) {
+    foregroundNotification(recipientId: $recipientId) {
+      message
+      timestamp
+      senderId
     }
   }
 `;
