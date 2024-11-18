@@ -2,8 +2,11 @@ import React from "react";
 import { View, Text, TouchableOpacity, StyleSheet, Image } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import FriendCard from "@/components/FriendCard";
+import { useTheme } from "@/contexts/ThemeContext";
 
 const NewRideScreen: React.FC = () => {
+  const { currentColors } = useTheme(); // Access the current theme colors
+
   const hasFilledDriverInfo = true;
 
   // Sample data for friends
@@ -33,14 +36,14 @@ const NewRideScreen: React.FC = () => {
   ];
 
   return (
-    <View style={[styles.container]}>
+    <View style={[styles.container, { backgroundColor: currentColors.background }]}>
       <View style={styles.content}>
-        <Text style={styles.title}>New Ride</Text>
+        <Text style={[styles.title, { color: currentColors.text }]}>New Ride</Text>
 
         <TouchableOpacity
           style={[
             styles.button,
-            hasFilledDriverInfo ? styles.requestButton : styles.disabledButton,
+            hasFilledDriverInfo ? styles.requestButton : styles.disabledButton, { backgroundColor: currentColors.placeholder }
           ]}
           disabled={!hasFilledDriverInfo}
         >
@@ -49,8 +52,8 @@ const NewRideScreen: React.FC = () => {
               <Text
                 style={
                   hasFilledDriverInfo
-                    ? styles.requestButtonText
-                    : styles.disabledButtonText
+                    ? [styles.requestButtonText, { color: currentColors.text }]
+                    : [styles.disabledButtonText, { color: currentColors.text }]
                 }
               >
                 I'm a driver
@@ -59,6 +62,7 @@ const NewRideScreen: React.FC = () => {
                 style={[
                   styles.subText,
                   hasFilledDriverInfo && styles.requestSubText,
+                  { color: currentColors.text },
                 ]}
               >
                 I'm available to carpool kids.
@@ -76,9 +80,8 @@ const NewRideScreen: React.FC = () => {
 
         {!hasFilledDriverInfo && (
           <>
-            <Text style={styles.signupText}>
-              Interested in becoming a carpool driver to help drive kids in your
-              community?
+            <Text style={[styles.signupText, { color: currentColors.text }]}>
+              Interested in becoming a carpool driver to help drive kids in your community?
             </Text>
 
             <TouchableOpacity style={styles.signUpButtonContainer}>
@@ -96,13 +99,13 @@ const NewRideScreen: React.FC = () => {
           </>
         )}
 
-        <TouchableOpacity style={styles.requestButton}>
+        <TouchableOpacity style={[styles.requestButton, { backgroundColor: currentColors.placeholder }]}>
           <View style={styles.buttonContent}>
             <View style={styles.textContainer}>
-              <Text style={styles.requestButtonText}>
+              <Text style={[styles.requestButtonText, { color: currentColors.text }]}>
                 Need a ride for my kid
               </Text>
-              <Text style={styles.requestSubText}>
+              <Text style={[styles.requestSubText, { color: currentColors.text }]}>
                 Notify me when a ride matches
               </Text>
             </View>
@@ -113,7 +116,9 @@ const NewRideScreen: React.FC = () => {
           </View>
         </TouchableOpacity>
 
-        <Text style={styles.activeRequestText}>Active Request</Text>
+        <Text style={[styles.activeRequestText, { color: currentColors.text }]}>
+          Active Request
+        </Text>
 
         {/* Sample FriendCard components */}
         {sampleFriends.map((friend) => (
@@ -135,7 +140,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: "#fff",
     justifyContent: "space-between",
   },
   content: {
@@ -200,11 +204,9 @@ const styles = StyleSheet.create({
   },
   requestButtonText: {
     fontSize: 18,
-    color: "#333",
   },
   requestSubText: {
     fontSize: 14,
-    color: "#333",
     marginTop: 5,
   },
   activeRequestText: {

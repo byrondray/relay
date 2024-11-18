@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from "react";
 import {
+  ThemeProvider as NavigationThemeProvider,
+} from "@react-navigation/native";
+import {
   StyleSheet,
   View,
   Text,
@@ -24,11 +27,11 @@ import { LogBox } from "react-native";
 import {
   DarkTheme,
   DefaultTheme,
-  ThemeProvider,
 } from "@react-navigation/native";
 import { FOREGROUND_NOTIFICATION_SUBSCRIPTION } from "@/graphql/map/queries";
 
 const { width } = Dimensions.get("window");
+import { ThemeProvider, useTheme } from "@/contexts/ThemeContext"; 
 
 export default function RootLayout() {
   const [fontsLoaded] = useFonts({
@@ -110,9 +113,7 @@ export default function RootLayout() {
                 : { ...eva.light, ...myTheme }
             }
           >
-            <ThemeProvider
-              value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
-            >
+            <ThemeProvider>
               <View
                 style={
                   colorScheme === "dark"
@@ -120,43 +121,37 @@ export default function RootLayout() {
                     : styles.lightContainer
                 }
               >
-                {showNotification && (
-                  <Animated.View
-                    style={[
-                      styles.notificationContainer,
-                      { transform: [{ translateY: slideAnim }] },
-                    ]}
-                  >
-                    <Text style={styles.notificationText}>{notification}</Text>
-                  </Animated.View>
-                )}
-                <Stack>
-                  <Stack.Screen
-                    name="(tabs)"
-                    options={{ headerShown: false }}
-                  />
-                  <Stack.Screen
-                    name="Login/login"
-                    options={{ headerShown: false }}
-                  />
-                  <Stack.Screen
-                    name="Register/register"
-                    options={{ headerShown: false }}
-                  />
-                  <Stack.Screen
-                    name="OnboardForms/parent"
-                    options={{ headerShown: false }}
-                  />
-                  <Stack.Screen
-                    name="OnboardForms/child"
-                    options={{ headerShown: false }}
-                  />
-                  <Stack.Screen
-                    name="OnboardForms/vehicle"
-                    options={{ headerShown: false }}
-                  />
-                  <Stack.Screen name="+not-found" />
-                </Stack>
+                <NavigationThemeProvider
+                  value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
+                >
+                  <Stack>
+                    <Stack.Screen
+                      name="(tabs)"
+                      options={{ headerShown: false }}
+                    />
+                    <Stack.Screen
+                      name="Login/login"
+                      options={{ headerShown: false }}
+                    />
+                    <Stack.Screen
+                      name="Register/register"
+                      options={{ headerShown: false }}
+                    />
+                    <Stack.Screen
+                      name="OnboardForms/parent"
+                      options={{ headerShown: false }}
+                    />
+                    <Stack.Screen
+                      name="OnboardForms/child"
+                      options={{ headerShown: false }}
+                    />
+                    <Stack.Screen
+                      name="OnboardForms/vehicle"
+                      options={{ headerShown: false }}
+                    />
+                    <Stack.Screen name="+not-found" />
+                  </Stack>
+                </NavigationThemeProvider>
               </View>
             </ThemeProvider>
           </ApplicationProvider>

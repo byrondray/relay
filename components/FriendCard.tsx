@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { View, Text, TouchableOpacity, StyleSheet, Image } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { useTheme } from "@/contexts/ThemeContext";
 
 type FriendCardProps = {
   id: string;
@@ -18,13 +19,16 @@ const FriendCard: React.FC<FriendCardProps> = ({
   showCheckmark = true,
 }) => {
   const [selected, setSelected] = useState(false);
+  const { currentColors } = useTheme();
 
   const toggleSelection = () => {
     setSelected((prevSelected) => !prevSelected);
   };
 
   return (
-    <View style={styles.friendItem}>
+    <View
+      style={[styles.friendItem, { backgroundColor: currentColors.background }]}
+    >
       <View style={styles.profileImage}>
         {imageUrl ? (
           <Image source={{ uri: imageUrl }} style={styles.image} />
@@ -33,8 +37,12 @@ const FriendCard: React.FC<FriendCardProps> = ({
         )}
       </View>
       <View style={styles.friendInfo}>
-        <Text style={styles.friendName}>{name}</Text>
-        <Text style={styles.friendSource}>{source}</Text>
+        <Text style={[styles.friendName, { color: currentColors.text }]}>
+          {name}
+        </Text>
+        <Text style={[styles.friendSource, { color: currentColors.text }]}>
+          {source}
+        </Text>
       </View>
       {showCheckmark && (
         <TouchableOpacity onPress={toggleSelection} style={styles.checkbox}>
@@ -42,6 +50,7 @@ const FriendCard: React.FC<FriendCardProps> = ({
             style={[
               styles.checkboxSquare,
               selected && styles.checkboxSquareSelected,
+              { borderColor: currentColors.text },
             ]}
           />
         </TouchableOpacity>
@@ -56,7 +65,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingVertical: 12,
     paddingHorizontal: 16,
-    backgroundColor: "#ffffff",
     borderBottomWidth: 1,
     borderBottomColor: "#eee",
   },
@@ -87,7 +95,6 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
   friendSource: {
-    color: "gray",
     fontSize: 14,
   },
   checkbox: {
@@ -98,12 +105,10 @@ const styles = StyleSheet.create({
     height: 24,
     borderRadius: 6, // Rounded square
     borderWidth: 2,
-    borderColor: "#ccc",
     backgroundColor: "white",
   },
   checkboxSquareSelected: {
     backgroundColor: "#FF6C00",
-    borderColor: "#FF6C00",
   },
 });
 
