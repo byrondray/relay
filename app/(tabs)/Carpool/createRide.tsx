@@ -32,6 +32,7 @@ import CarpoolPickerBar from "@/components/carpool/carpoolPickerBar";
 import VehicleDetailsPicker from "@/components/carpool/vehicleDetails";
 import PaymentInfo from "@/components/carpool/paymentInfo";
 import { useRideState } from "@/hooks/carpoolCreateState";
+import { useTheme } from "@/contexts/ThemeContext";
 
 const CreateRide = () => {
   const {
@@ -80,6 +81,7 @@ const CreateRide = () => {
   const [requests, setRequests] = useState<Request[]>([]);
   const user = auth.currentUser;
   const userId = user?.uid;
+  const { currentColors } = useTheme();
 
   const seatsLeft =
     vehicles[selectedVehicleIndex.row]?.seats - selectedChildren.length || 0;
@@ -273,21 +275,22 @@ const CreateRide = () => {
       behavior={Platform.OS === "ios" ? "padding" : undefined}
     >
       <ScrollView
-        contentContainerStyle={{
+        contentContainerStyle={[{
           padding: 15,
           backgroundColor: "#ffffff",
           flexGrow: 1,
-        }}
+        }, { backgroundColor: currentColors.background }]}
       >
         <View>
-          <Text style={{ fontSize: 32, fontWeight: "bold", marginBottom: 20 }}>
-            Create a ride
-          </Text>
+        <Text style={[{ fontSize: 32, fontWeight: "bold", marginBottom: 20 }, { color: currentColors.text }]}>
+          Create a ride
+        </Text>
+
         </View>
         <Text style={{ color: "#FF6A00", fontSize: 22, marginBottom: 15 }}>
           Itinerary
         </Text>
-        <Text style={{ color: textColor, marginBottom: 5 }}>From</Text>
+        <Text style={[{ color: textColor, marginBottom: 5 }, { color: currentColors.text }]}>From</Text>
         <ThemedAddressCompletionInput
           value={startingAddress}
           onChangeText={(text) => setStartingAddress(text)}
@@ -299,7 +302,7 @@ const CreateRide = () => {
           }}
           placeholder="Enter Origin"
         />
-        <Text style={{ color: textColor, marginBottom: 5, marginTop: 15 }}>
+        <Text style={[{ color: textColor, marginBottom: 5, marginTop: 15 }, { color: currentColors.text }]}>
           To
         </Text>
         <ThemedAddressCompletionInput

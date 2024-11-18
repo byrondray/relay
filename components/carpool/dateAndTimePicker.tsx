@@ -2,6 +2,7 @@ import React from "react";
 import { View, Text, Image, TouchableOpacity } from "react-native";
 import { Datepicker } from "@ui-kitten/components";
 import { TimePickerModal } from "react-native-paper-dates";
+import { useTheme } from "@/contexts/ThemeContext";
 
 const RideDateTimePicker = ({
   selectedDate,
@@ -17,11 +18,11 @@ const RideDateTimePicker = ({
   textColor: string;
 }) => {
   const [showTimePicker, setShowTimePicker] = React.useState(false);
-
+  const { currentColors } = useTheme();
   return (
     <View>
       {/* Date Section */}
-      <Text style={{ marginBottom: 5, marginTop: 15, color: "#8F9BB3" }}>
+      <Text style={[{ marginBottom: 5, marginTop: 15, color: "#8F9BB3" }, { color: currentColors.text }]}>
         Date & Time of Ride
       </Text>
       <View
