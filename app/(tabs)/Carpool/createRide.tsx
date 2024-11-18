@@ -48,6 +48,7 @@ import GroupPicker from "@/components/carpool/groupSelector";
 import WaypointSelector from "@/components/carpool/waypointSelector";
 
 const { height: deviceHeight } = Dimensions.get("window");
+import { useTheme } from "@/contexts/ThemeContext";
 
 const CreateRide = () => {
   const {
@@ -113,6 +114,7 @@ const CreateRide = () => {
   const [requests, setRequests] = useState<RequestWithChildrenAndParent[]>([]);
   const user = auth.currentUser;
   const userId = user?.uid;
+  const { currentColors } = useTheme();
 
   const totalSeatsTakenByWaypoints = selectedWaypoints.reduce(
     (acc, waypoint) => {
@@ -476,13 +478,71 @@ const CreateRide = () => {
       behavior={Platform.OS === "ios" ? "padding" : undefined}
     >
       <ScrollView
-        contentContainerStyle={{
+        contentContainerStyle={[{
+          padding: 15,
           backgroundColor: "#ffffff",
           flexGrow: 1,
-        }}
+        }, { backgroundColor: currentColors.background }]}
       >
         {/* <GestureMap
           mapHeight={mapHeight}
+        <View>
+        <Text style={[{ fontSize: 32, fontWeight: "bold", marginBottom: 20 }, { color: currentColors.text }]}>
+          Create a ride
+        </Text>
+
+        </View>
+        <Text style={{ color: "#FF6A00", fontSize: 22, marginBottom: 15 }}>
+          Itinerary
+        </Text>
+        <Text style={[{ color: textColor, marginBottom: 5 }, { color: currentColors.text }]}>From</Text>
+        <ThemedAddressCompletionInput
+          value={startingAddress}
+          onChangeText={(text) => setStartingAddress(text)}
+          onSuggestionSelect={(address) => {
+            setStartingAddress(address);
+          }}
+          onLatLonSelect={(lat, lon) => {
+            setStartingLatLng({ lat, lon });
+          }}
+          placeholder="Enter Origin"
+        />
+        <Text style={[{ color: textColor, marginBottom: 5, marginTop: 15 }, { color: currentColors.text }]}>
+          To
+        </Text>
+        <ThemedAddressCompletionInput
+          value={endingAddress}
+          onChangeText={(text) => {
+            setEndingAddress(text);
+          }}
+          onSuggestionSelect={setEndingAddress}
+          onLatLonSelect={(lat, lon) => {
+            setEndingLatLng({ lat, lon });
+          }}
+          placeholder="Enter Destination"
+        />
+        <RideDateTimePicker
+          selectedDate={selectedDate}
+          handleDateSelect={handleDateSelect}
+          selectedTime={time}
+          handleTimeSelect={handleTimeConfirm}
+          textColor={textColor}
+        />
+
+        <Text style={{ color: textColor, marginBottom: 10, marginTop: 15 }}>
+          Seats Occupied
+        </Text>
+        <ChildSelector onSelectedChildrenChange={setSelectedChildren} />
+        <MapAiInfo />
+        <RideMap
+          mapRef={mapRef}
+          requests={requests}
+          startingLatLng={startingLatLng}
+          endingLatLng={endingLatLng}
+          startingAddress={startingAddress}
+          endingAddress={endingAddress}
+          previousRoutes={previousRoutes}
+          coordinates={coordinates}
           activeRoute={activeRoute}
           coordinates={coordinates}
           endingAddress={endingAddress}
