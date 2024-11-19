@@ -44,7 +44,7 @@ const VehicleDetailsPicker = ({
           style={{
             backgroundColor: currentColors.placeholder,
             height: 43,
-            borderColor: "#E4E9F2",
+            borderColor: currentColors.placeholder,
             borderWidth: 1,
             borderRadius: 15,
             paddingLeft: 15,
@@ -88,7 +88,7 @@ const VehicleDetailsPicker = ({
           style={{
             backgroundColor: currentColors.placeholder,
             height: 43,
-            borderColor: "#E4E9F2",
+            borderColor: currentColors.placeholder,
             borderWidth: 1,
             borderRadius: 15,
             paddingLeft: 15,

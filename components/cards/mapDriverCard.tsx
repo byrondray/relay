@@ -281,7 +281,7 @@ const MapDriverCard = ({
             }}
             onPress={makeCall}
           >
-            <PhoneIcon width={24} height={24} />
+            <PhoneIcon width={24} height={24} style={{ padding: 10 }} />
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -294,7 +294,7 @@ const MapDriverCard = ({
               marginStart: 10,
             }}
           >
-            <MessageCircle width={24} height={24} />
+            <MessageCircle width={24} height={24} style={{ padding: 10 }}/>
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -307,7 +307,7 @@ const MapDriverCard = ({
               marginStart: 10,
             }}
           >
-            <Pin width={24} height={24} />
+            <Pin width={24} height={24} style={{ padding: 10 }}/>
           </TouchableOpacity>
         </View>
       </View>

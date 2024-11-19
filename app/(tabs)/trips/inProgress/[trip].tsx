@@ -36,6 +36,7 @@ import { LatLng } from "react-native-maps";
 import { haversineDistance } from "@/utils/distance";
 import { useCarpoolProximity } from "@/hooks/map/detectIfDriverIsClose";
 import { useRealtimeDirections } from "@/hooks/map/useRealtimeDirections";
+import { useTheme } from "@/contexts/ThemeContext";
 
 const CarpoolScreen: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
@@ -320,7 +321,7 @@ const CarpoolScreen: React.FC = () => {
       (carpoolData?.requests ?? []).map((request) => [request.id, request])
     ).values()
   );
-
+  const { currentColors } = useTheme();
   return (
     <ScrollView>
       {carpoolData &&
@@ -345,13 +346,13 @@ const CarpoolScreen: React.FC = () => {
           borderTopRightRadius: 20,
           overflow: "hidden",
           marginTop: -50,
-          backgroundColor: "#fff",
+          backgroundColor: currentColors.background,
         }}
       >
         <View
           style={{
             width: 50,
-            backgroundColor: "#FF8833",
+            backgroundColor: currentColors.tint,
             height: 3,
             marginTop: 10,
             marginLeft: "auto",
@@ -368,7 +369,7 @@ const CarpoolScreen: React.FC = () => {
           }}
         >
           <Text
-            style={{ fontSize: 20, fontFamily: "Comfortaa", color: "#666666" }}
+            style={{ fontSize: 20, fontFamily: "Comfortaa", color: currentColors.icon }}
           >
             {date}
           </Text>
@@ -386,7 +387,7 @@ const CarpoolScreen: React.FC = () => {
             }}
           >
             <Image source={require("@/assets/images/processing-icon.png")} />
-            <Text style={{ color: "#fff", marginLeft: 3 }}>Processing</Text>
+            <Text style={{ color: currentColors.text, marginLeft: 3 }}>Processing</Text>
           </View>
         </View>
         <View style={{ paddingHorizontal: 15, marginTop: 20 }}>
@@ -469,7 +470,7 @@ const CarpoolScreen: React.FC = () => {
         </View>
         <Text
           style={{
-            color: "#8F9BB3",
+            color: currentColors.placeholder,
             paddingHorizontal: 15,
             fontFamily: "Comfortaa",
           }}
@@ -479,7 +480,7 @@ const CarpoolScreen: React.FC = () => {
         <View style={{ paddingHorizontal: 15, marginBottom: 10 }}>
           <Text
             style={{
-              color: "#fff",
+              color: currentColors.text,
               marginBottom: 5,
               marginTop: 10,
               fontFamily: "Comfortaa",
@@ -490,17 +491,18 @@ const CarpoolScreen: React.FC = () => {
           <TextInput
             style={{
               width: "100%",
-              backgroundColor: "#F7F9FC",
-              borderColor: "#E4E9F2",
+              backgroundColor: currentColors.background,
+              borderColor: currentColors.tint,
               borderWidth: 1,
               borderRadius: 15,
               height: 100,
               paddingLeft: 30,
               paddingRight: 30,
               fontFamily: "Comfortaa",
-              color: "#8F9BB3",
+              color: currentColors.placeholder,
             }}
             placeholder="Any preferences for trips? (e.g., preferred age range of kids, allowed stopovers, special requests)"
+            placeholderTextColor={currentColors.text}
             multiline={true}
           />
         </View>

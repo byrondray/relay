@@ -571,7 +571,7 @@ const CreateRide = () => {
               Create a ride
             </Text>
           </View>
-          <Text style={{ color: currentColors.tint, fontSize: 22, marginBottom: 15 }}>
+          <Text style={{ color: currentColors.tint, fontSize: 22, marginBottom: 15, fontFamily: "Comfortaa", }}>
             Itinerary
           </Text>
           <RadioGroupComponent
@@ -611,7 +611,7 @@ const CreateRide = () => {
             handleTimeSelect={handleTimeConfirm}
             textColor={currentColors.text}
           />
-          <Text style={{ color: currentColors.text, marginBottom: 10, marginTop: 15 }}>
+          <Text style={{ color: currentColors.text, marginBottom: 10, marginTop: 15, fontFamily: "Comfortaa", }}>
             Select which kid will join the ride
           </Text>
           <ChildSelector onSelectedChildrenChange={setSelectedChildren} />

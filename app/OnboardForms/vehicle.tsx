@@ -86,7 +86,7 @@ function VehicleForm(): JSX.Element {
 
   if (vehicleError) {
     return (
-      <Text style={[styles.errorText, { color: currentColors.text }]}>
+      <Text style={[styles.errorText, { fontFamily: "Comfortaa" }]}>
         Error loading vehicle data.
       </Text>
     );
@@ -113,7 +113,7 @@ function VehicleForm(): JSX.Element {
         </Text>
 
         {errorMessage && (
-          <Text style={[styles.errorText, { color: currentColors.text }]}>
+          <Text style={[styles.errorText, { fontFamily: "Comfortaa" }]}>
             {errorMessage}
           </Text>
         )}
@@ -270,6 +270,7 @@ const styles = StyleSheet.create({
     fontSize: 32,
     fontWeight: "bold",
     marginBottom: 20,
+    fontFamily: "Comfortaa"
   },
   errorText: {
     color: "red",

@@ -134,7 +134,7 @@ function ChildForm(): JSX.Element {
         Kid Info
       </Text>
 
-      {errorMessage && <Text style={[styles.errorText, { fontFamily: "Comfortaa", color: currentColors.text }]}>{errorMessage}</Text>}
+      {errorMessage && <Text style={[styles.errorText, { fontFamily: "Comfortaa" }]}>{errorMessage}</Text>}
       <ParentFormLabel label="Profile Image" />
       <ImageUpload profileImage={profileImage} pickImage={pickImage} />
       {children.map((child, index) => (

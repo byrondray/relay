@@ -35,7 +35,7 @@ const CarFeaturesCheckbox = ({
           checked={extraCarseatChecked}
           onChange={(nextChecked) => setExtraCarseatChecked(nextChecked)}
         />
-        <Text style={{ marginLeft: 8, color: currentColors.text }}>With Extra Carseat</Text>
+        <Text style={{ marginLeft: 8, fontFamily: "Comfortaa", color: currentColors.text }}>With Extra Carseat</Text>
       </View>
 
       <View style={{ flexDirection: "row", alignItems: "center" }}>

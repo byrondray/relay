@@ -212,8 +212,8 @@ const RequestRide = () => {
           style={{ marginBottom: 10 }}
         />
         <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-          <Text style={{ color: currentColors.text, marginBottom: 5 }}>To</Text>
-          <Text style={{ color: currentColors.tint, marginBottom: 5 }}>* Required</Text>
+          <Text style={{ color: currentColors.text, marginBottom: 5, fontFamily: "Comfortaa", }}>To</Text>
+          <Text style={{ color: currentColors.tint, marginBottom: 5, fontFamily: "Comfortaa", }}>* Required</Text>
         </View>
         <ThemedAddressCompletionInput
           value={endingAddress}
