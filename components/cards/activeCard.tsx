@@ -8,6 +8,7 @@ import RedMarker from "@/assets/images/RedMarker.svg";
 import StackedProfilePictures from "./stackedProfile";
 import RepeatIcon from "@/assets/images/repeat.svg";
 import ArrowUp from "@/assets/images/arrow-up.svg";
+import { useTheme } from "@/contexts/ThemeContext";  // Importing useTheme
 
 interface CardData {
   id: string;
@@ -32,6 +33,8 @@ const ActiveRiderCard = ({
   images,
   recurrence,
 }: CardData) => {
+  const { currentColors } = useTheme();  // Accessing theme colors
+
   const isodate = new Date(date); // delete this later when db is connected cause I forget.
 
   const formatThisDate = isodate.toLocaleDateString("en-US", {
@@ -43,17 +46,17 @@ const ActiveRiderCard = ({
   return (
     <View
       style={{
-        shadowColor: "#000000",
+        shadowColor: currentColors.placeholder,
         shadowOffset: { width: 0, height: 4 },
         shadowOpacity: 0.25,
         shadowRadius: 4,
         elevation: 4,
         borderWidth: 1,
-        borderColor: "#80CCDDEE",
+        borderColor: currentColors.placeholder,
         borderRadius: 15,
         width: "100%",
         height: 200,
-        backgroundColor: "#FFFFFF",
+        backgroundColor: currentColors.background,
         paddingHorizontal: 16,
         paddingVertical: 15,
       }}
@@ -71,6 +74,7 @@ const ActiveRiderCard = ({
               fontSize: 10,
               alignSelf: "center",
               fontFamily: "Comfortaa",
+              color: currentColors.text,
             }}
           >
             RN: {id}
@@ -89,7 +93,7 @@ const ActiveRiderCard = ({
                   justifyContent: "flex-end",
                   alignItems: "center",
                   alignSelf: "flex-end",
-                  backgroundColor: "#3366FF",
+                  backgroundColor: currentColors.background,
                   borderRadius: 16,
                   paddingHorizontal: 16,
                   paddingVertical: 6,
@@ -100,7 +104,7 @@ const ActiveRiderCard = ({
                 <TimeIcon width={16} height={16} style={{ marginRight: 5 }} />
                 <Text
                   style={{
-                    color: "#fff",
+                    color: currentColors.text,
                     alignSelf: "center",
                     fontFamily: "Comfortaa",
                   }}
@@ -115,7 +119,7 @@ const ActiveRiderCard = ({
                   justifyContent: "flex-end",
                   alignItems: "center",
                   alignSelf: "flex-end",
-                  backgroundColor: "#D2D2D2",
+                  backgroundColor: currentColors.background,
                   borderRadius: 16,
                   paddingHorizontal: 16,
                   paddingVertical: 6,
@@ -126,7 +130,7 @@ const ActiveRiderCard = ({
                 <TimeIcon width={16} height={16} style={{ marginRight: 5 }} />
                 <Text
                   style={{
-                    color: "#fff",
+                    color: currentColors.text,
                     alignSelf: "center",
                     fontFamily: "Comfortaa",
                   }}
@@ -149,7 +153,7 @@ const ActiveRiderCard = ({
 
         <Text
           style={{
-            color: "#666666",
+            color: currentColors.text,
             fontSize: 20,
             fontWeight: "bold",
             letterSpacing: 0.2,
@@ -165,11 +169,13 @@ const ActiveRiderCard = ({
             height={20}
             style={{ marginRight: 8, width: 120 }}
           />
-          <Text style={{ fontFamily: "Comfortaa" }}>{startLocation}</Text>
+          <Text style={{ fontFamily: "Comfortaa", color: currentColors.text }}>
+            {startLocation}
+          </Text>
           <Text
             style={{
               marginLeft: "auto",
-              color: "#FF6A00",
+              color: currentColors.text,
               fontFamily: "Comfortaa",
             }}
           >
@@ -179,11 +185,13 @@ const ActiveRiderCard = ({
 
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           <RedMarker width={20} height={20} style={{ marginRight: 8 }} />
-          <Text style={{ fontFamily: "Comfortaa" }}>{endLocation}</Text>
+          <Text style={{ fontFamily: "Comfortaa", color: currentColors.text }}>
+            {endLocation}
+          </Text>
           <Text
             style={{
               marginLeft: "auto",
-              color: "#E24949",
+              color: currentColors.text,
               fontFamily: "Comfortaa",
             }}
           >
@@ -198,7 +206,7 @@ const ActiveRiderCard = ({
             flexDirection: "row",
             alignSelf: "flex-end",
             alignItems: "center",
-            backgroundColor: "rgba(255, 136, 51, 0.1)",
+            backgroundColor: currentColors.background,
             borderRadius: 16,
             paddingHorizontal: 10,
             paddingVertical: 5,
@@ -213,14 +221,14 @@ const ActiveRiderCard = ({
                 height={16}
                 style={{ marginHorizontal: 10 }}
               />
-              <Text style={{ color: "#FF6A00", fontFamily: "Comfortaa" }}>
+              <Text style={{ color: currentColors.text, fontFamily: "Comfortaa" }}>
                 {recurrence}
               </Text>
             </>
           ) : (
             <>
               <ArrowUp width={16} height={16} style={{ marginRight: 10 }} />
-              <Text style={{ color: "#FF6A00", fontFamily: "Comfortaa" }}>
+              <Text style={{ color: currentColors.text, fontFamily: "Comfortaa" }}>
                 {recurrence}
               </Text>
             </>
