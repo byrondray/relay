@@ -6,20 +6,22 @@ import { Spinner } from "@ui-kitten/components";
 import { auth } from "@/firebaseConfig";
 import { Link } from "expo-router";
 import { GetUserCarpoolsAndRequestsQuery } from "@/graphql/generated";
+import { useTheme } from "@/contexts/ThemeContext";
 
 const CarpoolListScreen: React.FC = () => {
+  const { currentColors } = useTheme();
   const currentUser = auth.currentUser;
+
   const { data, loading, error } = useQuery<GetUserCarpoolsAndRequestsQuery>(
     GET_USER_CARPOOL_WITH_REQUESTS,
     {
       skip: !currentUser,
       variables: { userId: currentUser?.uid },
-      onCompleted: (data) => {},
     }
   );
 
   if (loading) return <Spinner />;
-  if (error) return <Text>Error loading carpools</Text>;
+  if (error) return <Text style={{ color: currentColors.text }}>Error loading carpools</Text>;
 
   const carpools = data?.getUserCarpoolsAndRequests?.carpools || [];
   const requests = data?.getUserCarpoolsAndRequests?.requests || [];
@@ -28,9 +30,9 @@ const CarpoolListScreen: React.FC = () => {
     <>
       <FlatList
         data={carpools}
-        keyExtractor={(item) => Math.random().toString()}
+        keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
-          <View style={styles.carpoolCard}>
+          <View style={[styles.carpoolCard, { backgroundColor: currentColors.background }]}>
             <Link
               key={item.id}
               href={{
@@ -38,28 +40,28 @@ const CarpoolListScreen: React.FC = () => {
                 params: { trip: item.id },
               }}
             >
-              <Text style={styles.carpoolTitle}>
+              <Text style={[styles.carpoolTitle, { color: currentColors.text }]}>
                 Carpool on {item.departureDate}
               </Text>
-              <Text style={styles.carpoolDetail}>
+              <Text style={[styles.carpoolDetail, { color: currentColors.text }]}>
                 Start: {item.startAddress}
               </Text>
-              <Text style={styles.carpoolDetail}>
+              <Text style={[styles.carpoolDetail, { color: currentColors.text }]}>
                 Destination: {item.endAddress}
               </Text>
-              <Text>{item.id}</Text>
+              <Text style={{ color: currentColors.text }}>{item.id}</Text>
             </Link>
           </View>
         )}
-        ListEmptyComponent={<Text>No carpools available.</Text>}
+        ListEmptyComponent={<Text style={{ color: currentColors.text }}>No carpools available.</Text>}
       />
 
-      <Text style={styles.sectionTitle}>All Requests</Text>
+      <Text style={[styles.sectionTitle, { color: currentColors.text }]}>All Requests</Text>
       <FlatList
         data={requests}
-        keyExtractor={(request) => Math.random().toString()}
+        keyExtractor={(request) => request.id.toString()}
         renderItem={({ item: request }) => (
-          <View style={styles.requestCard}>
+          <View style={[styles.requestCard, { backgroundColor: currentColors.background }]}>
             {request.carpoolId ? (
               <Link
                 href={{
@@ -67,28 +69,28 @@ const CarpoolListScreen: React.FC = () => {
                   params: { trip: request.carpoolId },
                 }}
               >
-                <Text style={styles.requestDetail}>
+                <Text style={[styles.requestDetail, { color: currentColors.text }]}>
                   Request by: {request.parent.firstName} (Linked to Carpool)
                 </Text>
-                <Text>{request.carpoolId}</Text>
+                <Text style={{ color: currentColors.text }}>{request.carpoolId}</Text>
               </Link>
             ) : (
-              <Text style={styles.requestDetail}>
+              <Text style={[styles.requestDetail, { color: currentColors.text }]}>
                 Request by: {request.parent.firstName} (Not Linked to Carpool)
               </Text>
             )}
-            <Text style={styles.requestDetail}>
+            <Text style={[styles.requestDetail, { color: currentColors.text }]}>
               Child: {request.child.firstName}
             </Text>
-            <Text style={styles.requestDetail}>
+            <Text style={[styles.requestDetail, { color: currentColors.text }]}>
               Pickup Time: {request.pickupTime}
             </Text>
-            <Text style={styles.requestDetail}>
+            <Text style={[styles.requestDetail, { color: currentColors.text }]}>
               Start Address: {request.startAddress}
             </Text>
           </View>
         )}
-        ListEmptyComponent={<Text>No requests available.</Text>}
+        ListEmptyComponent={<Text style={{ color: currentColors.text }}>No requests available.</Text>}
       />
     </>
   );
@@ -96,7 +98,6 @@ const CarpoolListScreen: React.FC = () => {
 
 const styles = StyleSheet.create({
   carpoolCard: {
-    backgroundColor: "#fff",
     padding: 16,
     borderRadius: 8,
     marginBottom: 16,
@@ -112,18 +113,15 @@ const styles = StyleSheet.create({
   },
   carpoolDetail: {
     fontSize: 14,
-    color: "#555",
     marginBottom: 4,
   },
   requestCard: {
-    backgroundColor: "#f9f9f9",
     padding: 12,
     borderRadius: 6,
     marginBottom: 16,
   },
   requestDetail: {
     fontSize: 12,
-    color: "#555",
   },
   sectionTitle: {
     fontSize: 16,
