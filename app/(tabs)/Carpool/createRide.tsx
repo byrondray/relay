@@ -46,6 +46,8 @@ import RadioGroupComponent from "@/components/carpool/carpoolFrequency";
 import { CreateCarpoolInput } from "@/graphql/generated";
 import GroupPicker from "@/components/carpool/groupSelector";
 import WaypointSelector from "@/components/carpool/waypointSelector";
+import GestureMap from "@/components/carpool/gestureMap";
+import CarpoolOverview from "@/components/carpool/carpoolOverview";
 
 const { height: deviceHeight } = Dimensions.get("window");
 import { useTheme } from "@/contexts/ThemeContext";
@@ -670,14 +672,33 @@ const CreateRide = () => {
               selectedWaypoints={selectedWaypoints}
               sortedRequests={requests}
             />
-            <View style={{ marginVertical: 10}}>
-              <CarFeaturesCheckbox
-                extraCarseatChecked={extraCarseatChecked}
-                winterTiresChecked={winterTiresChecked}
-                setExtraCarseatChecked={setExtraCarseatChecked}
-                setWinterTiresChecked={setWinterTiresChecked}
-              />
+            <View style={{ marginTop: 20 }}>
+              {/* <CarpoolOverview
+                startingAddress={startingAddress}
+                endingAddress={endingAddress}
+                selectedDate={selectedDate}
+                time={time}
+                selectedChildren={selectedChildren} // take in selected requests
+                description={description}
+              /> */}
             </View>
+
+            <Text
+              style={{
+                color: "#FF6A00",
+                fontSize: 22,
+                marginTop: 15,
+                fontFamily: "Comfortaa",
+              }}
+            >
+              Pricing
+            </Text>
+            <CarFeaturesCheckbox
+              extraCarseatChecked={extraCarseatChecked}
+              winterTiresChecked={winterTiresChecked}
+              setExtraCarseatChecked={setExtraCarseatChecked}
+              setWinterTiresChecked={setWinterTiresChecked}
+            />
             <PaymentInfo />
             <Text
               style={{

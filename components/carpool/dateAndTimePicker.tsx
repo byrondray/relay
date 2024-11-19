@@ -1,8 +1,9 @@
 import React from "react";
-import { View, Text, Image, TouchableOpacity } from "react-native";
+import { View, Text, Image, TouchableOpacity, Platform } from "react-native";
 import { Datepicker } from "@ui-kitten/components";
 import { TimePickerModal } from "react-native-paper-dates";
 import { useTheme } from "@/contexts/ThemeContext";
+import DateTimePicker from "@react-native-community/datetimepicker";
 
 const RideDateTimePicker = ({
   selectedDate,
@@ -19,6 +20,19 @@ const RideDateTimePicker = ({
 }) => {
   const [showTimePicker, setShowTimePicker] = React.useState(false);
   const { currentColors } = useTheme();
+  const [time, setTime] = React.useState<Date | undefined>(undefined);
+
+  const handleTimeChange = (event: any, selectedTime: Date | undefined) => {
+    setShowTimePicker(false);
+    if (selectedTime) {
+      setTime(selectedTime);
+      const hours = selectedTime.getHours();
+      const minutes = selectedTime.getMinutes();
+      console.log("Selected Time: ", hours, minutes);
+      handleTimeSelect({ hours, minutes });
+    }
+  };
+
   return (
     <View>
       {/* Date Section */}
@@ -93,16 +107,15 @@ const RideDateTimePicker = ({
       </TouchableOpacity>
 
       {/* Time Picker Modal */}
-      <TimePickerModal
-        visible={showTimePicker}
-        onDismiss={() => setShowTimePicker(false)}
-        onConfirm={(time) => {
-          handleTimeSelect(time); // Call parent function
-          setShowTimePicker(false); // Close modal
-        }}
-        hours={12}
-        minutes={0}
-      />
+      {showTimePicker && (
+        <DateTimePicker
+          value={time || new Date()}
+          mode="time"
+          is24Hour={true}
+          display={Platform.OS === "ios" ? "spinner" : "default"}
+          onChange={handleTimeChange}
+        />
+      )}
     </View>
   );
 };

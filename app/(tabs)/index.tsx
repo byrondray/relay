@@ -6,6 +6,7 @@ import {
   View,
   Image,
   TouchableOpacity,
+  ScrollView,
 } from "react-native";
 import { useQuery } from "@apollo/client";
 import { LinearGradient } from "expo-linear-gradient";
@@ -16,7 +17,24 @@ import { auth } from "@/firebaseConfig";
 import withAuthCheck from "../../components/WithAuthCheck";
 import { ThemedText } from "@/components/ThemedText";
 // import FriendsList from "@/components/FriendsList";
-
+// import ActiveRiderCard from "@/components/cards/activeCard";
+// import ScheduleActiveCard from "@/components/cards/scheduleCard";
+// import TimeCard from "@/components/cards/timeCard";
+import MapDriverCard from "@/components/cards/mapDriverCard";
+const cardData = {
+  id: "T202403220043",
+  state: "pending",
+  date: "2024-12-12T12:30:00",
+  startLocation: "Vancouver, BC",
+  startTime: "10:00am",
+  endLocation: "Toronto, ON",
+  endTime: "6:00pm",
+  images: [
+    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQO7NzvmUTqpxsiA6-c1OwaXC7bTUn9DBhscA&s",
+    "https://maggiesmilk.com/wp-content/uploads/2015/09/IMG_4878.jpg",
+  ],
+  recurrence: "one time",
+};
 function HomeScreen() {
   const [hasOnboarded, setHasOnboarded] = useState<boolean | null>(null);
 
@@ -33,9 +51,8 @@ function HomeScreen() {
   useEffect(() => {
     const checkOnboardingStatus = async () => {
       try {
-        const storedOnboardingStatus = await AsyncStorage.getItem(
-          "hasOnboarded"
-        );
+        const storedOnboardingStatus =
+          await AsyncStorage.getItem("hasOnboarded");
         const currentUserId = auth.currentUser?.uid;
 
         if (currentUserId === "wcBP7eHQU3XDOnkjtWQpt6qYb9z2") {
@@ -82,94 +99,115 @@ function HomeScreen() {
   }
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>New Ride</Text>
-      {/* <FriendsList /> */}
-
-      <View style={styles.content}>
-        <TouchableOpacity
-          style={[
-            styles.button,
-            hasFilledDriverInfo ? styles.requestButton : styles.disabledButton,
+    <ScrollView>
+      <View style={styles.container}>
+        <Text style={styles.title}>New Ride</Text>
+        {/* <FriendsList /> */}
+        <MapDriverCard
+          id="RN1234"
+          driverName="John Doe"
+          driveCount={60}
+          likes={300}
+          date={new Date("2024-11-17T12:30:00")}
+          duration="1hr 02min (32.0km)"
+          startLocation="4700 Kingsway, Burnaby, BC, V5H 4M5 "
+          startTime="10:00am"
+          endLocation="3700 Willingdon Ave, Burnaby, BC V5G 3H2"
+          endTime="2:00pm"
+          passengerImages={[
+            "https://t3.ftcdn.net/jpg/02/99/04/20/360_F_299042079_vGBD7wIlSeNl7vOevWHiL93G4koMM967.jpg",
+            "https://cdn.pixabay.com/photo/2016/11/29/13/14/attractive-1869761_1280.jpg",
+            "https://t3.ftcdn.net/jpg/02/43/12/34/360_F_243123463_zTooub557xEWABDLk0jJklDyLSGl2jrr.jpg",
           ]}
-          disabled={!hasFilledDriverInfo}
-          onPress={() => router.push("/(tabs)/Carpool/createRide")}
-        >
-          <View style={styles.buttonContent}>
-            <View style={styles.textContainer}>
-              <Text
-                style={[
-                  hasFilledDriverInfo
-                    ? styles.requestButtonText
-                    : styles.disabledButtonText,
-                ]}
-              >
-                I'm a driver
-              </Text>
-              <Text
-                style={[
-                  styles.subText,
-                  hasFilledDriverInfo && styles.requestSubText,
-                ]}
-              >
-                I'm available to carpool other kids.
-              </Text>
-            </View>
-            <Image
-              source={require("@/assets/images/arrow-circle-right.png")}
-              style={[
-                styles.arrowIcon,
-                !hasFilledDriverInfo && styles.disabledArrowIcon,
-              ]}
-            />
-          </View>
-        </TouchableOpacity>
+        />
 
-        {!hasFilledDriverInfo && (
-          <>
-            <Text style={styles.signupText}>
-              Interested in becoming a carpool driver to help drive kids in your
-              community?
-            </Text>
-
-            <TouchableOpacity style={styles.signUpButtonContainer}>
-              <LinearGradient
-                colors={["#FFA726", "#EF5350"]}
-                style={styles.signUpButton}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 0 }}
-              >
-                <Text style={styles.signUpButtonText}>
-                  Sign up to be a Driver
+        <View style={styles.content}>
+          <TouchableOpacity
+            style={[
+              styles.button,
+              hasFilledDriverInfo
+                ? styles.requestButton
+                : styles.disabledButton,
+            ]}
+            disabled={!hasFilledDriverInfo}
+            onPress={() => router.push("/(tabs)/Carpool/createRide")}
+          >
+            <View style={styles.buttonContent}>
+              <View style={styles.textContainer}>
+                <Text
+                  style={[
+                    hasFilledDriverInfo
+                      ? styles.requestButtonText
+                      : styles.disabledButtonText,
+                  ]}
+                >
+                  I'm a driver
                 </Text>
-              </LinearGradient>
-            </TouchableOpacity>
-          </>
-        )}
-
-        <TouchableOpacity
-          style={styles.requestButton}
-          onPress={() => router.push("/(tabs)/Carpool/postRequest")}
-        >
-          <View style={styles.buttonContent}>
-            <View style={styles.textContainer}>
-              <Text style={styles.requestButtonText}>
-                Looking for a ride for my kid
-              </Text>
-              <Text style={styles.requestSubText}>
-                Notify me when a ride matches
-              </Text>
+                <Text
+                  style={[
+                    styles.subText,
+                    hasFilledDriverInfo && styles.requestSubText,
+                  ]}
+                >
+                  I'm available to carpool other kids.
+                </Text>
+              </View>
+              <Image
+                source={require("@/assets/images/arrow-circle-right.png")}
+                style={[
+                  styles.arrowIcon,
+                  !hasFilledDriverInfo && styles.disabledArrowIcon,
+                ]}
+              />
             </View>
-            <Image
-              source={require("@/assets/images/arrow-circle-right.png")}
-              style={styles.arrowIcon}
-            />
-          </View>
-        </TouchableOpacity>
+          </TouchableOpacity>
 
-        <Text style={styles.activeRequestText}>Active Request</Text>
+          {!hasFilledDriverInfo && (
+            <>
+              <Text style={styles.signupText}>
+                Interested in becoming a carpool driver to help drive kids in
+                your community?
+              </Text>
+
+              <TouchableOpacity style={styles.signUpButtonContainer}>
+                <LinearGradient
+                  colors={["#FFA726", "#EF5350"]}
+                  style={styles.signUpButton}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 0 }}
+                >
+                  <Text style={styles.signUpButtonText}>
+                    Sign up to be a Driver
+                  </Text>
+                </LinearGradient>
+              </TouchableOpacity>
+            </>
+          )}
+
+          <TouchableOpacity
+            style={styles.requestButton}
+            onPress={() => router.push("/(tabs)/Carpool/postRequest")}
+          >
+            <View style={styles.buttonContent}>
+              <View style={styles.textContainer}>
+                <Text style={styles.requestButtonText}>
+                  Looking for a ride for my kid
+                </Text>
+                <Text style={styles.requestSubText}>
+                  Notify me when a ride matches
+                </Text>
+              </View>
+              <Image
+                source={require("@/assets/images/arrow-circle-right.png")}
+                style={styles.arrowIcon}
+              />
+            </View>
+          </TouchableOpacity>
+
+          <Text style={styles.activeRequestText}>Active Request</Text>
+        </View>
       </View>
-    </View>
+    </ScrollView>
   );
 }
 
