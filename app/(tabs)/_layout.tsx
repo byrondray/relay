@@ -12,7 +12,7 @@ function Header() {
     <View
       style={[
         styles.headerContainer,
-        { borderBottomColor: currentColors.placeholder, backgroundColor: currentColors.background },
+        { borderBottomColor: currentColors.placeholder, backgroundColor: currentColors.placeholder },
       ]}
     >
       <Image
