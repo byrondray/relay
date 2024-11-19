@@ -2,7 +2,7 @@ import React from "react";
 import { View, Text, Image, StyleSheet } from "react-native";
 import { CarpoolWithRequests, User, Vehicle } from "@/graphql/generated";
 import { auth } from "@/firebaseConfig";
-import { useTheme } from "@/contexts/ThemeContext"; // Ensure this context is set up
+import { useTheme } from "@/contexts/ThemeContext";
 
 const DriverCardInProgress = ({
   driverData,

@@ -15,6 +15,7 @@ import {
   RequestWithParentAndChild,
 } from "@/graphql/generated";
 import { Image } from "react-native";
+import { useTheme } from "@/contexts/ThemeContext";
 
 interface DriverMapViewProps {
   driverLocation: {
@@ -110,7 +111,7 @@ const DriverMapView: React.FC<DriverMapViewProps> = ({
       }
     };
   }, []);
-
+  const { currentColors } = useTheme();
   return (
     <TouchableWithoutFeedback
       onPress={() => {
@@ -166,10 +167,10 @@ const DriverMapView: React.FC<DriverMapViewProps> = ({
                   padding: 10,
                   borderRadius: 20,
                   borderWidth: 2,
-                  borderColor: "white",
+                  borderColor: currentColors.text,
                 }}
               >
-                <Text style={{ fontSize: 14, color: "white" }}>🚗</Text>
+                <Text style={{ fontSize: 14, color: currentColors.text }}>🚗</Text>
               </View>
             </Marker>
           )}
