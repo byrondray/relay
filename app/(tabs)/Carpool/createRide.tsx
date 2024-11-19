@@ -207,25 +207,6 @@ const CreateRide = () => {
     }
   }, [startingAddress, endingAddress, dateAndTime, time]);
 
-  const sortRequestsByDistance = (
-    requests: RequestWithChildrenAndParent[],
-    startingLatLng: LatLng
-  ) => {
-    return [...requests].sort(
-      (a: RequestWithChildrenAndParent, b: RequestWithChildrenAndParent) => {
-        const distanceA = haversineDistance(startingLatLng, {
-          lat: parseFloat(a.startingLat),
-          lon: parseFloat(a.startingLon),
-        });
-        const distanceB = haversineDistance(startingLatLng, {
-          lat: parseFloat(b.startingLat),
-          lon: parseFloat(b.startingLon),
-        });
-        return distanceA - distanceB;
-      }
-    );
-  };
-
   const { data, loading: groupsLoading } = useQuery(GET_GROUPS, {
     onCompleted: (data) => {
       if (data) {
@@ -296,23 +277,6 @@ const CreateRide = () => {
       }
     },
   });
-
-  const handleDateSelect = (nextDate: Date) => {
-    setSelectedDate(nextDate);
-    setDateAndTime(nextDate.toLocaleString());
-    setShowDatePicker(false);
-  };
-
-  const handleTimeConfirm = ({
-    hours,
-    minutes,
-  }: {
-    hours: number;
-    minutes: number;
-  }) => {
-    setTime(`${hours}:${minutes}`);
-    setShowTimePicker(false);
-  };
 
   const { coordinates, getDirections, predictedTime } = useDirections();
   const mapRef = useRef<MapView>(null);
@@ -389,7 +353,7 @@ const CreateRide = () => {
     selectedWaypoints,
     startingLatLng,
     endingLatLng,
-    vehicles,
+    // vehicles,
   ]);
 
   const getAddress = async (
@@ -435,6 +399,42 @@ const CreateRide = () => {
       },
     })
   ).current;
+
+  const handleDateSelect = (nextDate: Date) => {
+    setSelectedDate(nextDate);
+    setDateAndTime(nextDate.toLocaleString());
+    setShowDatePicker(false);
+  };
+
+  const handleTimeConfirm = ({
+    hours,
+    minutes,
+  }: {
+    hours: number;
+    minutes: number;
+  }) => {
+    setTime(`${hours}:${minutes}`);
+    // setShowTimePicker(false);
+  };
+
+  const sortRequestsByDistance = (
+    requests: RequestWithChildrenAndParent[],
+    startingLatLng: LatLng
+  ) => {
+    return [...requests].sort(
+      (a: RequestWithChildrenAndParent, b: RequestWithChildrenAndParent) => {
+        const distanceA = haversineDistance(startingLatLng, {
+          lat: parseFloat(a.startingLat),
+          lon: parseFloat(a.startingLon),
+        });
+        const distanceB = haversineDistance(startingLatLng, {
+          lat: parseFloat(b.startingLat),
+          lon: parseFloat(b.startingLon),
+        });
+        return distanceA - distanceB;
+      }
+    );
+  };
 
   const handleLongPress = async (e: LongPressEvent) => {
     const { latitude, longitude } = e.nativeEvent.coordinate;

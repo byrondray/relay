@@ -23,13 +23,27 @@ const RideDateTimePicker = ({
   const [time, setTime] = React.useState<Date | undefined>(undefined);
 
   const handleTimeChange = (event: any, selectedTime: Date | undefined) => {
-    setShowTimePicker(false);
-    if (selectedTime) {
-      setTime(selectedTime);
-      const hours = selectedTime.getHours();
-      const minutes = selectedTime.getMinutes();
-      console.log("Selected Time: ", hours, minutes);
-      handleTimeSelect({ hours, minutes });
+    if (Platform.OS === "android") {
+      // On Android, dismiss the picker after a time is selected or canceled
+      if (event.type === "set" && selectedTime) {
+        // "set" means the user selected a time
+        setTime(selectedTime);
+        const hours = selectedTime.getHours();
+        const minutes = selectedTime.getMinutes();
+        console.log("Selected Time: ", hours, minutes);
+        handleTimeSelect({ hours, minutes });
+      }
+      // Hide the picker in all cases (even if "dismissed")
+      setShowTimePicker(false);
+    } else if (Platform.OS === "ios") {
+      // On iOS, just update the time without hiding the picker
+      if (selectedTime) {
+        setTime(selectedTime);
+        const hours = selectedTime.getHours();
+        const minutes = selectedTime.getMinutes();
+        console.log("Selected Time: ", hours, minutes);
+        handleTimeSelect({ hours, minutes });
+      }
     }
   };
 

@@ -17,7 +17,6 @@ import { auth } from "@/firebaseConfig";
 import withAuthCheck from "../../components/WithAuthCheck";
 import { ThemedText } from "@/components/ThemedText";
 
-import MapDriverCard from "@/components/cards/mapDriverCard";
 function HomeScreen() {
   const [hasOnboarded, setHasOnboarded] = useState<boolean | null>(null);
 

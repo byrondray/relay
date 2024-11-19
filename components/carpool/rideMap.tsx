@@ -59,6 +59,8 @@ const RideMap: React.FC<RideMapProps> = ({
   setSelectedWaypoints,
 }) => {
   const [mapReady, setMapReady] = useState(false);
+  const [polylineReady, setPolylineReady] = useState(false);
+  const [forceRender, setForceRender] = useState(false);
 
   const arePropsReady = () => {
     return (
@@ -81,6 +83,18 @@ const RideMap: React.FC<RideMapProps> = ({
       setMapReady(true);
     }
   }, [requests, activeRoute.coordinates]);
+
+  useEffect(() => {
+    if (mapReady && activeRoute.coordinates.length > 0) {
+      setPolylineReady(true);
+    }
+  }, [mapReady, activeRoute.coordinates]);
+
+  useEffect(() => {
+    if (mapReady && polylineReady && arePropsReady()) {
+      setForceRender((prev) => !prev); // Toggle the state to force a re-render
+    }
+  }, [mapReady, polylineReady, arePropsReady()]);
 
   return (
     <View style={{ flex: 1 }}>
@@ -160,6 +174,17 @@ const RideMap: React.FC<RideMapProps> = ({
             </View>
           </Marker>
         )}
+
+        {mapReady &&
+          arePropsReady() &&
+          coordinates.length > 0 &&
+          polylineReady && (
+            <Polyline
+              coordinates={coordinates}
+              strokeColor={"#FF6A00"}
+              strokeWidth={5}
+            />
+          )}
 
         {mapReady &&
           arePropsReady() &&
