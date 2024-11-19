@@ -1,5 +1,5 @@
 import { RequestWithChildrenAndParent } from "@/graphql/generated";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, Image } from "react-native";
 import MapView, { Marker, Polyline } from "react-native-maps";
 
@@ -67,9 +67,21 @@ const RideMap: React.FC<RideMapProps> = ({
       endingLatLng.lat !== undefined &&
       endingLatLng.lon !== undefined &&
       activeRoute.coordinates.length > 0 &&
+      mapRef.current !== null &&
       requests.length > 0
     );
   };
+  useEffect(() => {
+    if (
+      requests.length > 0 &&
+      activeRoute.coordinates.length > 0 &&
+      !mapReady &&
+      mapRef.current
+    ) {
+      setMapReady(true);
+    }
+  }, [requests, activeRoute.coordinates]);
+
   return (
     <View style={{ flex: 1 }}>
       <MapView
@@ -81,9 +93,9 @@ const RideMap: React.FC<RideMapProps> = ({
           latitudeDelta: 0.1,
           longitudeDelta: 0.1,
         }}
-        onMapReady={() => {
-          if (!mapReady) setMapReady(true);
-        }}
+        // onMapReady={() => {
+        //   if (!mapReady) setMapReady(true);
+        // }}
       >
         {mapReady &&
           arePropsReady() &&

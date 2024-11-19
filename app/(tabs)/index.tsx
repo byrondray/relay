@@ -16,25 +16,8 @@ import { router, Href } from "expo-router";
 import { auth } from "@/firebaseConfig";
 import withAuthCheck from "../../components/WithAuthCheck";
 import { ThemedText } from "@/components/ThemedText";
-// import FriendsList from "@/components/FriendsList";
-// import ActiveRiderCard from "@/components/cards/activeCard";
-// import ScheduleActiveCard from "@/components/cards/scheduleCard";
-// import TimeCard from "@/components/cards/timeCard";
+
 import MapDriverCard from "@/components/cards/mapDriverCard";
-const cardData = {
-  id: "T202403220043",
-  state: "pending",
-  date: "2024-12-12T12:30:00",
-  startLocation: "Vancouver, BC",
-  startTime: "10:00am",
-  endLocation: "Toronto, ON",
-  endTime: "6:00pm",
-  images: [
-    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQO7NzvmUTqpxsiA6-c1OwaXC7bTUn9DBhscA&s",
-    "https://maggiesmilk.com/wp-content/uploads/2015/09/IMG_4878.jpg",
-  ],
-  recurrence: "one time",
-};
 function HomeScreen() {
   const [hasOnboarded, setHasOnboarded] = useState<boolean | null>(null);
 
@@ -103,7 +86,7 @@ function HomeScreen() {
       <View style={styles.container}>
         <Text style={styles.title}>New Ride</Text>
         {/* <FriendsList /> */}
-        <MapDriverCard
+        {/* <MapDriverCard
           id="RN1234"
           driverName="John Doe"
           driveCount={60}
@@ -119,7 +102,7 @@ function HomeScreen() {
             "https://cdn.pixabay.com/photo/2016/11/29/13/14/attractive-1869761_1280.jpg",
             "https://t3.ftcdn.net/jpg/02/43/12/34/360_F_243123463_zTooub557xEWABDLk0jJklDyLSGl2jrr.jpg",
           ]}
-        />
+        /> */}
 
         <View style={styles.content}>
           <TouchableOpacity
@@ -232,7 +215,6 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 24,
-    fontWeight: "bold",
     marginBottom: 20,
     fontFamily: "Comfortaa",
   },
@@ -289,7 +271,6 @@ const styles = StyleSheet.create({
   signUpButtonText: {
     fontSize: 16,
     color: "#fff",
-    fontWeight: "bold",
     fontFamily: "Comfortaa",
   },
   subText: {
@@ -311,7 +292,6 @@ const styles = StyleSheet.create({
   },
   activeRequestText: {
     fontSize: 24,
-    fontWeight: "bold",
     marginTop: 20,
     fontFamily: "Comfortaa",
   },

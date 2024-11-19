@@ -461,11 +461,14 @@ const CreateRide = () => {
       behavior={Platform.OS === "ios" ? "padding" : undefined}
     >
       <ScrollView
-        contentContainerStyle={[{
-          padding: 15,
-          backgroundColor: "#ffffff",
-          flexGrow: 1,
-        }, { backgroundColor: currentColors.background }]}
+        contentContainerStyle={[
+          {
+            padding: 15,
+            backgroundColor: "#ffffff",
+            flexGrow: 1,
+          },
+          { backgroundColor: currentColors.background },
+        ]}
       >
         {/* <GestureMap
           mapHeight={mapHeight}
@@ -539,13 +542,14 @@ const CreateRide = () => {
           startingLatLng={startingLatLng}
           toggleFullScreen={toggleFullScreen}
         /> */}
-        <View style={{  }}>
+        <View style={{}}>
           <View>
             <Text
               style={{
                 fontSize: 32,
                 marginBottom: 20,
                 fontFamily: "Comfortaa-semibold",
+                fontWeight: 700,
               }}
             >
               Create a ride
@@ -762,7 +766,7 @@ const CreateRide = () => {
                 )}
               </Button>
             </LinearGradient>
-            <Popover
+            {/* <Popover
               backdropStyle={styles.backdrop}
               visible={visible}
               anchor={() => renderToggleButton()}
@@ -778,7 +782,7 @@ const CreateRide = () => {
               <Layout style={styles.content}>
                 <Text>Your ride has been successfully created👍</Text>
               </Layout>
-            </Popover>
+            </Popover> */}
           </View>
         </View>
       </ScrollView>
