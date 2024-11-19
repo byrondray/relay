@@ -12,15 +12,13 @@ import { useQuery } from "@apollo/client";
 import { LinearGradient } from "expo-linear-gradient";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { HAS_USER_ON_BOARDED } from "@/graphql/user/queries";
-import { router, Href } from "expo-router";
+import { router } from "expo-router";
 import { auth } from "@/firebaseConfig";
 import withAuthCheck from "../../components/WithAuthCheck";
 import { ThemedText } from "@/components/ThemedText";
-// import FriendsList from "@/components/FriendsList";
-// import ActiveRiderCard from "@/components/cards/activeCard";
-// import ScheduleActiveCard from "@/components/cards/scheduleCard";
-// import TimeCard from "@/components/cards/timeCard";
 import MapDriverCard from "@/components/cards/mapDriverCard";
+import { useTheme } from "@/contexts/ThemeContext";
+
 const cardData = {
   id: "T202403220043",
   state: "pending",
@@ -35,24 +33,20 @@ const cardData = {
   ],
   recurrence: "one time",
 };
-function HomeScreen() {
-  const [hasOnboarded, setHasOnboarded] = useState<boolean | null>(null);
 
+function HomeScreen() {
+  const { currentColors } = useTheme();
+  const [hasOnboarded, setHasOnboarded] = useState<boolean | null>(null);
   const hasFilledDriverInfo = false;
 
-  const {
-    data,
-    // loading: onboardingLoading,
-    error,
-  } = useQuery(HAS_USER_ON_BOARDED, {
+  const { data, error } = useQuery(HAS_USER_ON_BOARDED, {
     skip: hasOnboarded !== null,
   });
 
   useEffect(() => {
     const checkOnboardingStatus = async () => {
       try {
-        const storedOnboardingStatus =
-          await AsyncStorage.getItem("hasOnboarded");
+        const storedOnboardingStatus = await AsyncStorage.getItem("hasOnboarded");
         const currentUserId = auth.currentUser?.uid;
 
         if (currentUserId === "wcBP7eHQU3XDOnkjtWQpt6qYb9z2") {
@@ -80,14 +74,6 @@ function HomeScreen() {
     checkOnboardingStatus();
   }, [data]);
 
-  // if (onboardingLoading || hasOnboarded === null) {
-  //   return (
-  //     <View style={styles.loadingContainer}>
-  //       <ActivityIndicator size="large" color="#0000ff" />
-  //     </View>
-  //   );
-  // }
-
   if (error) {
     return (
       <View style={styles.errorContainer}>
@@ -100,9 +86,8 @@ function HomeScreen() {
 
   return (
     <ScrollView>
-      <View style={styles.container}>
-        <Text style={styles.title}>New Ride</Text>
-        {/* <FriendsList /> */}
+      <View style={[styles.container, { backgroundColor: currentColors.background }]}>
+        <Text style={[styles.title, { color: currentColors.text }]}>New Ride</Text>
         <MapDriverCard
           id="RN1234"
           driverName="John Doe"
@@ -110,7 +95,7 @@ function HomeScreen() {
           likes={300}
           date={new Date("2024-11-17T12:30:00")}
           duration="1hr 02min (32.0km)"
-          startLocation="4700 Kingsway, Burnaby, BC, V5H 4M5 "
+          startLocation="4700 Kingsway, Burnaby, BC, V5H 4M5"
           startTime="10:00am"
           endLocation="3700 Willingdon Ave, Burnaby, BC V5G 3H2"
           endTime="2:00pm"
@@ -126,7 +111,7 @@ function HomeScreen() {
             style={[
               styles.button,
               hasFilledDriverInfo
-                ? styles.requestButton
+                ? [styles.requestButton, { borderColor: currentColors.tint, backgroundColor: currentColors.background }]
                 : styles.disabledButton,
             ]}
             disabled={!hasFilledDriverInfo}
@@ -137,7 +122,7 @@ function HomeScreen() {
                 <Text
                   style={[
                     hasFilledDriverInfo
-                      ? styles.requestButtonText
+                      ? [styles.requestButtonText, { color: currentColors.text }]
                       : styles.disabledButtonText,
                   ]}
                 >
@@ -146,7 +131,7 @@ function HomeScreen() {
                 <Text
                   style={[
                     styles.subText,
-                    hasFilledDriverInfo && styles.requestSubText,
+                    hasFilledDriverInfo && { color: currentColors.text },
                   ]}
                 >
                   I'm available to carpool other kids.
@@ -164,7 +149,7 @@ function HomeScreen() {
 
           {!hasFilledDriverInfo && (
             <>
-              <Text style={styles.signupText}>
+              <Text style={[styles.signupText, { color: currentColors.text }]}>
                 Interested in becoming a carpool driver to help drive kids in
                 your community?
               </Text>
@@ -185,15 +170,15 @@ function HomeScreen() {
           )}
 
           <TouchableOpacity
-            style={styles.requestButton}
+            style={[styles.requestButton, { borderColor: currentColors.tint, backgroundColor: currentColors.background}]}
             onPress={() => router.push("/(tabs)/Carpool/postRequest")}
           >
             <View style={styles.buttonContent}>
               <View style={styles.textContainer}>
-                <Text style={styles.requestButtonText}>
+                <Text style={[styles.requestButtonText, { color: currentColors.text }]}>
                   Looking for a ride for my kid
                 </Text>
-                <Text style={styles.requestSubText}>
+                <Text style={[styles.requestSubText, { color: currentColors.text }]}>
                   Notify me when a ride matches
                 </Text>
               </View>
@@ -204,7 +189,9 @@ function HomeScreen() {
             </View>
           </TouchableOpacity>
 
-          <Text style={styles.activeRequestText}>Active Request</Text>
+          <Text style={[styles.activeRequestText, { color: currentColors.text }]}>
+            Active Request
+          </Text>
         </View>
       </View>
     </ScrollView>
@@ -217,7 +204,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: "#fff",
     justifyContent: "space-between",
   },
   loadingContainer: {
@@ -248,11 +234,9 @@ const styles = StyleSheet.create({
     backgroundColor: "#f0f0f0",
   },
   requestButton: {
-    backgroundColor: "#F7F9FC",
     borderRadius: 10,
     padding: 20,
     marginBottom: 20,
-    borderColor: "#E4E9F2",
     borderWidth: 1,
   },
   buttonContent: {
@@ -267,12 +251,10 @@ const styles = StyleSheet.create({
   },
   disabledButtonText: {
     fontSize: 18,
-    color: "#aaa",
     fontFamily: "Comfortaa",
   },
   signupText: {
     fontSize: 14,
-    color: "#888",
     marginVertical: 10,
     fontFamily: "Comfortaa",
   },
@@ -288,24 +270,20 @@ const styles = StyleSheet.create({
   },
   signUpButtonText: {
     fontSize: 16,
-    color: "#fff",
     fontWeight: "bold",
     fontFamily: "Comfortaa",
   },
   subText: {
     fontSize: 14,
-    color: "#aaa",
     marginTop: 5,
     fontFamily: "Comfortaa",
   },
   requestButtonText: {
     fontSize: 18,
-    color: "#333",
     fontFamily: "Comfortaa",
   },
   requestSubText: {
     fontSize: 14,
-    color: "#333",
     marginTop: 5,
     fontFamily: "Comfortaa",
   },
