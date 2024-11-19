@@ -7,6 +7,7 @@ import { Spinner } from "@ui-kitten/components";
 import { Image } from "react-native";
 import { Child } from "@/graphql/generated";
 import { router } from "expo-router";
+import { useTheme } from "@/contexts/ThemeContext";
 
 const ChildSelector = ({
   onSelectedChildrenChange,
@@ -15,7 +16,7 @@ const ChildSelector = ({
 }) => {
   const [selectedChildren, setSelectedChildren] = useState<string[]>([]);
   const [childrenWithImages, setChildrenWithImages] = useState<Child[]>([]);
-
+  const { currentColors } = useTheme();
   const { data: childrenData, loading: childrenLoading } = useQuery(
     GET_CHILDREN_FOR_USER,
     {
@@ -74,11 +75,11 @@ const ChildSelector = ({
           style={{
             width: 90,
             height: 90,
-            backgroundColor: "#F7F9FC",
+            backgroundColor: currentColors.placeholder,
             borderRadius: 50,
             justifyContent: "center",
             alignItems: "center",
-            borderColor: "#8F9BB3",
+            borderColor: currentColors.tint,
             borderWidth: 1,
           }}
         >

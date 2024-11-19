@@ -1,6 +1,7 @@
 import React from "react";
 import { View, Text } from "react-native";
 import { Select, SelectItem, IndexPath } from "@ui-kitten/components";
+import { useTheme } from "@/contexts/ThemeContext";
 
 const VehicleDetailsPicker = ({
   selectedVehicleIndex,
@@ -19,11 +20,12 @@ const VehicleDetailsPicker = ({
   setSelectedSeatsIndex: (index: IndexPath) => void;
   textColor: string;
 }) => {
+  const { currentColors } = useTheme();
   return (
     <View>
       <Text
         style={{
-          color: "#FF6A00",
+          color: currentColors.tint,
           fontSize: 22,
           marginBottom: 15,
           marginTop: 15,
@@ -33,14 +35,14 @@ const VehicleDetailsPicker = ({
         Vehicle Details
       </Text>
       <Text
-        style={{ color: textColor, marginBottom: 5, fontFamily: "Comfortaa" }}
+        style={{ color: currentColors.text, marginBottom: 5, fontFamily: "Comfortaa" }}
       >
         Select Vehicle
       </Text>
       <View>
         <View
           style={{
-            backgroundColor: "#F7F9FC",
+            backgroundColor: currentColors.placeholder,
             height: 43,
             borderColor: "#E4E9F2",
             borderWidth: 1,
@@ -61,6 +63,12 @@ const VehicleDetailsPicker = ({
               vehicles[selectedVehicleIndex?.row]?.make || "Select Vehicle"
             }
             placeholder="Select Vehicle"
+            style={{
+              backgroundColor: currentColors.background,
+              borderColor: currentColors.placeholder,  
+              borderWidth: 1,
+              borderRadius: 8,            
+            }}
           >
             {vehicles.map((vehicle, index) => (
               <SelectItem
@@ -72,13 +80,13 @@ const VehicleDetailsPicker = ({
         </View>
 
         <Text
-          style={{ color: textColor, marginBottom: 5, fontFamily: "Comfortaa" }}
+          style={{ color: currentColors.text, marginBottom: 5, fontFamily: "Comfortaa" }}
         >
           Seats Available
         </Text>
         <View
           style={{
-            backgroundColor: "#F7F9FC",
+            backgroundColor: currentColors.placeholder,
             height: 43,
             borderColor: "#E4E9F2",
             borderWidth: 1,

@@ -2,23 +2,22 @@ import React from "react";
 import { View, Text } from "react-native";
 import { Select, SelectItem, IndexPath } from "@ui-kitten/components";
 import { Group } from "@/graphql/generated";
-
+import { useTheme } from "@/contexts/ThemeContext";
 const GroupPicker = ({
   groups,
   selectedGroupIndex,
   setSelectedGroupIndex,
-  textColor,
 }: {
   groups: Group[];
   selectedGroupIndex: IndexPath;
   setSelectedGroupIndex: (index: IndexPath) => void;
-  textColor: string;
 }) => {
+  const { currentColors } = useTheme();
   return (
     <View>
       <Text
         style={{
-          color: "#FF6A00",
+          color: currentColors.tint,
           fontSize: 22,
           marginBottom: 15,
           marginTop: 15,
@@ -28,13 +27,13 @@ const GroupPicker = ({
         Select Group
       </Text>
       <Text
-        style={{ color: textColor, marginBottom: 5, fontFamily: "Comfortaa" }}
+        style={{ color: currentColors.text, marginBottom: 5, fontFamily: "Comfortaa" }}
       >
         Groups
       </Text>
       <View
         style={{
-          backgroundColor: "#F7F9FC",
+          backgroundColor: currentColors.placeholder,
           height: 43,
           borderColor: "#E4E9F2",
           borderWidth: 1,
@@ -52,7 +51,7 @@ const GroupPicker = ({
           }}
           value={groups[selectedGroupIndex?.row]?.name || "Select Group"}
           placeholder="Select Group"
-          style={{ borderColor: "transparent" }}
+          style={{ borderColor: currentColors.placeholder }}
         >
           {groups.map((group, index) => (
             <SelectItem title={group.name} key={group.id} />

@@ -1,5 +1,6 @@
 import React from "react";
 import { View, Text, TextInput } from "react-native";
+import { useTheme } from "@/contexts/ThemeContext";
 
 const TripDescriptionInput = ({
   textColor,
@@ -12,11 +13,12 @@ const TripDescriptionInput = ({
   placeholder: string;
   setDescription: (text: string) => void;
 }) => {
+  const { currentColors } = useTheme();
   return (
     <View>
       <Text
         style={{
-          color: textColor,
+          color: currentColors.text,
           marginBottom: 5,
           marginTop: 10,
           fontFamily: "Comfortaa",
@@ -27,8 +29,8 @@ const TripDescriptionInput = ({
       <TextInput
         style={{
           width: "100%",
-          backgroundColor: "#F7F9FC",
-          borderColor: "#E4E9F2",
+          backgroundColor: currentColors.placeholder,
+          borderColor: currentColors.tint,
           borderWidth: 1,
           borderRadius: 15,
           height: 100,
@@ -37,6 +39,7 @@ const TripDescriptionInput = ({
           fontFamily: "Comfortaa",
         }}
         placeholder={placeholder}
+        placeholderTextColor={currentColors.text}
         multiline={true}
         value={description}
         onChangeText={setDescription}

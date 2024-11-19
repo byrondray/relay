@@ -1,29 +1,31 @@
 import React from "react";
 import { View, Text } from "react-native";
+import { useTheme } from "@/contexts/ThemeContext";
 
 const PaymentInfo = ({}) => {
+  const { currentColors } = useTheme();
   return (
     <View
       style={{
         width: "100%",
         padding: 10,
-        borderTopColor: "#FF8833",
+        borderTopColor: currentColors.tint,
         borderTopWidth: 3,
-        borderLeftColor: "#EDF1F7",
+        borderLeftColor: currentColors.placeholder,
         borderLeftWidth: 2,
-        borderRightColor: "#EDF1F7",
+        borderRightColor: currentColors.placeholder,
         borderRightWidth: 2,
-        borderBottomColor: "#EDF1F7",
+        borderBottomColor: currentColors.placeholder,
         borderBottomWidth: 2,
         borderRadius: 10,
-        backgroundColor: "#fff",
+        backgroundColor: currentColors.placeholder,
         marginTop: 20,
       }}
     >
       <Text
         style={{
           fontSize: 16,
-          color: "#222B45",
+          color: currentColors.text,
           padding: 7,
           fontFamily: "Comfortaa",
         }}

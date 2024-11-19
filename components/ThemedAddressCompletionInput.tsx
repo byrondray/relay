@@ -11,6 +11,7 @@ import { TextInputProps } from "react-native";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { ThemedView } from "./ThemedView";
 import debounce from "lodash.debounce";
+import { useTheme } from "@/contexts/ThemeContext";
 
 export function ThemedAddressCompletionInput({
   style,
@@ -29,7 +30,6 @@ export function ThemedAddressCompletionInput({
     { place_id: string; description: string }[]
   >([]);
   const [isSuggestionSelected, setIsSuggestionSelected] = useState(false);
-  const textColor = useThemeColor({}, "placeholder");
 
   const fetchAddressSuggestions = useCallback(
     debounce(async (input: string) => {
@@ -82,15 +82,16 @@ export function ThemedAddressCompletionInput({
       console.error("Error fetching lat/lon:", error);
     }
   };
-
+  const { currentColors } = useTheme();
   return (
     <View style={style}>
       <TextInput
         style={[
           styles.input,
-          { color: textColor, paddingLeft: 15, fontFamily: "Comfortaa" },
+          { color: currentColors.text, paddingLeft: 15, fontFamily: "Comfortaa", backgroundColor: currentColors.placeholder },
           style,
         ]}
+        placeholderTextColor={currentColors.text}
         value={value}
         onChangeText={(text) => {
           if (!isSuggestionSelected) {
