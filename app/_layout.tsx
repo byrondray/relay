@@ -29,9 +29,9 @@ import {
   DefaultTheme,
 } from "@react-navigation/native";
 import { FOREGROUND_NOTIFICATION_SUBSCRIPTION } from "@/graphql/map/queries";
+import { ThemeProvider, useTheme } from "@/contexts/ThemeContext"; // Import ThemeContext for accessing color values
 
 const { width } = Dimensions.get("window");
-import { ThemeProvider, useTheme } from "@/contexts/ThemeContext"; 
 
 export default function RootLayout() {
   const [fontsLoaded] = useFonts({
@@ -101,6 +101,8 @@ export default function RootLayout() {
     );
   }
 
+  const { currentColors } = useTheme(); // Get the current theme's colors
+
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaView style={{ flex: 1 }}>
@@ -109,17 +111,18 @@ export default function RootLayout() {
             {...eva}
             theme={
               colorScheme === "dark"
-                ? { ...eva.dark, ...myTheme }
-                : { ...eva.light, ...myTheme }
+                ? { ...eva.dark, ...myTheme, ...currentColors } // Apply dark theme colors
+                : { ...eva.light, ...myTheme, ...currentColors } // Apply light theme colors
             }
           >
             <ThemeProvider>
               <View
-                style={
-                  colorScheme === "dark"
-                    ? styles.darkContainer
-                    : styles.lightContainer
-                }
+                style={[
+                  styles.container,
+                  {
+                    backgroundColor: colorScheme === "dark" ? currentColors.background : currentColors.background, // Update background color
+                  },
+                ]}
               >
                 <NavigationThemeProvider
                   value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
@@ -162,13 +165,8 @@ export default function RootLayout() {
 }
 
 const styles = StyleSheet.create({
-  darkContainer: {
+  container: {
     flex: 1,
-    backgroundColor: "#000",
-  },
-  lightContainer: {
-    flex: 1,
-    backgroundColor: "#fff",
   },
   loadingContainer: {
     flex: 1,
