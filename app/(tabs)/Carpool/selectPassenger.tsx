@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, TextInput, Image, StyleSheet, ScrollView } from 'react-native';
+import { useTheme } from '@/contexts/ThemeContext'; // Import the theme context
 
 const passengers = [
   { name: 'Catherine', image: require('@/assets/images/Catherine.png') },
@@ -9,14 +10,18 @@ const passengers = [
 ];
 
 export default function SelectPassengerScreen() {
+  const { currentColors } = useTheme(); // Access currentColors from the theme context
+
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: currentColors.background }]}>
       <View style={styles.header}>
-        <Text style={styles.cancelText}>Cancel</Text>
-        <Text style={styles.saveText}>Save</Text>
+        <Text style={[styles.cancelText, { color: currentColors.text }]}>Cancel</Text>
+        <Text style={[styles.saveText, { color: currentColors.text }]}>Save</Text>
       </View>
-      <Text style={styles.title}>Select Passenger</Text>
-      <Text style={styles.subtitle}>Select from recent chat</Text>
+      <Text style={[styles.title, { color: currentColors.text }]}>Select Passenger</Text>
+      <Text style={[styles.subtitle, { color: currentColors.text }]}>
+        Select from recent chat
+      </Text>
 
       <ScrollView
         contentContainerStyle={styles.imageContainer}
@@ -26,16 +31,23 @@ export default function SelectPassengerScreen() {
         {passengers.map((passenger, index) => (
           <View key={index} style={styles.imageWrapper}>
             <Image source={passenger.image} style={styles.image} />
-            <Text style={styles.name}>{passenger.name}</Text>
+            <Text style={[styles.name, { color: currentColors.text }]}>
+              {passenger.name}
+            </Text>
           </View>
         ))}
       </ScrollView>
 
-      <Text style={styles.searchText}>Search from friend list</Text>
+      <Text style={[styles.searchText, { color: currentColors.text }]}>
+        Search from friend list
+      </Text>
       <TextInput
-        style={styles.searchBar}
+        style={[
+          styles.searchBar,
+          { backgroundColor: currentColors.placeholder, borderColor: currentColors.placeholder },
+        ]}
         placeholder="Search from friend list"
-        placeholderTextColor="#B0B0B0"
+        placeholderTextColor={currentColors.text}
       />
     </View>
   );
@@ -44,7 +56,6 @@ export default function SelectPassengerScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
     paddingHorizontal: 20,
     paddingTop: 40,
   },
@@ -53,11 +64,9 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   cancelText: {
-    color: '#FF6C00',
     fontSize: 16,
   },
   saveText: {
-    color: '#1E90FF',
     fontSize: 16,
   },
   title: {
@@ -67,7 +76,6 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     fontSize: 16,
-    color: '#888', // Changed to grey for subtle appearance
     marginVertical: 10,
   },
   imageContainer: {
@@ -88,20 +96,16 @@ const styles = StyleSheet.create({
   },
   name: {
     fontSize: 14,
-    color: '#888', // Changed to grey for subtle appearance
   },
   searchText: {
     fontSize: 16,
-    color: '#888', // Changed to grey for subtle appearance
     marginBottom: 5,
   },
   searchBar: {
     height: 40,
     borderWidth: 1,
-    borderColor: '#E0E0E0',
     borderRadius: 20,
     paddingLeft: 15,
-    backgroundColor: '#F7F7F7',
     marginBottom: 400,
   },
 });
