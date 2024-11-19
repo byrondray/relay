@@ -1,6 +1,6 @@
 import { RequestWithChildrenAndParent } from "@/graphql/generated";
 import React, { useEffect, useState } from "react";
-import { View, Text, Image } from "react-native";
+import { View, Text, Image, Platform } from "react-native";
 import MapView, { Marker, Polyline } from "react-native-maps";
 
 type RideMapProps = {
