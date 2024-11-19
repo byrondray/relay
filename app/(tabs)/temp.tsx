@@ -6,7 +6,7 @@ import {
   Text,
   View,
   Image,
-  Touchable,
+  TouchableOpacity,
 } from "react-native";
 import withAuthCheck from "../../components/WithAuthCheck";
 import MapView, { Marker, Polyline } from "react-native-maps";
@@ -23,47 +23,30 @@ import { HAS_USER_ON_BOARDED } from "@/graphql/user/queries";
 import { router, Href } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { GET_CHILDREN_FOR_USER } from "@/graphql/user/queries";
-import { TouchableOpacity } from "react-native-gesture-handler";
-import { processFontFamily } from "expo-font";
 import { auth } from "@/firebaseConfig";
+import { useTheme } from "@/contexts/ThemeContext";  // Importing ThemeContext
 
 function HomeScreen() {
+  const { currentColors } = useTheme();  // Accessing current colors from context
+
   return (
-    <View style={styles.container}>
-      <Text style={[styles.heading, { fontFamily: "Comfortaa" }]}>
-        New Ride
-      </Text>
+    <View style={[styles.container, { backgroundColor: currentColors.background }]}>
+      <Text style={[styles.heading, { color: currentColors.text }]}>New Ride</Text>
       <View style={{ marginBottom: 20 }}>
         <TouchableOpacity
           onPress={() => router.push("/(tabs)/Carpool/createRide")}
         >
           <View
-            style={{
-              flexDirection: "row",
-              backgroundColor: "#F7F9FC",
-              borderRadius: 20,
-              paddingVertical: 20,
-              paddingHorizontal: 30,
-              borderColor: "#E4E9F2",
-              borderWidth: 1,
-              height: 100,
-              alignItems: "center",
-              justifyContent: "space-between",
-              width: "100%",
-            }}
+            style={[
+              styles.buttonContainer,
+              { backgroundColor: currentColors.background, borderColor: currentColors.tint },
+            ]}
           >
             <View style={{ flexDirection: "column", justifyContent: "center" }}>
-              <Text
-                style={{
-                  color: "black",
-                  fontSize: 20,
-                  fontWeight: "semibold",
-                  marginBottom: 3,
-                }}
-              >
+              <Text style={[styles.buttonText, { color: currentColors.text }]}>
                 I'm a driver
               </Text>
-              <Text style={{ color: "#8F9BB3", fontSize: 16 }}>
+              <Text style={[styles.subText, { color: currentColors.text }]}>
                 I'm available to carpool other kids.
               </Text>
             </View>
@@ -72,7 +55,7 @@ function HomeScreen() {
               style={{
                 width: 40,
                 height: 40,
-                tintColor: "#222B45",
+                tintColor: currentColors.icon,
               }}
             />
           </View>
@@ -83,32 +66,16 @@ function HomeScreen() {
           onPress={() => router.push("/(tabs)/Carpool/postRequest" as Href)}
         >
           <View
-            style={{
-              flexDirection: "row",
-              backgroundColor: "#F7F9FC",
-              borderRadius: 20,
-              paddingVertical: 20,
-              paddingHorizontal: 30,
-              borderColor: "#E4E9F2",
-              borderWidth: 1,
-              height: 100,
-              alignItems: "center",
-              justifyContent: "space-between",
-              width: "100%",
-            }}
+            style={[
+              styles.buttonContainer,
+              { backgroundColor: currentColors.background, borderColor: currentColors.tint },
+            ]}
           >
             <View style={{ flexDirection: "column", justifyContent: "center" }}>
-              <Text
-                style={{
-                  color: "black",
-                  fontSize: 20,
-                  fontWeight: "semibold",
-                  marginBottom: 3,
-                }}
-              >
+              <Text style={[styles.buttonText, { color: currentColors.text }]}>
                 Looking for a ride for my kid
               </Text>
-              <Text style={{ color: "#8F9BB3", fontSize: 16 }}>
+              <Text style={[styles.subText, { color: currentColors.text }]}>
                 Notify me when a ride matches
               </Text>
             </View>
@@ -117,7 +84,7 @@ function HomeScreen() {
               style={{
                 width: 40,
                 height: 40,
-                tintColor: "#222B45",
+                tintColor: currentColors.icon,
               }}
             />
           </View>
@@ -134,7 +101,6 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 16,
     marginTop: 0,
-    backgroundColor: "#fff",
   },
   loadingContainer: {
     flex: 1,
@@ -159,5 +125,25 @@ const styles = StyleSheet.create({
     fontSize: 32,
     fontWeight: "bold",
     marginBottom: 20,
+  },
+  buttonContainer: {
+    flexDirection: "row",
+    borderRadius: 20,
+    paddingVertical: 20,
+    paddingHorizontal: 30,
+    borderWidth: 1,
+    height: 100,
+    alignItems: "center",
+    justifyContent: "space-between",
+    width: "100%",
+  },
+  buttonText: {
+    color: "black",
+    fontSize: 20,
+    fontWeight: "semibold",
+    marginBottom: 3,
+  },
+  subText: {
+    fontSize: 16,
   },
 });
