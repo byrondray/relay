@@ -70,11 +70,17 @@ const RideDateTimePicker = ({
         <Datepicker
           date={selectedDate || undefined}
           onSelect={handleDateSelect}
-          style={{ marginRight: 5, borderColor: "transparent", borderWidth: 0 }}
+          style={{
+            marginRight: 5,
+            borderColor: "transparent",
+            borderWidth: 0,
+          }}
           controlStyle={{
             borderWidth: 0,
             borderColor: "transparent",
+            backgroundColor: currentColors.placeholder,
           }}
+          
         />
       </View>
 

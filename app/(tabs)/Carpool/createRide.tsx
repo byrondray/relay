@@ -772,7 +772,7 @@ const CreateRide = () => {
                 {() => (
                   <Text
                     style={{
-                      color: currentColors.text,
+                      color: "#fff",
                       fontSize: 16,
                       fontFamily: "Comfortaa",
                     }}

@@ -86,6 +86,7 @@ const ChildSelector = ({
           <Image
             style={{
               resizeMode: "contain",
+              tintColor: currentColors.tint
             }}
             source={require("../../assets/images/add-member-icon.png")}
           />

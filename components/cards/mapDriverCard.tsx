@@ -200,7 +200,7 @@ const MapDriverCard = ({
             fontSize: 20,
             fontFamily: "Comfortaa",
             fontWeight: "700",
-            color: currentColors.placeholder,
+            color: currentColors.text,
             letterSpacing: 0.2,
           }}
         >
@@ -234,7 +234,7 @@ const MapDriverCard = ({
           style={{ marginRight: 8 }}
         />
         <Text
-          style={{ fontFamily: "Comfortaa", color: currentColors.placeholder, fontSize: 14 }}
+          style={{ fontFamily: "Comfortaa", color: currentColors.text, fontSize: 14 }}
         >
           {startLocation}
         </Text>
@@ -243,7 +243,7 @@ const MapDriverCard = ({
       <View style={{ flexDirection: "row", alignItems: "center" }}>
         <RedMarker width={20} height={20} style={{ marginRight: 8 }} />
         <Text
-          style={{ fontFamily: "Comfortaa", color: currentColors.placeholder, fontSize: 14 }}
+          style={{ fontFamily: "Comfortaa", color: currentColors.text, fontSize: 14 }}
         >
           {endLocation}
         </Text>

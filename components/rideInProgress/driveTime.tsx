@@ -1,5 +1,6 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
+import { useTheme } from "@/contexts/ThemeContext"
 
 const TimeCard = ({
   startTime,
@@ -8,14 +9,15 @@ const TimeCard = ({
   startTime: string;
   endTime: string;
 }) => {
+  const { currentColors } = useTheme()
   return (
     <View style={styles.card}>
       {/* Start Time Section */}
       <View style={styles.timeSection}>
-        <Text style={styles.timeLabel}>Start time (Estimated time)</Text>
+        <Text style={[styles.timeLabel, {color: currentColors.text}]}>Start time (Estimated time)</Text>
         <Text style={[styles.timeValue, { color: "#FB812A" }]}>
           {startTime}
-          <Text style={styles.timePeriod}>am</Text>
+          <Text style={[styles.timePeriod, {color: currentColors.text}]}>am</Text>
         </Text>
       </View>
 
@@ -24,7 +26,7 @@ const TimeCard = ({
 
       {/* End Time Section */}
       <View style={styles.timeSection}>
-        <Text style={styles.timeLabel}>Arrival time (Estimated time)</Text>
+        <Text style={[styles.timeLabel, {color: currentColors.text}]}>Arrival time (Estimated time)</Text>
         <Text style={[styles.timeValue, { color: "#E24949" }]}>
           {endTime}
           <Text style={styles.timePeriod}>am</Text>
@@ -56,7 +58,7 @@ const styles = StyleSheet.create({
   },
   timeLabel: {
     fontSize: 8,
-    color: "#666666",
+    // color: "#666666",
     fontFamily: "Comfortaa",
     marginBottom: 4,
     alignSelf: "flex-start"
