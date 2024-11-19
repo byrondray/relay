@@ -30,11 +30,20 @@ const VehicleDetailsPicker = ({
           fontSize: 22,
           marginBottom: 15,
           marginTop: 15,
+          fontFamily: "Comfortaa", // Set font to Comfortaa
         }}
       >
         Vehicle Details
       </Text>
-      <Text style={{ color: currentColors.text, marginBottom: 5 }}>Select Vehicle</Text>
+      <Text
+        style={{
+          color: currentColors.text,
+          marginBottom: 5,
+          fontFamily: "Comfortaa", // Set font to Comfortaa
+        }}
+      >
+        Select Vehicle
+      </Text>
       <View>
         <View
           style={{
@@ -55,9 +64,7 @@ const VehicleDetailsPicker = ({
                 setSelectedVehicleIndex(index);
               }
             }}
-            value={
-              vehicles[selectedVehicleIndex?.row]?.make || "Select Vehicle"
-            }
+            value={vehicles[selectedVehicleIndex?.row]?.make || "Select Vehicle"}
             placeholder="Select Vehicle"
           >
             {vehicles.map((vehicle, index) => (
@@ -69,7 +76,13 @@ const VehicleDetailsPicker = ({
           </Select>
         </View>
 
-        <Text style={{ color: currentColors.text, marginBottom: 5 }}>
+        <Text
+          style={{
+            color: currentColors.text,
+            marginBottom: 5,
+            fontFamily: "Comfortaa", // Set font to Comfortaa
+          }}
+        >
           Seats Available
         </Text>
         <View

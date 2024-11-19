@@ -14,7 +14,7 @@ const TripDescriptionInput = ({
   return (
     <View>
       {/* Description Label */}
-      <Text style={{ color: currentColors.text, marginBottom: 5, marginTop: 10 }}>
+      <Text style={{ color: currentColors.text, marginBottom: 5, marginTop: 10, fontFamily: "Comfortaa", }}>
         Description
       </Text>
       
@@ -29,7 +29,8 @@ const TripDescriptionInput = ({
           height: 100,
           paddingLeft: 30,
           paddingRight: 30,
-          color: currentColors.text, // Text inside input
+          color: currentColors.text,
+          fontFamily: "Comfortaa", // Text inside input
         }}
         placeholder="Any preferences for trips? (e.g., preferred age range of kids, allowed stopovers, special requests)"
         placeholderTextColor={currentColors.text} // Placeholder color

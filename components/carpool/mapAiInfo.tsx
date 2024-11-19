@@ -30,6 +30,7 @@ const MapAiInfo = () => {
           fontWeight: "bold",
           color: currentColors.text,
           marginBottom: 10,
+          fontFamily: "Comfortaa"
         }}
       >
         Route Auto-Match
@@ -41,6 +42,7 @@ const MapAiInfo = () => {
           fontSize: 14,
           color: currentColors.text,
           marginBottom: 10,
+          fontFamily: "Comfortaa"
         }}
       >
         Here are some carpool requests with routes matched to you according to
@@ -63,6 +65,7 @@ const MapAiInfo = () => {
           fontSize: 14,
           color: currentColors.text,
           marginTop: 10,
+          fontFamily: "Comfortaa"
         }}
       >
         Routes will adjust based on selected passengers.

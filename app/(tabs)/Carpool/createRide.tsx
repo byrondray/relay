@@ -120,7 +120,7 @@ const CreateRide = () => {
       appearance="ghost"
       onPress={handleModelSubmit}
     >
-      {() => <Text style={{ color: "#fff", fontSize: 16 }}>Submit</Text>}
+      {() => <Text style={{ color: "#fff", fontSize: 16 , fontFamily: "Comfortaa",}}>Submit</Text>}
     </Button>
   );
 
@@ -282,7 +282,7 @@ const CreateRide = () => {
         }, { backgroundColor: currentColors.background }]}
       >
         <View>
-        <Text style={[{ fontSize: 32, fontWeight: "bold", marginBottom: 20 }, { color: currentColors.text }]}>
+        <Text style={[{ fontSize: 32, fontWeight: "bold", marginBottom: 20, fontFamily: "Comfortaa-semibold", }, { color: currentColors.text }]}>
           Create a ride
         </Text>
 
@@ -352,6 +352,7 @@ const CreateRide = () => {
             textAlign: "left",
             marginTop: 5,
             marginBottom: 5,
+            fontFamily: "Comfortaa",
           },  { color: currentColors.text }]}
         >
           You choose the below passenger(s)
@@ -372,6 +373,7 @@ const CreateRide = () => {
               color: "#FF6A00",
               fontSize: 22,
               marginTop: 15,
+              fontFamily: "Comfortaa",
             },  { color: currentColors.text }]}
           >
             Pricing
@@ -388,6 +390,7 @@ const CreateRide = () => {
               color: "#FF6A00",
               fontSize: 22,
               marginTop: 15,
+              fontFamily: "Comfortaa",
             },  { color: currentColors.text }]}
           >
             Trip Preferences

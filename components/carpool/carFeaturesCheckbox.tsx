@@ -37,7 +37,7 @@ const { currentColors } = useTheme();
           checked={extraCarseatChecked}
           onChange={(nextChecked) => setExtraCarseatChecked(nextChecked)}
         />
-        <Text style={{ marginLeft: 8, color: currentColors.text }}>
+        <Text style={{ marginLeft: 8, color: currentColors.text, fontFamily: "Comfortaa", }}>
           With Extra Carseat
         </Text>
       </View>
@@ -47,7 +47,7 @@ const { currentColors } = useTheme();
           checked={winterTiresChecked}
           onChange={(nextChecked) => setWinterTiresChecked(nextChecked)}
         />
-        <Text style={{ marginLeft: 8, color: currentColors.text }}>
+        <Text style={{ marginLeft: 8, color: currentColors.text, fontFamily: "Comfortaa", }}>
           With Winter Tires
         </Text>
       </View>

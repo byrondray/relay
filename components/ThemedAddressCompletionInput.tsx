@@ -90,7 +90,7 @@ export function ThemedAddressCompletionInput({
       <TextInput
         style={[
           styles.input,
-          { color: currentColors.text, backgroundColor: currentColors.placeholder },
+          { color: currentColors.text, backgroundColor: currentColors.placeholder, fontFamily: "Comfortaa", },
           style,
         ]}
         value={value}
