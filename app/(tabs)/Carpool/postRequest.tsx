@@ -15,8 +15,10 @@ import RideDateTimePicker from "@/components/carpool/dateAndTimePicker";
 import TripDescriptionInput from "@/components/carpool/carpoolDescription";
 import { useRequestState } from "@/hooks/carpoolRequestState";
 import RadioGroupComponent from "@/components/carpool/carpoolFrequency";
+import { useTheme } from "@/contexts/ThemeContext"; // Import the theme context
 
 const RequestRide = () => {
+  const { currentColors } = useTheme(); // Destructure currentColors from the theme context
   const {
     startingAddress,
     setStartingAddress,
@@ -28,7 +30,6 @@ const RequestRide = () => {
     setEndingLatLon,
     selectedIndex,
     setSelectedIndex,
-    textColor,
     range,
     setRange,
     showTimePicker,
@@ -77,12 +78,12 @@ const RequestRide = () => {
       <ScrollView
         contentContainerStyle={{
           padding: 15,
-          backgroundColor: "#ffffff",
+          backgroundColor: currentColors.background,  // Use background color from the theme
           flexGrow: 1,
         }}
       >
         <View>
-          <Text style={{ fontSize: 32, fontWeight: "bold", marginBottom: 20 }}>
+          <Text style={{ fontSize: 32, fontWeight: "bold", marginBottom: 20, color: currentColors.text }}>
             Post a request
           </Text>
         </View>
@@ -93,8 +94,8 @@ const RequestRide = () => {
         />
 
         <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-          <Text style={{ color: textColor, marginBottom: 5 }}>From</Text>
-          <Text style={{ color: textColor, marginBottom: 5 }}>* Required</Text>
+          <Text style={{ color: currentColors.text, marginBottom: 5 }}>From</Text>
+          <Text style={{ color: currentColors.text, marginBottom: 5 }}>* Required</Text>
         </View>
 
         <ThemedAddressCompletionInput
@@ -110,10 +111,12 @@ const RequestRide = () => {
           placeholder="Enter Origin"
           style={{ marginBottom: 10 }}
         />
+
         <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-          <Text style={{ color: textColor, marginBottom: 5 }}>To</Text>
-          <Text style={{ color: textColor, marginBottom: 5 }}>* Required</Text>
+          <Text style={{ color: currentColors.text, marginBottom: 5 }}>To</Text>
+          <Text style={{ color: currentColors.text, marginBottom: 5 }}>* Required</Text>
         </View>
+
         <ThemedAddressCompletionInput
           value={endingAddress}
           onChangeText={setEndingAddress}
@@ -123,41 +126,45 @@ const RequestRide = () => {
           onLatLonSelect={(lat, lon) => {
             setEndingLatLon({ lat, lon });
           }}
-          placeholder="Enter Origin"
+          placeholder="Enter Destination"
           style={{ marginBottom: 10 }}
         />
+
         <RideDateTimePicker
           selectedDate={new Date()}
           handleDateSelect={(date) => console.log(date)}
           selectedTime={time}
           handleTimeSelect={handleTimeConfirm}
-          textColor={textColor}
+          textColor={currentColors.text}  // Apply text color from theme
         />
-        <Text style={{ color: textColor, marginBottom: 10, marginTop: 15 }}>
+
+        <Text style={{ color: currentColors.text, marginBottom: 10, marginTop: 15 }}>
           Seats Occupied
         </Text>
+
         <ChildSelector
           onSelectedChildrenChange={(selectedChildren) =>
             console.log(selectedChildren)
           }
         />
+
         <TripDescriptionInput
-          textColor={textColor}
           description={description}
           setDescription={setDescription}
         />
+
         <View
           style={{
             flex: 1,
             justifyContent: "center",
             alignItems: "center",
             paddingHorizontal: 16,
-            backgroundColor: "#fff",
+            backgroundColor: currentColors.background,
             marginTop: 40,
           }}
         >
           <LinearGradient
-            colors={["#ff8833", "#e24a4a"]}
+            colors={["#ff8833", "#e24a4a"]} // Custom gradient for button
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 0 }}
             style={{
@@ -168,6 +175,7 @@ const RequestRide = () => {
           >
             {renderToggleButton()}
           </LinearGradient>
+
           <Popover
             backdropStyle={styles.backdrop}
             visible={visible}
@@ -182,8 +190,8 @@ const RequestRide = () => {
             }}
           >
             <Layout style={styles.content}>
-              <Text>
-                There is no driver avaliable, we'll send you a notification when
+              <Text style={{ color: currentColors.text }}>
+                There is no driver available, we'll send you a notification when
                 one is ready👍
               </Text>
             </Layout>
@@ -208,4 +216,5 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0, 0, 0, 0.5)",
   },
 });
+
 export default RequestRide;

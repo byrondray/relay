@@ -1,6 +1,7 @@
 import React from "react";
-import { View } from "react-native";
+import { View, Text } from "react-native";
 import { Radio, RadioGroup } from "@ui-kitten/components";
+import { useTheme } from "@/contexts/ThemeContext";
 
 interface RadioGroupComponentProps {
   selectedIndex: number;
@@ -11,6 +12,8 @@ const RadioGroupComponent: React.FC<RadioGroupComponentProps> = ({
   selectedIndex,
   setSelectedIndex,
 }) => {
+  const { currentColors } = useTheme();
+
   return (
     <View style={{ marginBottom: 20 }}>
       <RadioGroup
@@ -18,8 +21,15 @@ const RadioGroupComponent: React.FC<RadioGroupComponentProps> = ({
         onChange={(index: number) => setSelectedIndex(index)}
         style={{ flexDirection: "row", width: "100%" }}
       >
-        <Radio style={{ marginRight: 10 }}>One time</Radio>
-        <Radio>Recurring</Radio>
+        <View style={{ flexDirection: "row", alignItems: "center" }}>
+          <Radio style={{ marginRight: 10 }} />
+          <Text style={{ color: currentColors.text, marginRight: 20 }}>One time</Text>
+        </View>
+
+        <View style={{ flexDirection: "row", alignItems: "center" }}>
+          <Radio />
+          <Text style={{ color: currentColors.text, marginLeft: 10 }}>Recurring</Text>
+        </View>
       </RadioGroup>
     </View>
   );
