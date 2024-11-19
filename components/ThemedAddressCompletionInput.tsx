@@ -84,7 +84,7 @@ export function ThemedAddressCompletionInput({
   };
 
   return (
-    <View style={style}>
+    <View style={{}}>
       <TextInput
         style={[
           styles.input,
