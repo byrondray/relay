@@ -2,6 +2,7 @@ import React from "react";
 import { View, Text, Image, StyleSheet } from "react-native";
 import { CarpoolWithRequests, User, Vehicle } from "@/graphql/generated";
 import { auth } from "@/firebaseConfig";
+import { useTheme } from "@/contexts/ThemeContext"; // Ensure this context is set up
 
 const DriverCardInProgress = ({
   driverData,
@@ -12,8 +13,10 @@ const DriverCardInProgress = ({
   vehicleData: Vehicle;
   carpoolData: CarpoolWithRequests;
 }) => {
+  const { currentColors } = useTheme();
+
   return (
-    <View style={styles.card}>
+    <View style={[styles.card, { backgroundColor: currentColors.background }]}>
       {/* Driver Image */}
       <View style={styles.profileContainer}>
         {driverData?.imageUrl && (
@@ -22,40 +25,51 @@ const DriverCardInProgress = ({
             style={styles.driverImage}
           />
         )}
-        <Text style={styles.likesText}>❤️ 300 likes</Text>
+        <Text style={[styles.likesText, { color: currentColors.icon }]}>
+          ❤️ 300 likes
+        </Text>
       </View>
 
       <View style={styles.infoContainer}>
         {/* Driver Info */}
         <View>
-          <Text style={styles.driverLabel}>Driver</Text>
-          <Text style={[styles.driverName, { marginTop: 5 }]}>
+          <Text style={[styles.driverLabel, { color: currentColors.placeholder }]}>
+            Driver
+          </Text>
+          <Text style={[styles.driverName, { color: currentColors.text, marginTop: 5 }]}>
             {driverData?.firstName[0].toUpperCase()}
             {driverData?.firstName.slice(1)} {driverData?.lastName}
           </Text>
-          <Text style={[styles.driverDetails, { marginTop: 5 }]}>
+          <Text
+            style={[styles.driverDetails, { color: currentColors.placeholder, marginTop: 5 }]}
+          >
             Car Plate
           </Text>
-          <Text style={[styles.driverName, { marginTop: 5 }]}>
+          <Text style={[styles.driverName, { color: currentColors.text, marginTop: 5 }]}>
             {vehicleData?.licensePlate}
           </Text>
-          <Text style={[styles.driverDetails, { marginTop: 5 }]}>
+          <Text
+            style={[styles.driverDetails, { color: currentColors.placeholder, marginTop: 5 }]}
+          >
             Vehicle Model
           </Text>
-          <Text style={[styles.driverName, { marginTop: 5 }]}>
+          <Text style={[styles.driverName, { color: currentColors.text, marginTop: 5 }]}>
             {vehicleData?.model}
           </Text>
         </View>
-
-        {/* Likes */}
       </View>
 
       {/* Message Icon */}
       {driverData?.id !== auth.currentUser?.uid && (
-        <View style={styles.messageIconContainer}>
+        <View
+          style={[
+            styles.messageIconContainer,
+            { backgroundColor: currentColors.tint },
+          ]}
+        >
           <Image
-            source={require("@/assets/images/message-circle.png")} // Replace with the correct path
-            style={styles.messageIcon}
+            source={require("@/assets/images/message-circle.png")}
+            style={[styles.messageIcon, { tintColor: currentColors.background }]}
           />
         </View>
       )}
@@ -67,7 +81,6 @@ const styles = StyleSheet.create({
   card: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#fff",
     borderRadius: 16,
     padding: 16,
     marginVertical: 10,
@@ -88,7 +101,6 @@ const styles = StyleSheet.create({
   },
   driverLabel: {
     fontSize: 12,
-    color: "#888",
     fontFamily: "Comfortaa",
   },
   driverName: {
@@ -99,18 +111,15 @@ const styles = StyleSheet.create({
   },
   driverDetails: {
     fontSize: 14,
-    color: "#555",
     fontFamily: "Comfortaa",
   },
   likesText: {
     fontSize: 14,
-    color: "#E74C3C",
     fontWeight: "bold",
     marginTop: 10,
     fontFamily: "Comfortaa",
   },
   messageIconContainer: {
-    backgroundColor: "#FF8C00",
     borderRadius: 25,
     padding: 8,
     justifyContent: "center",
@@ -120,12 +129,11 @@ const styles = StyleSheet.create({
   messageIcon: {
     width: 24,
     height: 24,
-    tintColor: "#fff",
   },
   profileContainer: {
     flexDirection: "column",
-    alignItems: "center", // Center profile picture and likes
-    justifyContent: "center", // Center vertically
+    alignItems: "center",
+    justifyContent: "center",
     marginRight: 22,
   },
 });

@@ -2,6 +2,7 @@ import React from "react";
 import { View, Text, Image, StyleSheet } from "react-native";
 import { RequestWithParentAndChild } from "@/graphql/generated";
 import TimeCard from "./driveTime";
+import { useTheme } from "@/contexts/ThemeContext";
 
 const RequestCard = ({
   request,
@@ -12,13 +13,19 @@ const RequestCard = ({
   index: number;
   isCurrentUser: boolean;
 }) => {
+  const { currentColors } = useTheme();
   let code;
   if (isCurrentUser) {
     const randomNumber = Math.floor(100000 + Math.random() * 900000).toString();
     code = randomNumber.split("");
   }
   return (
-    <View style={[styles.card, isCurrentUser && styles.currentUserCard]}>
+    <View
+      style={[
+        styles.card,
+        isCurrentUser && { backgroundColor: currentColors.background, borderColor: currentColors.tint },
+      ]}
+    >
       {/* Header Section */}
       <View style={styles.header}>
         <View style={styles.headerLeft}>
@@ -29,38 +36,39 @@ const RequestCard = ({
             />
           )}
           <View>
-            <Text style={styles.passengerLabel}>Passenger {index + 1}</Text>
-            <Text style={styles.passengerName}>
+            <Text style={[styles.passengerLabel, {color: currentColors.placeholder}]}>Passenger {index + 1}</Text>
+            <Text style={[styles.passengerName, {color: currentColors.text}]}>
               {request.parent.firstName} {request.parent.lastName}
             </Text>
           </View>
         </View>
         <View
-          style={{
-            width: 110,
-            backgroundColor: "#3366FF",
-            marginRight: 10,
-            borderRadius: 16,
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "center",
-            paddingHorizontal: 10,
-            paddingVertical: 7,
-          }}
+          style={[
+            styles.statusBadge,
+            { backgroundColor: currentColors.background },
+          ]}
         >
           <Image source={require("@/assets/images/processing-icon.png")} />
-          <Text style={{ color: "#fff", marginLeft: 7 }}>Waiting</Text>
+          <Text style={[styles.statusText, { color: currentColors.text }]}>
+            Waiting
+          </Text>
         </View>
       </View>
 
       {/* Security Code for Current User */}
       {isCurrentUser && code && (
         <View style={styles.codeContainer}>
-          <Text style={styles.codeLabel}>Your security matching code</Text>
+          <Text style={[styles.codeLabel, {color: currentColors.placeholder}]}>Your security matching code</Text>
           <View style={styles.codeRow}>
             {code.map((digit, idx) => (
-              <View key={idx} style={styles.codeCircle}>
-                <Text style={styles.codeText}>{digit}</Text>
+              <View
+                key={idx}
+                style={[
+                  styles.codeCircle,
+                  { backgroundColor: currentColors.tint },
+                ]}
+              >
+                <Text style={[styles.codeText, {color: currentColors.text}]}>{digit}</Text>
               </View>
             ))}
           </View>
@@ -69,17 +77,20 @@ const RequestCard = ({
 
       {/* Pickup Location Section */}
       <View style={styles.pickupSection}>
-        <Text style={styles.pickUpLocation}>
+        <Text style={[styles.pickUpLocation, {color: currentColors.placeholder}]}>
           Pick up Location - Point {index + 1}
         </Text>
         <View style={{ marginTop: 5, flexDirection: "row", marginBottom: -10 }}>
           <View
             style={[
               styles.icon,
-              { backgroundColor: "#FF6A00", marginRight: 5 },
+              {
+                backgroundColor: currentColors.tint,
+                marginRight: 5,
+              },
             ]}
           />
-          <Text style={[styles.location, { flexShrink: 1 }]}>
+          <Text style={[styles.location, { flexShrink: 1 }, {color: currentColors.placeholder}]}>
             {request.startAddress}
           </Text>
         </View>
@@ -93,15 +104,10 @@ const RequestCard = ({
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: "#fff",
     borderRadius: 16,
     padding: 16,
     marginBottom: 16,
     borderWidth: 1,
-    borderColor: "#E0E0E0",
-  },
-  currentUserCard: {
-    backgroundColor: "rgba(251, 104, 86, 0.1)",
   },
   header: {
     flexDirection: "row",
@@ -121,7 +127,6 @@ const styles = StyleSheet.create({
   },
   passengerLabel: {
     fontSize: 14,
-    color: "#888",
     fontFamily: "Comfortaa",
   },
   passengerName: {
@@ -130,22 +135,22 @@ const styles = StyleSheet.create({
     fontFamily: "Comfortaa",
   },
   statusBadge: {
-    backgroundColor: "#3366FF",
     borderRadius: 12,
     paddingHorizontal: 10,
     paddingVertical: 5,
+    flexDirection: "row",
+    alignItems: "center",
   },
   statusText: {
     fontSize: 12,
-    color: "#fff",
     fontFamily: "Comfortaa",
+    marginLeft: 7,
   },
   codeContainer: {
     marginBottom: 16,
   },
   codeLabel: {
     fontSize: 14,
-    color: "#555",
     marginBottom: 8,
     fontFamily: "Comfortaa",
   },
@@ -154,24 +159,16 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     paddingHorizontal: 10,
   },
-  icon: {
-    width: 16,
-    height: 16,
-    borderRadius: 8,
-    marginRight: 12,
-  },
   codeCircle: {
     width: 40,
     height: 40,
     borderRadius: 50,
-    backgroundColor: "#FF6A00",
     justifyContent: "center",
     alignItems: "center",
     marginRight: 8,
   },
   codeText: {
     fontSize: 16,
-    color: "#fff",
     fontFamily: "Comfortaa",
   },
   pickupSection: {
@@ -179,20 +176,17 @@ const styles = StyleSheet.create({
   },
   pickUpLocation: {
     fontSize: 14,
-    color: "#888",
     marginBottom: 4,
     fontFamily: "Comfortaa",
   },
   location: {
     fontSize: 15,
-    color: "#8F9BB3",
     fontFamily: "Comfortaa",
   },
-  distanceDuration: {
-    fontSize: 14,
-    color: "#888",
-    marginTop: 4,
-    fontFamily: "Comfortaa",
+  icon: {
+    width: 16,
+    height: 16,
+    borderRadius: 8,
   },
 });
 
