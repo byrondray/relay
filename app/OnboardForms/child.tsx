@@ -19,8 +19,10 @@ import debounce from "lodash.debounce";
 import ImageUpload from "@/components/carpool/uploadImageInput";
 import * as ImagePicker from "expo-image-picker";
 import { LinearGradient } from "expo-linear-gradient";
+import { useTheme } from "@/contexts/ThemeContext"; // Importing ThemeContext
 
 function ChildForm(): JSX.Element {
+  const { currentColors } = useTheme(); // Accessing current colors from context
   const [children, setChildren] = useState([
     { firstName: "", lastName: "", school: "", schoolEmail: "" },
   ]);
@@ -28,7 +30,7 @@ function ChildForm(): JSX.Element {
   const [schoolLoading, setSchoolLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [schoolResults, setSchoolResults] = useState<
-    { id: string; name: string; city: string }[]
+    { id: string; name: string; city: string }[] 
   >([]);
   const [profileImage, setProfileImage] = useState<string | null>(null);
 
@@ -109,6 +111,7 @@ function ChildForm(): JSX.Element {
       setLoading(false);
     }
   };
+
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
@@ -117,8 +120,6 @@ function ChildForm(): JSX.Element {
       quality: 1,
     });
 
-    console.log(result);
-
     if (!result.canceled) {
       setProfileImage(result.assets[0].uri);
     }
@@ -126,15 +127,14 @@ function ChildForm(): JSX.Element {
 
   return (
     <KeyboardAvoidingView
-      style={styles.container}
+      style={[styles.container, { backgroundColor: currentColors.background }]}
       behavior={Platform.OS === "ios" ? "padding" : undefined}
     >
-      <Text style={[styles.heading, { fontFamily: "Comfortaa" }]}>
+      <Text style={[styles.heading, { fontFamily: "Comfortaa", color: currentColors.text }]}>
         Kid Info
       </Text>
 
-
-      {errorMessage && <Text style={[styles.errorText, {fontFamily: "Comfortaa"}]}>{errorMessage}</Text>}
+      {errorMessage && <Text style={[styles.errorText, { fontFamily: "Comfortaa", color: currentColors.text }]}>{errorMessage}</Text>}
       <ParentFormLabel label="Profile Image" />
       <ImageUpload profileImage={profileImage} pickImage={pickImage} />
       {children.map((child, index) => (
@@ -143,7 +143,7 @@ function ChildForm(): JSX.Element {
             <ParentFormLabel label={`Child ${index + 1} - First Name`} />
             <ParentFormInput
               placeholder="First Name"
-              value={"Jack"}
+              value={child.firstName}
               onChangeText={(text) =>
                 handleInputChange(index, "firstName", text)
               }
@@ -168,7 +168,7 @@ function ChildForm(): JSX.Element {
               onChangeText={(text) => handleInputChange(index, "school", text)}
             />
             {schoolLoading && (
-              <ActivityIndicator size="small" color="#0000ff" />
+              <ActivityIndicator size="small" color={currentColors.icon} />
             )}
             {schoolResults.length > 0 && (
               <FlatList
@@ -179,7 +179,7 @@ function ChildForm(): JSX.Element {
                     onPress={() => handleSchoolSelect(index, item.name)}
                   >
                     <Text
-                      style={[styles.schoolResult, { fontFamily: "Comfortaa" }]}
+                      style={[styles.schoolResult, { fontFamily: "Comfortaa", color: currentColors.text }]}
                     >
                       {item.name} - {item.city}
                     </Text>
@@ -210,7 +210,7 @@ function ChildForm(): JSX.Element {
         }}
       >
         <Text
-          style={{ color: "#8F9BB3", fontFamily: "Comfortaa" }}
+          style={[{ color: currentColors.text, fontFamily: "Comfortaa" }]}
           onPress={handleAddKid}
         >
           + Add Kid
@@ -231,7 +231,7 @@ function ChildForm(): JSX.Element {
           disabled={loading}
         >
           {loading ? (
-            <ActivityIndicator size="small" color="#ffffff" />
+            <ActivityIndicator size="small" color={currentColors.text} />
           ) : (
             <Text
               style={{
@@ -255,7 +255,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
-    backgroundColor: "#fff",
   },
   heading: {
     fontSize: 32,

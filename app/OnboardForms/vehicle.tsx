@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   Text,
   View,
@@ -12,16 +12,18 @@ import { Href, router } from "expo-router";
 import { useQuery, useMutation } from "@apollo/client";
 import { CREATE_VEHICLE, GET_VEHICLE_FOR_USER } from "@/graphql/user/queries";
 import { getAuth } from "firebase/auth";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ScrollView } from "react-native-gesture-handler";
 import ImageUpload from "@/components/carpool/uploadImageInput";
 import * as ImagePicker from "expo-image-picker";
 import { LinearGradient } from "expo-linear-gradient";
 import { CheckBox } from "@ui-kitten/components";
+import { useTheme } from "@/contexts/ThemeContext";
 
 function VehicleForm(): JSX.Element {
   const auth = getAuth();
   const userId = auth.currentUser?.uid;
+
+  const { currentColors } = useTheme(); // Accessing current colors from the theme context
 
   const [make, setMake] = useState("");
   const [model, setModel] = useState("");
@@ -79,12 +81,12 @@ function VehicleForm(): JSX.Element {
   };
 
   if (vehicleLoading) {
-    return <ActivityIndicator size="large" color="#0000ff" />;
+    return <ActivityIndicator size="large" color={currentColors.tint} />;
   }
 
   if (vehicleError) {
     return (
-      <Text style={[styles.errorText, { fontFamily: "Comfortaa" }]}>
+      <Text style={[styles.errorText, { color: currentColors.text }]}>
         Error loading vehicle data.
       </Text>
     );
@@ -98,8 +100,6 @@ function VehicleForm(): JSX.Element {
       quality: 1,
     });
 
-    console.log(result);
-
     if (!result.canceled) {
       setInsuranceImage(result.assets[0].uri);
     }
@@ -107,13 +107,13 @@ function VehicleForm(): JSX.Element {
 
   return (
     <ScrollView>
-      <View style={[styles.container, { backgroundColor: "#ffffff" }]}>
-        <Text style={[styles.heading, { fontFamily: "Comfortaa" }]}>
+      <View style={[styles.container, { backgroundColor: currentColors.background }]}>
+        <Text style={[styles.heading, { color: currentColors.text, fontFamily: "Comfortaa" }]}>
           Vehicle Information
         </Text>
 
         {errorMessage && (
-          <Text style={[styles.errorText, { fontFamily: "Comfortaa" }]}>
+          <Text style={[styles.errorText, { color: currentColors.text }]}>
             {errorMessage}
           </Text>
         )}
@@ -176,24 +176,15 @@ function VehicleForm(): JSX.Element {
           <ParentFormLabel label="Driver’s License " />
           <TouchableOpacity>
             <View
-              style={{
-                backgroundColor: "#F7F9FC",
-                width: "100%",
-                borderRadius: 15,
-                height: 100,
-                justifyContent: "center",
-                alignItems: "center",
-                borderColor: "#E4E9F2",
-                marginTop: 15,
-              }}
+              style={[
+                styles.imageUploadContainer,
+                { backgroundColor: currentColors.background },
+              ]}
             >
-              <Text style={{ color: "#8F9BB3", fontFamily: "Comfortaa" }}>
+              <Text style={{ color: currentColors.text, fontFamily: "Comfortaa" }}>
                 Press here to upload photo of insurance details
               </Text>
-              <ImageUpload
-                profileImage={insuranceImage}
-                pickImage={pickImage}
-              />
+              <ImageUpload profileImage={insuranceImage} pickImage={pickImage} />
             </View>
           </TouchableOpacity>
         </View>
@@ -202,24 +193,16 @@ function VehicleForm(): JSX.Element {
           <ParentFormLabel label="Vehicle Insurance Proof" />
           <TouchableOpacity>
             <View
-              style={{
-                backgroundColor: "#F7F9FC",
-                width: "100%",
-                borderRadius: 15,
-                height: 100,
-                justifyContent: "center",
-                alignItems: "center",
-                borderColor: "#E4E9F2",
-                marginTop: 15,
-              }}
+              style={[
+                styles.imageUploadContainer,
+                { backgroundColor: currentColors.background },
+              ]}
             >
-              <ImageUpload
-                profileImage={insuranceImage}
-                pickImage={pickImage}
-              />
+              <ImageUpload profileImage={insuranceImage} pickImage={pickImage} />
             </View>
           </TouchableOpacity>
         </View>
+
         <View
           style={{
             flexDirection: "row",
@@ -234,7 +217,7 @@ function VehicleForm(): JSX.Element {
           <Text
             style={{
               fontSize: 12,
-              color: "#000",
+              color: currentColors.text,
               marginLeft: 8,
               fontFamily: "Comfortaa",
             }}
@@ -258,7 +241,7 @@ function VehicleForm(): JSX.Element {
             disabled={loading}
           >
             {loading ? (
-              <ActivityIndicator size="small" color="#ffffff" />
+              <ActivityIndicator size="small" color={currentColors.text} />
             ) : (
               <Text
                 style={{
@@ -287,12 +270,21 @@ const styles = StyleSheet.create({
     fontSize: 32,
     fontWeight: "bold",
     marginBottom: 20,
-    fontFamily: "Comfortaa",
   },
   errorText: {
     color: "red",
     marginBottom: 10,
     fontFamily: "Comfortaa",
+  },
+  imageUploadContainer: {
+    backgroundColor: "#F7F9FC",
+    width: "100%",
+    borderRadius: 15,
+    height: 100,
+    justifyContent: "center",
+    alignItems: "center",
+    borderColor: "#E4E9F2",
+    marginTop: 15,
   },
 });
 
