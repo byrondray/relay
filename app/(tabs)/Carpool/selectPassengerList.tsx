@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Image, StyleSheet, ScrollView } from 'react-native';
+import { useTheme } from '@/contexts/ThemeContext'; // Import the theme context
 
 type Friend = {
   name: string;
@@ -51,6 +52,7 @@ const groupFriendsByInitial = (friends: Friend[]) => {
 };
 
 export default function SelectPassengerScreen() {
+  const { currentColors } = useTheme();  // Access currentColors from the theme context
   const [searchTerm, setSearchTerm] = useState<string>('');
   const groupedFriends = groupFriendsByInitial(friendsList);
 
@@ -66,14 +68,14 @@ export default function SelectPassengerScreen() {
   }, {} as { [key: string]: Friend[] });
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: currentColors.background }]}>
       <View style={styles.header}>
-        <Text style={styles.cancelText}>Cancel</Text>
-        <Text style={styles.saveText}>Save</Text>
+        <Text style={[styles.cancelText, { color: currentColors.text }]}>Cancel</Text>
+        <Text style={[styles.saveText, { color: currentColors.text }]}>Save</Text>
       </View>
       
-      <Text style={styles.title}>Select Passenger</Text>
-      <Text style={styles.subtitle}>Select from recent chat</Text>
+      <Text style={[styles.title, { color: currentColors.text }]}>Select Passenger</Text>
+      <Text style={[styles.subtitle, { color: currentColors.text }]}>Select from recent chat</Text>
 
       {/* Recent Passengers Section */}
       <View style={styles.recentPassengersContainer}>
@@ -85,7 +87,7 @@ export default function SelectPassengerScreen() {
           {passengers.map((passenger, index) => (
             <View key={index} style={styles.imageWrapper}>
               <Image source={passenger.image} style={styles.image} />
-              <Text style={styles.name}>{passenger.name}</Text>
+              <Text style={[styles.name, { color: currentColors.text }]}>{passenger.name}</Text>
             </View>
           ))}
         </ScrollView>
@@ -93,11 +95,11 @@ export default function SelectPassengerScreen() {
 
       {/* Friends Container (Search Bar + Friends List) */}
       <View style={styles.friendsContainer}>
-        <Text style={styles.searchText}>Search from friend list</Text>
+        <Text style={[styles.searchText, { color: currentColors.text }]}>Search from friend list</Text>
         <TextInput
-          style={styles.searchBar}
+          style={[styles.searchBar, { backgroundColor: currentColors.text }]}
           placeholder="Search from friend list"
-          placeholderTextColor="#B0B0B0"
+          placeholderTextColor={currentColors.text}
           value={searchTerm}
           onChangeText={setSearchTerm} // Update search term on text input change
         />
@@ -105,14 +107,14 @@ export default function SelectPassengerScreen() {
         <ScrollView contentContainerStyle={styles.friendsList}>
           {Object.keys(filteredFriends).map((initial) => (
             <View key={initial} style={styles.initialSection}>
-              <Text style={styles.initialHeader}>{initial}</Text>
+              <Text style={[styles.initialHeader, { color: currentColors.text }]}>{initial}</Text>
               {filteredFriends[initial].map((friend, index) => (
                 <View key={index} style={styles.friendWrapper}>
                   <View style={styles.friendInfo}>
-                    <Text style={styles.friendInitial}>{friend.initial}</Text>
+                    <Text style={[styles.friendInitial, { backgroundColor: currentColors.text }]}>{friend.initial}</Text>
                     <View>
-                      <Text style={styles.friendName}>{friend.name}</Text>
-                      <Text style={styles.friendClass}>{friend.class}</Text>
+                      <Text style={[styles.friendName, { color: currentColors.text }]}>{friend.name}</Text>
+                      <Text style={[styles.friendClass, { color: currentColors.text }]}>{friend.class}</Text>
                     </View>
                   </View>
                 </View>
@@ -128,7 +130,6 @@ export default function SelectPassengerScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
     paddingHorizontal: 20,
     paddingTop: 40,
   },
@@ -137,11 +138,9 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   cancelText: {
-    color: '#FF6C00',
     fontSize: 16,
   },
   saveText: {
-    color: '#1E90FF',
     fontSize: 16,
   },
   title: {
@@ -151,7 +150,6 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     fontSize: 16,
-    color: '#888',
     marginVertical: spacing.small,
   },
   recentPassengersContainer: {
@@ -173,7 +171,6 @@ const styles = StyleSheet.create({
   },
   name: {
     fontSize: 14,
-    color: '#888',
     textAlign: 'center',
   },
   friendsContainer: {
@@ -182,16 +179,13 @@ const styles = StyleSheet.create({
   },
   searchText: {
     fontSize: 16,
-    color: '#888',
     marginBottom: 5,
   },
   searchBar: {
     height: 40,
     borderWidth: 1,
-    borderColor: '#E0E0E0',
     borderRadius: 20,
     paddingLeft: spacing.medium,
-    backgroundColor: '#F7F7F7',
     marginBottom: spacing.medium,
     marginHorizontal: spacing.small,
   },
@@ -203,7 +197,6 @@ const styles = StyleSheet.create({
   },
   initialHeader: {
     fontSize: 18,
-    color: '#888',
     paddingHorizontal: spacing.medium,
   },
   friendWrapper: {
@@ -220,7 +213,6 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: '#FF6C00',
     color: '#FFFFFF',
     textAlign: 'center',
     lineHeight: 40,
@@ -230,10 +222,8 @@ const styles = StyleSheet.create({
   },
   friendName: {
     fontSize: 16,
-    color: '#333',
   },
   friendClass: {
     fontSize: 14,
-    color: '#888',
   },
 });
