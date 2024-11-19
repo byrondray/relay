@@ -2,14 +2,12 @@ import React, { useState, useCallback } from "react";
 import {
   TextInput,
   StyleSheet,
-  FlatList,
   TouchableOpacity,
   Text,
   View,
 } from "react-native";
 import { TextInputProps } from "react-native";
-import { useThemeColor } from "@/hooks/useThemeColor";
-import { ThemedView } from "./ThemedView";
+import { useTheme } from "@/contexts/ThemeContext";
 import debounce from "lodash.debounce";
 
 export function ThemedAddressCompletionInput({
@@ -29,8 +27,11 @@ export function ThemedAddressCompletionInput({
     { place_id: string; description: string }[]
   >([]);
   const [isSuggestionSelected, setIsSuggestionSelected] = useState(false);
-  const textColor = useThemeColor({}, "placeholder");
 
+  // Get the current colors from the theme
+  const { currentColors } = useTheme();
+
+  // Function to fetch address suggestions with debounce
   const fetchAddressSuggestions = useCallback(
     debounce(async (input: string) => {
       if (!input) return;
@@ -60,6 +61,7 @@ export function ThemedAddressCompletionInput({
     []
   );
 
+  // Function to fetch lat/lon from placeId
   const fetchLatLonFromPlaceId = async (placeId: string) => {
     try {
       const apiKey = process.env.EXPO_PUBLIC_GOOGLE_MAPS_API;
@@ -86,7 +88,11 @@ export function ThemedAddressCompletionInput({
   return (
     <View style={style}>
       <TextInput
-        style={[styles.input, { color: textColor, paddingLeft: 15 }, style]}
+        style={[
+          styles.input,
+          { color: currentColors.text, backgroundColor: currentColors.placeholder },
+          style,
+        ]}
         value={value}
         onChangeText={(text) => {
           if (!isSuggestionSelected) {
@@ -96,6 +102,8 @@ export function ThemedAddressCompletionInput({
             setIsSuggestionSelected(false);
           }
         }}
+        placeholder="Enter address"
+        placeholderTextColor="#FFFFFF" // Set placeholder text color to white
         {...restProps}
       />
       {suggestions.length > 0 && (
@@ -123,8 +131,6 @@ const styles = StyleSheet.create({
   input: {
     padding: 10,
     borderRadius: 20,
-    backgroundColor: "#F7F9FC",
-    borderColor: "#E4E9F2",
     borderWidth: 1,
     height: 43,
   },

@@ -27,7 +27,7 @@ const RideDateTimePicker = ({
       </Text>
       <View
         style={{
-          backgroundColor: "#F7F9FC",
+          backgroundColor: currentColors.placeholder,
           height: 43,
           borderColor: "#E4E9F2",
           borderWidth: 1,
@@ -52,7 +52,7 @@ const RideDateTimePicker = ({
       <TouchableOpacity onPress={() => setShowTimePicker(true)}>
         <View
           style={{
-            backgroundColor: "#F7F9FC",
+            backgroundColor: currentColors.placeholder,
             height: 43,
             borderColor: "#E4E9F2",
             borderWidth: 1,
@@ -68,7 +68,7 @@ const RideDateTimePicker = ({
             source={require("@/assets/images/calendar-icon.png")}
             style={{ marginTop: 2 }}
           />
-          <Text style={{ marginLeft: 15, color: textColor, marginRight: 25 }}>
+          <Text style={{ marginLeft: 15, color: currentColors.text, marginRight: 25 }}>
             {selectedTime ? selectedTime : "Select Date & Time"}
           </Text>
         </View>

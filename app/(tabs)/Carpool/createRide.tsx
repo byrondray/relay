@@ -267,7 +267,7 @@ const CreateRide = () => {
     selectedSeatsIndex,
   ]);
 
-  const textColor = useThemeColor({}, "placeholder");
+  const textColor = currentColors.placeholder;
 
   return (
     <KeyboardAvoidingView
@@ -324,7 +324,7 @@ const CreateRide = () => {
           textColor={textColor}
         />
 
-        <Text style={{ color: textColor, marginBottom: 10, marginTop: 15 }}>
+        <Text style={[{ color: textColor, marginBottom: 10, marginTop: 15 },  { color: currentColors.text }]}>
           Seats Occupied
         </Text>
         <ChildSelector onSelectedChildrenChange={setSelectedChildren} />
@@ -347,12 +347,12 @@ const CreateRide = () => {
         />
 
         <Text
-          style={{
+          style={[{
             color: "#8F9BB3",
             textAlign: "left",
             marginTop: 5,
             marginBottom: 5,
-          }}
+          },  { color: currentColors.text }]}
         >
           You choose the below passenger(s)
         </Text>
@@ -368,11 +368,11 @@ const CreateRide = () => {
             textColor={textColor}
           />
           <Text
-            style={{
+            style={[{
               color: "#FF6A00",
               fontSize: 22,
               marginTop: 15,
-            }}
+            },  { color: currentColors.text }]}
           >
             Pricing
           </Text>
@@ -384,16 +384,16 @@ const CreateRide = () => {
           />
           <PaymentInfo />
           <Text
-            style={{
+            style={[{
               color: "#FF6A00",
               fontSize: 22,
               marginTop: 15,
-            }}
+            },  { color: currentColors.text }]}
           >
             Trip Preferences
           </Text>
           <TripDescriptionInput
-            textColor={textColor}
+            
             description={description}
             setDescription={setDescription}
           />
@@ -404,7 +404,7 @@ const CreateRide = () => {
             justifyContent: "center",
             alignItems: "center",
             paddingHorizontal: 16,
-            backgroundColor: "#fff",
+            backgroundColor: currentColors.background,
           }}
         >
           <LinearGradient

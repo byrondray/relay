@@ -1,26 +1,29 @@
 import React from "react";
 import { View, Text } from "react-native";
+import { useTheme } from "@/contexts/ThemeContext";
 
-const PaymentInfo = ({}) => {
+const PaymentInfo = () => {
+  const { currentColors } = useTheme();
+
   return (
     <View
       style={{
         width: "100%",
         padding: 10,
-        borderTopColor: "#FF8833",
+        borderTopColor: currentColors.placeholder, // Update with accent color
         borderTopWidth: 3,
-        borderLeftColor: "#EDF1F7",
+        borderLeftColor: currentColors.placeholder, // Update with border color
         borderLeftWidth: 2,
-        borderRightColor: "#EDF1F7",
+        borderRightColor: currentColors.placeholder,
         borderRightWidth: 2,
-        borderBottomColor: "#EDF1F7",
+        borderBottomColor: currentColors.placeholder,
         borderBottomWidth: 2,
         borderRadius: 10,
-        backgroundColor: "#fff",
+        backgroundColor: currentColors.background, // Update with background color
         marginTop: 20,
       }}
     >
-      <Text style={{ fontSize: 16, color: "#222B45", padding: 7 }}>
+      <Text style={{ fontSize: 16, color: currentColors.text, padding: 7 }}>
         Please note that Relay does not handle payment processing. Any costs
         shared between users are arranged directly between them.
       </Text>

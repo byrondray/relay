@@ -6,6 +6,7 @@ import { GET_CHILDREN_FOR_USER } from "@/graphql/queries";
 import { Spinner } from "@ui-kitten/components";
 import { Image } from "react-native";
 import { Child } from "@/graphql/generated";
+import { useTheme } from "@/contexts/ThemeContext"; // Import the useTheme hook
 
 const ChildSelector = ({
   onSelectedChildrenChange,
@@ -30,6 +31,8 @@ const ChildSelector = ({
       },
     }
   );
+
+  const { currentColors } = useTheme(); // Get the current theme colors
 
   useEffect(() => {
     if (selectedChildren.length > 0) {
@@ -56,7 +59,11 @@ const ChildSelector = ({
 
   return (
     <View
-      style={{ flexDirection: "row", justifyContent: "flex-start", gap: 10 }}
+      style={{
+        flexDirection: "row",
+        justifyContent: "flex-start",
+        gap: 10,
+      }}
     >
       {childrenWithImages.map((child: Child) => (
         <ChildImage
@@ -70,11 +77,11 @@ const ChildSelector = ({
         style={{
           width: 90,
           height: 90,
-          backgroundColor: "#F7F9FC",
+          backgroundColor: currentColors.placeholder, // Dynamically set background color
           borderRadius: 50,
           justifyContent: "center",
           alignItems: "center",
-          borderColor: "#8F9BB3",
+          borderColor: currentColors.tint, // Dynamically set border color
           borderWidth: 1,
         }}
       >

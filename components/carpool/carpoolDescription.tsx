@@ -1,32 +1,38 @@
 import React from "react";
 import { View, Text, TextInput } from "react-native";
+import { useTheme } from "@/contexts/ThemeContext";
 
 const TripDescriptionInput = ({
-  textColor,
   description,
   setDescription,
 }: {
-  textColor: string;
   description: string;
   setDescription: (text: string) => void;
 }) => {
+  const { currentColors } = useTheme();
+
   return (
     <View>
-      <Text style={{ color: textColor, marginBottom: 5, marginTop: 10 }}>
+      {/* Description Label */}
+      <Text style={{ color: currentColors.text, marginBottom: 5, marginTop: 10 }}>
         Description
       </Text>
+      
+      {/* Input Field */}
       <TextInput
         style={{
           width: "100%",
-          backgroundColor: "#F7F9FC",
-          borderColor: "#E4E9F2",
+          backgroundColor: currentColors.background,
+          borderColor: currentColors.tint,
           borderWidth: 1,
           borderRadius: 15,
           height: 100,
           paddingLeft: 30,
           paddingRight: 30,
+          color: currentColors.text, // Text inside input
         }}
         placeholder="Any preferences for trips? (e.g., preferred age range of kids, allowed stopovers, special requests)"
+        placeholderTextColor={currentColors.text} // Placeholder color
         multiline={true}
         value={description}
         onChangeText={setDescription}

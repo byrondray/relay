@@ -1,6 +1,7 @@
 import React from "react";
 import { View, Text } from "react-native";
 import { Select, SelectItem, IndexPath } from "@ui-kitten/components";
+import { useTheme } from "@/contexts/ThemeContext"; // Import the useTheme hook
 
 const VehicleDetailsPicker = ({
   selectedVehicleIndex,
@@ -19,11 +20,13 @@ const VehicleDetailsPicker = ({
   setSelectedSeatsIndex: (index: IndexPath) => void;
   textColor: string;
 }) => {
+  const { currentColors } = useTheme(); // Get the current theme colors
+
   return (
     <View>
       <Text
         style={{
-          color: "#FF6A00",
+          color: currentColors.text,
           fontSize: 22,
           marginBottom: 15,
           marginTop: 15,
@@ -31,13 +34,13 @@ const VehicleDetailsPicker = ({
       >
         Vehicle Details
       </Text>
-      <Text style={{ color: textColor, marginBottom: 5 }}>Select Vehicle</Text>
+      <Text style={{ color: currentColors.text, marginBottom: 5 }}>Select Vehicle</Text>
       <View>
         <View
           style={{
-            backgroundColor: "#F7F9FC",
+            backgroundColor: currentColors.text, // Dynamic background color
             height: 43,
-            borderColor: "#E4E9F2",
+            borderColor: currentColors.placeholder, // Dynamic border color
             borderWidth: 1,
             borderRadius: 15,
             paddingLeft: 15,
@@ -66,14 +69,14 @@ const VehicleDetailsPicker = ({
           </Select>
         </View>
 
-        <Text style={{ color: textColor, marginBottom: 5 }}>
+        <Text style={{ color: currentColors.text, marginBottom: 5 }}>
           Seats Available
         </Text>
         <View
           style={{
-            backgroundColor: "#F7F9FC",
+            backgroundColor: currentColors.text, // Dynamic background color
             height: 43,
-            borderColor: "#E4E9F2",
+            borderColor: currentColors.placeholder, // Dynamic border color
             borderWidth: 1,
             borderRadius: 15,
             paddingLeft: 15,
