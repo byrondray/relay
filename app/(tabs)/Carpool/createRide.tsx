@@ -802,7 +802,7 @@ const styles = StyleSheet.create({
     android: {
       alignItems: "center",
       justifyContent: "center",
-      width: 60,
+      width: 55,
       height: 70,
       backgroundColor: "transparent",
     },
@@ -814,6 +814,13 @@ const styles = StyleSheet.create({
       backgroundColor: "transparent",
     },
   }),
+  orangeMarker: {
+    width: 40,
+    height: 40,
+    backgroundColor: "transparent",
+    alignItems: "center",
+    justifyContent: "center",
+  },
   markerImage: {
     width: 40,
     height: 60,

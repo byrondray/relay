@@ -148,7 +148,13 @@ const RideMap: React.FC<RideMapProps> = ({
             title={startingAddress}
             anchor={{ x: 0.5, y: 0.5 }}
           >
-            <View style={styles.markerContainer}>
+            <View
+              style={[
+                Platform.OS === "ios"
+                  ? styles.markerContainer
+                  : styles.orangeMarker,
+              ]}
+            >
               <Image
                 source={require("@/assets/images/starting-pin.png")}
                 style={styles.markerImage}
