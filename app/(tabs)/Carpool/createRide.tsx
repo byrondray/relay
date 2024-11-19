@@ -480,11 +480,14 @@ const CreateRide = () => {
       behavior={Platform.OS === "ios" ? "padding" : undefined}
     >
       <ScrollView
-        contentContainerStyle={[{
-          padding: 15,
-          backgroundColor: "#ffffff",
-          flexGrow: 1,
-        }, { backgroundColor: currentColors.background }]}
+        contentContainerStyle={[
+          {
+            padding: 15,
+            backgroundColor: "#ffffff",
+            flexGrow: 1,
+          },
+          { backgroundColor: currentColors.background },
+        ]}
       >
         {/* <GestureMap
           mapHeight={mapHeight}
@@ -558,7 +561,7 @@ const CreateRide = () => {
           startingLatLng={startingLatLng}
           toggleFullScreen={toggleFullScreen}
         /> */}
-        <View style={{ padding: 15 }}>
+        <View style={{}}>
           <View>
             <Text
               style={{

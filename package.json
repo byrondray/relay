@@ -79,7 +79,7 @@
     "react-native-dotenv": "^3.4.11",
     "react-native-fetch-api": "^3.0.0",
     "react-native-gesture-handler": "~2.20.2",
-    "react-native-maps": "1.18.0",
+    "react-native-maps": "^1.18.0",
     "react-native-paper": "^5.12.5",
     "react-native-paper-dates": "^0.22.26",
     "react-native-polyfill-globals": "^3.1.0",
