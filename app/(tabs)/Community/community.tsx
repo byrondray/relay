@@ -496,7 +496,7 @@ const Community = () => {
               </TouchableOpacity>
             ))
           ) : (
-            <Text style={{ color: currentColors.text }}>
+            <Text style={{ color: currentColors.text, fontFamily: "Comfortaa" }}>
               No friends available
             </Text>
           )}

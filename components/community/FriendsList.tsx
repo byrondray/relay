@@ -63,7 +63,7 @@ const FriendsList = ({ profiles }: { profiles: FriendsWithUserInfo[] }) => {
             </Link>
           ))
         ) : (
-          <Text style={{ color: currentColors.text }}>No friends available</Text>
+          <Text style={{ color: currentColors.background }}>No friends available</Text>
         )}
       </ScrollView>
     </View>
