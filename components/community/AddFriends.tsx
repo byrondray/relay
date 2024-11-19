@@ -1,11 +1,6 @@
 import React, { ReactNode, useRef } from "react";
-import {
-  Modal,
-  ScrollView,
-  View,
-  Dimensions,
-  PanResponder,
-} from "react-native";
+import { Modal, ScrollView, View, Dimensions, PanResponder, StyleSheet } from "react-native";
+import { useTheme } from "@/contexts/ThemeContext"; // Import useTheme for theming
 import { Layout } from "@ui-kitten/components";
 
 interface ExpandablePanelProps {
@@ -20,6 +15,7 @@ const FriendsExpandablePanel = ({
   children,
 }: ExpandablePanelProps) => {
   const screenHeight = Dimensions.get("window").height;
+  const { currentColors } = useTheme(); // Access current theme colors
 
   const panResponder = useRef(
     PanResponder.create({
@@ -35,26 +31,27 @@ const FriendsExpandablePanel = ({
   return (
     <Modal visible={isVisible} transparent={true} onRequestClose={onClose}>
       <View
-        style={{
-          flex: 1,
-          justifyContent: "flex-end",
-          backgroundColor: "rgba(0, 0, 0, 0.5)",
-        }}
+        style={[
+          styles.modalOverlay,
+          { backgroundColor: "rgba(0, 0, 0, 0.5)" }, // Use dark overlay color
+        ]}
       >
         <View
           {...panResponder.panHandlers}
-          style={{
-            height: screenHeight * 0.8,
-            backgroundColor: "#fff",
-            borderTopLeftRadius: 20,
-            borderTopRightRadius: 20,
-            paddingTop: 20,
-            overflow: "hidden",
-          }}
+          style={[
+            styles.panelContainer,
+            {
+              height: screenHeight * 0.8,
+              backgroundColor: currentColors.background, // Use current background color
+            },
+          ]}
         >
           <ScrollView
             style={{ flex: 1 }}
-            contentContainerStyle={{ padding: 20 }}
+            contentContainerStyle={{
+              padding: 20,
+              backgroundColor: currentColors.background, // Consistent background color
+            }}
           >
             {children}
           </ScrollView>
@@ -63,5 +60,18 @@ const FriendsExpandablePanel = ({
     </Modal>
   );
 };
+
+const styles = StyleSheet.create({
+  modalOverlay: {
+    flex: 1,
+    justifyContent: "flex-end",
+  },
+  panelContainer: {
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    paddingTop: 20,
+    overflow: "hidden",
+  },
+});
 
 export default FriendsExpandablePanel;
