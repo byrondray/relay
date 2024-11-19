@@ -1,5 +1,5 @@
 import { RequestWithChildrenAndParent } from "@/graphql/generated";
-import React from "react";
+import React, { useState } from "react";
 import { View, Text, Image } from "react-native";
 import MapView, { Marker, Polyline } from "react-native-maps";
 
@@ -58,6 +58,18 @@ const RideMap: React.FC<RideMapProps> = ({
   areCoordinatesEqual,
   setSelectedWaypoints,
 }) => {
+  const [mapReady, setMapReady] = useState(false);
+
+  const arePropsReady = () => {
+    return (
+      startingLatLng.lat !== undefined &&
+      startingLatLng.lon !== undefined &&
+      endingLatLng.lat !== undefined &&
+      endingLatLng.lon !== undefined &&
+      activeRoute.coordinates.length > 0 &&
+      requests.length > 0
+    );
+  };
   return (
     <View style={{ flex: 1 }}>
       <MapView
@@ -69,32 +81,39 @@ const RideMap: React.FC<RideMapProps> = ({
           latitudeDelta: 0.1,
           longitudeDelta: 0.1,
         }}
+        onMapReady={() => {
+          if (!mapReady) setMapReady(true);
+        }}
       >
-        {requests.map((request, index) => (
-          <Marker
-            key={request.id}
-            coordinate={{
-              latitude: parseFloat(request.startingLat),
-              longitude: parseFloat(request.startingLon),
-            }}
-            title={request.startAddress}
-            anchor={{ x: 0.5, y: 0.5 }}
-          >
-            <View style={styles.markerContainer}>
-              <Image
-                source={require("@/assets/images/pin-icon.png")}
-                style={styles.markerImage}
-              />
-              <View style={styles.letterContainer}>
-                <Text style={[styles.letterText, { fontFamily: "Comfortaa" }]}>
-                  {index + 1}
-                </Text>
+        {mapReady &&
+          arePropsReady() &&
+          requests.map((request, index) => (
+            <Marker
+              key={request.id}
+              coordinate={{
+                latitude: parseFloat(request.startingLat),
+                longitude: parseFloat(request.startingLon),
+              }}
+              title={request.startAddress}
+              anchor={{ x: 0.5, y: 0.5 }}
+            >
+              <View style={styles.markerContainer}>
+                <Image
+                  source={require("@/assets/images/pin-icon.png")}
+                  style={styles.markerImage}
+                />
+                <View style={styles.letterContainer}>
+                  <Text
+                    style={[styles.letterText, { fontFamily: "Comfortaa" }]}
+                  >
+                    {index + 1}
+                  </Text>
+                </View>
               </View>
-            </View>
-          </Marker>
-        ))}
+            </Marker>
+          ))}
 
-        {startingLatLng.lat !== 0 && (
+        {mapReady && startingLatLng.lat !== 0 && arePropsReady() && (
           <Marker
             coordinate={{
               latitude: startingLatLng.lat,
@@ -112,7 +131,7 @@ const RideMap: React.FC<RideMapProps> = ({
           </Marker>
         )}
 
-        {endingLatLng.lat !== 0 && (
+        {mapReady && endingLatLng.lat !== 0 && arePropsReady() && (
           <Marker
             coordinate={{
               latitude: endingLatLng.lat,
@@ -130,62 +149,51 @@ const RideMap: React.FC<RideMapProps> = ({
           </Marker>
         )}
 
-        {previousRoutes.map((route, index) => (
-          <Polyline
-            key={`previous-route-${index}`}
-            coordinates={route.coordinates}
-            strokeColor={isActiveRoute(route) ? "#FF6A00" : "#ff9950"}
-            strokeWidth={isActiveRoute(route) ? 5 : 4}
-            lineDashPattern={isActiveRoute(route) ? [] : [10, 10]}
-            tappable={true}
-            onPress={() => {
-              if (route.coordinates && route.coordinates.length > 0) {
-                setActiveRoute({
-                  coordinates: route.coordinates,
-                  predictedTime: route.predictedTime,
-                });
-              }
-
-              const newSelectedWaypoints = requests.filter((request) =>
-                route.coordinates.some(
-                  (coord) =>
-                    parseFloat(request.startingLat) === coord.latitude &&
-                    parseFloat(request.startingLon) === coord.longitude
-                )
-              );
-
-              setSelectedWaypoints(newSelectedWaypoints);
-
-              if (
-                activeRoute.coordinates.length > 0 &&
-                !previousRoutes.some((r) =>
-                  areCoordinatesEqual(r.coordinates, activeRoute.coordinates)
-                )
-              ) {
-                setPreviousRoutes([
-                  ...previousRoutes,
-                  {
-                    coordinates: activeRoute.coordinates,
-                    predictedTime: activeRoute.predictedTime,
-                  },
-                ]);
-              }
-            }}
-          />
-        ))}
-
-        {activeRoute.coordinates.length > 0 && (
-          <>
-            {console.log("Active Route Coordinates:", activeRoute.coordinates)}
+        {mapReady &&
+          arePropsReady() &&
+          previousRoutes.map((route, index) => (
             <Polyline
-              key={`active-route-${activeRoute.coordinates}`}
-              coordinates={activeRoute.coordinates}
-              fillColor="#FFC195"
-              strokeColor="#FF6A00"
-              strokeWidth={5}
+              key={`previous-route-${index}`}
+              coordinates={route.coordinates}
+              strokeColor={isActiveRoute(route) ? "#FF6A00" : "#ff9950"}
+              strokeWidth={isActiveRoute(route) ? 5 : 4}
+              lineDashPattern={isActiveRoute(route) ? [] : [10, 10]}
+              tappable={true}
+              onPress={() => {
+                if (route.coordinates && route.coordinates.length > 0) {
+                  setActiveRoute({
+                    coordinates: route.coordinates,
+                    predictedTime: route.predictedTime,
+                  });
+                }
+
+                const newSelectedWaypoints = requests.filter((request) =>
+                  route.coordinates.some(
+                    (coord) =>
+                      parseFloat(request.startingLat) === coord.latitude &&
+                      parseFloat(request.startingLon) === coord.longitude
+                  )
+                );
+
+                setSelectedWaypoints(newSelectedWaypoints);
+
+                if (
+                  activeRoute.coordinates.length > 0 &&
+                  !previousRoutes.some((r) =>
+                    areCoordinatesEqual(r.coordinates, activeRoute.coordinates)
+                  )
+                ) {
+                  setPreviousRoutes([
+                    ...previousRoutes,
+                    {
+                      coordinates: activeRoute.coordinates,
+                      predictedTime: activeRoute.predictedTime,
+                    },
+                  ]);
+                }
+              }}
             />
-          </>
-        )}
+          ))}
       </MapView>
 
       {activeRoute.predictedTime && (

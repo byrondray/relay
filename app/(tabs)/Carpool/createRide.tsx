@@ -317,25 +317,6 @@ const CreateRide = () => {
   const { coordinates, getDirections, predictedTime } = useDirections();
   const mapRef = useRef<MapView>(null);
 
-  const waypoints = useMemo(() => {
-    const points = [];
-    let cumulativeSeatsTaken = 0;
-    const seatLimit = seatsAvailable[selectedSeatsIndex.row];
-
-    for (const request of requests) {
-      const seatsTakenByRequest = request.children.length;
-      if (cumulativeSeatsTaken + seatsTakenByRequest <= seatLimit) {
-        points.push({
-          latitude: parseFloat(request.startingLat),
-          longitude: parseFloat(request.startingLon),
-        });
-        cumulativeSeatsTaken += seatsTakenByRequest;
-      }
-      if (cumulativeSeatsTaken >= seatLimit) break;
-    }
-    return points;
-  }, [requests, seatsAvailable[selectedSeatsIndex.row]]);
-
   const selectedRequests = useMemo(() => {
     const selected = [];
     let cumulativeSeatsTaken = 0;
@@ -480,14 +461,11 @@ const CreateRide = () => {
       behavior={Platform.OS === "ios" ? "padding" : undefined}
     >
       <ScrollView
-        contentContainerStyle={[
-          {
-            padding: 15,
-            backgroundColor: "#ffffff",
-            flexGrow: 1,
-          },
-          { backgroundColor: currentColors.background },
-        ]}
+        contentContainerStyle={[{
+          padding: 15,
+          backgroundColor: "#ffffff",
+          flexGrow: 1,
+        }, { backgroundColor: currentColors.background }]}
       >
         {/* <GestureMap
           mapHeight={mapHeight}
@@ -561,7 +539,7 @@ const CreateRide = () => {
           startingLatLng={startingLatLng}
           toggleFullScreen={toggleFullScreen}
         /> */}
-        <View style={{}}>
+        <View style={{  }}>
           <View>
             <Text
               style={{
