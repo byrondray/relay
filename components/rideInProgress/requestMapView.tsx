@@ -16,6 +16,7 @@ import {
 } from "@/graphql/generated";
 import { Image } from "react-native";
 import { Spinner } from "@ui-kitten/components";
+import { set } from "date-fns";
 
 interface RequestMapViewProps {
   driverLocation: {
@@ -58,9 +59,14 @@ const RequestMapView: React.FC<RequestMapViewProps> = ({
   };
 
   useEffect(() => {
-    if (checkPropsReady()) {
-      setPropsReady(true);
-    }
+    const timeout = setTimeout(() => {
+      if (checkPropsReady()) {
+        console.log("Props ready after delay");
+        setPropsReady(true);
+      }
+    }, 500);
+
+    return () => clearTimeout(timeout);
   }, [driverLocation, currentUserRequest, polyline, carpoolData]);
 
   const toggleFullScreen = () => {
@@ -73,44 +79,33 @@ const RequestMapView: React.FC<RequestMapViewProps> = ({
     setIsFullScreen((prev) => !prev);
   };
 
-  const resetToDriverLocation = () => {
-    if (driverLocation && mapRef.current) {
-      console.log("Resetting to driver location:", driverLocation);
-      mapRef.current.animateToRegion(
-        {
-          latitude: driverLocation.latitude,
-          longitude: driverLocation.longitude,
-          latitudeDelta: 0.05,
-          longitudeDelta: 0.05,
-        },
-        1000
-      );
-    }
-  };
-
   useEffect(() => {
     if (mapInitialized && propsReady) {
-      if (driverLocation) {
-        mapRef.current?.animateToRegion(
-          {
-            latitude: driverLocation.latitude,
-            longitude: driverLocation.longitude,
-            latitudeDelta: 0.05,
-            longitudeDelta: 0.05,
-          },
-          1000
-        );
-      } else if (currentUserRequest) {
-        mapRef.current?.animateToRegion(
-          {
-            latitude: currentUserRequest.startLat,
-            longitude: currentUserRequest.startLon,
-            latitudeDelta: 0.05,
-            longitudeDelta: 0.05,
-          },
-          1000
-        );
-      }
+      const timeout = setTimeout(() => {
+        if (driverLocation) {
+          mapRef.current?.animateToRegion(
+            {
+              latitude: driverLocation.latitude,
+              longitude: driverLocation.longitude,
+              latitudeDelta: 0.05,
+              longitudeDelta: 0.05,
+            },
+            1000
+          );
+        } else if (currentUserRequest) {
+          mapRef.current?.animateToRegion(
+            {
+              latitude: currentUserRequest.startLat,
+              longitude: currentUserRequest.startLon,
+              latitudeDelta: 0.05,
+              longitudeDelta: 0.05,
+            },
+            1000
+          );
+        }
+      }, 300);
+
+      return () => clearTimeout(timeout);
     }
   }, [mapInitialized, propsReady, driverLocation, currentUserRequest]);
 
@@ -123,14 +118,6 @@ const RequestMapView: React.FC<RequestMapViewProps> = ({
     };
   }, []);
 
-  if (!propsReady) {
-    return (
-      <View style={styles.loadingContainer}>
-        <Spinner />
-      </View>
-    );
-  }
-
   return (
     <TouchableWithoutFeedback
       onPress={() => {
@@ -141,78 +128,72 @@ const RequestMapView: React.FC<RequestMapViewProps> = ({
       }}
     >
       <Animated.View style={[styles.container, { height: animatedHeight }]}>
-        <MapView
-          ref={mapRef}
-          style={styles.map}
-          initialRegion={defaultRegion}
-          onMapReady={() => setMapInitialized(true)}
-        >
-          {driverLocation && (
-            <Marker
-              coordinate={{
-                latitude: driverLocation.latitude,
-                longitude: driverLocation.longitude,
-              }}
-              style={{ zIndex: 1 }}
-              title="Driver's Location"
-            />
-          )}
-          {currentUserRequest && (
-            <Marker
-              coordinate={{
-                latitude: currentUserRequest.startLat,
-                longitude: currentUserRequest.startLon,
-              }}
-              pinColor="blue"
-              title="Your Stop"
-              description={currentUserRequest.startAddress}
-            />
-          )}
-          {carpoolData?.startLat && carpoolData?.startLon && (
-            <Marker
-              coordinate={{
-                latitude: carpoolData.startLat,
-                longitude: carpoolData.startLon,
-              }}
-              title={carpoolData.startAddress}
-              anchor={{ x: 0.5, y: 0.5 }}
-              pinColor="#FF6A00"
-            >
-              {/* <View style={styles.markerContainer}>
-                <Image
-                  source={require("@/assets/images/starting-pin.png")}
-                  style={styles.markerImage}
-                />
-              </View> */}
-            </Marker>
-          )}
+        {propsReady ? (
+          <MapView
+            key={propsReady ? "propsReady" : "notReady"}
+            ref={mapRef}
+            style={styles.map}
+            initialRegion={defaultRegion}
+            onLayout={() => setMapInitialized(true)}
+            onMapReady={() => setMapInitialized(true)}
+          >
+            {driverLocation && (
+              <Marker
+                coordinate={{
+                  latitude: driverLocation.latitude,
+                  longitude: driverLocation.longitude,
+                }}
+                style={{ zIndex: 1 }}
+                title="Driver's Location"
+              />
+            )}
+            {currentUserRequest && (
+              <Marker
+                coordinate={{
+                  latitude: currentUserRequest.startLat,
+                  longitude: currentUserRequest.startLon,
+                }}
+                pinColor="blue"
+                title="Your Stop"
+                description={currentUserRequest.startAddress}
+              />
+            )}
+            {carpoolData?.startLat && carpoolData?.startLon && (
+              <Marker
+                coordinate={{
+                  latitude: carpoolData.startLat,
+                  longitude: carpoolData.startLon,
+                }}
+                title={carpoolData.startAddress}
+                anchor={{ x: 0.5, y: 0.5 }}
+                pinColor="#FF6A00"
+              />
+            )}
 
-          {carpoolData?.endLat && carpoolData?.endLon && (
-            <Marker
-              coordinate={{
-                latitude: carpoolData.endLat,
-                longitude: carpoolData.endLon,
-              }}
-              title={carpoolData.endAddress}
-              anchor={{ x: 0.5, y: 0.5 }}
-              pinColor="#DE4141"
-            >
-              {/* <View style={styles.markerContainer}>
-                <Image
-                  source={require("@/assets/images/ending-pin.png")}
-                  style={styles.markerImage}
-                />
-              </View> */}
-            </Marker>
-          )}
-          {polyline.length > 0 && (
-            <Polyline
-              coordinates={polyline}
-              strokeColor={"#FF6A00"}
-              strokeWidth={5}
-            />
-          )}
-        </MapView>
+            {carpoolData?.endLat && carpoolData?.endLon && (
+              <Marker
+                coordinate={{
+                  latitude: carpoolData.endLat,
+                  longitude: carpoolData.endLon,
+                }}
+                title={carpoolData.endAddress}
+                anchor={{ x: 0.5, y: 0.5 }}
+                pinColor="#DE4141"
+              />
+            )}
+            {polyline.length > 0 && (
+              <Polyline
+                coordinates={polyline}
+                strokeColor={"#FF6A00"}
+                strokeWidth={5}
+              />
+            )}
+          </MapView>
+        ) : (
+          <View style={styles.spinnerContainer}>
+            <Spinner />
+          </View>
+        )}
         <TouchableOpacity
           style={styles.expandButton}
           onPress={toggleFullScreen}
@@ -261,7 +242,7 @@ const styles = StyleSheet.create({
     height: 60,
     resizeMode: "contain",
   },
-  loadingContainer: {
+  spinnerContainer: {
     flex: 1,
     alignItems: "center",
     justifyContent: "center",

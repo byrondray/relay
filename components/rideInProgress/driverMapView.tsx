@@ -60,9 +60,13 @@ const DriverMapView: React.FC<DriverMapViewProps> = ({
   };
 
   useEffect(() => {
-    if (checkPropsReady()) {
-      setPropsReady(true);
-    }
+    const timeout = setTimeout(() => {
+      if (checkPropsReady()) {
+        setPropsReady(true);
+      }
+    }, 300);
+
+    return () => clearTimeout(timeout);
   }, [carpoolData, requests, polyline, driverLocation]);
 
   const toggleFullScreen = () => {
@@ -108,56 +112,42 @@ const DriverMapView: React.FC<DriverMapViewProps> = ({
     }
   };
 
-  const onUserInteraction = () => {
-    if (inactivityTimeout.current) {
-      clearTimeout(inactivityTimeout.current);
-    }
-
-    inactivityTimeout.current = setTimeout(() => {
-      centerOnDriverLocation();
-    }, 7000);
-  };
-
   useEffect(() => {
     if (mapInitialized && propsReady) {
-      if (driverLocation) {
-        centerOnDriverLocation();
-      } else if (carpoolData?.startLat && carpoolData?.startLon) {
-        centerOnCarpoolStart();
-      }
+      const timeout = setTimeout(() => {
+        if (driverLocation) {
+          centerOnDriverLocation();
+        } else if (carpoolData?.startLat && carpoolData?.startLon) {
+          centerOnCarpoolStart();
+        }
+      }, 300); 
+
+      return () => clearTimeout(timeout); 
     }
   }, [mapInitialized, propsReady, carpoolData]);
-
-  useEffect(() => {
-    return () => {
-      if (inactivityTimeout.current) {
-        clearTimeout(inactivityTimeout.current);
-      }
-    };
-  }, []);
-
-  if (!propsReady) {
-    return (
-      <View style={styles.loadingContainer}>
-        <Spinner />
-      </View>
-    );
-  }
 
   return (
     <TouchableWithoutFeedback
       onPress={() => {
-        onUserInteraction();
         Keyboard.dismiss();
       }}
     >
       <Animated.View style={[styles.container, { height: animatedHeight }]}>
         <MapView
-          key={isFullScreen ? "full" : "half"}
+          key={propsReady ? "propsReady" : "notReady"}
           ref={mapRef}
           style={styles.map}
           initialRegion={defaultRegion}
-          onMapReady={() => setMapInitialized(true)}
+          onLayout={() => {
+            console.log("Map layout completed");
+            if (!mapInitialized) {
+              setMapInitialized(true); // Fallback
+            }
+          }}
+          onMapReady={() => {
+            console.log("Map is ready");
+            setMapInitialized(true);
+          }}
         >
           {carpoolData?.startLat &&
             carpoolData?.startLon &&
@@ -172,14 +162,7 @@ const DriverMapView: React.FC<DriverMapViewProps> = ({
                 title={carpoolData.startAddress}
                 pinColor="#FF6A00"
                 zIndex={2}
-              >
-                {/* <View style={styles.markerContainer}>
-                <Image
-                  source={require("@/assets/images/starting-pin.png")}
-                  style={styles.markerImage}
-                />
-              </View> */}
-              </Marker>
+              />
             ))}
           {carpoolData?.endLat &&
             carpoolData?.endLon &&
@@ -194,14 +177,7 @@ const DriverMapView: React.FC<DriverMapViewProps> = ({
                 title={carpoolData.endAddress}
                 pinColor="#DE4141"
                 zIndex={2}
-              >
-                {/* <View style={styles.markerContainer}>
-                <Image
-                  source={require("@/assets/images/ending-pin.png")}
-                  style={styles.markerImage}
-                />
-              </View> */}
-              </Marker>
+              />
             ))}
           {driverLocation && (
             <Marker
@@ -248,6 +224,12 @@ const DriverMapView: React.FC<DriverMapViewProps> = ({
             />
           )}
         </MapView>
+        {!mapInitialized ||
+          (!propsReady && (
+            <View style={styles.spinnerContainer}>
+              <Spinner />
+            </View>
+          ))}
         <TouchableOpacity
           style={styles.expandButton}
           onPress={() => {
@@ -302,6 +284,11 @@ const styles = StyleSheet.create({
     width: 40,
     height: 60,
     resizeMode: "contain",
+  },
+  spinnerContainer: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
   },
 });
 
