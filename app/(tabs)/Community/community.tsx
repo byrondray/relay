@@ -39,6 +39,8 @@ import { Ionicons } from "@expo/vector-icons";
 import FriendProfile from "@/components/FriendProfile";
 import FriendCard from "@/components/FriendCard";
 import { useTheme } from "@/contexts/ThemeContext";
+import { useTextSize } from "@/contexts/TextSizeContext";
+
 
 const Sidebar = () => {
   const [groups, setGroups] = useState<Group[]>([]);
@@ -54,6 +56,7 @@ const Sidebar = () => {
     },
   });
   const { currentColors } = useTheme();
+  const { isLargeText, textScaleFactor } = useTextSize();
   return (
     <View style={{ backgroundColor: currentColors.background}}>
       <Layout
@@ -271,12 +274,13 @@ const Community = () => {
     );
   }
   const { currentColors } = useTheme();
+  const { isLargeText, textScaleFactor } = useTextSize();
   return (
     <Layout style={{ flex: 1, flexDirection: "row" }}>
       <Sidebar />
       <ScrollView style={{ flex: 1, padding: 16, backgroundColor: currentColors.background }}>
         <FriendsList profiles={friends} />
-        <Text category="h1" style={{ marginTop: 0, fontFamily: "Comfortaa", color: currentColors.text }}>
+        <Text category="h1" style={{ marginTop: 0, fontFamily: "Comfortaa", color: currentColors.text, fontSize: 32 * textScaleFactor }}>
           Friends
         </Text>
         <View
@@ -328,7 +332,7 @@ const Community = () => {
               marginTop: 0,
               marginBottom: 12,
               fontFamily: "Comfortaa",
-              fontSize: 22,
+              fontSize: 22 * textScaleFactor,
               color: currentColors.text
             }}
           >
@@ -338,7 +342,7 @@ const Community = () => {
             style={{
               fontFamily: "Comfortaa",
               color: currentColors.text,
-              fontSize: 12,
+              fontSize: 12 * textScaleFactor,
               marginBottom: 15,
             }}
           >
@@ -377,7 +381,7 @@ const Community = () => {
             style={{
               marginBottom: 10,
               marginTop: 15,
-              fontSize: 12,
+              fontSize: 12 * textScaleFactor,
               color: currentColors.text,
               fontFamily: "Comfortaa",
             }}
@@ -415,7 +419,7 @@ const Community = () => {
               marginTop: 10,
               marginBottom: 10,
               fontFamily: "Comfortaa",
-              fontSize: 18,
+              fontSize: 18 * textScaleFactor,
               color: currentColors.text
             }}
           >
@@ -496,7 +500,7 @@ const Community = () => {
               </TouchableOpacity>
             ))
           ) : (
-            <Text style={{ color: currentColors.text, fontFamily: "Comfortaa" }}>
+            <Text style={{ color: currentColors.text, fontFamily: "Comfortaa", fontSize: 14 * textScaleFactor }}>
               No friends available
             </Text>
           )}
