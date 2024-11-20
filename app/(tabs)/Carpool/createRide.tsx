@@ -791,12 +791,35 @@ const CreateRide = () => {
 };
 
 const styles = StyleSheet.create({
-  markerContainer: {
+  markerContainer: Platform.select({
+    ios: {
+      alignItems: "center",
+      justifyContent: "center",
+      width: 70,
+      height: 110,
+      backgroundColor: "transparent",
+    },
+    android: {
+      alignItems: "center",
+      justifyContent: "center",
+      width: 55,
+      height: 70,
+      backgroundColor: "transparent",
+    },
+    default: {
+      alignItems: "center",
+      justifyContent: "center",
+      width: 70,
+      height: 110,
+      backgroundColor: "transparent",
+    },
+  }),
+  orangeMarker: {
+    width: 40,
+    height: 40,
+    backgroundColor: "transparent",
     alignItems: "center",
     justifyContent: "center",
-    width: 70,
-    height: 110,
-    backgroundColor: "transparent",
   },
   markerImage: {
     width: 40,

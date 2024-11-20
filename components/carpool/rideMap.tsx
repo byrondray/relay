@@ -1,6 +1,6 @@
 import { RequestWithChildrenAndParent } from "@/graphql/generated";
 import React, { useEffect, useState } from "react";
-import { View, Text, Image } from "react-native";
+import { View, Text, Image, Platform } from "react-native";
 import MapView, { Marker, Polyline } from "react-native-maps";
 
 type RideMapProps = {
@@ -148,7 +148,13 @@ const RideMap: React.FC<RideMapProps> = ({
             title={startingAddress}
             anchor={{ x: 0.5, y: 0.5 }}
           >
-            <View style={styles.markerContainer}>
+            <View
+              style={[
+                Platform.OS === "ios"
+                  ? styles.markerContainer
+                  : styles.orangeMarker,
+              ]}
+            >
               <Image
                 source={require("@/assets/images/starting-pin.png")}
                 style={styles.markerImage}
