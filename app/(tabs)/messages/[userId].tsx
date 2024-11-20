@@ -26,9 +26,13 @@ import Message from "@/components/messaging/message";
 import { Spinner } from "@ui-kitten/components";
 import { LinearGradient } from "expo-linear-gradient";
 import { useTheme } from "@/contexts/ThemeContext";
+import { useTextSize } from "@/contexts/TextSizeContext";
+
+
 
 export default function MessageScreen() {
   const { currentColors } = useTheme();
+  const { isLargeText, textScaleFactor } = useTextSize();
   const [messages, setMessages] = useState<DetailedMessage[]>([]);
   const [newMessage, setNewMessage] = useState("");
   const { userId } = useLocalSearchParams();
@@ -167,7 +171,7 @@ export default function MessageScreen() {
               placeholderTextColor={currentColors.placeholder}
             />
             <TouchableOpacity onPress={() => sendMessage()}>
-              <Text style={[styles.sendButtonText, { color: currentColors.tint }]}>Send</Text>
+              <Text style={[styles.sendButtonText, { color: currentColors.tint, fontSize: 16 * textScaleFactor }]}>Send</Text>
             </TouchableOpacity>
           </View>
         </View>

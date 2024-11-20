@@ -25,6 +25,7 @@ import Message from "@/components/messaging/message";
 import { Spinner } from "@ui-kitten/components";
 import { LinearGradient } from "expo-linear-gradient";
 import { useTheme } from "@/contexts/ThemeContext"; // Import useTheme
+import { useTextSize } from "@/contexts/TextSizeContext";
 
 export default function GroupMessageScreen() {
   const [messages, setMessages] = useState<GroupMessage[]>([]);
@@ -35,6 +36,7 @@ export default function GroupMessageScreen() {
   const userId = currentUser?.uid || "";
 
   const { currentColors } = useTheme(); // Access currentColors
+  const { isLargeText, textScaleFactor } = useTextSize();
   const { loading, error, refetch } = useFetchGroupMessages(
     groupIdString,
     setMessages
@@ -152,7 +154,12 @@ export default function GroupMessageScreen() {
               placeholderTextColor={currentColors.placeholder}
             />
             <TouchableOpacity onPress={() => sendMessage()}>
-              <Text style={[styles.sendButtonText, { color: currentColors.text }]}>
+              <Text style={[
+                styles.sendButtonText, 
+                { 
+                  color: currentColors.text,
+                  fontSize: 14 * textScaleFactor 
+                  }]}>
                 Send
               </Text>
             </TouchableOpacity>
