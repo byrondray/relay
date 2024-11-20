@@ -15,6 +15,7 @@ import {
   RequestWithParentAndChild,
 } from "@/graphql/generated";
 import { Image } from "react-native";
+import { Spinner } from "@ui-kitten/components";
 
 interface DriverMapViewProps {
   driverLocation: {
@@ -42,10 +43,27 @@ const DriverMapView: React.FC<DriverMapViewProps> = ({
   const mapRef = useRef<MapView | null>(null);
   const [isFullScreen, setIsFullScreen] = useState(false);
   const screenHeight = Dimensions.get("window").height;
-
+  const [propsReady, setPropsReady] = useState(false);
   const animatedHeight = useRef(new Animated.Value(300)).current;
-
   const inactivityTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [mapInitialized, setMapInitialized] = useState(false);
+
+  const checkPropsReady = () => {
+    return (
+      carpoolData?.startLat !== undefined &&
+      carpoolData?.startLon !== undefined &&
+      carpoolData?.endLat !== undefined &&
+      carpoolData?.endLon !== undefined &&
+      requests.length > 0 &&
+      polyline.length > 0
+    );
+  };
+
+  useEffect(() => {
+    if (checkPropsReady()) {
+      setPropsReady(true);
+    }
+  }, [carpoolData, requests, polyline, driverLocation]);
 
   const toggleFullScreen = () => {
     const toValue = isFullScreen ? 300 : screenHeight;
@@ -72,7 +90,12 @@ const DriverMapView: React.FC<DriverMapViewProps> = ({
   };
 
   const centerOnCarpoolStart = () => {
-    if (carpoolData?.startLat && carpoolData?.startLon && mapRef.current) {
+    if (
+      carpoolData?.startLat &&
+      carpoolData?.startLon &&
+      mapRef.current &&
+      propsReady
+    ) {
       mapRef.current.animateToRegion(
         {
           latitude: carpoolData.startLat,
@@ -96,12 +119,14 @@ const DriverMapView: React.FC<DriverMapViewProps> = ({
   };
 
   useEffect(() => {
-    if (driverLocation) {
-      centerOnDriverLocation();
-    } else if (carpoolData?.startLat && carpoolData?.startLon) {
-      centerOnCarpoolStart();
+    if (mapInitialized && propsReady) {
+      if (driverLocation) {
+        centerOnDriverLocation();
+      } else if (carpoolData?.startLat && carpoolData?.startLon) {
+        centerOnCarpoolStart();
+      }
     }
-  }, [driverLocation, carpoolData]);
+  }, [mapInitialized, propsReady, carpoolData]);
 
   useEffect(() => {
     return () => {
@@ -111,6 +136,14 @@ const DriverMapView: React.FC<DriverMapViewProps> = ({
     };
   }, []);
 
+  if (!propsReady) {
+    return (
+      <View style={styles.loadingContainer}>
+        <Spinner />
+      </View>
+    );
+  }
+
   return (
     <TouchableWithoutFeedback
       onPress={() => {
@@ -119,39 +152,57 @@ const DriverMapView: React.FC<DriverMapViewProps> = ({
       }}
     >
       <Animated.View style={[styles.container, { height: animatedHeight }]}>
-        <MapView ref={mapRef} style={styles.map} initialRegion={defaultRegion}>
-          {carpoolData?.startLat && carpoolData?.startLon && (
-            <Marker
-              coordinate={{
-                latitude: carpoolData.startLat,
-                longitude: carpoolData.startLon,
-              }}
-              title={carpoolData.startAddress}
-            >
-              <View style={styles.markerContainer}>
+        <MapView
+          key={isFullScreen ? "full" : "half"}
+          ref={mapRef}
+          style={styles.map}
+          initialRegion={defaultRegion}
+          onMapReady={() => setMapInitialized(true)}
+        >
+          {carpoolData?.startLat &&
+            carpoolData?.startLon &&
+            (console.log(carpoolData.startLat, "rendering start marker"),
+            (
+              <Marker
+                key={carpoolData.startAddress}
+                coordinate={{
+                  latitude: carpoolData.startLat,
+                  longitude: carpoolData.startLon,
+                }}
+                title={carpoolData.startAddress}
+                pinColor="#FF6A00"
+                zIndex={2}
+              >
+                {/* <View style={styles.markerContainer}>
                 <Image
                   source={require("@/assets/images/starting-pin.png")}
                   style={styles.markerImage}
                 />
-              </View>
-            </Marker>
-          )}
-          {carpoolData?.endLat && carpoolData?.endLon && (
-            <Marker
-              coordinate={{
-                latitude: carpoolData.endLat,
-                longitude: carpoolData.endLon,
-              }}
-              title={carpoolData.endAddress}
-            >
-              <View style={styles.markerContainer}>
+              </View> */}
+              </Marker>
+            ))}
+          {carpoolData?.endLat &&
+            carpoolData?.endLon &&
+            (console.log(carpoolData.endLat, "rendering end marker"),
+            (
+              <Marker
+                key={carpoolData.endAddress}
+                coordinate={{
+                  latitude: carpoolData.endLat,
+                  longitude: carpoolData.endLon,
+                }}
+                title={carpoolData.endAddress}
+                pinColor="#DE4141"
+                zIndex={2}
+              >
+                {/* <View style={styles.markerContainer}>
                 <Image
                   source={require("@/assets/images/ending-pin.png")}
                   style={styles.markerImage}
                 />
-              </View>
-            </Marker>
-          )}
+              </View> */}
+              </Marker>
+            ))}
           {driverLocation && (
             <Marker
               coordinate={{
@@ -159,6 +210,7 @@ const DriverMapView: React.FC<DriverMapViewProps> = ({
                 longitude: driverLocation.longitude,
               }}
               title="Driver Location"
+              zIndex={3}
             >
               <View
                 style={{
@@ -183,13 +235,16 @@ const DriverMapView: React.FC<DriverMapViewProps> = ({
               pinColor="blue"
               title={`Stop ${index + 1}`}
               description={request.startAddress}
+              zIndex={2}
             />
           ))}
           {polyline.length > 0 && (
             <Polyline
+              key={polyline.length}
               coordinates={polyline}
               strokeColor={"#FF6A00"}
               strokeWidth={5}
+              zIndex={1}
             />
           )}
         </MapView>
@@ -230,6 +285,11 @@ const styles = StyleSheet.create({
   expandButtonText: {
     color: "white",
     fontSize: 16,
+  },
+  loadingContainer: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
   },
   markerContainer: {
     alignItems: "center",

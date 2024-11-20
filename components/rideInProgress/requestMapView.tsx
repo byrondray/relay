@@ -15,6 +15,7 @@ import {
   RequestWithParentAndChild,
 } from "@/graphql/generated";
 import { Image } from "react-native";
+import { Spinner } from "@ui-kitten/components";
 
 interface RequestMapViewProps {
   driverLocation: {
@@ -42,10 +43,25 @@ const RequestMapView: React.FC<RequestMapViewProps> = ({
   const mapRef = useRef<MapView | null>(null);
   const [isFullScreen, setIsFullScreen] = useState(false);
   const screenHeight = Dimensions.get("window").height;
-
+  const [propsReady, setPropsReady] = useState(false);
   const animatedHeight = useRef(new Animated.Value(300)).current;
-
   const inactivityTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [mapInitialized, setMapInitialized] = useState(false);
+
+  const checkPropsReady = () => {
+    return (
+      currentUserRequest !== null &&
+      polyline.length > 0 &&
+      carpoolData?.endLat !== undefined &&
+      carpoolData?.endLon !== undefined
+    );
+  };
+
+  useEffect(() => {
+    if (checkPropsReady()) {
+      setPropsReady(true);
+    }
+  }, [driverLocation, currentUserRequest, polyline, carpoolData]);
 
   const toggleFullScreen = () => {
     const toValue = isFullScreen ? 300 : screenHeight;
@@ -73,33 +89,30 @@ const RequestMapView: React.FC<RequestMapViewProps> = ({
   };
 
   useEffect(() => {
-    if (driverLocation && mapRef.current) {
-      console.log("Initial centering on driver location:", driverLocation);
-      mapRef.current.animateToRegion(
-        {
-          latitude: driverLocation.latitude,
-          longitude: driverLocation.longitude,
-          latitudeDelta: 0.05,
-          longitudeDelta: 0.05,
-        },
-        1000
-      );
-    } else if (currentUserRequest && mapRef.current) {
-      console.log(
-        "Initial centering on user request location:",
-        currentUserRequest
-      );
-      mapRef.current.animateToRegion(
-        {
-          latitude: currentUserRequest.startLat,
-          longitude: currentUserRequest.startLon,
-          latitudeDelta: 0.05,
-          longitudeDelta: 0.05,
-        },
-        1000
-      );
+    if (mapInitialized && propsReady) {
+      if (driverLocation) {
+        mapRef.current?.animateToRegion(
+          {
+            latitude: driverLocation.latitude,
+            longitude: driverLocation.longitude,
+            latitudeDelta: 0.05,
+            longitudeDelta: 0.05,
+          },
+          1000
+        );
+      } else if (currentUserRequest) {
+        mapRef.current?.animateToRegion(
+          {
+            latitude: currentUserRequest.startLat,
+            longitude: currentUserRequest.startLon,
+            latitudeDelta: 0.05,
+            longitudeDelta: 0.05,
+          },
+          1000
+        );
+      }
     }
-  }, [driverLocation, currentUserRequest]); // Trigger when either changes
+  }, [mapInitialized, propsReady, driverLocation, currentUserRequest]);
 
   useEffect(() => {
     return () => {
@@ -109,6 +122,14 @@ const RequestMapView: React.FC<RequestMapViewProps> = ({
       }
     };
   }, []);
+
+  if (!propsReady) {
+    return (
+      <View style={styles.loadingContainer}>
+        <Spinner />
+      </View>
+    );
+  }
 
   return (
     <TouchableWithoutFeedback
@@ -120,7 +141,12 @@ const RequestMapView: React.FC<RequestMapViewProps> = ({
       }}
     >
       <Animated.View style={[styles.container, { height: animatedHeight }]}>
-        <MapView ref={mapRef} style={styles.map} initialRegion={defaultRegion}>
+        <MapView
+          ref={mapRef}
+          style={styles.map}
+          initialRegion={defaultRegion}
+          onMapReady={() => setMapInitialized(true)}
+        >
           {driverLocation && (
             <Marker
               coordinate={{
@@ -142,6 +168,25 @@ const RequestMapView: React.FC<RequestMapViewProps> = ({
               description={currentUserRequest.startAddress}
             />
           )}
+          {carpoolData?.startLat && carpoolData?.startLon && (
+            <Marker
+              coordinate={{
+                latitude: carpoolData.startLat,
+                longitude: carpoolData.startLon,
+              }}
+              title={carpoolData.startAddress}
+              anchor={{ x: 0.5, y: 0.5 }}
+              pinColor="#FF6A00"
+            >
+              {/* <View style={styles.markerContainer}>
+                <Image
+                  source={require("@/assets/images/starting-pin.png")}
+                  style={styles.markerImage}
+                />
+              </View> */}
+            </Marker>
+          )}
+
           {carpoolData?.endLat && carpoolData?.endLon && (
             <Marker
               coordinate={{
@@ -150,13 +195,14 @@ const RequestMapView: React.FC<RequestMapViewProps> = ({
               }}
               title={carpoolData.endAddress}
               anchor={{ x: 0.5, y: 0.5 }}
+              pinColor="#DE4141"
             >
-              <View style={styles.markerContainer}>
+              {/* <View style={styles.markerContainer}>
                 <Image
                   source={require("@/assets/images/ending-pin.png")}
                   style={styles.markerImage}
                 />
-              </View>
+              </View> */}
             </Marker>
           )}
           {polyline.length > 0 && (
@@ -214,6 +260,11 @@ const styles = StyleSheet.create({
     width: 40,
     height: 60,
     resizeMode: "contain",
+  },
+  loadingContainer: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
   },
 });
 

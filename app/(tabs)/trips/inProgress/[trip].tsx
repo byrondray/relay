@@ -105,38 +105,11 @@ const CarpoolScreen: React.FC = () => {
   const currentUser = auth.currentUser;
   const tripId = useLocalSearchParams().trip;
 
-  const sortCarpoolRequestsByDistance = (
-    carpoolRequests: RequestWithParentAndChild[],
-    startingLatLng: LatLng
-  ): RequestWithParentAndChild[] => {
-    console.log("Sorting requests with startingLatLng:", startingLatLng);
-
-    const uniqueRequests = Array.from(
-      new Map(carpoolRequests.map((request) => [request.id, request])).values()
-    );
-
-    return uniqueRequests.sort((a, b) => {
-      console.log("Request A:", a.startLat, a.startLon);
-      console.log("Request B:", b.startLat, b.startLon);
-
-      const distanceA = haversineDistance(
-        { lat: startingLatLng.latitude, lon: startingLatLng.longitude },
-        { lat: a.startLat, lon: a.startLon }
-      );
-      const distanceB = haversineDistance(
-        { lat: startingLatLng.latitude, lon: startingLatLng.longitude },
-        { lat: b.startLat, lon: b.startLon }
-      );
-
-      console.log(`Distance A: ${distanceA}, Distance B: ${distanceB}`);
-      return distanceA - distanceB;
-    });
-  };
-
   const {
     data: carpoolsData,
     loading: carpoolsLoading,
     error: carpoolsError,
+    refetch,
   } = useQuery(GET_CARPOOL_WITH_REQUESTS, {
     skip: !tripId,
     variables: { carpoolId: tripId },
@@ -166,6 +139,75 @@ const CarpoolScreen: React.FC = () => {
       }
     },
   });
+
+  useEffect(() => {
+    if (tripId) {
+      setCarpoolData(null);
+      setSortedRequests([]);
+      setNextStop(null);
+      setIsTripCompleted(false);
+
+      refetchCarpoolData();
+    }
+  }, [tripId]);
+
+  const refetchCarpoolData = () => {
+    refetch({ carpoolId: tripId })
+      .then(({ data }) => {
+        if (data?.getCarpoolWithRequests) {
+          const carpool = data.getCarpoolWithRequests;
+          setCarpoolData(carpool);
+
+          if (carpool.requests) {
+            const sorted = sortCarpoolRequestsByDistance(carpool.requests, {
+              latitude: carpool?.startLat || carpool.startLat,
+              longitude: carpool?.startLon || carpool.startLon,
+            });
+
+            const sortedRequestsWithTime: RequestWithTime[] = sorted.map(
+              (req) => ({
+                ...req,
+                timeToNextStop: null,
+              })
+            );
+
+            setSortedRequests(sortedRequestsWithTime);
+            setNextStop(sortedRequestsWithTime[0]);
+          }
+        }
+      })
+      .catch((error) => {
+        console.error("Error refetching carpool data:", error);
+      });
+  };
+
+  const sortCarpoolRequestsByDistance = (
+    carpoolRequests: RequestWithParentAndChild[],
+    startingLatLng: LatLng
+  ): RequestWithParentAndChild[] => {
+    console.log("Sorting requests with startingLatLng:", startingLatLng);
+
+    const uniqueRequests = Array.from(
+      new Map(carpoolRequests.map((request) => [request.id, request])).values()
+    );
+
+    return uniqueRequests.sort((a, b) => {
+      console.log("Request A:", a.startLat, a.startLon);
+      console.log("Request B:", b.startLat, b.startLon);
+
+      const distanceA = haversineDistance(
+        { lat: startingLatLng.latitude, lon: startingLatLng.longitude },
+        { lat: a.startLat, lon: a.startLon }
+      );
+      const distanceB = haversineDistance(
+        { lat: startingLatLng.latitude, lon: startingLatLng.longitude },
+        { lat: b.startLat, lon: b.startLon }
+      );
+
+      console.log(`Distance A: ${distanceA}, Distance B: ${distanceB}`);
+      return distanceA - distanceB;
+    });
+  };
 
   const [fetchDriver, { loading: driverLoading, error: driverError }] =
     useLazyQuery(GET_USER, {
@@ -255,47 +297,48 @@ const CarpoolScreen: React.FC = () => {
       carpoolData.startLon &&
       carpoolData.endLat &&
       carpoolData.endLon &&
-      sortedRequests.length > 0 &&
-      processedRequestsRef.current !== JSON.stringify(sortedRequests)
+      sortedRequests.length > 0
     ) {
       const waypoints = sortedRequests.map((req) => ({
         latitude: req.startLat,
         longitude: req.startLon,
       }));
 
-      memoizedGetRealtimeDirections(
-        {
-          lat: carpoolData.startLat,
-          lon: carpoolData.startLon,
-        },
-        {
-          lat: carpoolData.endLat,
-          lon: carpoolData.endLon,
-        },
-        waypoints,
-        sortedRequests,
-        new Date()
-      )
-        .then((result) => {
-          if (result && result.legs.length > 0) {
-            const updatedRequests = sortedRequests.map((request, index) => ({
-              ...request,
-              timeToNextStop: result.legs[index]?.duration || "",
-            }));
+      const currentRequestsHash = JSON.stringify(sortedRequests);
 
-            setSortedRequests(updatedRequests);
-            setNextStop(updatedRequests[0]);
+      if (processedRequestsRef.current !== currentRequestsHash) {
+        memoizedGetRealtimeDirections(
+          {
+            lat: carpoolData.startLat,
+            lon: carpoolData.startLon,
+          },
+          {
+            lat: carpoolData.endLat,
+            lon: carpoolData.endLon,
+          },
+          waypoints,
+          sortedRequests,
+          new Date()
+        )
+          .then((result) => {
+            if (result && result.legs.length > 0) {
+              const updatedRequests = sortedRequests.map((request, index) => ({
+                ...request,
+                timeToNextStop: result.legs[index]?.duration || "",
+              }));
 
-            processedRequestsRef.current = JSON.stringify(sortedRequests);
-          }
-        })
-        .catch((error) => {
-          console.error("Error fetching directions:", error);
-        });
-    } else {
-      console.log("Conditions not met for fetching directions");
+              setSortedRequests(updatedRequests);
+              setNextStop(updatedRequests[0]);
+
+              processedRequestsRef.current = currentRequestsHash; // Update hash
+            }
+          })
+          .catch((error) => {
+            console.error("Error fetching directions:", error);
+          });
+      }
     }
-  }, [carpoolData, sortedRequests, memoizedGetRealtimeDirections]);
+  }, [carpoolData, sortedRequests, memoizedGetRealtimeDirections, tripId]);
 
   if (error) {
     return (
@@ -326,6 +369,7 @@ const CarpoolScreen: React.FC = () => {
       {carpoolData &&
         (carpoolData?.driverId === currentUser?.uid ? (
           <DriverMapView
+            key={carpoolData.id}
             driverLocation={driverLocation}
             requests={sortedRequests}
             polyline={polyline}
@@ -333,6 +377,7 @@ const CarpoolScreen: React.FC = () => {
           />
         ) : (
           <RequestMapView
+            key={carpoolData.id}
             driverLocation={driverLocation}
             currentUserRequest={currentUserRequest || null}
             polyline={polyline}
