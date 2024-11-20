@@ -1,9 +1,11 @@
 import React from "react";
 import { View, Text } from "react-native";
 import { useTheme } from "@/contexts/ThemeContext";
+import { useTextSize } from "@/contexts/TextSizeContext";
 
 const MapAiInfo = () => {
   const { currentColors } = useTheme();
+  const { isLargeText, textScaleFactor } = useTextSize();
   return (
     <View
       style={{
@@ -24,7 +26,7 @@ const MapAiInfo = () => {
     >
       <Text
         style={{
-          fontSize: 18,
+          fontSize: 18 * textScaleFactor,
           fontWeight: "bold",
           color: currentColors.text,
           marginBottom: 10,
@@ -35,7 +37,7 @@ const MapAiInfo = () => {
       </Text>
       <Text
         style={{
-          fontSize: 14,
+          fontSize: 14 * textScaleFactor,
           color: currentColors.text,
           marginBottom: 10,
           fontFamily: "Comfortaa",
@@ -54,7 +56,7 @@ const MapAiInfo = () => {
       />
       <Text
         style={{
-          fontSize: 14,
+          fontSize: 14 * textScaleFactor,
           color: currentColors.text,
           marginTop: 10,
           fontFamily: "Comfortaa",

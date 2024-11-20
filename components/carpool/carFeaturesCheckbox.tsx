@@ -2,6 +2,7 @@ import React from "react";
 import { View, Text } from "react-native";
 import { CheckBox } from "@ui-kitten/components";
 import { useTheme } from "@/contexts/ThemeContext";
+import { useTextSize } from "@/contexts/TextSizeContext";
 
 const CarFeaturesCheckbox = ({
   extraCarseatChecked,
@@ -15,6 +16,7 @@ const CarFeaturesCheckbox = ({
   setWinterTiresChecked: (nextChecked: boolean) => void;
 }) => {
   const { currentColors } = useTheme();
+  const { isLargeText, textScaleFactor } = useTextSize();
   return (
     <View
       style={{
@@ -35,7 +37,7 @@ const CarFeaturesCheckbox = ({
           checked={extraCarseatChecked}
           onChange={(nextChecked) => setExtraCarseatChecked(nextChecked)}
         />
-        <Text style={{ marginLeft: 8, fontFamily: "Comfortaa", color: currentColors.text }}>With Extra Carseat</Text>
+        <Text style={{ marginLeft: 8, fontFamily: "Comfortaa", color: currentColors.text, fontSize: 10 * textScaleFactor }}>With Extra Carseat</Text>
       </View>
 
       <View style={{ flexDirection: "row", alignItems: "center" }}>
@@ -43,7 +45,7 @@ const CarFeaturesCheckbox = ({
           checked={winterTiresChecked}
           onChange={(nextChecked) => setWinterTiresChecked(nextChecked)}
         />
-        <Text style={{ marginLeft: 8, fontFamily: "Comfortaa", color: currentColors.text }}>
+        <Text style={{ marginLeft: 8, fontFamily: "Comfortaa", color: currentColors.text, fontSize: 10 * textScaleFactor}}>
           With Winter Tires
         </Text>
       </View>

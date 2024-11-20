@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, TextInput, Image, StyleSheet, ScrollView } from 'react-native';
 import { useTheme } from '@/contexts/ThemeContext'; // Import the theme context
+import { useTextSize } from "@/contexts/TextSizeContext";
 
 const passengers = [
   { name: 'Catherine', image: require('@/assets/images/Catherine.png') },
@@ -11,15 +12,37 @@ const passengers = [
 
 export default function SelectPassengerScreen() {
   const { currentColors } = useTheme(); // Access currentColors from the theme context
+  const { isLargeText, textScaleFactor } = useTextSize();
 
   return (
     <View style={[styles.container, { backgroundColor: currentColors.background }]}>
       <View style={styles.header}>
-        <Text style={[styles.cancelText, { color: currentColors.text }]}>Cancel</Text>
-        <Text style={[styles.saveText, { color: currentColors.tint }]}>Save</Text>
+        <Text style={[styles.cancelText, 
+          { 
+            color: currentColors.text, 
+            fontSize: 16 * textScaleFactor 
+          }]}>
+            Cancel
+        </Text>
+        <Text style={[styles.saveText, 
+          { 
+            color: currentColors.tint, 
+            fontSize: 16 * 
+            textScaleFactor 
+            }]}>
+              Save
+        </Text>
       </View>
-      <Text style={[styles.title, { color: currentColors.text }]}>Select Passenger</Text>
-      <Text style={[styles.subtitle, { color: currentColors.text }]}>
+      <Text style={[styles.title, {
+         color: currentColors.text, 
+         fontSize: 24 * textScaleFactor}]}>
+          Select Passenger
+      </Text>
+      <Text style={[
+        styles.subtitle, 
+        { color: currentColors.text, 
+        fontSize: 16 * textScaleFactor
+        }]}>
         Select from recent chat
       </Text>
 
@@ -38,7 +61,11 @@ export default function SelectPassengerScreen() {
         ))}
       </ScrollView>
 
-      <Text style={[styles.searchText, { color: currentColors.tint }]}>
+      <Text style={[
+        styles.searchText, 
+        { color: currentColors.tint, 
+        fontSize: 14 * textScaleFactor 
+        }]}>
         Search from friend list
       </Text>
       <TextInput

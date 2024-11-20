@@ -48,6 +48,7 @@ import GroupPicker from "@/components/carpool/groupSelector";
 import WaypointSelector from "@/components/carpool/waypointSelector";
 import GestureMap from "@/components/carpool/gestureMap";
 import CarpoolOverview from "@/components/carpool/carpoolOverview";
+import { useTextSize } from '@/contexts/TextSizeContext';
 
 const { height: deviceHeight } = Dimensions.get("window");
 import { useTheme } from "@/contexts/ThemeContext";
@@ -117,6 +118,7 @@ const CreateRide = () => {
   const user = auth.currentUser;
   const userId = user?.uid;
   const { currentColors } = useTheme();
+  const { isLargeText, textScaleFactor } = useTextSize();
 
   const totalSeatsTakenByWaypoints = selectedWaypoints.reduce(
     (acc, waypoint) => {
@@ -560,25 +562,25 @@ const CreateRide = () => {
         /> */}
         <View style={{ padding: 15 }}>
           <View>
-            <Text
-              style={{
-                fontSize: 32,
-                marginBottom: 20,
-                fontFamily: "Comfortaa-semibold",
-                color: currentColors.text
-              }}
-            >
-              Create a ride
-            </Text>
+          <Text
+            style={{
+              fontSize: isLargeText ? 32 * 1.5 : 32, // Adjust font size based on scaling
+              marginBottom: 20,
+              fontFamily: "Comfortaa-semibold",
+              color: currentColors.text,
+            }}
+          >
+            Create a ride
+          </Text>
           </View>
-          <Text style={{ color: currentColors.tint, fontSize: 22, marginBottom: 15, fontFamily: "Comfortaa", }}>
+          <Text style={{ color: currentColors.tint, fontSize: isLargeText ? 22 * textScaleFactor : 22, marginBottom: 15, fontFamily: "Comfortaa", }}>
             Itinerary
           </Text>
           <RadioGroupComponent
             selectedIndex={selectedIndex}
             setSelectedIndex={setSelectedIndex}
           />
-          <Text style={{ color: currentColors.text, marginBottom: 5 }}>From</Text>
+          <Text style={{ color: currentColors.text, marginBottom: 5, fontSize: isLargeText ? 15 * textScaleFactor : 15 }}>From</Text>
           <ThemedAddressCompletionInput
             value={startingAddress}
             onChangeText={(text) => setStartingAddress(text)}
@@ -590,7 +592,7 @@ const CreateRide = () => {
             }}
             placeholder="Enter Origin"
           />
-          <Text style={{ color: currentColors.text, marginBottom: 5, marginTop: 15 }}>
+          <Text style={{ color: currentColors.text, marginBottom: 5, marginTop: 15, fontSize: 15 * textScaleFactor}}>
             To
           </Text>
           <ThemedAddressCompletionInput
@@ -611,7 +613,12 @@ const CreateRide = () => {
             handleTimeSelect={handleTimeConfirm}
             textColor={currentColors.text}
           />
-          <Text style={{ color: currentColors.text, marginBottom: 10, marginTop: 15, fontFamily: "Comfortaa", }}>
+          <Text style={{ color: currentColors.text, 
+            marginBottom: 10, 
+            marginTop: 15, 
+            fontFamily: "Comfortaa", 
+            fontSize: 15 * textScaleFactor
+            }}>
             Select which kid will join the ride
           </Text>
           <ChildSelector onSelectedChildrenChange={setSelectedChildren} />
@@ -664,6 +671,7 @@ const CreateRide = () => {
               marginTop: 5,
               marginBottom: 5,
               fontFamily: "Comfortaa",
+              fontSize: 15 * textScaleFactor
             }}
           >
             You choose the below passenger(s)
@@ -687,7 +695,7 @@ const CreateRide = () => {
             <Text
               style={{
                 color: currentColors.tint,
-                fontSize: 22,
+                fontSize: 22 * textScaleFactor,
                 marginTop: 15,
                 fontFamily: "Comfortaa",
               }}
@@ -704,7 +712,7 @@ const CreateRide = () => {
             <Text
               style={{
                 color: currentColors.tint,
-                fontSize: 22,
+                fontSize: 22 * textScaleFactor,
                 marginTop: 15,
                 fontFamily: "Comfortaa",
               }}
@@ -773,7 +781,7 @@ const CreateRide = () => {
                   <Text
                     style={{
                       color: "#fff",
-                      fontSize: 16,
+                      fontSize: 16 * textScaleFactor,
                       fontFamily: "Comfortaa",
                     }}
                   >

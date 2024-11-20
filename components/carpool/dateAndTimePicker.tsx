@@ -4,6 +4,7 @@ import { Datepicker } from "@ui-kitten/components";
 import { TimePickerModal } from "react-native-paper-dates";
 import { useTheme } from "@/contexts/ThemeContext";
 import DateTimePicker from "@react-native-community/datetimepicker";
+import { useTextSize } from "@/contexts/TextSizeContext";
 
 const RideDateTimePicker = ({
   selectedDate,
@@ -21,6 +22,7 @@ const RideDateTimePicker = ({
   const [showTimePicker, setShowTimePicker] = React.useState(false);
   const { currentColors } = useTheme();
   const [time, setTime] = React.useState<Date | undefined>(undefined);
+  const { isLargeText, textScaleFactor } = useTextSize();
 
   const handleTimeChange = (event: any, selectedTime: Date | undefined) => {
     setShowTimePicker(false);
@@ -44,7 +46,7 @@ const RideDateTimePicker = ({
          
             fontFamily: "Comfortaa",
           },
-          { color: currentColors.text },
+          { color: currentColors.text, fontSize: 15 * textScaleFactor },
         ]}
       >
         Date & Time of Ride

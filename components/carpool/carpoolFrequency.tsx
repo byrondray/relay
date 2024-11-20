@@ -2,6 +2,7 @@ import React from "react";
 import { View, Text } from "react-native";
 import { Radio, RadioGroup } from "@ui-kitten/components";
 import { useTheme } from "@/contexts/ThemeContext";
+import { useTextSize } from "@/contexts/TextSizeContext";
 
 interface RadioGroupComponentProps {
   selectedIndex: number;
@@ -13,6 +14,8 @@ const RadioGroupComponent: React.FC<RadioGroupComponentProps> = ({
   setSelectedIndex,
 }) => {
   const { currentColors } = useTheme();
+  const { isLargeText, textScaleFactor } = useTextSize();
+ 
 
   return (
     <View style={{ marginBottom: 20 }}>
@@ -23,11 +26,11 @@ const RadioGroupComponent: React.FC<RadioGroupComponentProps> = ({
       >
         <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 10 }}>
           <Radio style={{ marginRight: 10 }} />
-          <Text style={{ color: currentColors.text, fontFamily: "Comfortaa", marginRight: 15 }}>
+          <Text style={{ color: currentColors.text, fontFamily: "Comfortaa", marginRight: 15, fontSize: 15 * textScaleFactor}}>
             One time
           </Text>
           <Radio style={{ marginRight: 10 }} />
-          <Text style={{ color: currentColors.text, fontFamily: "Comfortaa" }}>
+          <Text style={{ color: currentColors.text, fontFamily: "Comfortaa", fontSize: 15 * textScaleFactor}}>
             Recurring
           </Text>
         </View>

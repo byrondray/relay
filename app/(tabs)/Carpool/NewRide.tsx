@@ -3,10 +3,11 @@ import { View, Text, TouchableOpacity, StyleSheet, Image } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import FriendCard from "@/components/FriendCard";
 import { useTheme } from "@/contexts/ThemeContext";
+import { useTextSize } from "@/contexts/TextSizeContext";
 
 const NewRideScreen: React.FC = () => {
   const { currentColors } = useTheme(); // Access the current theme colors
-
+  const { isLargeText, textScaleFactor } = useTextSize();
   const hasFilledDriverInfo = true;
 
   // Sample data for friends
@@ -38,7 +39,7 @@ const NewRideScreen: React.FC = () => {
   return (
     <View style={[styles.container, { backgroundColor: currentColors.background }]}>
       <View style={styles.content}>
-        <Text style={[styles.title, { color: currentColors.text }]}>New Ride</Text>
+        <Text style={[styles.title, { color: currentColors.text, fontSize: 24 * textScaleFactor }]}>New Ride</Text>
 
         <TouchableOpacity
           style={[
@@ -52,8 +53,8 @@ const NewRideScreen: React.FC = () => {
               <Text
                 style={
                   hasFilledDriverInfo
-                    ? [styles.requestButtonText, { color: currentColors.text }]
-                    : [styles.disabledButtonText, { color: currentColors.text }]
+                    ? [styles.requestButtonText, { color: currentColors.text, fontSize: 18 * textScaleFactor }]
+                    : [styles.disabledButtonText, { color: currentColors.text, fontSize: 18 * textScaleFactor }]
                 }
               >
                 I'm a driver
@@ -62,7 +63,7 @@ const NewRideScreen: React.FC = () => {
                 style={[
                   styles.subText,
                   hasFilledDriverInfo && styles.requestSubText,
-                  { color: currentColors.text },
+                  { color: currentColors.text, fontSize: 14 * textScaleFactor },
                 ]}
               >
                 I'm available to carpool kids.
@@ -80,7 +81,7 @@ const NewRideScreen: React.FC = () => {
 
         {!hasFilledDriverInfo && (
           <>
-            <Text style={[styles.signupText, { color: currentColors.text }]}>
+            <Text style={[styles.signupText, { color: currentColors.text, fontSize: 14 * textScaleFactor }]}>
               Interested in becoming a carpool driver to help drive kids in your community?
             </Text>
 
@@ -91,7 +92,7 @@ const NewRideScreen: React.FC = () => {
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 0 }}
               >
-                <Text style={styles.signUpButtonText}>
+                <Text style={[styles.signUpButtonText, {fontSize: 14 * textScaleFactor}]} >
                   Sign up to be a Driver
                 </Text>
               </LinearGradient>
@@ -102,10 +103,10 @@ const NewRideScreen: React.FC = () => {
         <TouchableOpacity style={[styles.requestButton, { backgroundColor: currentColors.placeholder }]}>
           <View style={styles.buttonContent}>
             <View style={styles.textContainer}>
-              <Text style={[styles.requestButtonText, { color: currentColors.text }]}>
+              <Text style={[styles.requestButtonText, { color: currentColors.text, fontSize: 18 * textScaleFactor }]}>
                 Need a ride for my kid
               </Text>
-              <Text style={[styles.requestSubText, { color: currentColors.text }]}>
+              <Text style={[styles.requestSubText, { color: currentColors.text, fontSize: 14 * textScaleFactor }]}>
                 Notify me when a ride matches
               </Text>
             </View>
@@ -116,7 +117,7 @@ const NewRideScreen: React.FC = () => {
           </View>
         </TouchableOpacity>
 
-        <Text style={[styles.activeRequestText, { color: currentColors.text }]}>
+        <Text style={[styles.activeRequestText, { color: currentColors.text, fontSize: 24 * textScaleFactor }]}>
           Active Request
         </Text>
 

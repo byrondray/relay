@@ -1,9 +1,11 @@
 import React from "react";
 import { View, Text } from "react-native";
 import { useTheme } from "@/contexts/ThemeContext";
+import { useTextSize } from "@/contexts/TextSizeContext";
 
 const PaymentInfo = ({}) => {
   const { currentColors } = useTheme();
+  const { isLargeText, textScaleFactor } = useTextSize();
   return (
     <View
       style={{
@@ -24,7 +26,7 @@ const PaymentInfo = ({}) => {
     >
       <Text
         style={{
-          fontSize: 16,
+          fontSize: 16 * textScaleFactor,
           color: currentColors.text,
           padding: 7,
           fontFamily: "Comfortaa",

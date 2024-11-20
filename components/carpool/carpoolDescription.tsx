@@ -1,6 +1,7 @@
 import React from "react";
 import { View, Text, TextInput } from "react-native";
 import { useTheme } from "@/contexts/ThemeContext";
+import { useTextSize } from "@/contexts/TextSizeContext";
 
 const TripDescriptionInput = ({
   textColor,
@@ -14,6 +15,7 @@ const TripDescriptionInput = ({
   setDescription: (text: string) => void;
 }) => {
   const { currentColors } = useTheme();
+  const { isLargeText, textScaleFactor } = useTextSize();
   return (
     <View>
       <Text
@@ -22,6 +24,7 @@ const TripDescriptionInput = ({
           marginBottom: 5,
           marginTop: 10,
           fontFamily: "Comfortaa",
+          fontSize: 15 * textScaleFactor
         }}
       >
         Description
@@ -29,6 +32,7 @@ const TripDescriptionInput = ({
       <TextInput
         style={{
           width: "100%",
+          padding: 10,
           backgroundColor: currentColors.placeholder,
           borderColor: currentColors.tint,
           borderWidth: 1,
@@ -37,6 +41,8 @@ const TripDescriptionInput = ({
           paddingLeft: 30,
           paddingRight: 30,
           fontFamily: "Comfortaa",
+          fontSize: 10 * textScaleFactor,
+          paddingBottom: 10
         }}
         placeholder={placeholder}
         placeholderTextColor={currentColors.text}

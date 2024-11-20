@@ -23,6 +23,6 @@ export const Colors = {
     tint: tintColorDark,
     icon: "#C4C4C4",
     tabIconDefault: "#FFFFFF",
-    tabIconSelected: "#FF6A00"
+    tabIconSelected: "#FF6A00",
   },
 };

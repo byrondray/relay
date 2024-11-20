@@ -22,6 +22,7 @@ import GroupPicker from "@/components/carpool/groupSelector";
 import { auth } from "@/firebaseConfig";
 import { router } from "expo-router";
 import { useTheme } from "@/contexts/ThemeContext";
+import { useTextSize } from "@/contexts/TextSizeContext";
 
 const RequestRide = () => {
   const {
@@ -71,6 +72,7 @@ const RequestRide = () => {
     },
   });
   const { currentColors } = useTheme();
+  const { isLargeText, textScaleFactor } = useTextSize();
   const [createRequest] = useMutation<Request>(CREATE_REQUEST);
 
   const handleTimeConfirm = ({
@@ -139,7 +141,7 @@ const RequestRide = () => {
       onPress={handleSubmit}
     >
       {() => (
-        <Text style={{ color: currentColors.text, fontSize: 16, fontFamily: "Comfortaa" }}>
+        <Text style={{ color: currentColors.text, fontSize: 16 * textScaleFactor, fontFamily: "Comfortaa" }}>
           Submit
         </Text>
       )}
@@ -161,7 +163,7 @@ const RequestRide = () => {
         <View>
           <Text
             style={{
-              fontSize: 32,
+              fontSize: 32 * textScaleFactor,
               // fontWeight: "bold",
               marginBottom: 20,
               fontFamily: "Comfortaa",
@@ -183,6 +185,7 @@ const RequestRide = () => {
               color: currentColors.text,
               marginBottom: 5,
               fontFamily: "Comfortaa",
+              fontSize: 10 * textScaleFactor
             }}
           >
             From
@@ -192,6 +195,7 @@ const RequestRide = () => {
               color: currentColors.text,
               marginBottom: 5,
               fontFamily: "Comfortaa",
+              fontSize: 10 * textScaleFactor
             }}
           >
             * Required
@@ -212,8 +216,18 @@ const RequestRide = () => {
           style={{ marginBottom: 10 }}
         />
         <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-          <Text style={{ color: currentColors.text, marginBottom: 5, fontFamily: "Comfortaa", }}>To</Text>
-          <Text style={{ color: currentColors.tint, marginBottom: 5, fontFamily: "Comfortaa", }}>* Required</Text>
+          <Text style={{ color: currentColors.text, 
+            marginBottom: 5, 
+            fontFamily: "Comfortaa", 
+            fontSize: 10 * textScaleFactor
+            }}>To</Text>
+          <Text style={{ color: currentColors.tint, 
+            marginBottom: 5, 
+            fontFamily: "Comfortaa", 
+            fontSize: 10 * textScaleFactor
+            }}>
+              * Required
+              </Text>
         </View>
         <ThemedAddressCompletionInput
           value={endingAddress}
@@ -240,6 +254,7 @@ const RequestRide = () => {
             marginBottom: 10,
             marginTop: 15,
             fontFamily: "Comfortaa",
+            fontSize: 15 * textScaleFactor
           }}
         >
           Select which kid will join the ride

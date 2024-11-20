@@ -3,6 +3,7 @@ import { View, Text, Switch, StyleSheet } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { useTheme } from "@/contexts/ThemeContext";
 import { useLogout } from "@/hooks/auth/useLogout";
+import { useTextSize } from "@/contexts/TextSizeContext";
 
 const LogoutButton = () => {
   const { logout, loading } = useLogout();
@@ -15,29 +16,39 @@ const LogoutButton = () => {
 };
 
 const Settings = () => {
-  const { theme, setTheme, currentColors } = useTheme(); 
-  const toggleSwitch = () => setTheme(theme === "light" ? "dark" : "light"); // Toggle between light and dark
+  const { theme, setTheme, currentColors } = useTheme();
+  const { isLargeText, toggleTextSize, textScaleFactor } = useTextSize();
+  const toggleSwitch = () => setTheme(theme === "light" ? "dark" : "light");
 
   return (
     <View style={[styles.container, { backgroundColor: currentColors.background }]}>
-      <Text style={[styles.header, { color: currentColors.text }]}>Settings</Text>
+      <Text style={[styles.header, { color: currentColors.text, fontSize: 24 * textScaleFactor }]}>
+        Settings
+      </Text>
 
       <View style={styles.settingItem}>
-        <Text style={[styles.settingText, { color: currentColors.text }]}>
+        <Text style={[styles.settingText, { color: currentColors.text, fontSize: 18 * textScaleFactor }]}>
           Enable Notifications
         </Text>
         <Switch value={false} onValueChange={() => {}} />
       </View>
 
       <View style={styles.settingItem}>
-        <Text style={[styles.settingText, { color: currentColors.text }]}>
+        <Text style={[styles.settingText, { color: currentColors.text, fontSize: 18 * textScaleFactor }]}>
           Dark Mode
         </Text>
         <Switch value={theme === "dark"} onValueChange={toggleSwitch} />
       </View>
 
       <View style={styles.settingItem}>
-        <Text style={[styles.settingText, { color: currentColors.text }]}>
+        <Text style={[styles.settingText, { color: currentColors.text, fontSize: 18 * textScaleFactor }]}>
+          Large Text
+        </Text>
+        <Switch value={isLargeText} onValueChange={toggleTextSize} />
+      </View>
+
+      <View style={styles.settingItem}>
+        <Text style={[styles.settingText, { color: currentColors.text, fontSize: 18 * textScaleFactor }]}>
           Location Access
         </Text>
         <Switch value={false} onValueChange={() => {}} />
@@ -67,9 +78,9 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   header: {
-    fontSize: 24,
     fontWeight: "bold",
     marginBottom: 20,
+    fontFamily: "Comfortaa-bold"
   },
   settingItem: {
     flexDirection: "row",
@@ -80,7 +91,7 @@ const styles = StyleSheet.create({
     borderBottomColor: "#ddd",
   },
   settingText: {
-    fontSize: 18,
+    fontFamily: "Comfortaa",
   },
 });
 

@@ -12,6 +12,7 @@ import { useThemeColor } from "@/hooks/useThemeColor";
 import { ThemedView } from "./ThemedView";
 import debounce from "lodash.debounce";
 import { useTheme } from "@/contexts/ThemeContext";
+import { useTextSize } from "@/contexts/TextSizeContext";
 
 export function ThemedAddressCompletionInput({
   style,
@@ -83,6 +84,7 @@ export function ThemedAddressCompletionInput({
     }
   };
   const { currentColors } = useTheme();
+  const { isLargeText, textScaleFactor } = useTextSize();
   return (
     <View style={style}>
       <TextInput

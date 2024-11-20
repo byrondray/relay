@@ -32,6 +32,7 @@ import { FOREGROUND_NOTIFICATION_SUBSCRIPTION } from "@/graphql/map/queries";
 
 const { width } = Dimensions.get("window");
 import { ThemeProvider, useTheme } from "@/contexts/ThemeContext"; 
+import { TextSizeProvider } from "@/contexts/TextSizeContext";
 
 export default function RootLayout() {
   const [fontsLoaded] = useFonts({
@@ -114,6 +115,7 @@ export default function RootLayout() {
             }
           >
             <ThemeProvider>
+            <TextSizeProvider>
               <View
                 style={
                   colorScheme === "dark"
@@ -153,6 +155,7 @@ export default function RootLayout() {
                   </Stack>
                 </NavigationThemeProvider>
               </View>
+            </TextSizeProvider>
             </ThemeProvider>
           </ApplicationProvider>
         </ApolloProvider>

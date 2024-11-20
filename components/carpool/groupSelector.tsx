@@ -3,6 +3,7 @@ import { View, Text } from "react-native";
 import { Select, SelectItem, IndexPath } from "@ui-kitten/components";
 import { Group } from "@/graphql/generated";
 import { useTheme } from "@/contexts/ThemeContext";
+import { useTextSize } from "@/contexts/TextSizeContext";
 const GroupPicker = ({
   groups,
   selectedGroupIndex,
@@ -13,21 +14,23 @@ const GroupPicker = ({
   setSelectedGroupIndex: (index: IndexPath) => void;
 }) => {
   const { currentColors } = useTheme();
+  const { isLargeText, textScaleFactor } = useTextSize();
   return (
     <View>
       <Text
         style={{
           color: currentColors.tint,
-          fontSize: 22,
+          fontSize: 22 * textScaleFactor,
           marginBottom: 15,
           marginTop: 15,
           fontFamily: "Comfortaa",
+          
         }}
       >
         Select Group
       </Text>
       <Text
-        style={{ color: currentColors.text, marginBottom: 5, fontFamily: "Comfortaa" }}
+        style={{ color: currentColors.text, marginBottom: 5, fontFamily: "Comfortaa", fontSize: 15 * textScaleFactor }}
       >
         Groups
       </Text>
@@ -51,7 +54,7 @@ const GroupPicker = ({
           }}
           value={groups[selectedGroupIndex?.row]?.name || "Select Group"}
           placeholder="Select Group"
-          style={{ borderColor: currentColors.placeholder }}
+          style={{ borderColor: currentColors.placeholder}}
           
         >
           {groups.map((group, index) => (

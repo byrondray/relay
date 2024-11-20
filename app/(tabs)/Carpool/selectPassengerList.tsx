@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Image, StyleSheet, ScrollView } from 'react-native';
 import { useTheme } from '@/contexts/ThemeContext'; // Import the theme context
+import { useTextSize } from "@/contexts/TextSizeContext";
+
 
 type Friend = {
   name: string;
@@ -55,6 +57,7 @@ export default function SelectPassengerScreen() {
   const { currentColors } = useTheme();  // Access currentColors from the theme context
   const [searchTerm, setSearchTerm] = useState<string>('');
   const groupedFriends = groupFriendsByInitial(friendsList);
+  const { isLargeText, textScaleFactor } = useTextSize();
 
   // Filter the friends list based on the search term
   const filteredFriends = Object.keys(groupedFriends).reduce((acc, initial) => {
@@ -70,12 +73,35 @@ export default function SelectPassengerScreen() {
   return (
     <View style={[styles.container, { backgroundColor: currentColors.background }]}>
       <View style={styles.header}>
-        <Text style={[styles.cancelText, { color: currentColors.text }]}>Cancel</Text>
-        <Text style={[styles.saveText, { color: currentColors.tint }]}>Save</Text>
+      <Text style={[styles.cancelText, 
+          { 
+            color: currentColors.text, 
+            fontSize: 16 * textScaleFactor 
+          }]}>
+            Cancel
+        </Text>
+        <Text style={[styles.saveText, 
+          { 
+            color: currentColors.tint, 
+            fontSize: 16 * 
+            textScaleFactor 
+            }]}>
+              Save
+        </Text>
       </View>
       
-      <Text style={[styles.title, { color: currentColors.text }]}>Select Passenger</Text>
-      <Text style={[styles.subtitle, { color: currentColors.text }]}>Select from recent chat</Text>
+      <Text style={[styles.title, {
+         color: currentColors.text, 
+         fontSize: 24 * textScaleFactor}]}>
+          Select Passenger
+      </Text>
+      <Text style={[
+        styles.subtitle, 
+        { color: currentColors.text, 
+        fontSize: 16 * textScaleFactor
+        }]}>
+        Select from recent chat
+      </Text>
 
       {/* Recent Passengers Section */}
       <View style={styles.recentPassengersContainer}>
@@ -95,7 +121,13 @@ export default function SelectPassengerScreen() {
 
       {/* Friends Container (Search Bar + Friends List) */}
       <View style={styles.friendsContainer}>
-        <Text style={[styles.searchText, { color: currentColors.tint }]}>Search from friend list</Text>
+      <Text style={[
+        styles.searchText, 
+        { color: currentColors.tint, 
+        fontSize: 14 * textScaleFactor 
+        }]}>
+        Search from friend list
+      </Text>
         <TextInput
           style={[styles.searchBar, { backgroundColor: currentColors.text }]}
           placeholder="Search from friend list"

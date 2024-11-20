@@ -2,6 +2,7 @@ import React from "react";
 import { View, Text } from "react-native";
 import { Select, SelectItem, IndexPath } from "@ui-kitten/components";
 import { useTheme } from "@/contexts/ThemeContext";
+import { useTextSize } from "@/contexts/TextSizeContext";
 
 const VehicleDetailsPicker = ({
   selectedVehicleIndex,
@@ -21,12 +22,13 @@ const VehicleDetailsPicker = ({
   textColor: string;
 }) => {
   const { currentColors } = useTheme();
+  const { isLargeText, textScaleFactor } = useTextSize();
   return (
     <View>
       <Text
         style={{
           color: currentColors.tint,
-          fontSize: 22,
+          fontSize: 22 * textScaleFactor,
           marginBottom: 15,
           marginTop: 15,
           fontFamily: "Comfortaa",
@@ -35,7 +37,7 @@ const VehicleDetailsPicker = ({
         Vehicle Details
       </Text>
       <Text
-        style={{ color: currentColors.text, marginBottom: 5, fontFamily: "Comfortaa" }}
+        style={{ color: currentColors.text, marginBottom: 5, fontFamily: "Comfortaa", fontSize: 15 * textScaleFactor }}
       >
         Select Vehicle
       </Text>
@@ -80,7 +82,7 @@ const VehicleDetailsPicker = ({
         </View>
 
         <Text
-          style={{ color: currentColors.text, marginBottom: 5, fontFamily: "Comfortaa" }}
+          style={{ color: currentColors.text, marginBottom: 5, fontFamily: "Comfortaa", fontSize: 15 * textScaleFactor }}
         >
           Seats Available
         </Text>
