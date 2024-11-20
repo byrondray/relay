@@ -4,10 +4,11 @@ import { TabBarIcon } from "@/components/navigation/TabBarIcon";
 import { useTheme } from "@/contexts/ThemeContext";
 import { StyleSheet, View, Image } from "react-native";
 import Relay from "@/assets/images/Relay.svg";
+import RelayWhite from "@/assets/images/Relay-white.svg";
 
 function Header() {
   const { currentColors } = useTheme();
-  
+  const isDarkMode = currentColors.background === "#181818";
   return (
     <View
       style={[
@@ -19,7 +20,11 @@ function Header() {
         source={require("@/assets/images/RelayLogo.png")}
         style={{ width: 30 }}
       />
-      <Relay style={{ marginLeft: 5 }} />
+      {isDarkMode ? (
+        <RelayWhite style={{ marginLeft: 5 }} />
+      ) : (
+        <Relay style={{ marginLeft: 5 }} />
+      )}
     </View>
   );
 }
