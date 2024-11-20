@@ -200,7 +200,7 @@ const RideMap: React.FC<RideMapProps> = ({
               coordinates={route.coordinates}
               strokeColor={isActiveRoute(route) ? "#FF6A00" : "#ff9950"}
               strokeWidth={isActiveRoute(route) ? 5 : 4}
-              lineDashPattern={isActiveRoute(route) ? [] : [10, 10]}
+              // lineDashPattern={isActiveRoute(route) ? [] : [10, 10]}
               tappable={true}
               onPress={() => {
                 if (route.coordinates && route.coordinates.length > 0) {
