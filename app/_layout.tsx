@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  ThemeProvider as NavigationThemeProvider,
-} from "@react-navigation/native";
+import { ThemeProvider as NavigationThemeProvider } from "@react-navigation/native";
 import {
   StyleSheet,
   View,
@@ -24,18 +22,20 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { myTheme } from "./theme";
 import { useFonts } from "expo-font";
 import { LogBox } from "react-native";
-import {
-  DarkTheme,
-  DefaultTheme,
-} from "@react-navigation/native";
+import { DarkTheme, DefaultTheme } from "@react-navigation/native";
 import { FOREGROUND_NOTIFICATION_SUBSCRIPTION } from "@/graphql/map/queries";
 
 const { width } = Dimensions.get("window");
-import { ThemeProvider, useTheme } from "@/contexts/ThemeContext"; 
+import { ThemeProvider, useTheme } from "@/contexts/ThemeContext";
 
 export default function RootLayout() {
   const [fontsLoaded] = useFonts({
     Comfortaa: require("@/assets/fonts/Comfortaa-VariableFont_wght.ttf"),
+    ComfortaaLight: require("../../assets/fonts/Comfortaa-Light.ttf"),
+    ComfortaaRegular: require("../../assets/fonts/Comfortaa-Regular.ttf"),
+    ComfortaaMedium: require("../../assets/fonts/Comfortaa-Medium.ttf"),
+    ComfortaaSemiBold: require("../../assets/fonts/Comfortaa-SemiBold.ttf"),
+    ComfortaaBold: require("../../assets/fonts/Comfortaa-Bold.ttf"),
   });
   const colorScheme = useColorScheme();
   const isLoading = useFirebaseAuth();
