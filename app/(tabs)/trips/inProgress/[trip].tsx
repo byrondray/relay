@@ -37,6 +37,8 @@ import { haversineDistance } from "@/utils/distance";
 import { useCarpoolProximity } from "@/hooks/map/detectIfDriverIsClose";
 import { useRealtimeDirections } from "@/hooks/map/useRealtimeDirections";
 import { useTheme } from "@/contexts/ThemeContext";
+import { useTextSize } from "@/contexts/TextSizeContext";
+
 
 const CarpoolScreen: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
@@ -322,6 +324,7 @@ const CarpoolScreen: React.FC = () => {
     ).values()
   );
   const { currentColors } = useTheme();
+  const { isLargeText, textScaleFactor } = useTextSize();
   return (
     <ScrollView>
       {carpoolData &&
@@ -369,7 +372,7 @@ const CarpoolScreen: React.FC = () => {
           }}
         >
           <Text
-            style={{ fontSize: 20, fontFamily: "Comfortaa", color: currentColors.icon }}
+            style={{ fontSize: 20 * textScaleFactor, fontFamily: "Comfortaa", color: currentColors.icon }}
           >
             {date}
           </Text>

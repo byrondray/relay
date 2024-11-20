@@ -7,6 +7,7 @@ import { auth } from "@/firebaseConfig";
 import { Link } from "expo-router";
 import { GetUserCarpoolsAndRequestsQuery } from "@/graphql/generated";
 import { useTheme } from "@/contexts/ThemeContext";
+import { useTextSize } from "@/contexts/TextSizeContext";
 
 const CarpoolListScreen: React.FC = () => {
   const { currentColors } = useTheme();
@@ -25,6 +26,7 @@ const CarpoolListScreen: React.FC = () => {
 
   const carpools = data?.getUserCarpoolsAndRequests?.carpools || [];
   const requests = data?.getUserCarpoolsAndRequests?.requests || [];
+  const { isLargeText, textScaleFactor } = useTextSize();
 
   return (
     <>
@@ -40,13 +42,28 @@ const CarpoolListScreen: React.FC = () => {
                 params: { trip: item.id },
               }}
             >
-              <Text style={[styles.carpoolTitle, { color: currentColors.text }]}>
+              <Text style={[
+                styles.carpoolTitle, 
+                { 
+                  color: currentColors.text, 
+                  fontSize: 18 * textScaleFactor 
+                  }]}>
                 Carpool on {item.departureDate}
               </Text>
-              <Text style={[styles.carpoolDetail, { color: currentColors.text }]}>
+              <Text style={[
+                styles.carpoolDetail, 
+                { 
+                  color: currentColors.text, 
+                  fontSize: 14 * textScaleFactor 
+                  }]}>
                 Start: {item.startAddress}
               </Text>
-              <Text style={[styles.carpoolDetail, { color: currentColors.text }]}>
+              <Text style={[
+                styles.carpoolDetail, 
+                { 
+                  color: currentColors.text, 
+                  fontSize: 14 * textScaleFactor 
+                  }]}>
                 Destination: {item.endAddress}
               </Text>
               <Text style={{ color: currentColors.text }}>{item.id}</Text>
@@ -56,7 +73,7 @@ const CarpoolListScreen: React.FC = () => {
         ListEmptyComponent={<Text style={{ color: currentColors.text }}>No carpools available.</Text>}
       />
 
-      <Text style={[styles.sectionTitle, { color: currentColors.text }]}>All Requests</Text>
+      <Text style={[styles.sectionTitle, { color: currentColors.text, fontSize: 16 * textScaleFactor }]}>All Requests</Text>
       <FlatList
         data={requests}
         keyExtractor={(request) => request.id.toString()}
@@ -69,23 +86,45 @@ const CarpoolListScreen: React.FC = () => {
                   params: { trip: request.carpoolId },
                 }}
               >
-                <Text style={[styles.requestDetail, { color: currentColors.text }]}>
+                <Text style={[
+                  styles.requestDetail, 
+                  { 
+                    color: currentColors.text, 
+                    fontSize: 12 * textScaleFactor 
+                    }]}>
                   Request by: {request.parent.firstName} (Linked to Carpool)
                 </Text>
                 <Text style={{ color: currentColors.text }}>{request.carpoolId}</Text>
               </Link>
             ) : (
-              <Text style={[styles.requestDetail, { color: currentColors.text }]}>
+              <Text style={[
+                styles.requestDetail, 
+                { 
+                  color: currentColors.text, 
+                  fontSize: 12 * textScaleFactor
+                }]}>
                 Request by: {request.parent.firstName} (Not Linked to Carpool)
               </Text>
             )}
-            <Text style={[styles.requestDetail, { color: currentColors.text }]}>
+            <Text style={[
+              styles.requestDetail, 
+              { color: currentColors.text, 
+              fontSize: 12 * textScaleFactor 
+              }]}>
               Child: {request.child.firstName}
             </Text>
-            <Text style={[styles.requestDetail, { color: currentColors.text }]}>
+            <Text style={[
+              styles.requestDetail, 
+              { color: currentColors.text, 
+              fontSize: 12 * textScaleFactor 
+              }]}>
               Pickup Time: {request.pickupTime}
             </Text>
-            <Text style={[styles.requestDetail, { color: currentColors.text }]}>
+            <Text style={[
+              styles.requestDetail, 
+              { color: currentColors.text, 
+              fontSize: 12 * textScaleFactor 
+              }]}>
               Start Address: {request.startAddress}
             </Text>
           </View>
