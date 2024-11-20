@@ -218,7 +218,7 @@ const MapDriverCard = ({
         </Text>
       </View>
 
-      <TimeCard startTime={startTime} endTime={endTime} />
+      <TimeCard startTime={startTime} endTime={endTime}/>
 
       <View
         style={{

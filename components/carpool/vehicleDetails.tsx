@@ -64,10 +64,10 @@ const VehicleDetailsPicker = ({
             }
             placeholder="Select Vehicle"
             style={{
-              backgroundColor: currentColors.background,
-              borderColor: currentColors.placeholder,  
+              backgroundColor: currentColors.placeholder,
+              borderColor: currentColors.placeholder,
               borderWidth: 1,
-              borderRadius: 8,            
+              borderRadius: 8,
             }}
           >
             {vehicles.map((vehicle, index) => (

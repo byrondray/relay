@@ -15,7 +15,7 @@ const TimeCard = ({
       {/* Start Time Section */}
       <View style={styles.timeSection}>
         <Text style={[styles.timeLabel, {color: currentColors.text}]}>Start time (Estimated time)</Text>
-        <Text style={[styles.timeValue, { color: "#FB812A" }]}>
+        <Text style={[styles.timeValue, { color: currentColors.text }]}>
           {startTime}
           <Text style={[styles.timePeriod, {color: currentColors.text}]}>am</Text>
         </Text>
