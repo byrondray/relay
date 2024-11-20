@@ -16,7 +16,7 @@ export default function SelectPassengerScreen() {
     <View style={[styles.container, { backgroundColor: currentColors.background }]}>
       <View style={styles.header}>
         <Text style={[styles.cancelText, { color: currentColors.text }]}>Cancel</Text>
-        <Text style={[styles.saveText, { color: currentColors.text }]}>Save</Text>
+        <Text style={[styles.saveText, { color: currentColors.tint }]}>Save</Text>
       </View>
       <Text style={[styles.title, { color: currentColors.text }]}>Select Passenger</Text>
       <Text style={[styles.subtitle, { color: currentColors.text }]}>
@@ -38,7 +38,7 @@ export default function SelectPassengerScreen() {
         ))}
       </ScrollView>
 
-      <Text style={[styles.searchText, { color: currentColors.text }]}>
+      <Text style={[styles.searchText, { color: currentColors.tint }]}>
         Search from friend list
       </Text>
       <TextInput
@@ -58,6 +58,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 20,
     paddingTop: 40,
+    fontFamily: "Comfortaa"
   },
   header: {
     flexDirection: 'row',
@@ -65,18 +66,22 @@ const styles = StyleSheet.create({
   },
   cancelText: {
     fontSize: 16,
+    fontFamily: "Comfortaa"
   },
   saveText: {
     fontSize: 16,
+    fontFamily: "Comfortaa"
   },
   title: {
     fontSize: 24,
-    fontWeight: 'bold',
+    // fontWeight: 'bold',
     marginTop: 20,
+    fontFamily: "Comfortaa-bold"
   },
   subtitle: {
     fontSize: 16,
     marginVertical: 10,
+    fontFamily: "Comfortaa"
   },
   imageContainer: {
     flexDirection: 'row',
@@ -95,11 +100,14 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
   name: {
-    fontSize: 14,
+    fontSize: 12,
+    fontFamily: "Comfortaa",
+    marginBottom: 20
   },
   searchText: {
-    fontSize: 16,
+    fontSize: 14,
     marginBottom: 5,
+    fontFamily: "Comfortaa"
   },
   searchBar: {
     height: 40,
@@ -107,5 +115,6 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     paddingLeft: 15,
     marginBottom: 400,
+    fontFamily: "Comfortaa"
   },
 });

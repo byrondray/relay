@@ -71,7 +71,7 @@ export default function SelectPassengerScreen() {
     <View style={[styles.container, { backgroundColor: currentColors.background }]}>
       <View style={styles.header}>
         <Text style={[styles.cancelText, { color: currentColors.text }]}>Cancel</Text>
-        <Text style={[styles.saveText, { color: currentColors.text }]}>Save</Text>
+        <Text style={[styles.saveText, { color: currentColors.tint }]}>Save</Text>
       </View>
       
       <Text style={[styles.title, { color: currentColors.text }]}>Select Passenger</Text>
@@ -95,7 +95,7 @@ export default function SelectPassengerScreen() {
 
       {/* Friends Container (Search Bar + Friends List) */}
       <View style={styles.friendsContainer}>
-        <Text style={[styles.searchText, { color: currentColors.text }]}>Search from friend list</Text>
+        <Text style={[styles.searchText, { color: currentColors.tint }]}>Search from friend list</Text>
         <TextInput
           style={[styles.searchBar, { backgroundColor: currentColors.text }]}
           placeholder="Search from friend list"
@@ -132,6 +132,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 20,
     paddingTop: 40,
+    fontFamily: "Comfortaa"
   },
   header: {
     flexDirection: 'row',
@@ -139,18 +140,22 @@ const styles = StyleSheet.create({
   },
   cancelText: {
     fontSize: 16,
+    fontFamily: "Comfortaa"
   },
   saveText: {
     fontSize: 16,
+    fontFamily: "Comfortaa"
   },
   title: {
     fontSize: 24,
-    fontWeight: 'bold',
+    // fontWeight: 'bold',
     marginTop: spacing.small,
+    fontFamily: "Comfortaa-bold"
   },
   subtitle: {
     fontSize: 16,
     marginVertical: spacing.small,
+    fontFamily: "Comfortaa"
   },
   recentPassengersContainer: {
     marginBottom: spacing.large,
@@ -170,16 +175,18 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   name: {
-    fontSize: 14,
+    fontSize: 12,
     textAlign: 'center',
+    fontFamily: "Comfortaa"
   },
   friendsContainer: {
     flex: 1,
     paddingTop: spacing.medium,
   },
   searchText: {
-    fontSize: 16,
+    fontSize: 14,
     marginBottom: 5,
+    fontFamily: "Comfortaa"
   },
   searchBar: {
     height: 40,
@@ -188,6 +195,7 @@ const styles = StyleSheet.create({
     paddingLeft: spacing.medium,
     marginBottom: spacing.medium,
     marginHorizontal: spacing.small,
+    fontFamily: "Comfortaa"
   },
   friendsList: {
     paddingVertical: spacing.small,
