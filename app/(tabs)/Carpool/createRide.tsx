@@ -15,7 +15,7 @@ import {
 import { haversineDistance } from "@/utils/distance";
 import { useDirections } from "@/hooks/map/useDirections";
 import { areCoordinatesEqual } from "@/utils/equalCoorordinates";
-import CarFeaturesCheckbox from "@/components/carpool/carFeaturesCheckbox";
+import PricingCheckbox from "@/components/carpool/pricingCheckbox";
 import TripDescriptionInput from "@/components/carpool/carpoolDescription";
 import RideDateTimePicker from "@/components/carpool/dateAndTimePicker";
 import MapAiInfo from "@/components/carpool/mapAiInfo";
@@ -70,10 +70,10 @@ const CreateRide = () => {
     setDateAndTime,
     canSubmit,
     setCanSubmit,
-    extraCarseatChecked,
-    setExtraCarseatChecked,
-    winterTiresChecked,
-    setWinterTiresChecked,
+    voluntaryChecked,
+    setVoluntaryChecked,
+    shareCostChecked,
+    setShareCostChecked,
     showTimePicker,
     setShowTimePicker,
     time,
@@ -555,7 +555,7 @@ const CreateRide = () => {
               Create a ride
             </Text>
           </View>
-          <Text style={{ color: "#FF6A00", fontSize: 22, marginBottom: 15 }}>
+          <Text style={{ color: "#FF6A00", fontSize: 22, marginBottom: 15, fontFamily: "Comfortaa-Regular", letterSpacing: -1, }}>
             Itinerary
           </Text>
           <RadioGroupComponent
@@ -596,7 +596,7 @@ const CreateRide = () => {
             textColor={textColor}
           />
           <Text style={{ color: textColor, marginBottom: 10, marginTop: 15 }}>
-            Select which kid will join the ride
+            Select which kid will join with you
           </Text>
           <ChildSelector onSelectedChildrenChange={setSelectedChildren} />
           <GroupPicker
@@ -678,11 +678,11 @@ const CreateRide = () => {
             >
               Pricing
             </Text>
-            <CarFeaturesCheckbox
-              extraCarseatChecked={extraCarseatChecked}
-              winterTiresChecked={winterTiresChecked}
-              setExtraCarseatChecked={setExtraCarseatChecked}
-              setWinterTiresChecked={setWinterTiresChecked}
+            <PricingCheckbox
+              voluntaryChecked={voluntaryChecked}
+              shareCostChecked={shareCostChecked}
+              setVoluntaryChecked={setVoluntaryChecked}
+              setShareCostChecked={setShareCostChecked}
             />
             <PaymentInfo />
             <Text
@@ -743,8 +743,8 @@ const CreateRide = () => {
                         departureTime: time,
                         tripPreferences: description,
                         vehicleId: vehicles[selectedVehicleIndex.row].id,
-                        extraCarSeat: extraCarseatChecked,
-                        winterTires: winterTiresChecked,
+                        voluntary: voluntaryChecked,
+                        shareCost: shareCostChecked,
                         requestIds: selectedWaypoints.map((child) => child.id),
                         driverChildIds: selectedChildren.map((child) => child),
                         groupId: groupId!,

@@ -106,7 +106,7 @@ function HomeScreen() {
                   marginBottom: 3,
                 }}
               >
-                Looking for a ride for my kid
+                Need a ride for my kid
               </Text>
               <Text style={{ color: "#8F9BB3", fontSize: 16 }}>
                 Notify me when a ride matches

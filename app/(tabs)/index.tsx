@@ -173,7 +173,7 @@ function HomeScreen() {
             <View style={styles.buttonContent}>
               <View style={styles.textContainer}>
                 <Text style={styles.requestButtonText}>
-                  Looking for a ride for my kid
+                  Need a ride for my kid
                 </Text>
                 <Text style={styles.requestSubText}>
                   Notify me when a ride matches

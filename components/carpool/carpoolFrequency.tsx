@@ -1,5 +1,5 @@
 import React from "react";
-import { View } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
 import { Radio, RadioGroup } from "@ui-kitten/components";
 
 interface RadioGroupComponentProps {
@@ -18,11 +18,23 @@ const RadioGroupComponent: React.FC<RadioGroupComponentProps> = ({
         onChange={(index: number) => setSelectedIndex(index)}
         style={{ flexDirection: "row", width: "100%" }}
       >
-        <Radio style={{ marginRight: 10 }}>One time</Radio>
-        <Radio>Recurring</Radio>
+        <Radio style={{ marginRight: 10 }}>
+          {() => <Text style={styles.radioText}>One time</Text>}
+        </Radio>
+        <Radio>
+          {() => <Text style={styles.radioText}>Recurring</Text>}
+        </Radio>
       </RadioGroup>
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  radioText: {
+    fontFamily: "Comfortaa-Regular",
+    marginLeft: 10,
+    fontSize: 14,
+  },
+});
 
 export default RadioGroupComponent;

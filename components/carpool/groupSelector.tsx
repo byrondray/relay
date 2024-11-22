@@ -19,13 +19,13 @@ const GroupPicker = ({
       <Text
         style={{
           color: "#FF6A00",
-          fontSize: 22,
+          fontSize: 16,
           marginBottom: 15,
           marginTop: 15,
           fontFamily: "Comfortaa",
         }}
       >
-        Select Group
+        Select a group to share the post:
       </Text>
       <Text
         style={{ color: textColor, marginBottom: 5, fontFamily: "Comfortaa" }}

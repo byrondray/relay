@@ -240,7 +240,7 @@ const RequestRide = () => {
             fontFamily: "Comfortaa",
           }}
         >
-          Select which kid will join the ride
+          Select who will join the ride
         </Text>
         <ChildSelector
           onSelectedChildrenChange={(selectedChildren) =>
