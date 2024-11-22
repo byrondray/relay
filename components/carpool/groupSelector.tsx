@@ -27,12 +27,24 @@ const GroupPicker = ({
       >
         Select a group to share the post:
       </Text>
-      <Text
-        style={{ color: textColor, marginBottom: 5, fontFamily: "Comfortaa" }}
-      >
-        Groups
-      </Text>
-      <View
+      <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+        <Text
+          style={{ color: textColor, marginTop: 15,  marginBottom: 5, fontFamily: "Comfortaa" }}
+        >
+          Groups
+        </Text>
+        <Text
+          style={{
+            color: textColor,
+            marginTop: 15, 
+            marginBottom: 5,
+            fontFamily: "Comfortaa-Regular",
+          }}
+        >
+          * Required
+        </Text>
+      </View>
+      <View           
         style={{
           backgroundColor: "#F7F9FC",
           height: 43,
@@ -41,8 +53,7 @@ const GroupPicker = ({
           borderRadius: 15,
           paddingLeft: 15,
           justifyContent: "center",
-        }}
-      >
+        }}>
         <Select
           selectedIndex={selectedGroupIndex}
           onSelect={(index: IndexPath | IndexPath[]) => {
@@ -52,7 +63,6 @@ const GroupPicker = ({
           }}
           value={groups[selectedGroupIndex?.row]?.name || "Select Group"}
           placeholder="Select Group"
-          style={{ borderColor: "transparent" }}
         >
           {groups.map((group, index) => (
             <SelectItem title={group.name} key={group.id} />

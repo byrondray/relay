@@ -163,7 +163,8 @@ const RequestRide = () => {
               fontSize: 32,
               // fontWeight: "bold",
               marginBottom: 20,
-              fontFamily: "Comfortaa",
+              letterSpacing: -1,
+              fontFamily: "Comfortaa-Bold",
             }}
           >
             Post a request
@@ -180,7 +181,7 @@ const RequestRide = () => {
             style={{
               color: textColor,
               marginBottom: 5,
-              fontFamily: "Comfortaa",
+              fontFamily: "Comfortaa-Regular",
             }}
           >
             From
@@ -189,7 +190,7 @@ const RequestRide = () => {
             style={{
               color: textColor,
               marginBottom: 5,
-              fontFamily: "Comfortaa",
+              fontFamily: "Comfortaa-Regular",
             }}
           >
             * Required
@@ -210,8 +211,8 @@ const RequestRide = () => {
           style={{ marginBottom: 10 }}
         />
         <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-          <Text style={{ color: textColor, marginBottom: 5 }}>To</Text>
-          <Text style={{ color: textColor, marginBottom: 5 }}>* Required</Text>
+          <Text style={{ color: textColor, marginBottom: 5, fontFamily: "Comfortaa-Regular" }}>To</Text>
+          <Text style={{ color: textColor, marginBottom: 5, fontFamily: "Comfortaa-Regular" }}>* Required</Text>
         </View>
         <ThemedAddressCompletionInput
           value={endingAddress}
@@ -237,7 +238,7 @@ const RequestRide = () => {
             color: textColor,
             marginBottom: 10,
             marginTop: 15,
-            fontFamily: "Comfortaa",
+            fontFamily: "Comfortaa-Regular",
           }}
         >
           Select who will join the ride

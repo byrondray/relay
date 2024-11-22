@@ -548,8 +548,9 @@ const CreateRide = () => {
               style={{
                 fontSize: 32,
                 marginBottom: 20,
-                fontFamily: "Comfortaa-semibold",
+                fontFamily: "Comfortaa-Bold",
                 fontWeight: 700,
+                letterSpacing: -1,
               }}
             >
               Create a ride
@@ -562,7 +563,25 @@ const CreateRide = () => {
             selectedIndex={selectedIndex}
             setSelectedIndex={setSelectedIndex}
           />
-          <Text style={{ color: textColor, marginBottom: 5 }}>From</Text>
+          <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+            <Text 
+              style={{ 
+                color: textColor,
+                marginTop: 15,  
+                marginBottom: 5, 
+                fontFamily: "Comfortaa-Regular" 
+              }}>From</Text>
+            <Text
+              style={{
+                color: textColor,
+                marginTop: 15, 
+                marginBottom: 5,
+                fontFamily: "Comfortaa-Regular",
+              }}
+            >
+              * Required
+            </Text>
+          </View>
           <ThemedAddressCompletionInput
             value={startingAddress}
             onChangeText={(text) => setStartingAddress(text)}
@@ -574,9 +593,21 @@ const CreateRide = () => {
             }}
             placeholder="Enter Origin"
           />
-          <Text style={{ color: textColor, marginBottom: 5, marginTop: 15 }}>
-            To
-          </Text>
+          <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+            <Text style={{ color: textColor, marginBottom: 5, marginTop: 15, fontFamily: "Comfortaa-Regular" }}>
+              To
+            </Text>
+            <Text
+              style={{
+                color: textColor,
+                marginTop: 15, 
+                marginBottom: 5,
+                fontFamily: "Comfortaa-Regular",
+              }}
+            >
+              * Required
+            </Text>
+          </View>
           <ThemedAddressCompletionInput
             value={endingAddress}
             onChangeText={(text) => {
@@ -595,7 +626,7 @@ const CreateRide = () => {
             handleTimeSelect={handleTimeConfirm}
             textColor={textColor}
           />
-          <Text style={{ color: textColor, marginBottom: 10, marginTop: 15 }}>
+          <Text style={{ color: textColor, marginBottom: 10, marginTop: 15, fontFamily: "Comfortaa-Regular" }}>
             Select which kid will join with you
           </Text>
           <ChildSelector onSelectedChildrenChange={setSelectedChildren} />
@@ -650,7 +681,7 @@ const CreateRide = () => {
               fontFamily: "Comfortaa",
             }}
           >
-            You choose the below passenger(s)
+            Select the request to match
           </Text>
           <View style={{ width: "100%", marginBottom: 40 }}>
             <CarpoolPickerBar

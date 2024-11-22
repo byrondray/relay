@@ -92,12 +92,12 @@ const CarpoolOverview = ({
         </Button>
       </LinearGradient>
 
-      <Text style={{ fontFamily: "Comfortaa", color: textColor }}>
+      <Text style={{ fontFamily:  "Comfortaa-Regular", color: textColor }}>
         Scheduled
       </Text>
       <Text
         style={{
-          fontFamily: "Comfortaa",
+          fontFamily:  "Comfortaa-Regular",
           color: "#2E3A59",
           marginBottom: 20,
           fontSize: 14,
@@ -106,10 +106,10 @@ const CarpoolOverview = ({
       >
         One time
       </Text>
-      <Text style={{ fontFamily: "Comfortaa", color: textColor }}>From</Text>
+      <Text style={{ fontFamily: "Comfortaa-Regular", color: textColor }}>From</Text>
       <Text
         style={{
-          fontFamily: "Comfortaa",
+          fontFamily: "Comfortaa-Regular",
           color: "#2E3A59",
           marginBottom: 20,
           fontSize: 14,
@@ -118,10 +118,10 @@ const CarpoolOverview = ({
       >
         {startingAddress}
       </Text>
-      <Text style={{ fontFamily: "Comfortaa", color: textColor }}>To</Text>
+      <Text style={{ fontFamily: "Comfortaa-Regular", color: textColor }}>To</Text>
       <Text
         style={{
-          fontFamily: "Comfortaa",
+          fontFamily: "Comfortaa-Regular",
           color: "#2E3A59",
           marginBottom: 20,
           fontSize: 14,
@@ -130,12 +130,12 @@ const CarpoolOverview = ({
       >
         {endingAddress}
       </Text>
-      <Text style={{ fontFamily: "Comfortaa", color: textColor }}>
+      <Text style={{ fontFamily: "Comfortaa-Regular", color: textColor }}>
         Date & Time of Ride
       </Text>
       <Text
         style={{
-          fontFamily: "Comfortaa",
+          fontFamily: "Comfortaa-Regular",
           color: "#2E3A59",
           marginBottom: 20,
           fontSize: 14,
