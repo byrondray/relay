@@ -59,9 +59,7 @@ const VehicleDetailsPicker = ({
                 setSelectedVehicleIndex(index);
               }
             }}
-            value={
-              vehicles[selectedVehicleIndex?.row]?.make || "Select Vehicle"
-            }
+            value={vehicles[selectedVehicleIndex?.row]?.make || "Select Vehicle"}
             placeholder="Select Vehicle"
             style={{
               backgroundColor: currentColors.placeholder,

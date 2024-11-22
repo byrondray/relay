@@ -2,14 +2,11 @@ import React, { useState, useCallback } from "react";
 import {
   TextInput,
   StyleSheet,
-  FlatList,
   TouchableOpacity,
   Text,
   View,
 } from "react-native";
 import { TextInputProps } from "react-native";
-import { useThemeColor } from "@/hooks/useThemeColor";
-import { ThemedView } from "./ThemedView";
 import debounce from "lodash.debounce";
 import { useTheme } from "@/contexts/ThemeContext";
 
@@ -31,6 +28,7 @@ export function ThemedAddressCompletionInput({
   >([]);
   const [isSuggestionSelected, setIsSuggestionSelected] = useState(false);
 
+  // Function to fetch address suggestions with debounce
   const fetchAddressSuggestions = useCallback(
     debounce(async (input: string) => {
       if (!input) return;
@@ -60,6 +58,7 @@ export function ThemedAddressCompletionInput({
     []
   );
 
+  // Function to fetch lat/lon from placeId
   const fetchLatLonFromPlaceId = async (placeId: string) => {
     try {
       const apiKey = process.env.EXPO_PUBLIC_GOOGLE_MAPS_API;
@@ -88,7 +87,13 @@ export function ThemedAddressCompletionInput({
       <TextInput
         style={[
           styles.input,
-          { color: currentColors.text, paddingLeft: 15, fontFamily: "Comfortaa", backgroundColor: currentColors.placeholder, borderColor: currentColors.placeholder },
+          {
+            color: currentColors.text,
+            paddingLeft: 15,
+            fontFamily: "Comfortaa",
+            backgroundColor: currentColors.placeholder,
+            borderColor: currentColors.placeholder,
+          },
           style,
         ]}
         placeholderTextColor={currentColors.text}
@@ -101,6 +106,7 @@ export function ThemedAddressCompletionInput({
             setIsSuggestionSelected(false);
           }
         }}
+        placeholder="Enter address"
         {...restProps}
       />
       {suggestions.length > 0 && (
@@ -128,8 +134,6 @@ const styles = StyleSheet.create({
   input: {
     padding: 10,
     borderRadius: 20,
-    backgroundColor: "#F7F9FC",
-    borderColor: "#E4E9F2",
     borderWidth: 1,
     height: 43,
   },

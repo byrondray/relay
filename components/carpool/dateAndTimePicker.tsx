@@ -50,12 +50,13 @@ const RideDateTimePicker = ({
   return (
     <View>
       {/* Date Section */}
+
       <Text
         style={[
           {
             marginBottom: 5,
             marginTop: 15,
-         
+            color: "#8F9BB3",
             fontFamily: "Comfortaa",
           },
           { color: currentColors.text },
@@ -74,7 +75,6 @@ const RideDateTimePicker = ({
           flexDirection: "row",
           alignItems: "center",
           justifyContent: "space-between",
-          
         }}
       >
         <Image
@@ -94,7 +94,6 @@ const RideDateTimePicker = ({
             borderColor: "transparent",
             backgroundColor: currentColors.placeholder,
           }}
-          
         />
       </View>
 

@@ -14,7 +14,8 @@ const CarFeaturesCheckbox = ({
   setExtraCarseatChecked: (nextChecked: boolean) => void;
   setWinterTiresChecked: (nextChecked: boolean) => void;
 }) => {
-  const { currentColors } = useTheme();
+const { currentColors } = useTheme();
+
   return (
     <View
       style={{
@@ -22,6 +23,7 @@ const CarFeaturesCheckbox = ({
         alignItems: "center",
         marginTop: 15,
         paddingLeft: 5,
+        backgroundColor: currentColors.background,
       }}
     >
       <View
@@ -35,7 +37,9 @@ const CarFeaturesCheckbox = ({
           checked={extraCarseatChecked}
           onChange={(nextChecked) => setExtraCarseatChecked(nextChecked)}
         />
-        <Text style={{ marginLeft: 8, fontFamily: "Comfortaa", color: currentColors.text }}>With Extra Carseat</Text>
+        <Text style={{ marginLeft: 8, color: currentColors.text, fontFamily: "Comfortaa", }}>
+          With Extra Carseat
+        </Text>
       </View>
 
       <View style={{ flexDirection: "row", alignItems: "center" }}>
@@ -43,7 +47,7 @@ const CarFeaturesCheckbox = ({
           checked={winterTiresChecked}
           onChange={(nextChecked) => setWinterTiresChecked(nextChecked)}
         />
-        <Text style={{ marginLeft: 8, fontFamily: "Comfortaa", color: currentColors.text }}>
+        <Text style={{ marginLeft: 8, color: currentColors.text, fontFamily: "Comfortaa", }}>
           With Winter Tires
         </Text>
       </View>

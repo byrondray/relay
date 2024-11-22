@@ -58,7 +58,11 @@ const ChildSelector = ({
 
   return (
     <View
-      style={{ flexDirection: "row", justifyContent: "flex-start", gap: 10 }}
+      style={{
+        flexDirection: "row",
+        justifyContent: "flex-start",
+        gap: 10,
+      }}
     >
       {childrenWithImages.map((child: Child) => (
         <ChildImage
@@ -86,7 +90,7 @@ const ChildSelector = ({
           <Image
             style={{
               resizeMode: "contain",
-              tintColor: currentColors.tint
+              tintColor: currentColors.tint,
             }}
             source={require("../../assets/images/add-member-icon.png")}
           />

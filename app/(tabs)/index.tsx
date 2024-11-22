@@ -21,7 +21,7 @@ import { useTheme } from "@/contexts/ThemeContext";
 function HomeScreen() {
   const { currentColors } = useTheme();
   const [hasOnboarded, setHasOnboarded] = useState<boolean | null>(null);
-  const hasFilledDriverInfo = false;
+  const hasFilledDriverInfo = true;
 
   const { data, error } = useQuery(HAS_USER_ON_BOARDED, {
     skip: hasOnboarded !== null,

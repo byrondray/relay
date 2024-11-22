@@ -5,6 +5,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
+  StyleSheet,
 } from "react-native";
 import { ThemedAddressCompletionInput } from "@/components/ThemedAddressCompletionInput";
 import { LinearGradient } from "expo-linear-gradient";
@@ -14,7 +15,12 @@ import RideDateTimePicker from "@/components/carpool/dateAndTimePicker";
 import TripDescriptionInput from "@/components/carpool/carpoolDescription";
 import { useRequestState } from "@/hooks/carpoolRequestState";
 import RadioGroupComponent from "@/components/carpool/carpoolFrequency";
-import { ApolloError, createQueryPreloader, useMutation, useQuery } from "@apollo/client";
+import {
+  ApolloError,
+  createQueryPreloader,
+  useMutation,
+  useQuery,
+} from "@apollo/client";
 import { GET_GROUPS } from "@/graphql/group/queries";
 import { CREATE_REQUEST } from "@/graphql/carpool/queries";
 import { CreateRequestInput, Group } from "@/graphql/generated";
@@ -24,6 +30,7 @@ import { router } from "expo-router";
 import { useTheme } from "@/contexts/ThemeContext";
 
 const RequestRide = () => {
+  const { currentColors } = useTheme(); // Destructure currentColors from the theme context
   const {
     startingAddress,
     setStartingAddress,
@@ -36,6 +43,8 @@ const RequestRide = () => {
     selectedIndex,
     setSelectedIndex,
     textColor,
+    range,
+    setRange,
     showTimePicker,
     setShowTimePicker,
     time,
@@ -70,7 +79,6 @@ const RequestRide = () => {
       }
     },
   });
-  const { currentColors } = useTheme();
   const [createRequest] = useMutation<Request>(CREATE_REQUEST);
 
   const handleTimeConfirm = ({
@@ -139,7 +147,13 @@ const RequestRide = () => {
       onPress={handleSubmit}
     >
       {() => (
-        <Text style={{ color: currentColors.text, fontSize: 16, fontFamily: "Comfortaa" }}>
+        <Text
+          style={{
+            color: currentColors.text,
+            fontSize: 16,
+            fontFamily: "Comfortaa",
+          }}
+        >
           Submit
         </Text>
       )}
@@ -154,7 +168,7 @@ const RequestRide = () => {
       <ScrollView
         contentContainerStyle={{
           padding: 15,
-          backgroundColor: currentColors.background,
+          backgroundColor: currentColors.background, // Use background color from the theme
           flexGrow: 1,
         }}
       >
@@ -165,7 +179,7 @@ const RequestRide = () => {
               // fontWeight: "bold",
               marginBottom: 20,
               fontFamily: "Comfortaa",
-              color: currentColors.tint
+              color: currentColors.tint,
             }}
           >
             Post a request
@@ -209,12 +223,30 @@ const RequestRide = () => {
             setStartingLatLon({ lat, lon });
           }}
           placeholder="Enter Origin"
-          style={{ marginBottom: 10 }}
+          style={{ marginBottom: 10, fontFamily: "Comfortaa" }}
         />
+
         <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-          <Text style={{ color: currentColors.text, marginBottom: 5, fontFamily: "Comfortaa", }}>To</Text>
-          <Text style={{ color: currentColors.tint, marginBottom: 5, fontFamily: "Comfortaa", }}>* Required</Text>
+          <Text
+            style={{
+              color: currentColors.text,
+              marginBottom: 5,
+              fontFamily: "Comfortaa",
+            }}
+          >
+            To
+          </Text>
+          <Text
+            style={{
+              color: currentColors.tint,
+              marginBottom: 5,
+              fontFamily: "Comfortaa",
+            }}
+          >
+            * Required
+          </Text>
         </View>
+
         <ThemedAddressCompletionInput
           value={endingAddress}
           onChangeText={setEndingAddress}
@@ -224,16 +256,18 @@ const RequestRide = () => {
           onLatLonSelect={(lat, lon) => {
             setEndingLatLon({ lat, lon });
           }}
-          placeholder="Enter Origin"
+          placeholder="Enter Destination"
           style={{ marginBottom: 10 }}
         />
+
         <RideDateTimePicker
           selectedDate={date}
           handleDateSelect={(date) => setDate(date)}
           selectedTime={time}
           handleTimeSelect={handleTimeConfirm}
-          textColor={textColor}
+          textColor={currentColors.text} // Apply text color from theme
         />
+
         <Text
           style={{
             color: currentColors.text,
@@ -244,6 +278,7 @@ const RequestRide = () => {
         >
           Select which kid will join the ride
         </Text>
+
         <ChildSelector
           onSelectedChildrenChange={(selectedChildren) =>
             setSelectedChildren(selectedChildren)
@@ -253,14 +288,14 @@ const RequestRide = () => {
           groups={groups}
           selectedGroupIndex={selectedGroupIndex}
           setSelectedGroupIndex={setSelectedGroupIndex}
-         
         />
+
         <TripDescriptionInput
-          textColor={textColor}
           description={description}
           placeholder="Let drivers know about any special arrangements, e.g., extra car seats or large instruments."
           setDescription={setDescription}
         />
+
         <View
           style={{
             flex: 1,
@@ -272,7 +307,7 @@ const RequestRide = () => {
           }}
         >
           <LinearGradient
-            colors={["#ff8833", "#e24a4a"]}
+            colors={["#ff8833", "#e24a4a"]} // Custom gradient for button
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 0 }}
             style={{
@@ -283,6 +318,7 @@ const RequestRide = () => {
           >
             {renderSubmitButton()}
           </LinearGradient>
+
           <Popover
             backdropStyle={{ backgroundColor: "rgba(0, 0, 0, 0.5)", flex: 1 }}
             visible={visible}
@@ -296,18 +332,15 @@ const RequestRide = () => {
               borderRadius: 10,
             }}
           >
-            <Layout
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                paddingHorizontal: 4,
-                paddingVertical: 8,
-              }}
-            >
-              <Text>
-                {errorMessage ||
-                  successMessage ||
-                  "There is no driver available. We'll notify you when one is ready 👍"}
+            <Text>
+              {errorMessage ||
+                successMessage ||
+                "There is no driver available. We'll notify you when one is ready 👍"}
+            </Text>
+            <Layout style={styles.content}>
+              <Text style={{ color: currentColors.text }}>
+                There is no driver available, we'll send you a notification when
+                one is ready👍
               </Text>
             </Layout>
           </Popover>
@@ -316,5 +349,20 @@ const RequestRide = () => {
     </KeyboardAvoidingView>
   );
 };
+
+const styles = StyleSheet.create({
+  content: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 4,
+    paddingVertical: 8,
+  },
+  avatar: {
+    marginHorizontal: 4,
+  },
+  backdrop: {
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
+});
 
 export default RequestRide;

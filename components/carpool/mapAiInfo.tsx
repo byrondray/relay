@@ -22,6 +22,7 @@ const MapAiInfo = () => {
         marginTop: 20,
       }}
     >
+      {/* Title */}
       <Text
         style={{
           fontSize: 18,
@@ -33,6 +34,8 @@ const MapAiInfo = () => {
       >
         Route Auto-Match
       </Text>
+
+      {/* Description */}
       <Text
         style={{
           fontSize: 14,
@@ -44,6 +47,8 @@ const MapAiInfo = () => {
         Here are some carpool requests with routes matched to you according to
         our AI module.
       </Text>
+
+      {/* Divider */}
       <View
         style={{
           marginTop: 10,
@@ -52,6 +57,8 @@ const MapAiInfo = () => {
           width: "100%",
         }}
       />
+
+      {/* Additional Info */}
       <Text
         style={{
           fontSize: 14,

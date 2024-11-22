@@ -21,13 +21,28 @@ const RadioGroupComponent: React.FC<RadioGroupComponentProps> = ({
         onChange={(index: number) => setSelectedIndex(index)}
         style={{ width: "100%" }}
       >
-        <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 10 }}>
+        <View style={{ flexDirection: "row", alignItems: "center" }}>
           <Radio style={{ marginRight: 10 }} />
-          <Text style={{ color: currentColors.text, fontFamily: "Comfortaa", marginRight: 15 }}>
+          <Text
+            style={{
+              color: currentColors.text,
+              marginRight: 20,
+              fontFamily: "Comfortaa",
+            }}
+          >
             One time
           </Text>
-          <Radio style={{ marginRight: 10 }} />
-          <Text style={{ color: currentColors.text, fontFamily: "Comfortaa" }}>
+        </View>
+
+        <View style={{ flexDirection: "row", alignItems: "center" }}>
+          <Radio />
+          <Text
+            style={{
+              color: currentColors.text,
+              marginLeft: 10,
+              fontFamily: "Comfortaa",
+            }}
+          >
             Recurring
           </Text>
         </View>
