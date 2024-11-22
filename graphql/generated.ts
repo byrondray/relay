@@ -68,6 +68,27 @@ export type CarpoolWithCarpoolers = {
   vehicleId: Scalars['String']['output'];
 };
 
+export type CarpoolWithDriver = {
+  __typename?: 'CarpoolWithDriver';
+  createdAt: Scalars['String']['output'];
+  departureDate: Scalars['String']['output'];
+  departureTime: Scalars['String']['output'];
+  driver: User;
+  endAddress: Scalars['String']['output'];
+  endLat: Scalars['Float']['output'];
+  endLon: Scalars['Float']['output'];
+  estimatedTime?: Maybe<Scalars['String']['output']>;
+  extraCarSeat: Scalars['Boolean']['output'];
+  groupId: Scalars['String']['output'];
+  id: Scalars['String']['output'];
+  startAddress: Scalars['String']['output'];
+  startLat: Scalars['Float']['output'];
+  startLon: Scalars['Float']['output'];
+  tripPreferences?: Maybe<Scalars['String']['output']>;
+  vehicle: Vehicle;
+  winterTires: Scalars['Boolean']['output'];
+};
+
 export type CarpoolWithRequests = {
   __typename?: 'CarpoolWithRequests';
   departureDate: Scalars['String']['output'];
@@ -627,7 +648,7 @@ export type User = {
 
 export type UserCarpoolsAndRequests = {
   __typename?: 'UserCarpoolsAndRequests';
-  carpools: Array<Carpool>;
+  carpools: Array<CarpoolWithDriver>;
   requests: Array<RequestWithParentAndChild>;
 };
 
@@ -715,7 +736,7 @@ export type GetUserCarpoolsAndRequestsQueryVariables = Exact<{
 }>;
 
 
-export type GetUserCarpoolsAndRequestsQuery = { __typename?: 'Query', getUserCarpoolsAndRequests: { __typename?: 'UserCarpoolsAndRequests', carpools: Array<{ __typename?: 'Carpool', id: string, startAddress: string, driverId: string, vehicleId: string, endAddress: string, departureDate: string, departureTime: string }>, requests: Array<{ __typename?: 'RequestWithParentAndChild', id: string, carpoolId?: string | null, pickupTime: string, startAddress: string, parent: { __typename?: 'User', id: string, firstName: string, email: string, imageUrl?: string | null }, child: { __typename?: 'Child', id: string, firstName: string, schoolId: string, imageUrl?: string | null } }> } };
+export type GetUserCarpoolsAndRequestsQuery = { __typename?: 'Query', getUserCarpoolsAndRequests: { __typename?: 'UserCarpoolsAndRequests', carpools: Array<{ __typename?: 'CarpoolWithDriver', id: string, groupId: string, startAddress: string, endAddress: string, startLat: number, startLon: number, endLat: number, endLon: number, departureDate: string, departureTime: string, extraCarSeat: boolean, tripPreferences?: string | null, estimatedTime?: string | null, vehicle: { __typename?: 'Vehicle', id: string, make: string, model: string, year: string, licensePlate: string }, driver: { __typename?: 'User', id: string, firstName: string, lastName?: string | null, email: string, phoneNumber?: string | null, imageUrl?: string | null } }>, requests: Array<{ __typename?: 'RequestWithParentAndChild', id: string, carpoolId?: string | null, pickupTime: string, startAddress: string, parent: { __typename?: 'User', id: string, firstName: string, email: string, imageUrl?: string | null }, child: { __typename?: 'Child', id: string, firstName: string, schoolId: string, imageUrl?: string | null } }> } };
 
 export type GetFriendQueryVariables = Exact<{
   friendId: Scalars['String']['input'];
