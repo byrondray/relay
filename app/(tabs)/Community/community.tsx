@@ -38,6 +38,7 @@ import { useThemeColor } from "@/hooks/useThemeColor";
 import { Ionicons } from "@expo/vector-icons";
 import FriendProfile from "@/components/FriendProfile";
 import FriendCard from "@/components/FriendCard";
+import { useTheme } from "@/contexts/ThemeContext";
 
 const Sidebar = () => {
   const [groups, setGroups] = useState<Group[]>([]);
@@ -52,9 +53,10 @@ const Sidebar = () => {
       setGroups(data.getGroups);
     },
   });
+  const { currentColors } = useTheme();
 
   return (
-    <View style={{ backgroundColor: "transparent"}}>
+    <View style={{ backgroundColor: currentColors.background }}>
       <Layout
         style={{
           display: "flex",
@@ -239,7 +241,7 @@ const Community = () => {
     data: friendsData,
     loading,
     error,
-    refetch
+    refetch,
   } = useQuery(GET_FRIENDS, {
     onCompleted: (data) => {
       console.log(data, "friends");
@@ -248,10 +250,10 @@ const Community = () => {
   });
 
   useFocusEffect(
-  useCallback(() => {
-    refetch();
-  }, [refetch])
-);
+    useCallback(() => {
+      refetch();
+    }, [refetch])
+  );
 
   const [searchText, setSearchText] = useState("");
   const textColor = useThemeColor({}, "placeholder");
@@ -269,11 +271,18 @@ const Community = () => {
       </View>
     );
   }
+  const { currentColors } = useTheme();
 
   return (
     <Layout style={{ flex: 1, flexDirection: "row" }}>
       <Sidebar />
-      <ScrollView style={{ flex: 1, padding: 16, backgroundColor: "#f7f9fc" }}>
+      <ScrollView
+        style={{
+          flex: 1,
+          padding: 16,
+          backgroundColor: currentColors.background,
+        }}
+      >
         <FriendsList profiles={friends} />
         <Text category="h1" style={{ marginTop: 0, fontFamily: "Comfortaa" }}>
           Friends
