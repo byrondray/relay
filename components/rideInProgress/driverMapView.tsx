@@ -16,6 +16,7 @@ import {
 } from "@/graphql/generated";
 import { Image } from "react-native";
 import { Spinner } from "@ui-kitten/components";
+import { useTheme } from "@/contexts/ThemeContext";
 
 interface DriverMapViewProps {
   driverLocation: {
@@ -120,12 +121,13 @@ const DriverMapView: React.FC<DriverMapViewProps> = ({
         } else if (carpoolData?.startLat && carpoolData?.startLon) {
           centerOnCarpoolStart();
         }
-      }, 300); 
+      }, 300);
 
-      return () => clearTimeout(timeout); 
+      return () => clearTimeout(timeout);
     }
   }, [mapInitialized, propsReady, carpoolData]);
 
+  const { currentColors } = useTheme();
   return (
     <TouchableWithoutFeedback
       onPress={() => {
@@ -194,10 +196,12 @@ const DriverMapView: React.FC<DriverMapViewProps> = ({
                   padding: 10,
                   borderRadius: 20,
                   borderWidth: 2,
-                  borderColor: "white",
+                  borderColor: currentColors.text,
                 }}
               >
-                <Text style={{ fontSize: 14, color: "white" }}>🚗</Text>
+                <Text style={{ fontSize: 14, color: currentColors.text }}>
+                  🚗
+                </Text>
               </View>
             </Marker>
           )}

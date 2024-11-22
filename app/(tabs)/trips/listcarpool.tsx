@@ -9,9 +9,12 @@ import { GetUserCarpoolsAndRequestsQuery } from "@/graphql/generated";
 import { useCallback } from "react";
 import MapDriverCard from "@/components/cards/mapDriverCard";
 import ActiveRiderCard from "@/components/cards/activeCard";
+import { useTheme } from "@/contexts/ThemeContext";
 
 const CarpoolListScreen: React.FC = () => {
+  const { currentColors } = useTheme();
   const currentUser = auth.currentUser;
+
   const { data, loading, error, refetch } =
     useQuery<GetUserCarpoolsAndRequestsQuery>(GET_USER_CARPOOL_WITH_REQUESTS, {
       skip: !currentUser,
@@ -24,8 +27,9 @@ const CarpoolListScreen: React.FC = () => {
     }, [refetch])
   );
 
+
   if (loading) return <Spinner />;
-  if (error) return <Text>Error loading carpools</Text>;
+  if (error) return <Text style={{ color: currentColors.text }}>Error loading carpools</Text>;
 
   const carpools = data?.getUserCarpoolsAndRequests?.carpools || [];
   const requests = data?.getUserCarpoolsAndRequests?.requests || [];
@@ -130,7 +134,6 @@ const CarpoolListScreen: React.FC = () => {
 
 const styles = StyleSheet.create({
   carpoolCard: {
-    backgroundColor: "#fff",
     padding: 16,
     borderRadius: 8,
     marginBottom: 16,
@@ -146,18 +149,15 @@ const styles = StyleSheet.create({
   },
   carpoolDetail: {
     fontSize: 14,
-    color: "#555",
     marginBottom: 4,
   },
   requestCard: {
-    backgroundColor: "#f9f9f9",
     padding: 12,
     borderRadius: 6,
     marginBottom: 16,
   },
   requestDetail: {
     fontSize: 12,
-    color: "#555",
   },
   sectionTitle: {
     fontSize: 16,

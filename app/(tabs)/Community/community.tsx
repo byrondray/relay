@@ -38,6 +38,7 @@ import { useThemeColor } from "@/hooks/useThemeColor";
 import { Ionicons } from "@expo/vector-icons";
 import FriendProfile from "@/components/FriendProfile";
 import FriendCard from "@/components/FriendCard";
+import { useTheme } from "@/contexts/ThemeContext";
 
 const Sidebar = () => {
   const [groups, setGroups] = useState<Group[]>([]);
@@ -52,9 +53,9 @@ const Sidebar = () => {
       setGroups(data.getGroups);
     },
   });
-
+  const { currentColors } = useTheme();
   return (
-    <View style={{ backgroundColor: "transparent"}}>
+    <View style={{ backgroundColor: currentColors.background}}>
       <Layout
         style={{
           display: "flex",
@@ -269,13 +270,13 @@ const Community = () => {
       </View>
     );
   }
-
+  const { currentColors } = useTheme();
   return (
     <Layout style={{ flex: 1, flexDirection: "row" }}>
       <Sidebar />
-      <ScrollView style={{ flex: 1, padding: 16, backgroundColor: "#f7f9fc" }}>
+      <ScrollView style={{ flex: 1, padding: 16, backgroundColor: currentColors.background }}>
         <FriendsList profiles={friends} />
-        <Text category="h1" style={{ marginTop: 0, fontFamily: "Comfortaa" }}>
+        <Text category="h1" style={{ marginTop: 0, fontFamily: "Comfortaa", color: currentColors.text }}>
           Friends
         </Text>
         <View
@@ -292,7 +293,7 @@ const Community = () => {
             style={{
               flex: 1,
               marginRight: 10,
-              backgroundColor: "#fff",
+              backgroundColor: currentColors.placeholder,
               borderRadius: 24,
               fontFamily: "Comfortaa",
             }}
@@ -328,6 +329,7 @@ const Community = () => {
               marginBottom: 12,
               fontFamily: "Comfortaa",
               fontSize: 22,
+              color: currentColors.text
             }}
           >
             Create New Group
@@ -335,7 +337,7 @@ const Community = () => {
           <Text
             style={{
               fontFamily: "Comfortaa",
-              color: textColor,
+              color: currentColors.text,
               fontSize: 12,
               marginBottom: 15,
             }}
@@ -365,7 +367,7 @@ const Community = () => {
           <Input
             placeholder="Group Name"
             style={{
-              backgroundColor: "#fff",
+              backgroundColor: currentColors.background,
               borderRadius: 24,
               fontFamily: "Comfortaa",
             }}
@@ -376,7 +378,7 @@ const Community = () => {
               marginBottom: 10,
               marginTop: 15,
               fontSize: 12,
-              color: textColor,
+              color: currentColors.text,
               fontFamily: "Comfortaa",
             }}
           >
@@ -385,7 +387,6 @@ const Community = () => {
           <ImageUpload profileImage={groupIcon} pickImage={pickImage} />
           <InviteFriendDropdown onInvite={handleInvite} />
           <FriendsInviteDescription
-            textColor={textColor}
             description={description}
             setDescription={setDescription}
           />
@@ -400,12 +401,12 @@ const Community = () => {
               paddingTop: 10,
               justifyContent: "center",
               paddingHorizontal: 10,
-              backgroundColor: "#FB812A",
+              backgroundColor: currentColors.tint,
               borderRadius: 24,
               borderWidth: 0,
             }}
           >
-            <Text style={{ fontFamily: "Comfortaa", color: "white" }}>
+            <Text style={{ fontFamily: "Comfortaa", color: currentColors.text }}>
               Invite friend
             </Text>
           </Button>
@@ -415,6 +416,7 @@ const Community = () => {
               marginBottom: 10,
               fontFamily: "Comfortaa",
               fontSize: 18,
+              color: currentColors.text
             }}
           >
             Select From Friend List
@@ -423,7 +425,7 @@ const Community = () => {
             style={{
               flexDirection: "row",
               alignItems: "center",
-              backgroundColor: "#f2f2f2",
+              backgroundColor: currentColors.background,
               borderRadius: 20,
               paddingHorizontal: 12,
               paddingVertical: 10,
@@ -433,7 +435,7 @@ const Community = () => {
             <Ionicons
               name="search"
               size={20}
-              color="#aaa"
+              color={currentColors.icon}
               style={{ marginRight: 8 }}
             />
             <TextInput
@@ -494,7 +496,9 @@ const Community = () => {
               </TouchableOpacity>
             ))
           ) : (
-            <Text>No friends available</Text>
+            <Text style={{ color: currentColors.text, fontFamily: "Comfortaa" }}>
+              No friends available
+            </Text>
           )}
         </View>
       </ScrollView>

@@ -1,41 +1,33 @@
 import React from "react";
-import { View, Text, TextInput } from "react-native";
+import { View, Text, TextInput, StyleSheet } from "react-native";
+import { useTheme } from "@/contexts/ThemeContext"; // Import useTheme
 
 const FriendsInviteDescription = ({
-  textColor,
   description,
   setDescription,
 }: {
-  textColor: string;
   description: string;
   setDescription: (text: string) => void;
 }) => {
+  const { currentColors } = useTheme(); // Access current theme colors
+
   return (
     <View>
       <Text
-        style={{
-          color: textColor,
-          marginBottom: 5,
-          marginTop: 10,
-          fontFamily: "Comfortaa",
-          fontSize: 12,
-        }}
+        style={[
+          styles.descriptionText,
+          { color: currentColors.text }, // Apply text color from theme
+        ]}
       >
         You can write a message to invite your friends
       </Text>
       <TextInput
-        style={{
-          width: "100%",
-          backgroundColor: "#F7F9FC",
-          borderColor: "#E4E9F2",
-          borderWidth: 1,
-          borderRadius: 15,
-          height: 100,
-          paddingLeft: 30,
-          paddingRight: 30,
-          fontFamily: "Comfortaa",
-        }}
-        placeholder="Hi, I’d like to invite you to join my trusted group.)"
+        style={[
+          styles.inputField,
+          { backgroundColor: currentColors.background, borderColor: currentColors.tint }, // Apply background and border from theme
+        ]}
+        placeholder="Hi, I’d like to invite you to join my trusted group."
+        placeholderTextColor={currentColors.placeholder} // Apply placeholder color from theme
         multiline={true}
         value={description}
         onChangeText={setDescription}
@@ -43,5 +35,23 @@ const FriendsInviteDescription = ({
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  descriptionText: {
+    marginBottom: 5,
+    marginTop: 10,
+    fontFamily: "Comfortaa",
+    fontSize: 12,
+  },
+  inputField: {
+    width: "100%",
+    borderWidth: 1,
+    borderRadius: 15,
+    height: 100,
+    paddingLeft: 30,
+    paddingRight: 30,
+    fontFamily: "Comfortaa",
+  },
+});
 
 export default FriendsInviteDescription;

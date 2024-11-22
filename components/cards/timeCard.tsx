@@ -1,5 +1,7 @@
 import React from "react";
 import { View, Text } from "react-native";
+import { useTheme } from "@/contexts/ThemeContext";
+import { PlacementOptions } from "@ui-kitten/components/ui/popover/type";
 
 interface TimeCardProps {
   startTime: string;
@@ -7,6 +9,7 @@ interface TimeCardProps {
 }
 
 const TimeCard = ({ startTime, endTime }: TimeCardProps) => {
+  const { currentColors } = useTheme();
   return (
     <View
       style={{
@@ -21,9 +24,9 @@ const TimeCard = ({ startTime, endTime }: TimeCardProps) => {
           alignItems: "center",
           justifyContent: "space-between",
           height: 86,
-          backgroundColor: "#FFFFFF",
+          backgroundColor: currentColors.background,
           borderRadius: 12,
-          shadowColor: "#000000",
+          shadowColor: currentColors.text,
           shadowOffset: { width: 0, height: 4 },
           shadowOpacity: 0.25,
           shadowRadius: 4,
@@ -42,7 +45,7 @@ const TimeCard = ({ startTime, endTime }: TimeCardProps) => {
               fontSize: 8,
               fontFamily: "Comfortaa",
               fontWeight: "700",
-              color: "#666666",
+              color: currentColors.placeholder,
               marginBottom: 5,
             }}
           >
@@ -53,7 +56,7 @@ const TimeCard = ({ startTime, endTime }: TimeCardProps) => {
               fontSize: 35,
               fontFamily: "Comfortaa",
               fontWeight: "700",
-              color: "#FB812A",
+              color: "#tint",
               textAlign: "center",
               letterSpacing: 0.4,
             }}
@@ -66,7 +69,7 @@ const TimeCard = ({ startTime, endTime }: TimeCardProps) => {
           style={{
             width: 1,
             height: "100%",
-            backgroundColor: "#CCCCCC",
+            backgroundColor: currentColors.background,
           }}
         />
 
@@ -81,7 +84,7 @@ const TimeCard = ({ startTime, endTime }: TimeCardProps) => {
               fontSize: 8,
               fontFamily: "Comfortaa",
               fontWeight: "700",
-              color: "#666666",
+              color: currentColors.placeholder,
               marginBottom: 5,
             }}
           >
@@ -92,7 +95,7 @@ const TimeCard = ({ startTime, endTime }: TimeCardProps) => {
               fontSize: 35,
               fontFamily: "Comfortaa",
               fontWeight: "700",
-              color: "#E24949",
+              color: currentColors.tint,
               textAlign: "center",
               letterSpacing: 0.4,
             }}

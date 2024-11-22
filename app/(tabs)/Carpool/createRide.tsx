@@ -190,7 +190,7 @@ const CreateRide = () => {
       appearance="ghost"
       onPress={handleModelSubmit}
     >
-      {() => <Text style={{ color: "#fff", fontSize: 16 }}>Submit</Text>}
+      {() => <Text style={{ color: currentColors.background, fontSize: 16 }}>Submit</Text>}
     </Button>
   );
 
@@ -550,19 +550,20 @@ const CreateRide = () => {
                 marginBottom: 20,
                 fontFamily: "Comfortaa-semibold",
                 fontWeight: 700,
+                color: currentColors.text
               }}
             >
               Create a ride
             </Text>
           </View>
-          <Text style={{ color: "#FF6A00", fontSize: 22, marginBottom: 15 }}>
+          <Text style={{ color: currentColors.tint, fontSize: 22, marginBottom: 15, fontFamily: "Comfortaa", }}>
             Itinerary
           </Text>
           <RadioGroupComponent
             selectedIndex={selectedIndex}
             setSelectedIndex={setSelectedIndex}
           />
-          <Text style={{ color: textColor, marginBottom: 5 }}>From</Text>
+          <Text style={{ color: currentColors.text, marginBottom: 5 }}>From</Text>
           <ThemedAddressCompletionInput
             value={startingAddress}
             onChangeText={(text) => setStartingAddress(text)}
@@ -574,7 +575,7 @@ const CreateRide = () => {
             }}
             placeholder="Enter Origin"
           />
-          <Text style={{ color: textColor, marginBottom: 5, marginTop: 15 }}>
+          <Text style={{ color: currentColors.text, marginBottom: 5, marginTop: 15 }}>
             To
           </Text>
           <ThemedAddressCompletionInput
@@ -593,9 +594,9 @@ const CreateRide = () => {
             handleDateSelect={handleDateSelect}
             selectedTime={time}
             handleTimeSelect={handleTimeConfirm}
-            textColor={textColor}
+            textColor={currentColors.text}
           />
-          <Text style={{ color: textColor, marginBottom: 10, marginTop: 15 }}>
+          <Text style={{ color: currentColors.text, marginBottom: 10, marginTop: 15, fontFamily: "Comfortaa", }}>
             Select which kid will join the ride
           </Text>
           <ChildSelector onSelectedChildrenChange={setSelectedChildren} />
@@ -603,7 +604,7 @@ const CreateRide = () => {
             groups={groups}
             selectedGroupIndex={selectedGroupIndex}
             setSelectedGroupIndex={setSelectedGroupIndex}
-            textColor={textColor}
+            
           />
           <VehicleDetailsPicker
             selectedVehicleIndex={selectedVehicleIndex}
@@ -643,7 +644,7 @@ const CreateRide = () => {
           />
           <Text
             style={{
-              color: "#8F9BB3",
+              color: currentColors.text,
               textAlign: "left",
               marginTop: 5,
               marginBottom: 5,
@@ -670,7 +671,7 @@ const CreateRide = () => {
 
             <Text
               style={{
-                color: "#FF6A00",
+                color: currentColors.tint,
                 fontSize: 22,
                 marginTop: 15,
                 fontFamily: "Comfortaa",
@@ -687,7 +688,7 @@ const CreateRide = () => {
             <PaymentInfo />
             <Text
               style={{
-                color: "#FF6A00",
+                color: currentColors.tint,
                 fontSize: 22,
                 marginTop: 15,
                 fontFamily: "Comfortaa",
@@ -708,7 +709,7 @@ const CreateRide = () => {
               justifyContent: "center",
               alignItems: "center",
               paddingHorizontal: 16,
-              backgroundColor: "#fff",
+              backgroundColor: currentColors.background,
             }}
           >
             <LinearGradient

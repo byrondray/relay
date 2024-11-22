@@ -1,13 +1,20 @@
 import { Tabs } from "expo-router";
 import React from "react";
 import { TabBarIcon } from "@/components/navigation/TabBarIcon";
-import { useColorScheme } from "@/hooks/useColorScheme";
-import { StyleSheet, View, Image, Dimensions } from "react-native";
+import { useTheme } from "@/contexts/ThemeContext";
+import { StyleSheet, View, Image } from "react-native";
 import Relay from "@/assets/images/Relay.svg";
 
 function Header() {
+  const { currentColors } = useTheme();
+  
   return (
-    <View style={styles.headerContainer}>
+    <View
+      style={[
+        styles.headerContainer,
+        { borderBottomColor: currentColors.placeholder, backgroundColor: currentColors.placeholder },
+      ]}
+    >
       <Image
         source={require("@/assets/images/RelayLogo.png")}
         style={{ width: 30 }}
@@ -18,15 +25,15 @@ function Header() {
 }
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
+  const { currentColors } = useTheme();
 
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: "#ff9900",
-        tabBarInactiveTintColor: "#777",
-        tabBarStyle: styles.navContainer,
-        tabBarLabelStyle: styles.navText,
+        tabBarActiveTintColor: currentColors.tint,
+        tabBarInactiveTintColor: currentColors.text,
+        tabBarStyle: [styles.navContainer, { backgroundColor: currentColors.background, borderTopColor: currentColors.placeholder }],
+        tabBarLabelStyle: [styles.navText, { color: currentColors.text }],
         headerShown: true,
         header: () => <Header />,
       }}
@@ -166,25 +173,14 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     borderBottomWidth: 1,
     height: 50,
-    borderBottomColor: "#ddd",
-    backgroundColor: "#fff",
   },
   navContainer: {
     flexDirection: "row",
     justifyContent: "center",
-    backgroundColor: "#f8f8f8",
     borderTopWidth: 1,
-    borderTopColor: "#ddd",
     width: "100%",
-  },
-  navItem: {
-    alignItems: "center",
   },
   navText: {
     fontSize: 12,
-    color: "#777",
-  },
-  activeNavText: {
-    color: "#ff9900",
   },
 });

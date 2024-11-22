@@ -14,13 +14,14 @@ import RideDateTimePicker from "@/components/carpool/dateAndTimePicker";
 import TripDescriptionInput from "@/components/carpool/carpoolDescription";
 import { useRequestState } from "@/hooks/carpoolRequestState";
 import RadioGroupComponent from "@/components/carpool/carpoolFrequency";
-import { ApolloError, useMutation, useQuery } from "@apollo/client";
+import { ApolloError, createQueryPreloader, useMutation, useQuery } from "@apollo/client";
 import { GET_GROUPS } from "@/graphql/group/queries";
 import { CREATE_REQUEST } from "@/graphql/carpool/queries";
 import { CreateRequestInput, Group } from "@/graphql/generated";
 import GroupPicker from "@/components/carpool/groupSelector";
 import { auth } from "@/firebaseConfig";
 import { router } from "expo-router";
+import { useTheme } from "@/contexts/ThemeContext";
 
 const RequestRide = () => {
   const {
@@ -69,7 +70,7 @@ const RequestRide = () => {
       }
     },
   });
-
+  const { currentColors } = useTheme();
   const [createRequest] = useMutation<Request>(CREATE_REQUEST);
 
   const handleTimeConfirm = ({
@@ -138,7 +139,7 @@ const RequestRide = () => {
       onPress={handleSubmit}
     >
       {() => (
-        <Text style={{ color: "#fff", fontSize: 16, fontFamily: "Comfortaa" }}>
+        <Text style={{ color: currentColors.text, fontSize: 16, fontFamily: "Comfortaa" }}>
           Submit
         </Text>
       )}
@@ -153,7 +154,7 @@ const RequestRide = () => {
       <ScrollView
         contentContainerStyle={{
           padding: 15,
-          backgroundColor: "#ffffff",
+          backgroundColor: currentColors.background,
           flexGrow: 1,
         }}
       >
@@ -164,6 +165,7 @@ const RequestRide = () => {
               // fontWeight: "bold",
               marginBottom: 20,
               fontFamily: "Comfortaa",
+              color: currentColors.tint
             }}
           >
             Post a request
@@ -178,7 +180,7 @@ const RequestRide = () => {
         <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
           <Text
             style={{
-              color: textColor,
+              color: currentColors.text,
               marginBottom: 5,
               fontFamily: "Comfortaa",
             }}
@@ -187,7 +189,7 @@ const RequestRide = () => {
           </Text>
           <Text
             style={{
-              color: textColor,
+              color: currentColors.text,
               marginBottom: 5,
               fontFamily: "Comfortaa",
             }}
@@ -210,8 +212,8 @@ const RequestRide = () => {
           style={{ marginBottom: 10 }}
         />
         <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-          <Text style={{ color: textColor, marginBottom: 5 }}>To</Text>
-          <Text style={{ color: textColor, marginBottom: 5 }}>* Required</Text>
+          <Text style={{ color: currentColors.text, marginBottom: 5, fontFamily: "Comfortaa", }}>To</Text>
+          <Text style={{ color: currentColors.tint, marginBottom: 5, fontFamily: "Comfortaa", }}>* Required</Text>
         </View>
         <ThemedAddressCompletionInput
           value={endingAddress}
@@ -234,7 +236,7 @@ const RequestRide = () => {
         />
         <Text
           style={{
-            color: textColor,
+            color: currentColors.text,
             marginBottom: 10,
             marginTop: 15,
             fontFamily: "Comfortaa",
@@ -251,7 +253,7 @@ const RequestRide = () => {
           groups={groups}
           selectedGroupIndex={selectedGroupIndex}
           setSelectedGroupIndex={setSelectedGroupIndex}
-          textColor={textColor}
+         
         />
         <TripDescriptionInput
           textColor={textColor}
@@ -265,7 +267,7 @@ const RequestRide = () => {
             justifyContent: "center",
             alignItems: "center",
             paddingHorizontal: 16,
-            backgroundColor: "#fff",
+            backgroundColor: currentColors.background,
             marginTop: 40,
           }}
         >

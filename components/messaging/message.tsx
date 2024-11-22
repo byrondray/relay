@@ -6,6 +6,7 @@ import React from "react";
 import { View, Image, Text } from "react-native";
 import TextWithFont from "../text/textWithFont";
 import { format, isToday, isYesterday } from "date-fns";
+import { useTheme } from "@/contexts/ThemeContext";
 
 type UnifiedMessage = {
   id: string;
@@ -21,6 +22,7 @@ type UnifiedMessage = {
 };
 
 const Message = ({ message }: { message: UnifiedMessage }) => {
+  const { currentColors } = useTheme();
   const createdAtDate = new Date(message.createdAt);
   const formattedDate = isToday(createdAtDate)
     ? `Today ${format(createdAtDate, "h:mm a")}`
@@ -29,7 +31,7 @@ const Message = ({ message }: { message: UnifiedMessage }) => {
     : format(createdAtDate, "MM/dd/yyyy");
 
   return (
-  <View
+    <View
       style={{
         marginTop: 20,
         width: "100%",
@@ -60,7 +62,7 @@ const Message = ({ message }: { message: UnifiedMessage }) => {
         >
           <Text
             style={{
-              color: "#000",
+              color: currentColors.text,
               fontSize: 14,
               fontFamily: "Comfortaa",
               fontWeight: "600",
@@ -69,12 +71,21 @@ const Message = ({ message }: { message: UnifiedMessage }) => {
             {message.sender.firstName}
           </Text>
           <TextWithFont
-            style={{ fontSize: 10, color: "#333333", marginLeft: 5 }}
+            style={{
+              fontSize: 10,
+              color: currentColors.text,
+              marginLeft: 5,
+            }}
           >
             {formattedDate}
           </TextWithFont>
         </View>
-        <TextWithFont style={{ color: "#000", fontSize: 11 }}>
+        <TextWithFont
+          style={{
+            color: currentColors.text,
+            fontSize: 11,
+          }}
+        >
           {message.text || message.message}{" "}
         </TextWithFont>
       </View>

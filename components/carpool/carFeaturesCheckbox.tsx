@@ -1,6 +1,7 @@
 import React from "react";
 import { View, Text } from "react-native";
 import { CheckBox } from "@ui-kitten/components";
+import { useTheme } from "@/contexts/ThemeContext";
 
 const CarFeaturesCheckbox = ({
   extraCarseatChecked,
@@ -13,6 +14,7 @@ const CarFeaturesCheckbox = ({
   setExtraCarseatChecked: (nextChecked: boolean) => void;
   setWinterTiresChecked: (nextChecked: boolean) => void;
 }) => {
+  const { currentColors } = useTheme();
   return (
     <View
       style={{
@@ -33,7 +35,7 @@ const CarFeaturesCheckbox = ({
           checked={extraCarseatChecked}
           onChange={(nextChecked) => setExtraCarseatChecked(nextChecked)}
         />
-        <Text style={{ marginLeft: 8 }}>With Extra Carseat</Text>
+        <Text style={{ marginLeft: 8, fontFamily: "Comfortaa", color: currentColors.text }}>With Extra Carseat</Text>
       </View>
 
       <View style={{ flexDirection: "row", alignItems: "center" }}>
@@ -41,7 +43,7 @@ const CarFeaturesCheckbox = ({
           checked={winterTiresChecked}
           onChange={(nextChecked) => setWinterTiresChecked(nextChecked)}
         />
-        <Text style={{ marginLeft: 8, fontFamily: "Comfortaa" }}>
+        <Text style={{ marginLeft: 8, fontFamily: "Comfortaa", color: currentColors.text }}>
           With Winter Tires
         </Text>
       </View>

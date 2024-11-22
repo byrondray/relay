@@ -55,7 +55,7 @@ const RideDateTimePicker = ({
           {
             marginBottom: 5,
             marginTop: 15,
-            color: "#8F9BB3",
+         
             fontFamily: "Comfortaa",
           },
           { color: currentColors.text },
@@ -65,15 +65,16 @@ const RideDateTimePicker = ({
       </Text>
       <View
         style={{
-          backgroundColor: "#F7F9FC",
+          backgroundColor: currentColors.placeholder,
           height: 43,
-          borderColor: "#E4E9F2",
+          borderColor: currentColors.placeholder,
           borderWidth: 1,
           borderRadius: 15,
           paddingLeft: 15,
           flexDirection: "row",
           alignItems: "center",
           justifyContent: "space-between",
+          
         }}
       >
         <Image
@@ -83,11 +84,17 @@ const RideDateTimePicker = ({
         <Datepicker
           date={selectedDate || undefined}
           onSelect={handleDateSelect}
-          style={{ marginRight: 5, borderColor: "transparent", borderWidth: 0 }}
+          style={{
+            marginRight: 5,
+            borderColor: "transparent",
+            borderWidth: 0,
+          }}
           controlStyle={{
             borderWidth: 0,
             borderColor: "transparent",
+            backgroundColor: currentColors.placeholder,
           }}
+          
         />
       </View>
 
@@ -95,9 +102,9 @@ const RideDateTimePicker = ({
       <TouchableOpacity onPress={() => setShowTimePicker(true)}>
         <View
           style={{
-            backgroundColor: "#F7F9FC",
+            backgroundColor: currentColors.placeholder,
             height: 43,
-            borderColor: "#E4E9F2",
+            borderColor: currentColors.placeholder,
             borderWidth: 1,
             borderRadius: 15,
             paddingLeft: 25,
@@ -114,7 +121,7 @@ const RideDateTimePicker = ({
           <Text
             style={{
               marginLeft: 15,
-              color: textColor,
+              color: currentColors.text,
               marginRight: 25,
               fontFamily: "Comfortaa",
             }}
