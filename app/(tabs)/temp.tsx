@@ -25,11 +25,11 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { GET_CHILDREN_FOR_USER } from "@/graphql/user/queries";
 import { auth } from "@/firebaseConfig";
 import { useTheme } from "@/contexts/ThemeContext";  // Importing ThemeContext
-import { useTextSize } from "@/contexts/TextSizeContext";
+// import { useTextSize } from "@/contexts/TextSizeContext";
 
 function HomeScreen() {
   const { currentColors } = useTheme();  // Accessing current colors from context
-  const { isLargeText, textScaleFactor } = useTextSize();
+  // const { isLargeText, textScaleFactor } = useTextSize();
 
   return (
     <View style={[styles.container, { backgroundColor: currentColors.background }]}>
@@ -49,7 +49,7 @@ function HomeScreen() {
                 styles.buttonText, 
                 { 
                   color: currentColors.text, 
-                  fontSize: 20 * textScaleFactor 
+                  fontSize: 20 
                 }]}>
                 I'm a driver
               </Text>

@@ -97,7 +97,7 @@ export default function SelectPassengerScreen() {
       <View style={styles.friendsContainer}>
         <Text style={[styles.searchText, { color: currentColors.tint }]}>Search from friend list</Text>
         <TextInput
-          style={[styles.searchBar, { backgroundColor: currentColors.text }]}
+          style={[styles.searchBar, { backgroundColor: currentColors.placeholder }]}
           placeholder="Search from friend list"
           placeholderTextColor={currentColors.text}
           value={searchTerm}
