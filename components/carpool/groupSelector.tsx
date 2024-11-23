@@ -58,9 +58,6 @@ const GroupPicker = ({
           paddingLeft: 15,
           justifyContent: "center",
         }}
-        value={groups[selectedGroupIndex?.row]?.name || "Select Group"}
-        placeholder="Select Group"
-        style={{ borderColor: "transparent" }}
       >
         <Select
           selectedIndex={selectedGroupIndex}
