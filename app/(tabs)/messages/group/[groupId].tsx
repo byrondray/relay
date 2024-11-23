@@ -24,6 +24,7 @@ import { GroupMessage } from "@/graphql/generated";
 import Message from "@/components/messaging/message";
 import { Spinner } from "@ui-kitten/components";
 import { LinearGradient } from "expo-linear-gradient";
+import { useTheme } from "@/contexts/ThemeContext"; // Import useTheme
 
 export default function GroupMessageScreen() {
   const [messages, setMessages] = useState<GroupMessage[]>([]);
@@ -33,6 +34,7 @@ export default function GroupMessageScreen() {
   const currentUser = auth.currentUser;
   const userId = currentUser?.uid || "";
 
+  const { currentColors } = useTheme(); // Access currentColors
   const { loading, error, refetch } = useFetchGroupMessages(
     groupIdString,
     setMessages
@@ -127,7 +129,7 @@ export default function GroupMessageScreen() {
       />
 
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <View style={[styles.container, { flex: 1 }]}>
+        <View style={[styles.container, { backgroundColor: currentColors.background }]}>
           <FlatList
             data={messages}
             keyExtractor={(item) => item.id}
@@ -135,15 +137,24 @@ export default function GroupMessageScreen() {
             contentContainerStyle={{ paddingBottom: 10 }}
           />
 
-          <View style={styles.inputContainer}>
+          <View style={[styles.inputContainer, { backgroundColor: currentColors.background }]}>
             <TextInput
               value={newMessage}
               onChangeText={setNewMessage}
-              style={[styles.input, { backgroundColor: "white" }]}
+              style={[
+                styles.input,
+                {
+                  backgroundColor: currentColors.background,
+                  color: currentColors.text,
+                },
+              ]}
               placeholder="Message..."
+              placeholderTextColor={currentColors.placeholder}
             />
             <TouchableOpacity onPress={() => sendMessage()}>
-              <Text style={styles.sendButtonText}>Send</Text>
+              <Text style={[styles.sendButtonText, { color: currentColors.text }]}>
+                Send
+              </Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -157,7 +168,6 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   sendButtonText: {
-    color: "#FB812A",
     fontSize: 16,
     fontFamily: "Comfortaa",
   },
@@ -171,21 +181,15 @@ const styles = StyleSheet.create({
     padding: 10,
     paddingHorizontal: 10,
   },
-  recipientName: {
-    fontSize: 18,
-    fontWeight: "bold",
-    marginBottom: 10,
-  },
   inputContainer: {
     flexDirection: "row",
     alignItems: "center",
     paddingVertical: 5,
     paddingHorizontal: 10,
+    borderRadius: 20,
   },
   input: {
     flex: 1,
-    borderWidth: 1,
-    borderColor: "#ddd",
     borderRadius: 20,
     padding: 10,
     marginRight: 10,

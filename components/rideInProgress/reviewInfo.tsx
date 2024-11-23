@@ -1,7 +1,9 @@
 import React from "react";
 import { View, Text } from "react-native";
+import { useTheme } from "@/contexts/ThemeContext"
 
 const ReviewInfo = () => {
+  const { currentColors } = useTheme()
   return (
     <View
       style={{
@@ -16,13 +18,13 @@ const ReviewInfo = () => {
         borderBottomColor: "#EDF1F7",
         borderBottomWidth: 2,
         borderRadius: 10,
-        backgroundColor: "#fff",
+        backgroundColor: currentColors.background,
       }}
     >
       <Text
         style={{
           fontSize: 14,
-          color: "#151A30",
+          color: currentColors.text,
           marginBottom: 10,
           fontFamily: "Comfortaa",
         }}

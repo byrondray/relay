@@ -15,8 +15,7 @@ import {
 import { haversineDistance } from "@/utils/distance";
 import { useDirections } from "@/hooks/map/useDirections";
 import { areCoordinatesEqual } from "@/utils/equalCoorordinates";
-import CarFeaturesCheckbox from "@/components/carpool/carFeaturesCheckbox";
-import TripDescriptionInput from "@/components/carpool/carpoolDescription";
+import PricingCheckbox from "@/components/carpool/pricingCheckbox";
 import RideDateTimePicker from "@/components/carpool/dateAndTimePicker";
 import MapAiInfo from "@/components/carpool/mapAiInfo";
 import RideMap from "@/components/carpool/rideMap";
@@ -51,6 +50,7 @@ import CarpoolOverview from "@/components/carpool/carpoolOverview";
 
 const { height: deviceHeight } = Dimensions.get("window");
 import { useTheme } from "@/contexts/ThemeContext";
+import TripDescriptionInput from "@/components/carpool/carpoolDescription";
 
 const CreateRide = () => {
   const {
@@ -70,10 +70,10 @@ const CreateRide = () => {
     setDateAndTime,
     canSubmit,
     setCanSubmit,
-    extraCarseatChecked,
-    setExtraCarseatChecked,
-    winterTiresChecked,
-    setWinterTiresChecked,
+    voluntaryChecked,
+    setVoluntaryChecked,
+    shareCostChecked,
+    setShareCostChecked,
     showTimePicker,
     setShowTimePicker,
     time,
@@ -190,7 +190,17 @@ const CreateRide = () => {
       appearance="ghost"
       onPress={handleModelSubmit}
     >
-      {() => <Text style={{ color: "#fff", fontSize: 16 }}>Submit</Text>}
+      {() => (
+        <Text
+          style={{
+            color: currentColors.background,
+            fontSize: 16,
+            fontFamily: "Comfortaa",
+          }}
+        >
+          Submit
+        </Text>
+      )}
     </Button>
   );
 
@@ -453,7 +463,7 @@ const CreateRide = () => {
     }
   };
 
-  const textColor = useThemeColor({}, "placeholder");
+  const textColor = currentColors.placeholder;
 
   return (
     <KeyboardAvoidingView
@@ -473,7 +483,7 @@ const CreateRide = () => {
         {/* <GestureMap
           mapHeight={mapHeight}
         <View>
-        <Text style={[{ fontSize: 32, fontWeight: "bold", marginBottom: 20 }, { color: currentColors.text }]}>
+        <Text style={[{ fontSize: 32, fontWeight: "bold", marginBottom: 20, fontFamily: "Comfortaa-semibold", }, { color: currentColors.text }]}>
           Create a ride
         </Text>
 
@@ -515,7 +525,7 @@ const CreateRide = () => {
           textColor={textColor}
         />
 
-        <Text style={{ color: textColor, marginBottom: 10, marginTop: 15 }}>
+        <Text style={[{ color: textColor, marginBottom: 10, marginTop: 15 },  { color: currentColors.text }]}>
           Seats Occupied
         </Text>
         <ChildSelector onSelectedChildrenChange={setSelectedChildren} />
@@ -548,21 +558,55 @@ const CreateRide = () => {
               style={{
                 fontSize: 32,
                 marginBottom: 20,
-                fontFamily: "Comfortaa-semibold",
+                fontFamily: "Comfortaa-Bold",
                 fontWeight: 700,
+                color: currentColors.text,
+                letterSpacing: -1,
               }}
             >
               Create a ride
             </Text>
           </View>
-          <Text style={{ color: "#FF6A00", fontSize: 22, marginBottom: 15 }}>
+          <Text
+            style={{
+              color: currentColors.tint,
+              fontSize: 22,
+              marginBottom: 15,
+              fontFamily: "Comfortaa",
+              letterSpacing: -1,
+            }}
+          >
             Itinerary
           </Text>
           <RadioGroupComponent
             selectedIndex={selectedIndex}
             setSelectedIndex={setSelectedIndex}
           />
-          <Text style={{ color: textColor, marginBottom: 5 }}>From</Text>
+
+          <View
+            style={{ flexDirection: "row", justifyContent: "space-between" }}
+          >
+            <Text
+              style={{
+                color: textColor,
+                marginTop: 15,
+                marginBottom: 5,
+                fontFamily: "Comfortaa-Regular",
+              }}
+            >
+              From
+            </Text>
+            <Text
+              style={{
+                color: textColor,
+                marginTop: 15,
+                marginBottom: 5,
+                fontFamily: "Comfortaa-Regular",
+              }}
+            >
+              * Required
+            </Text>
+          </View>
           <ThemedAddressCompletionInput
             value={startingAddress}
             onChangeText={(text) => setStartingAddress(text)}
@@ -574,9 +618,30 @@ const CreateRide = () => {
             }}
             placeholder="Enter Origin"
           />
-          <Text style={{ color: textColor, marginBottom: 5, marginTop: 15 }}>
-            To
-          </Text>
+          <View
+            style={{ flexDirection: "row", justifyContent: "space-between" }}
+          >
+            <Text
+              style={{
+                color: textColor,
+                marginBottom: 5,
+                marginTop: 15,
+                fontFamily: "Comfortaa-Regular",
+              }}
+            >
+              To
+            </Text>
+            <Text
+              style={{
+                color: textColor,
+                marginTop: 15,
+                marginBottom: 5,
+                fontFamily: "Comfortaa-Regular",
+              }}
+            >
+              * Required
+            </Text>
+          </View>
           <ThemedAddressCompletionInput
             value={endingAddress}
             onChangeText={(text) => {
@@ -593,113 +658,117 @@ const CreateRide = () => {
             handleDateSelect={handleDateSelect}
             selectedTime={time}
             handleTimeSelect={handleTimeConfirm}
-            textColor={textColor}
+            textColor={currentColors.text}
           />
-          <Text style={{ color: textColor, marginBottom: 10, marginTop: 15 }}>
-            Select which kid will join the ride
+          <Text
+            style={{
+              color: textColor,
+              marginBottom: 10,
+              marginTop: 15,
+              fontFamily: "Comfortaa-Regular",
+            }}
+          >
+            Select which kid will join with you
           </Text>
           <ChildSelector onSelectedChildrenChange={setSelectedChildren} />
           <GroupPicker
             groups={groups}
             selectedGroupIndex={selectedGroupIndex}
             setSelectedGroupIndex={setSelectedGroupIndex}
-            textColor={textColor}
           />
-          <VehicleDetailsPicker
-            selectedVehicleIndex={selectedVehicleIndex}
-            selectedSeatsIndex={selectedSeatsIndex}
-            vehicles={vehicles}
-            seatsAvailable={seatsAvailable}
-            setSelectedVehicleIndex={setSelectedVehicleIndex}
-            setSelectedSeatsIndex={setSelectedSeatsIndex}
-            textColor={textColor}
-          />
-          <MapAiInfo />
-          <RideMap
-            mapRef={mapRef}
-            requests={requests}
-            startingLatLng={startingLatLng}
-            endingLatLng={endingLatLng}
-            startingAddress={startingAddress}
-            endingAddress={endingAddress}
-            previousRoutes={previousRoutes}
-            coordinates={coordinates}
-            activeRoute={activeRoute}
-            setActiveRoute={setActiveRoute}
-            setPreviousRoutes={setPreviousRoutes}
-            styles={styles}
-            isActiveRoute={isActiveRoute}
-            areCoordinatesEqual={areCoordinatesEqual}
-            setSelectedWaypoints={setSelectedWaypoints}
-          />
-          <WaypointSelector
-            requests={requests}
-            selectedWaypoints={selectedWaypoints}
-            seatsAvailable={seatsLeft}
-            setSelectedWaypoints={setSelectedWaypoints}
-            vehicles={vehicles}
-            selectedVehicleIndex={selectedVehicleIndex}
-            selectedChildren={selectedChildren}
-          />
+
           <Text
-            style={{
-              color: "#8F9BB3",
-              textAlign: "left",
-              marginTop: 5,
-              marginBottom: 5,
-              fontFamily: "Comfortaa",
-            }}
+            style={[
+              {
+                color: "#8F9BB3",
+                textAlign: "left",
+                marginTop: 5,
+                marginBottom: 5,
+                fontFamily: "Comfortaa",
+              },
+              { color: currentColors.text },
+            ]}
           >
-            You choose the below passenger(s)
+            Select the request to match
           </Text>
           <View style={{ width: "100%", marginBottom: 40 }}>
             <CarpoolPickerBar
               selectedWaypoints={selectedWaypoints}
               sortedRequests={requests}
             />
-            <View style={{ marginTop: 20 }}>
-              {/* <CarpoolOverview
-                startingAddress={startingAddress}
-                endingAddress={endingAddress}
-                selectedDate={selectedDate}
-                time={time}
-                selectedChildren={selectedChildren} // take in selected requests
-                description={description}
-              /> */}
-            </View>
-
+            <VehicleDetailsPicker
+              selectedVehicleIndex={selectedVehicleIndex}
+              selectedSeatsIndex={selectedSeatsIndex}
+              vehicles={vehicles}
+              seatsAvailable={seatsAvailable}
+              setSelectedVehicleIndex={setSelectedVehicleIndex}
+              setSelectedSeatsIndex={setSelectedSeatsIndex}
+              textColor={textColor}
+            />
+            <MapAiInfo />
+            <RideMap
+              mapRef={mapRef}
+              requests={requests}
+              startingLatLng={startingLatLng}
+              endingLatLng={endingLatLng}
+              startingAddress={startingAddress}
+              endingAddress={endingAddress}
+              previousRoutes={previousRoutes}
+              coordinates={coordinates}
+              activeRoute={activeRoute}
+              setActiveRoute={setActiveRoute}
+              setPreviousRoutes={setPreviousRoutes}
+              styles={styles}
+              isActiveRoute={isActiveRoute}
+              areCoordinatesEqual={areCoordinatesEqual}
+              setSelectedWaypoints={setSelectedWaypoints}
+            />
+            <WaypointSelector
+              requests={requests}
+              selectedWaypoints={selectedWaypoints}
+              seatsAvailable={seatsLeft}
+              setSelectedWaypoints={setSelectedWaypoints}
+              vehicles={vehicles}
+              selectedVehicleIndex={selectedVehicleIndex}
+              selectedChildren={selectedChildren}
+            />
             <Text
-              style={{
-                color: "#FF6A00",
-                fontSize: 22,
-                marginTop: 15,
-                fontFamily: "Comfortaa",
-              }}
+              style={[
+                {
+                  color: "#FF6A00",
+                  fontSize: 22,
+                  marginTop: 15,
+                  fontFamily: "Comfortaa",
+                },
+                { color: currentColors.text },
+              ]}
             >
-              Pricing
+              You choose the below passenger(s)
             </Text>
-            <CarFeaturesCheckbox
-              extraCarseatChecked={extraCarseatChecked}
-              winterTiresChecked={winterTiresChecked}
-              setExtraCarseatChecked={setExtraCarseatChecked}
-              setWinterTiresChecked={setWinterTiresChecked}
+            <PricingCheckbox
+              voluntaryChecked={voluntaryChecked}
+              shareCostChecked={shareCostChecked}
+              setVoluntaryChecked={setVoluntaryChecked}
+              setShareCostChecked={setShareCostChecked}
             />
             <PaymentInfo />
             <Text
-              style={{
-                color: "#FF6A00",
-                fontSize: 22,
-                marginTop: 15,
-                fontFamily: "Comfortaa",
-              }}
+              style={[
+                {
+                  color: "#FF6A00",
+                  fontSize: 22,
+                  marginTop: 15,
+                  fontFamily: "Comfortaa",
+                },
+                { color: currentColors.text },
+              ]}
             >
               Trip Preferences
             </Text>
             <TripDescriptionInput
-              textColor={textColor}
               description={description}
-              placeholder="Any preferences for trips? (e.g., preferred age range of kids, allowed stopovers, special requests)"
               setDescription={setDescription}
+              placeholder="Any preferences for trips? (e.g., preferred age range of kids, allowed stopovers, special requests)"
             />
           </View>
           <View
@@ -708,7 +777,7 @@ const CreateRide = () => {
               justifyContent: "center",
               alignItems: "center",
               paddingHorizontal: 16,
-              backgroundColor: "#fff",
+              backgroundColor: currentColors.background,
             }}
           >
             <LinearGradient
@@ -721,6 +790,7 @@ const CreateRide = () => {
                 overflow: "hidden",
               }}
             >
+              {/* {renderToggleButton()} */}
               <Button
                 style={{
                   width: "100%",
@@ -743,8 +813,6 @@ const CreateRide = () => {
                         departureTime: time,
                         tripPreferences: description,
                         vehicleId: vehicles[selectedVehicleIndex.row].id,
-                        extraCarSeat: extraCarseatChecked,
-                        winterTires: winterTiresChecked,
                         requestIds: selectedWaypoints.map((child) => child.id),
                         driverChildIds: selectedChildren.map((child) => child),
                         groupId: groupId!,
@@ -766,7 +834,7 @@ const CreateRide = () => {
                 )}
               </Button>
             </LinearGradient>
-            {/* <Popover
+            <Popover
               backdropStyle={styles.backdrop}
               visible={visible}
               anchor={() => renderToggleButton()}
@@ -782,7 +850,7 @@ const CreateRide = () => {
               <Layout style={styles.content}>
                 <Text>Your ride has been successfully created👍</Text>
               </Layout>
-            </Popover> */}
+            </Popover>
           </View>
         </View>
       </ScrollView>

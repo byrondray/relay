@@ -1,9 +1,18 @@
 import React from "react";
-import { View, Text, Image, TouchableOpacity, Platform } from "react-native";
+import {
+  View,
+  Text,
+  Image,
+  StyleSheet,
+  TouchableOpacity,
+  Platform,
+} from "react-native";
 import { Datepicker } from "@ui-kitten/components";
 import { TimePickerModal } from "react-native-paper-dates";
 import { useTheme } from "@/contexts/ThemeContext";
 import DateTimePicker from "@react-native-community/datetimepicker";
+import ClockSvg from "../icons/ClockSvg";
+import CalendarSvg from "../icons/CalendarSvg";
 
 const RideDateTimePicker = ({
   selectedDate,
@@ -50,24 +59,36 @@ const RideDateTimePicker = ({
   return (
     <View>
       {/* Date Section */}
-      <Text
-        style={[
-          {
-            marginBottom: 5,
+      <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+        <Text
+          style={[
+            {
+              marginBottom: 5,
+              marginTop: 15,
+              color: "#8F9BB3",
+              fontFamily: "Comfortaa-Regular",
+            },
+            { color: textColor },
+          ]}
+        >
+          Date & Time of Ride
+        </Text>
+        <Text
+          style={{
+            color: textColor,
             marginTop: 15,
-            color: "#8F9BB3",
-            fontFamily: "Comfortaa",
-          },
-          { color: currentColors.text },
-        ]}
-      >
-        Date & Time of Ride
-      </Text>
+            marginBottom: 5,
+            fontFamily: "Comfortaa-Regular",
+          }}
+        >
+          * Required
+        </Text>
+      </View>
       <View
         style={{
-          backgroundColor: "#F7F9FC",
+          backgroundColor: currentColors.placeholder,
           height: 43,
-          borderColor: "#E4E9F2",
+          borderColor: currentColors.placeholder,
           borderWidth: 1,
           borderRadius: 15,
           paddingLeft: 15,
@@ -76,17 +97,19 @@ const RideDateTimePicker = ({
           justifyContent: "space-between",
         }}
       >
-        <Image
-          source={require("@/assets/images/calendar-icon.png")}
-          style={{ marginLeft: 10 }}
-        />
+        <CalendarSvg fill="#8F9BB3" width={24} height={24} style={styles.svg} />
         <Datepicker
           date={selectedDate || undefined}
           onSelect={handleDateSelect}
-          style={{ marginRight: 5, borderColor: "transparent", borderWidth: 0 }}
+          style={{
+            marginRight: 5,
+            borderColor: "transparent",
+            borderWidth: 0,
+          }}
           controlStyle={{
             borderWidth: 0,
             borderColor: "transparent",
+            backgroundColor: currentColors.placeholder,
           }}
         />
       </View>
@@ -95,26 +118,28 @@ const RideDateTimePicker = ({
       <TouchableOpacity onPress={() => setShowTimePicker(true)}>
         <View
           style={{
-            backgroundColor: "#F7F9FC",
-            height: 43,
-            borderColor: "#E4E9F2",
+            backgroundColor: currentColors.placeholder,
+            borderColor: currentColors.placeholder,
+            height: 44,
             borderWidth: 1,
             borderRadius: 15,
-            paddingLeft: 25,
+            paddingLeft: 15,
             flexDirection: "row",
             alignItems: "center",
             marginTop: 10,
             justifyContent: "space-between",
           }}
         >
-          <Image
-            source={require("@/assets/images/calendar-icon.png")}
-            style={{ marginTop: 2 }}
+          <ClockSvg
+            fill="#8F9BB3"
+            width={36}
+            height={36}
+            style={[styles.svg, styles.clockSvg]}
           />
           <Text
             style={{
               marginLeft: 15,
-              color: textColor,
+              color: currentColors.text,
               marginRight: 25,
               fontFamily: "Comfortaa",
             }}
@@ -137,5 +162,14 @@ const RideDateTimePicker = ({
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  svg: {
+    marginBottom: 2,
+  },
+  clockSvg: {
+    marginTop: 12,
+  },
+});
 
 export default RideDateTimePicker;

@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { Text, View, StyleSheet, ActivityIndicator, Image } from "react-native";
+import React, { useState } from "react";
+import { Text, View, StyleSheet, ActivityIndicator } from "react-native";
 import ParentFormLabel from "@/components/form/inputLabel";
 import ParentFormInput from "@/components/form/inputForm";
 import { TouchableOpacity } from "react-native-gesture-handler";
@@ -8,13 +8,14 @@ import { getAuth } from "firebase/auth";
 import { useQuery, useMutation } from "@apollo/client";
 import { GET_USER, UPDATE_USER } from "@/graphql/user/queries";
 import * as ImagePicker from "expo-image-picker";
-import UploadIcon from "@/assets/images/uploadIcon.svg";
 import { Toggle } from "@ui-kitten/components";
 import { LinearGradient } from "expo-linear-gradient";
 import ImageUpload from "@/components/carpool/uploadImageInput";
+import { useTheme } from "@/contexts/ThemeContext";  // Access the theme
 
 function ParentForm(): JSX.Element {
   const auth = getAuth();
+  const { currentColors } = useTheme();  // Access current theme colors
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("6043421096");
@@ -87,29 +88,27 @@ function ParentForm(): JSX.Element {
   };
 
   if (loadingUser) {
-    return <ActivityIndicator size="large" color="#0000ff" />;
+    return <ActivityIndicator size="large" color={currentColors.tint} />; // Use theme color
   }
 
-  const onCheckedChange = (
-    isChecked: boolean | ((prevState: boolean) => boolean)
-  ): void => {
+  const onCheckedChange = (isChecked: boolean | ((prevState: boolean) => boolean)): void => {
     setChecked(isChecked);
   };
 
   return (
-    <View style={[styles.container, { backgroundColor: "#ffffff" }]}>
-      <Text style={[styles.heading, { fontFamily: "Comfortaa" }]}>
+    <View style={[styles.container, { backgroundColor: currentColors.background }]}>
+      <Text style={[styles.heading, { fontFamily: "Comfortaa", color: currentColors.text }]}>
         Parent Info
       </Text>
 
       {errorMessage && (
-        <Text style={[styles.errorText, { fontFamily: "Comfortaa" }]}>
+        <Text style={[styles.errorText, { fontFamily: "Comfortaa", color: "red" }]}>
           {errorMessage}
         </Text>
       )}
 
       {submissionError && (
-        <Text style={[styles.errorText, { fontFamily: "Comfortaa" }]}>
+        <Text style={[styles.errorText, { fontFamily: "Comfortaa", color: "red" }]}>
           {submissionError}
         </Text>
       )}
@@ -160,29 +159,11 @@ function ParentForm(): JSX.Element {
           onChangeText={setLocation}
         />
       </View>
-      <View
-        style={{
-          flexDirection: "row",
-          marginVertical: 10,
-        }}
-      >
-        <Text
-          style={{
-            flex: 1,
-            flexWrap: "wrap",
-            width: "98%",
-            fontFamily: "Comfortaa",
-          }}
-        >
-          If you're a parent interested in becoming a carpool driver to help
-          pick up and drop off kids in your community.{" "}
-          <Text
-            style={{
-              color: "#FF6A00",
-              textDecorationLine: "none",
-              fontFamily: "Comfortaa",
-            }}
-          >
+      
+      <View style={{ flexDirection: "row", marginVertical: 10 }}>
+        <Text style={{ flex: 1, flexWrap: "wrap", width: "98%", fontFamily: "Comfortaa", color: currentColors.text }}>
+          If you're a parent interested in becoming a carpool driver to help pick up and drop off kids in your community.{" "}
+          <Text style={{ color: currentColors.tint, textDecorationLine: "none", fontFamily: "Comfortaa" }}>
             Sign up to be a Driver!
           </Text>
         </Text>
@@ -207,11 +188,11 @@ function ParentForm(): JSX.Element {
           disabled={loadingUpdate}
         >
           {loadingUpdate ? (
-            <ActivityIndicator size="small" color="#ffffff" />
+            <ActivityIndicator size="small" color={currentColors.text} />
           ) : (
             <Text
               style={{
-                color: "white",
+                color: currentColors.text,
                 textAlign: "center",
                 fontSize: 20,
                 fontFamily: "Comfortaa-semibold",
@@ -238,7 +219,6 @@ const styles = StyleSheet.create({
     fontFamily: "Comfortaa",
   },
   errorText: {
-    color: "red",
     marginBottom: 10,
     fontFamily: "Comfortaa",
   },

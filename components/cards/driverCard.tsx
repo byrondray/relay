@@ -2,7 +2,7 @@ import React from "react";
 import { View, Text, Image, TouchableOpacity } from "react-native";
 import MessageCircle from "@/assets/images/message-circle.svg";
 import HeartIcon from "@/assets/images/heart.svg";
-import { useThemeColor } from "@/hooks/useThemeColor";
+import { useTheme } from "@/contexts/ThemeContext";  // Importing useTheme
 
 interface DriverInfoProps {
   driverImage: string;
@@ -18,8 +18,8 @@ const DriverInfo = ({
   vehicleModel,
 }: DriverInfoProps) => {
   const randomLikes = Math.floor(Math.random() * (750 - 50 + 1)) + 50;
+  const { currentColors } = useTheme();  // Accessing theme colors
 
-  const textColor = useThemeColor({}, "placeholder");
   return (
     <View
       style={{
@@ -65,7 +65,7 @@ const DriverInfo = ({
           style={{
             fontSize: 12,
             fontWeight: "bold",
-            color: textColor,
+            color: currentColors.text,  // Using theme color
             fontFamily: "Comfortaa",
           }}
         >
@@ -76,6 +76,7 @@ const DriverInfo = ({
             fontSize: 17,
             fontWeight: "700",
             marginBottom: 5,
+            color: currentColors.text,  // Using theme color
             fontFamily: "Comfortaa",
           }}
         >
@@ -86,7 +87,7 @@ const DriverInfo = ({
           style={{
             fontSize: 12,
             fontWeight: "bold",
-            color: textColor,
+            color: currentColors.placeholder,  // Using theme color
             fontFamily: "Comfortaa",
           }}
         >
@@ -97,6 +98,7 @@ const DriverInfo = ({
             fontSize: 17,
             fontWeight: "700",
             marginBottom: 5,
+            color: currentColors.text,  // Using theme color
             fontFamily: "Comfortaa",
           }}
         >
@@ -107,14 +109,19 @@ const DriverInfo = ({
           style={{
             fontSize: 12,
             fontWeight: "bold",
-            color: textColor,
+            color: currentColors.text,  // Using theme color
             fontFamily: "Comfortaa",
           }}
         >
           Vehicle Model
         </Text>
         <Text
-          style={{ fontSize: 17, fontWeight: "700", fontFamily: "Comfortaa" }}
+          style={{
+            fontSize: 17,
+            fontWeight: "700",
+            color: currentColors.text,  // Using theme color
+            fontFamily: "Comfortaa",
+          }}
         >
           {vehicleModel}
         </Text>
@@ -124,7 +131,7 @@ const DriverInfo = ({
         style={{
           width: 40,
           height: 40,
-          backgroundColor: "#FB812A",
+          backgroundColor: currentColors.background,
           borderRadius: 26,
           justifyContent: "center",
           alignItems: "center",

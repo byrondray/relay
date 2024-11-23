@@ -21,6 +21,8 @@ export const useRideState = () => {
   const [canSubmit, setCanSubmit] = useState(false);
   const [extraCarseatChecked, setExtraCarseatChecked] = useState(false);
   const [winterTiresChecked, setWinterTiresChecked] = useState(false);
+  const [voluntaryChecked, setVoluntaryChecked] = useState(false);
+  const [shareCostChecked, setShareCostChecked] = useState(false);
   const [showTimePicker, setShowTimePicker] = useState(false);
   const [time, setTime] = useState("");
 
@@ -65,6 +67,10 @@ export const useRideState = () => {
     setDateAndTime,
     canSubmit,
     setCanSubmit,
+    voluntaryChecked,
+    setVoluntaryChecked,
+    shareCostChecked,
+    setShareCostChecked,
     extraCarseatChecked,
     setExtraCarseatChecked,
     winterTiresChecked,

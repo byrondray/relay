@@ -1,29 +1,70 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { CarpoolWithRequests } from "@/graphql/generated";
+import { useTheme } from "@/contexts/ThemeContext";
 
 const LocationCard = ({
   carpoolData,
 }: {
   carpoolData: CarpoolWithRequests;
 }) => {
+  const { currentColors } = useTheme();
+
   return (
-    <View style={styles.card}>
+    <View style={[styles.card, { backgroundColor: currentColors.background }]}>
       {/* Start Location */}
       <View style={styles.locationRow}>
-        <View style={[styles.icon, { backgroundColor: "#FF6A00" }]} />
+        <View
+          style={[
+            styles.icon,
+            { backgroundColor: currentColors.tint }, // Dynamic color for the start location icon
+          ]}
+        />
         <View>
-          <Text style={styles.label}>Start Location</Text>
-          <Text style={styles.address}>{carpoolData?.startAddress}</Text>
+          <Text
+            style={[
+              styles.label,
+              { color: currentColors.text }, // Dynamic label color
+            ]}
+          >
+            Start Location
+          </Text>
+          <Text
+            style={[
+              styles.address,
+              { color: currentColors.text }, // Dynamic address color
+            ]}
+          >
+            {carpoolData?.startAddress}
+          </Text>
         </View>
       </View>
 
       {/* Destination */}
       <View style={styles.locationRow}>
-        <View style={[styles.icon, { backgroundColor: "#E24949" }]} />
+        <View
+          style={[
+            styles.icon,
+            { backgroundColor: currentColors.tint }, // Dynamic color for the destination icon
+          ]}
+        />
         <View>
-          <Text style={styles.label}>Destination</Text>
-          <Text style={styles.address}>{carpoolData?.endAddress}</Text>
+          <Text
+            style={[
+              styles.label,
+              { color: currentColors.text }, // Dynamic label color
+            ]}
+          >
+            Destination
+          </Text>
+          <Text
+            style={[
+              styles.address,
+              { color: currentColors.text }, // Dynamic address color
+            ]}
+          >
+            {carpoolData?.endAddress}
+          </Text>
         </View>
       </View>
     </View>
@@ -32,8 +73,9 @@ const LocationCard = ({
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: "#fff",
     borderRadius: 16,
+    padding: 16,
+    elevation: 4,
   },
   locationRow: {
     flexDirection: "row",
@@ -48,7 +90,6 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 14,
-    color: "#8F9BB3",
     marginBottom: 4,
     fontFamily: "Comfortaa",
     textAlign: "left",
@@ -56,7 +97,6 @@ const styles = StyleSheet.create({
   },
   address: {
     fontSize: 16,
-    color: "#8F9BB3",
     fontFamily: "Comfortaa",
   },
 });

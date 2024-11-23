@@ -1,8 +1,8 @@
 import React from "react";
-import { View, Image } from "react-native";
+import { View, Image, ImageSourcePropType } from "react-native";
 
 interface ProfilePicturesProps {
-  images: string[];
+  images: Array<string | ImageSourcePropType>; // Support both local and remote images
 }
 
 const StackedProfilePictures = ({ images }: ProfilePicturesProps) => {
@@ -11,7 +11,7 @@ const StackedProfilePictures = ({ images }: ProfilePicturesProps) => {
       {images.map((image, index) => (
         <Image
           key={index}
-          source={{ uri: image }}
+          source={typeof image === "string" ? { uri: image } : image} 
           style={{
             width: 40,
             height: 40,

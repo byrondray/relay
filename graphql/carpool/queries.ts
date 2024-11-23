@@ -233,12 +233,33 @@ export const GET_USER_CARPOOL_WITH_REQUESTS = gql`
     getUserCarpoolsAndRequests(userId: $userId) {
       carpools {
         id
+        vehicle {
+          id
+          make
+          model
+          year
+          licensePlate
+        }
+        driver {
+          id
+          firstName
+          lastName
+          email
+          phoneNumber
+          imageUrl
+        }
+        groupId
         startAddress
-        driverId
-        vehicleId
         endAddress
+        startLat
+        startLon
+        endLat
+        endLon
         departureDate
         departureTime
+        extraCarSeat
+        tripPreferences
+        estimatedTime
       }
       requests {
         id

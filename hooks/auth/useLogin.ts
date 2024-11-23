@@ -78,7 +78,7 @@ export const useLoginHooks = () => {
         if (token) {
           onAuthStateChanged(auth, (firebaseUser) => {
             if (firebaseUser) {
-              router.replace("/(tabs)/");
+              router.replace("/(tabs)");
             } else {
               setLoading(false);
             }
@@ -123,7 +123,7 @@ export const useLoginHooks = () => {
             },
           });
 
-          router.replace("/(tabs)/");
+          router.replace("/(tabs)");
         })
         .catch((err) => {
           setLoading(false);
@@ -150,7 +150,7 @@ export const useLoginHooks = () => {
         },
       });
       setLoading(false);
-      router.replace("/(tabs)/");
+      router.replace("/(tabs)");
     } catch (err) {
       setLoading(false);
       setError("Email/Password sign-in failed. Please try again.");

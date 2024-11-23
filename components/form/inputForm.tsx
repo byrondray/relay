@@ -1,5 +1,6 @@
 import React from "react";
 import { View, TextInput, StyleSheet } from "react-native";
+import { useTheme } from "@/contexts/ThemeContext";
 
 interface ParentFormInputProps {
   placeholder: string;
@@ -12,12 +13,20 @@ function ParentFormInput({
   value,
   onChangeText,
 }: ParentFormInputProps): JSX.Element {
+  const { currentColors } = useTheme();
   return (
     <View>
       <TextInput
-        style={styles.input}
+        style={[
+          styles.input,
+          {
+            borderColor: currentColors.tint,
+            backgroundColor: currentColors.background,
+            color: currentColors.text,
+          },
+        ]}
         placeholder={placeholder}
-        placeholderTextColor="#8F9BB3"
+        placeholderTextColor={currentColors.placeholder}
         value={value ?? ""} 
         onChangeText={onChangeText} 
       />
@@ -31,11 +40,11 @@ const styles = StyleSheet.create({
     height: 42,
     borderRadius: 25,
     borderWidth: 1,
-    borderColor: "#E4E9F2",
-    backgroundColor: "#F7F9FC",
+    // borderColor: "#E4E9F2",
+    // backgroundColor: "#F7F9FC",
     paddingLeft: 20,
     fontSize: 16,
-    color: "#A0A3BD",
+    // color: "#A0A3BD",
     fontFamily: "Comfortaa",
   },
 });

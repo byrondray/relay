@@ -3,7 +3,6 @@ import {
   View,
   Text,
   TextInput,
-  Button,
   FlatList,
   StyleSheet,
   KeyboardAvoidingView,
@@ -26,8 +25,10 @@ import { DetailedMessage } from "@/graphql/generated";
 import Message from "@/components/messaging/message";
 import { Spinner } from "@ui-kitten/components";
 import { LinearGradient } from "expo-linear-gradient";
+import { useTheme } from "@/contexts/ThemeContext";
 
 export default function MessageScreen() {
+  const { currentColors } = useTheme();
   const [messages, setMessages] = useState<DetailedMessage[]>([]);
   const [newMessage, setNewMessage] = useState("");
   const { userId } = useLocalSearchParams();
@@ -36,7 +37,7 @@ export default function MessageScreen() {
 
   const { data: recipientData, loading: recipientLoading } =
     useFetchUser(recipientIdString);
-  const senderId = auth.currentUser?.uid || "";
+  const senderId = currentUser?.uid || "";
   const { data: senderData, loading: senderLoading } = useFetchUser(senderId);
 
   const { loading, error, refetch } = useFetchMessages(
@@ -135,14 +136,14 @@ export default function MessageScreen() {
       keyboardVerticalOffset={Platform.OS === "ios" ? 90 : 0}
     >
       <LinearGradient
-        colors={["#E6574C1A", "#F7B06033"]}
+        colors={[`${currentColors.tint}1A`, `${currentColors.tint}33`]}
         start={{ x: 0.1, y: 0 }}
         end={{ x: 0.91, y: 1 }}
         style={styles.gradientBackground}
       />
 
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <View style={[styles.container, { flex: 1 }]}>
+        <View style={[styles.container, { flex: 1, backgroundColor: currentColors.background }]}>
           <FlatList
             data={messages}
             keyExtractor={(item) => item.id}
@@ -154,11 +155,19 @@ export default function MessageScreen() {
             <TextInput
               value={newMessage}
               onChangeText={setNewMessage}
-              style={[styles.input, { backgroundColor: "white" }]}
+              style={[
+                styles.input,
+                {
+                  backgroundColor: currentColors.background,
+                  borderColor: currentColors.placeholder,
+                  color: currentColors.text,
+                },
+              ]}
               placeholder="Message..."
+              placeholderTextColor={currentColors.placeholder}
             />
             <TouchableOpacity onPress={() => sendMessage()}>
-              <Text style={styles.sendButtonText}>Send</Text>
+              <Text style={[styles.sendButtonText, { color: currentColors.tint }]}>Send</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -172,7 +181,6 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   sendButtonText: {
-    color: "#FB812A",
     fontSize: 16,
     fontFamily: "Comfortaa",
   },
@@ -186,11 +194,6 @@ const styles = StyleSheet.create({
     padding: 10,
     paddingHorizontal: 10,
   },
-  recipientName: {
-    fontSize: 18,
-    fontWeight: "bold",
-    marginBottom: 10,
-  },
   inputContainer: {
     flexDirection: "row",
     alignItems: "center",
@@ -200,7 +203,6 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     borderWidth: 1,
-    borderColor: "#ddd",
     borderRadius: 20,
     padding: 10,
     marginRight: 10,
