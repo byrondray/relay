@@ -85,7 +85,8 @@ const styles = StyleSheet.create({
   initialText: {
     color: "white",
     fontSize: 18,
-    fontWeight: "bold",
+    // fontWeight: "bold",
+    fontFamily: "Comfortaa"
   },
   friendInfo: {
     flex: 1,
@@ -93,9 +94,12 @@ const styles = StyleSheet.create({
   friendName: {
     fontSize: 16,
     fontWeight: "600",
+    fontFamily: "Comfortaa"
+
   },
   friendSource: {
     fontSize: 14,
+    fontFamily: "Comfortaa"
   },
   checkbox: {
     paddingHorizontal: 8,

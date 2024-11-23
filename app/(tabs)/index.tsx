@@ -81,43 +81,22 @@ function HomeScreen() {
           New Ride
         </Text>
 
-        <View style={[styles.content, { height: "100%"}]}>
-          <TouchableOpacity
+        <View style={styles.content}>
+        <TouchableOpacity
             style={[
-              styles.button,
-              hasFilledDriverInfo
-                ? [
-                    styles.requestButton,
-                    {
-                      borderColor: currentColors.tint,
-                      backgroundColor: currentColors.background,
-                    },
-                  ]
-                : styles.disabledButton,
+              styles.requestButton,
+              { borderColor: currentColors.tint, backgroundColor: currentColors.background },
+              !hasFilledDriverInfo && styles.disabledButton, // Apply disabled styles conditionally
             ]}
-            disabled={!hasFilledDriverInfo}
+            disabled={!hasFilledDriverInfo} // Disable button if hasFilledDriverInfo is false
             onPress={() => router.push("/(tabs)/Carpool/createRide")}
           >
             <View style={[styles.buttonContent]}>
               <View style={styles.textContainer}>
-                <Text
-                  style={[
-                    hasFilledDriverInfo
-                      ? [
-                          styles.requestButtonText,
-                          { color: currentColors.text },
-                        ]
-                      : styles.disabledButtonText,
-                  ]}
-                >
+                <Text style={[styles.requestButtonText, { color: currentColors.text }]}>
                   I'm a driver
                 </Text>
-                <Text
-                  style={[
-                    styles.subText,
-                    hasFilledDriverInfo && { color: currentColors.text },
-                  ]}
-                >
+                <Text style={[styles.requestSubText, { color: currentColors.text }]}>
                   I'm available to carpool other kids.
                 </Text>
               </View>
@@ -125,11 +104,12 @@ function HomeScreen() {
                 source={require("@/assets/images/arrow-circle-right.png")}
                 style={[
                   styles.arrowIcon,
-                  !hasFilledDriverInfo && styles.disabledArrowIcon,
+                  !hasFilledDriverInfo && styles.disabledArrowIcon, // Adjust arrow icon based on disabled state
                 ]}
               />
             </View>
           </TouchableOpacity>
+
 
           {!hasFilledDriverInfo && (
             <>
@@ -230,7 +210,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   disabledButton: {
-    backgroundColor: "#f0f0f0",
+    // backgroundColor: "#f0f0f0",
   },
   requestButton: {
     borderRadius: 10,
