@@ -113,11 +113,7 @@ const CarpoolScreen: React.FC = () => {
         console.error("Error sending start notification:", err)
       );
     }
-  }, [
-    hasStartedSharingLocation,
-    isLeaving,
-    nextStop,
-  ]);
+  }, [hasStartedSharingLocation, isLeaving, nextStop]);
 
   useEffect(() => {
     if (
@@ -567,13 +563,13 @@ const CarpoolScreen: React.FC = () => {
             </>
           )}
         </View>
-        <View style={{ paddingHorizontal: 15, marginBottom: 15 }}>
+        <View style={{ paddingHorizontal: 15, marginBottom: 5 }}>
           <GpsTrackingInfo />
         </View>
-        <View style={{ padding: 20 }}>
+        <View style={{ paddingHorizontal: 15 }}>
           <TimeCard startTime="08: 30 AM" endTime="09: 32 AM" />
         </View>
-        <View style={{ paddingHorizontal: 15, marginBottom: 15 }}>
+        <View style={{ paddingHorizontal: 15, marginBottom: 5 }}>
           {carpoolData && <LocationCard carpoolData={carpoolData} />}
         </View>
         {uniqueRequests?.map((request: any, index: number) => {
@@ -597,24 +593,15 @@ const CarpoolScreen: React.FC = () => {
         </View>
         <Text
           style={{
-            color: currentColors.placeholder,
+            color: currentColors.text,
             paddingHorizontal: 15,
             fontFamily: "Comfortaa",
+            marginBottom: 10,
           }}
         >
           Review to Driver
         </Text>
         <View style={{ paddingHorizontal: 15, marginBottom: 10 }}>
-          <Text
-            style={{
-              color: currentColors.text,
-              marginBottom: 5,
-              marginTop: 10,
-              fontFamily: "Comfortaa",
-            }}
-          >
-            Description
-          </Text>
           <TextInput
             style={{
               width: "100%",

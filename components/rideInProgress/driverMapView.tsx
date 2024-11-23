@@ -51,10 +51,10 @@ const DriverMapView: React.FC<DriverMapViewProps> = ({
 
   const checkPropsReady = () => {
     return (
-      carpoolData?.startLat !== undefined &&
-      carpoolData?.startLon !== undefined &&
-      carpoolData?.endLat !== undefined &&
-      carpoolData?.endLon !== undefined &&
+      carpoolData?.startLat != null &&
+      carpoolData?.startLon != null &&
+      carpoolData?.endLat != null &&
+      carpoolData?.endLon != null &&
       requests.length > 0 &&
       polyline.length > 0
     );
@@ -142,7 +142,7 @@ const DriverMapView: React.FC<DriverMapViewProps> = ({
           initialRegion={defaultRegion}
           onLayout={() => {
             if (!mapInitialized) {
-              setMapInitialized(true); // Fallback
+              setTimeout(() => setMapInitialized(true), 100);
             }
           }}
           onMapReady={() => {
@@ -250,6 +250,7 @@ const styles = StyleSheet.create({
   },
   map: {
     flex: 1,
+    width: "100%",
   },
   expandButton: {
     position: "absolute",

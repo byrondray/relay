@@ -162,12 +162,15 @@ const RequestCard = ({
         >
           Pick up Location - Point {index + 1}
         </Text>
-        <View style={{ marginTop: 5, flexDirection: "row", marginBottom: -10 }}>
-          <OrangePin
-            width={20}
-            height={20}
-            style={{ marginRight: 8, marginTop: 7 }}
-          />
+        <View
+          style={{
+            marginTop: 5,
+            flexDirection: "row",
+            marginBottom: -10,
+            alignContent: "center",
+          }}
+        >
+          <OrangePin width={20} height={20} style={{ marginRight: 8 }} />
           <Text
             style={{
               fontSize: 15,

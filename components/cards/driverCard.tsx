@@ -71,20 +71,21 @@ const DriverInfo = ({
       </View>
 
       {/* Driver Info */}
-      <View style={{ flex: 1 }}>
+      <View style={{ flex: 1, marginTop: -15 }}>
         <Text
           style={{
             fontSize: 12,
             fontWeight: "bold",
             color: "#8F9BB3", // Using theme color
             fontFamily: "Comfortaa",
+            marginBottom: 4,
           }}
         >
           Driver
         </Text>
         <Text
           style={{
-            fontSize: 17,
+            fontSize: 20,
             fontWeight: "700",
             marginBottom: 5,
             color: currentColors.text, // Using theme color
@@ -101,13 +102,14 @@ const DriverInfo = ({
             fontWeight: "bold",
             color: "#8F9BB3", // Using theme color
             fontFamily: "Comfortaa",
+            marginBottom: 4,
           }}
         >
           Car Plate
         </Text>
         <Text
           style={{
-            fontSize: 17,
+            fontSize: 20,
             fontWeight: "700",
             marginBottom: 5,
             color: currentColors.text, // Using theme color
@@ -123,13 +125,14 @@ const DriverInfo = ({
             fontWeight: "bold",
             color: "#8F9BB3", // Using theme color
             fontFamily: "Comfortaa",
+            marginBottom: 4,
           }}
         >
           Vehicle Model
         </Text>
         <Text
           style={{
-            fontSize: 17,
+            fontSize: 20,
             fontWeight: "700",
             color: currentColors.text, // Using theme color
             fontFamily: "Comfortaa-Bold",

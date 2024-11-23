@@ -48,16 +48,14 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     padding: 16,
     elevation: 4,
-    marginVertical: 10,
   },
   locationRow: {
     flexDirection: "row",
-    alignItems: "flex-start",
+    alignItems: "center",
     marginBottom: 10,
   },
   icon: {
     marginRight: 8,
-    marginTop: 6,
   },
   locationText: {
     flexDirection: "column",
@@ -68,6 +66,7 @@ const styles = StyleSheet.create({
     color: "black",
     fontSize: 14,
     marginBottom: 4,
+    alignItems: "center",
   },
   address: {
     fontFamily: "Comfortaa",

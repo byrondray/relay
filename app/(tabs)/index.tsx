@@ -65,7 +65,7 @@ const CarpoolListScreen: React.FC = () => {
             style={{
               fontFamily: "Comfortaa",
               fontWeight: "500",
-              fontSize: 20,
+              fontSize: 14,
               marginBottom: -10,
             }}
           >
@@ -75,8 +75,9 @@ const CarpoolListScreen: React.FC = () => {
             style={{
               fontFamily: "Comfortaa-Bold",
               fontWeight: "700",
-              fontSize: 34,
+              fontSize: 24,
               marginBottom: 16,
+              marginTop: 10,
             }}
           >
             {driverName}
@@ -92,6 +93,7 @@ const CarpoolListScreen: React.FC = () => {
                     pathname: "/trips/inProgress/[trip]",
                     params: { trip: item.id },
                   }}
+                  style={{ marginRight: 10, marginBottom: 10 }}
                 >
                   <MapDriverCard
                     driverName={item.driver.firstName}
@@ -124,7 +126,7 @@ const CarpoolListScreen: React.FC = () => {
           data={uniqueRequests}
           keyExtractor={(request) => request.id}
           renderItem={({ item: request }) => (
-            <View>
+            <View style={{ marginTop: 10, paddingHorizontal: 5 }}>
               {request.carpoolId ? (
                 <Link
                   href={{

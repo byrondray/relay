@@ -16,10 +16,10 @@ const TimeCard = ({ startTime, endTime }: TimeCardProps) => {
   const splitEndTime = endTime.split(" ");
 
   const startTimeValue = splitStartTime.slice(0, 2).join(" ");
-  const startPeriod = splitStartTime[2].toLowerCase();
+  const startPeriod = splitStartTime[2];
 
   const endTimeValue = splitEndTime.slice(0, 2).join(" ");
-  const endPeriod = splitEndTime[2].toLowerCase();
+  const endPeriod = splitEndTime[2];
 
   return (
     <View

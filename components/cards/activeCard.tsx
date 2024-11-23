@@ -158,7 +158,13 @@ const ActiveRiderCard = ({
           {formatThisDate}
         </Text>
 
-        <View style={{ flexDirection: "row", alignItems: "center" }}>
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            marginBottom: 5,
+          }}
+        >
           <OrangeMarker
             width={20}
             height={20}

@@ -90,6 +90,7 @@ const MapDriverCard = ({
         backgroundColor: currentColors.background,
         padding: 20,
         width: "100%",
+        maxWidth: "100%",
       }}
     >
       <View
