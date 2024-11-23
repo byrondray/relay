@@ -59,7 +59,7 @@ const RideDateTimePicker = ({
   return (
     <View>
       {/* Date Section */}
-      <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+      <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 15 }}>
         <Text
           style={[
             {

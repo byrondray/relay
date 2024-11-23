@@ -15,7 +15,7 @@ const RadioGroupComponent: React.FC<RadioGroupComponentProps> = ({
   const { currentColors } = useTheme();
 
   return (
-    <View style={{ marginBottom: 20 }}>
+    <View style={{ marginBottom: 20, width: "100%", flexDirection: "row" }}>
       <RadioGroup
         selectedIndex={selectedIndex}
         onChange={(index: number) => setSelectedIndex(index)}
