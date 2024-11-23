@@ -155,6 +155,14 @@ export default function TabLayout() {
       />
 
       <Tabs.Screen
+        name="trips/listcarpool"
+        options={{
+          title: "Message",
+          href: null,
+        }}
+      />
+
+      <Tabs.Screen
         name="messages/group/[groupId]"
         options={{
           title: "Message",

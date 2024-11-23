@@ -84,7 +84,7 @@ const ScheduleActiveCard = ({
               color: currentColors.text,
             }}
           >
-            RN: {id}
+            RN: {id.slice(0, 8)}
           </Text>
 
           <View
@@ -176,11 +176,7 @@ const ScheduleActiveCard = ({
             marginBottom: 6,
           }}
         >
-          <OrangeMarker
-            width={20}
-            height={20}
-            style={{ marginRight: 8 }}
-          />
+          <OrangeMarker width={20} height={20} style={{ marginRight: 8 }} />
           <Text style={{ fontFamily: "Comfortaa", color: currentColors.text }}>
             {startLocation}
           </Text>

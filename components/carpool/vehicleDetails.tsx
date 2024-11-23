@@ -36,14 +36,19 @@ const VehicleDetailsPicker = ({
       </Text>
       <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
         <Text
-          style={{ color: textColor, marginTop: 15, marginBottom: 5, fontFamily: "Comfortaa-Regular" }}
+          style={{
+            color: textColor,
+            marginTop: 15,
+            marginBottom: 5,
+            fontFamily: "Comfortaa-Regular",
+          }}
         >
           Select Vehicle
         </Text>
         <Text
           style={{
             color: textColor,
-            marginTop: 15, 
+            marginTop: 15,
             marginBottom: 5,
             fontFamily: "Comfortaa-Regular",
           }}
@@ -52,52 +57,39 @@ const VehicleDetailsPicker = ({
         </Text>
       </View>
       <View>
-        <View
-          style={{
-            backgroundColor: currentColors.placeholder,
-            height: 43,
-            borderColor: currentColors.placeholder,
-            borderWidth: 1,
-            borderRadius: 15,
-            paddingLeft: 15,
-            justifyContent: "center",
-            marginBottom: 20,
+        <Select
+          selectedIndex={selectedVehicleIndex}
+          onSelect={(index: IndexPath | IndexPath[]) => {
+            if (index instanceof IndexPath) {
+              setSelectedVehicleIndex(index);
+            }
           }}
+          value={vehicles[selectedVehicleIndex?.row]?.make || "Select Vehicle"}
+          placeholder="Select Vehicle"
         >
-          <Select
-            selectedIndex={selectedVehicleIndex}
-            onSelect={(index: IndexPath | IndexPath[]) => {
-              if (index instanceof IndexPath) {
-                setSelectedVehicleIndex(index);
-              }
-            }}
-            value={vehicles[selectedVehicleIndex?.row]?.make || "Select Vehicle"}
-            placeholder="Select Vehicle"
-            style={{
-              backgroundColor: currentColors.placeholder,
-              borderColor: currentColors.placeholder,
-              borderWidth: 1,
-              borderRadius: 8,
-            }}
-          >
-            {vehicles.map((vehicle, index) => (
-              <SelectItem
-                title={`${vehicle.make} ${vehicle.model}`}
-                key={index}
-              />
-            ))}
-          </Select>
-        </View>
+          {vehicles.map((vehicle, index) => (
+            <SelectItem
+              title={`${vehicle.make} ${vehicle.model}`}
+              key={index}
+            />
+          ))}
+        </Select>
+
         <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
           <Text
-            style={{ color: textColor, marginTop: 15, marginBottom: 5, fontFamily: "Comfortaa" }}
+            style={{
+              color: textColor,
+              marginTop: 15,
+              marginBottom: 5,
+              fontFamily: "Comfortaa",
+            }}
           >
             Seats Available
           </Text>
           <Text
             style={{
               color: textColor,
-              marginTop: 15, 
+              marginTop: 15,
               marginBottom: 5,
               fontFamily: "Comfortaa-Regular",
             }}
@@ -105,36 +97,25 @@ const VehicleDetailsPicker = ({
             * Required
           </Text>
         </View>
-        <View
-          style={{
-            backgroundColor: currentColors.placeholder,
-            height: 43,
-            borderColor: currentColors.placeholder,
-            borderWidth: 1,
-            borderRadius: 15,
-            paddingLeft: 15,
-            justifyContent: "center",
-          }}
-        >
-          <Select
-            selectedIndex={selectedSeatsIndex}
-            onSelect={(index: IndexPath | IndexPath[]) => {
-              if (index instanceof IndexPath) {
-                setSelectedSeatsIndex(index);
-              }
-            }}
-            value={
-              seatsAvailable[selectedSeatsIndex?.row] !== undefined
-                ? `${seatsAvailable[selectedSeatsIndex.row]}`
-                : "Select Seats Available"
+
+        <Select
+          selectedIndex={selectedSeatsIndex}
+          onSelect={(index: IndexPath | IndexPath[]) => {
+            if (index instanceof IndexPath) {
+              setSelectedSeatsIndex(index);
             }
-            placeholder="Select Seats Available"
-          >
-            {seatsAvailable.map((seat, index) => (
-              <SelectItem title={`${seat}`} key={index} />
-            ))}
-          </Select>
-        </View>
+          }}
+          value={
+            seatsAvailable[selectedSeatsIndex?.row] !== undefined
+              ? `${seatsAvailable[selectedSeatsIndex.row]}`
+              : "Select Seats Available"
+          }
+          placeholder="Select Seats Available"
+        >
+          {seatsAvailable.map((seat, index) => (
+            <SelectItem title={`${seat}`} key={index} />
+          ))}
+        </Select>
       </View>
     </View>
   );

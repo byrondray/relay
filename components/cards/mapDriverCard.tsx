@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   Platform,
   Linking,
+  Image,
 } from "react-native";
 import LikeIcon from "@/assets/images/heart.svg";
 import ClockIcon from "@/assets/images/whiteClock.svg";
@@ -13,7 +14,7 @@ import TimeCard from "./timeCard";
 import StackedProfilePictures from "./stackedProfile";
 import OrangeMarker from "@/assets/images/OrangeMarker.svg";
 import RedMarker from "@/assets/images/RedMarker.svg";
-import { useTheme } from "@/contexts/ThemeContext"; 
+import { useTheme } from "@/contexts/ThemeContext";
 import PhoneIcon from "@/assets/images/phone.svg";
 import MessageCircle from "@/assets/images/message-circle.svg";
 import Pin from "@/assets/images/pin.svg";
@@ -22,6 +23,7 @@ interface ScheduleActiveCardProps {
   id: string;
   driverName: string;
   driveCount: number;
+  driverImage: string | null | undefined;
   likes: number;
   date: Date;
   duration: string;
@@ -34,20 +36,29 @@ interface ScheduleActiveCardProps {
 
 const formatDate = (date: Date): string => {
   const today = new Date();
-  const isToday = today.toDateString() === date.toDateString();
+  const diffTime = date.getTime() - today.getTime();
+  const diffDays = Math.floor(diffTime / (1000 * 3600 * 24));
+
+  if (diffTime > 0) {
+    return "Future";
+  }
+
+  if (diffTime < 0 && diffDays !== 0) {
+    return `${Math.abs(diffDays)} days ago`;
+  }
 
   const formattedDate = date.toLocaleDateString("en-GB", {
     day: "2-digit",
     month: "short",
   });
-
-  return isToday ? `Today, ${formattedDate}` : formattedDate;
+  return `Today, ${formattedDate}`;
 };
 
 const MapDriverCard = ({
   id,
   driverName,
   driveCount,
+  driverImage,
   likes,
   date,
   duration,
@@ -77,7 +88,7 @@ const MapDriverCard = ({
         elevation: 4,
         borderRadius: 15,
         backgroundColor: currentColors.background,
-        padding: 16,
+        padding: 20,
         width: "100%",
       }}
     >
@@ -97,11 +108,11 @@ const MapDriverCard = ({
             color: currentColors.text,
           }}
         >
-          RN: {id}
+          RN: {id.slice(0, 8)}
         </Text>
         <TouchableOpacity
           style={{
-            backgroundColor: currentColors.tint,
+            backgroundColor: "#35BA00",
             borderRadius: 16,
             paddingHorizontal: 10,
             paddingVertical: 5,
@@ -115,14 +126,19 @@ const MapDriverCard = ({
               fontSize: 10,
               fontFamily: "Comfortaa",
               fontWeight: "700",
-              color: currentColors.text,
+              color: "#FFFFFF",
             }}
           >
             Processing
           </Text>
         </TouchableOpacity>
       </View>
-
+      <View style={{ alignItems: "center" }}>
+        <Image
+          source={{ uri: driverImage || undefined }}
+          style={{ width: 100, height: 100, borderRadius: 100 }}
+        />
+      </View>
       <View
         style={{
           flexDirection: "row",
@@ -198,9 +214,9 @@ const MapDriverCard = ({
         <Text
           style={{
             fontSize: 20,
-            fontFamily: "Comfortaa",
+            fontFamily: "Comfortaa-Bold",
             fontWeight: "700",
-            color: currentColors.text,
+            color: "#666666",
             letterSpacing: 0.2,
           }}
         >
@@ -208,17 +224,17 @@ const MapDriverCard = ({
         </Text>
         <Text
           style={{
-            fontSize: 10,
-            fontFamily: "Comfortaa",
+            fontSize: 12,
+            fontFamily: "Comfortaa-Bold",
             fontWeight: "700",
-            color: currentColors.tint,
+            color: "#666666",
           }}
         >
           {duration}
         </Text>
       </View>
 
-      <TimeCard startTime={startTime} endTime={endTime}/>
+      <TimeCard startTime={startTime} endTime={endTime} />
 
       <View
         style={{
@@ -228,13 +244,13 @@ const MapDriverCard = ({
           marginTop: 10,
         }}
       >
-        <OrangeMarker
-          width={20}
-          height={20}
-          style={{ marginRight: 8 }}
-        />
+        <OrangeMarker width={20} height={20} style={{ marginRight: 8 }} />
         <Text
-          style={{ fontFamily: "Comfortaa", color: currentColors.text, fontSize: 14 }}
+          style={{
+            fontFamily: "Comfortaa",
+            color: currentColors.text,
+            fontSize: 14,
+          }}
         >
           {startLocation}
         </Text>
@@ -243,7 +259,11 @@ const MapDriverCard = ({
       <View style={{ flexDirection: "row", alignItems: "center" }}>
         <RedMarker width={20} height={20} style={{ marginRight: 8 }} />
         <Text
-          style={{ fontFamily: "Comfortaa", color: currentColors.text, fontSize: 14 }}
+          style={{
+            fontFamily: "Comfortaa",
+            color: currentColors.text,
+            fontSize: 14,
+          }}
         >
           {endLocation}
         </Text>
@@ -275,7 +295,7 @@ const MapDriverCard = ({
             style={{
               width: 40,
               height: 40,
-              backgroundColor: currentColors.background,
+              backgroundColor: "#FB812A",
               borderRadius: 26,
               padding: 8,
             }}
@@ -288,26 +308,26 @@ const MapDriverCard = ({
             style={{
               width: 40,
               height: 40,
-              backgroundColor: currentColors.background,
+              backgroundColor: "#FB812A",
               borderRadius: 26,
               padding: 8,
               marginStart: 10,
             }}
           >
-            <MessageCircle width={24} height={24} style={{ padding: 10 }}/>
+            <MessageCircle width={24} height={24} style={{ padding: 10 }} />
           </TouchableOpacity>
 
           <TouchableOpacity
             style={{
               width: 40,
               height: 40,
-              backgroundColor: currentColors.background,
+              backgroundColor: "#FB812A",
               borderRadius: 26,
               padding: 8,
               marginStart: 10,
             }}
           >
-            <Pin width={24} height={24} style={{ padding: 10 }}/>
+            <Pin width={24} height={24} style={{ padding: 10 }} />
           </TouchableOpacity>
         </View>
       </View>
