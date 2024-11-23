@@ -27,9 +27,11 @@ const CarpoolListScreen: React.FC = () => {
     }, [refetch])
   );
 
-
   if (loading) return <Spinner />;
-  if (error) return <Text style={{ color: currentColors.text }}>Error loading carpools</Text>;
+  if (error)
+    return (
+      <Text style={{ color: currentColors.text }}>Error loading carpools</Text>
+    );
 
   const carpools = data?.getUserCarpoolsAndRequests?.carpools || [];
   const requests = data?.getUserCarpoolsAndRequests?.requests || [];
@@ -46,9 +48,10 @@ const CarpoolListScreen: React.FC = () => {
   return (
     <>
       <ScrollView>
-        <View style={{}}>
+        <View style={{ paddingHorizontal: 16 }}>
           <FlatList
             data={carpools}
+            style={{ borderRadius: 20 }}
             keyExtractor={(item) => item.id}
             renderItem={({ item }) => {
               return (

@@ -9,43 +9,43 @@
       "appearances": {
         "default": {
           "mapping": {
-            "borderRadius": 20,
-            "backgroundColor": "#F7F9FC"
+            "borderRadius": 15,
+            "backgroundColor": "#f0f0f0"
           },
           "states": {
             "disabled": {
               "mapping": {
-                "backgroundColor": "#E4E9F",
-                "borderRadius": 20
+                "backgroundColor": "#f0f0f0",
+                "borderRadius": 15
               }
             },
             "active": {
               "mapping": {
                 "backgroundColor": "#D1D1D1",
-                "borderRadius": 20
+                "borderRadius": 15
               }
             }
           },
           "variantGroups": {
             "status": {
               "basic": {
-                "backgroundColor": "#F7F9FC",
+                "backgroundColor": "#f0f0f0",
                 "borderColor": "#E4E9F2",
-                "borderRadius": 20
+                "borderRadius": 15
               }
             },
             "size": {
               "small": {
                 "paddingVertical": 3,
-                "borderRadius": 20
+                "borderRadius": 15
               },
               "medium": {
                 "paddingVertical": 7,
-                "borderRadius": 20
+                "borderRadius": 15
               },
               "large": {
                 "paddingVertical": 11,
-                "borderRadius": 20
+                "borderRadius": 15
               }
             }
           }

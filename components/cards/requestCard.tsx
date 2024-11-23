@@ -8,7 +8,7 @@ import RedMarker from "@/assets/images/RedMarker.svg";
 import StackedProfilePictures from "./stackedProfile";
 import RepeatIcon from "@/assets/images/repeat.svg";
 import ArrowUp from "@/assets/images/arrow-up.svg";
-import { useTheme } from "@/contexts/ThemeContext"; 
+import { useTheme } from "@/contexts/ThemeContext";
 
 interface CardData {
   id: string;
@@ -75,7 +75,7 @@ const ActiveRiderCard = ({
               fontFamily: "Comfortaa",
             }}
           >
-            RN: {id}
+            RN: {id.slice(0, 8)}
           </Text>
 
           <View
@@ -226,14 +226,18 @@ const ActiveRiderCard = ({
                 height={16}
                 style={{ marginHorizontal: 10 }}
               />
-              <Text style={{ color: currentColors.tint, fontFamily: "Comfortaa" }}>
+              <Text
+                style={{ color: currentColors.tint, fontFamily: "Comfortaa" }}
+              >
                 {recurrence}
               </Text>
             </>
           ) : (
             <>
               <ArrowUp width={16} height={16} style={{ marginRight: 10 }} />
-              <Text style={{ color: currentColors.tint, fontFamily: "Comfortaa" }}>
+              <Text
+                style={{ color: currentColors.tint, fontFamily: "Comfortaa" }}
+              >
                 {recurrence}
               </Text>
             </>

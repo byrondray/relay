@@ -149,7 +149,7 @@ const RequestRide = () => {
       {() => (
         <Text
           style={{
-            color: currentColors.text,
+            color: currentColors.background,
             fontSize: 16,
             fontFamily: "Comfortaa",
           }}
@@ -176,11 +176,11 @@ const RequestRide = () => {
           <Text
             style={{
               fontSize: 32,
-              // fontWeight: "bold",
               marginBottom: 20,
-              color: currentColors.tint,
-              letterSpacing: -1,
               fontFamily: "Comfortaa-Bold",
+              fontWeight: 700,
+              color: currentColors.text,
+              letterSpacing: -1,
             }}
           >
             Post a request
@@ -230,7 +230,7 @@ const RequestRide = () => {
         <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
           <Text
             style={{
-              color: textColor,
+              color: currentColors.text,
               marginBottom: 5,
               fontFamily: "Comfortaa-Regular",
             }}
@@ -239,7 +239,7 @@ const RequestRide = () => {
           </Text>
           <Text
             style={{
-              color: textColor,
+              color: currentColors.text,
               marginBottom: 5,
               fontFamily: "Comfortaa-Regular",
             }}
@@ -308,7 +308,7 @@ const RequestRide = () => {
           }}
         >
           <LinearGradient
-            colors={["#ff8833", "#e24a4a"]} // Custom gradient for button
+            colors={["#ff8833", "#e24a4a"]}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 0 }}
             style={{
@@ -317,32 +317,49 @@ const RequestRide = () => {
               overflow: "hidden",
             }}
           >
-            {renderSubmitButton()}
+            <Button
+              style={{
+                width: "100%",
+                paddingVertical: 12,
+              }}
+              appearance="ghost"
+              onPress={() => {
+                handleSubmit();
+              }}
+            >
+              {() => (
+                <Text
+                  style={{
+                    color: "#fff",
+                    fontSize: 16,
+                    fontFamily: "Comfortaa",
+                  }}
+                >
+                  Submit
+                </Text>
+              )}
+            </Button>
           </LinearGradient>
 
           <Popover
-            backdropStyle={{ backgroundColor: "rgba(0, 0, 0, 0.5)", flex: 1 }}
+            backdropStyle={styles.backdrop}
             visible={visible}
             anchor={() => renderSubmitButton()}
             onBackdropPress={() => setVisible(false)}
             style={{
               marginBottom: 400,
-              maxWidth: 300,
+              maxWidth: 330,
               height: 80,
               padding: 20,
               borderRadius: 10,
             }}
           >
             <View>
-              <Text>
-                {errorMessage ||
-                  successMessage ||
-                  "There is no driver available. We'll notify you when one is ready 👍"}
-              </Text>
               <Layout style={styles.content}>
-                <Text style={{ color: currentColors.text }}>
-                  There is no driver available, we'll send you a notification
-                  when one is ready👍
+                <Text>
+                  {errorMessage ||
+                    successMessage ||
+                    "There is no driver available. We'll notify you when one is ready 👍"}
                 </Text>
               </Layout>
             </View>

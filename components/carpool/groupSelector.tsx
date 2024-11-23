@@ -48,32 +48,21 @@ const GroupPicker = ({
           * Required
         </Text>
       </View>
-      <View
-        style={{
-          backgroundColor: currentColors.placeholder,
-          height: 43,
-          borderColor: currentColors.placeholder,
-          borderWidth: 1,
-          borderRadius: 15,
-          paddingLeft: 15,
-          justifyContent: "center",
+
+      <Select
+        selectedIndex={selectedGroupIndex}
+        onSelect={(index: IndexPath | IndexPath[]) => {
+          if (index instanceof IndexPath) {
+            setSelectedGroupIndex(index);
+          }
         }}
+        value={groups[selectedGroupIndex?.row]?.name || "Select Group"}
+        placeholder="Select Group"
       >
-        <Select
-          selectedIndex={selectedGroupIndex}
-          onSelect={(index: IndexPath | IndexPath[]) => {
-            if (index instanceof IndexPath) {
-              setSelectedGroupIndex(index);
-            }
-          }}
-          value={groups[selectedGroupIndex?.row]?.name || "Select Group"}
-          placeholder="Select Group"
-        >
-          {groups.map((group, index) => (
-            <SelectItem title={group.name} key={group.id} />
-          ))}
-        </Select>
-      </View>
+        {groups.map((group, index) => (
+          <SelectItem title={group.name} key={group.id} />
+        ))}
+      </Select>
     </View>
   );
 };

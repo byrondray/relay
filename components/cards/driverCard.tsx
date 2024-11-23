@@ -2,7 +2,7 @@ import React from "react";
 import { View, Text, Image, TouchableOpacity } from "react-native";
 import MessageCircle from "@/assets/images/message-circle.svg";
 import HeartIcon from "@/assets/images/heart.svg";
-import { useTheme } from "@/contexts/ThemeContext";  // Importing useTheme
+import { useTheme } from "@/contexts/ThemeContext"; // Importing useTheme
 
 interface DriverInfoProps {
   driverImage: string;
@@ -18,7 +18,7 @@ const DriverInfo = ({
   vehicleModel,
 }: DriverInfoProps) => {
   const randomLikes = Math.floor(Math.random() * (750 - 50 + 1)) + 50;
-  const { currentColors } = useTheme();  // Accessing theme colors
+  const { currentColors } = useTheme(); // Accessing theme colors
 
   return (
     <View
@@ -65,7 +65,7 @@ const DriverInfo = ({
           style={{
             fontSize: 12,
             fontWeight: "bold",
-            color: currentColors.text,  // Using theme color
+            color: "#8F9BB3", // Using theme color
             fontFamily: "Comfortaa",
           }}
         >
@@ -76,7 +76,7 @@ const DriverInfo = ({
             fontSize: 17,
             fontWeight: "700",
             marginBottom: 5,
-            color: currentColors.text,  // Using theme color
+            color: currentColors.text, // Using theme color
             fontFamily: "Comfortaa",
           }}
         >
@@ -87,7 +87,7 @@ const DriverInfo = ({
           style={{
             fontSize: 12,
             fontWeight: "bold",
-            color: currentColors.placeholder,  // Using theme color
+            color: currentColors.placeholder, // Using theme color
             fontFamily: "Comfortaa",
           }}
         >
@@ -98,7 +98,7 @@ const DriverInfo = ({
             fontSize: 17,
             fontWeight: "700",
             marginBottom: 5,
-            color: currentColors.text,  // Using theme color
+            color: currentColors.text, // Using theme color
             fontFamily: "Comfortaa",
           }}
         >
@@ -109,7 +109,7 @@ const DriverInfo = ({
           style={{
             fontSize: 12,
             fontWeight: "bold",
-            color: currentColors.text,  // Using theme color
+            color: currentColors.text, // Using theme color
             fontFamily: "Comfortaa",
           }}
         >
@@ -119,7 +119,7 @@ const DriverInfo = ({
           style={{
             fontSize: 17,
             fontWeight: "700",
-            color: currentColors.text,  // Using theme color
+            color: currentColors.text, // Using theme color
             fontFamily: "Comfortaa",
           }}
         >
