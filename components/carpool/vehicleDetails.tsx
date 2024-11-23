@@ -29,16 +29,28 @@ const VehicleDetailsPicker = ({
           fontSize: 22,
           marginBottom: 15,
           marginTop: 15,
-          fontFamily: "Comfortaa",
+          fontFamily: "Comfortaa-Regular",
         }}
       >
         Vehicle Details
       </Text>
-      <Text
-        style={{ color: currentColors.text, marginBottom: 5, fontFamily: "Comfortaa" }}
-      >
-        Select Vehicle
-      </Text>
+      <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+        <Text
+          style={{ color: textColor, marginTop: 15, marginBottom: 5, fontFamily: "Comfortaa-Regular" }}
+        >
+          Select Vehicle
+        </Text>
+        <Text
+          style={{
+            color: textColor,
+            marginTop: 15, 
+            marginBottom: 5,
+            fontFamily: "Comfortaa-Regular",
+          }}
+        >
+          * Required
+        </Text>
+      </View>
       <View>
         <View
           style={{
@@ -76,12 +88,23 @@ const VehicleDetailsPicker = ({
             ))}
           </Select>
         </View>
-
-        <Text
-          style={{ color: currentColors.text, marginBottom: 5, fontFamily: "Comfortaa" }}
-        >
-          Seats Available
-        </Text>
+        <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+          <Text
+            style={{ color: textColor, marginTop: 15, marginBottom: 5, fontFamily: "Comfortaa" }}
+          >
+            Seats Available
+          </Text>
+          <Text
+            style={{
+              color: textColor,
+              marginTop: 15, 
+              marginBottom: 5,
+              fontFamily: "Comfortaa-Regular",
+            }}
+          >
+            * Required
+          </Text>
+        </View>
         <View
           style={{
             backgroundColor: currentColors.placeholder,

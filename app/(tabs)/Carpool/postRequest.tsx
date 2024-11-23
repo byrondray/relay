@@ -178,8 +178,9 @@ const RequestRide = () => {
               fontSize: 32,
               // fontWeight: "bold",
               marginBottom: 20,
-              fontFamily: "Comfortaa",
               color: currentColors.tint,
+              letterSpacing: -1,
+              fontFamily: "Comfortaa-Bold",
             }}
           >
             Post a request
@@ -196,7 +197,7 @@ const RequestRide = () => {
             style={{
               color: currentColors.text,
               marginBottom: 5,
-              fontFamily: "Comfortaa",
+              fontFamily: "Comfortaa-Regular",
             }}
           >
             From
@@ -205,7 +206,7 @@ const RequestRide = () => {
             style={{
               color: currentColors.text,
               marginBottom: 5,
-              fontFamily: "Comfortaa",
+              fontFamily: "Comfortaa-Regular",
             }}
           >
             * Required
@@ -229,18 +230,18 @@ const RequestRide = () => {
         <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
           <Text
             style={{
-              color: currentColors.text,
+              color: textColor,
               marginBottom: 5,
-              fontFamily: "Comfortaa",
+              fontFamily: "Comfortaa-Regular",
             }}
           >
             To
           </Text>
           <Text
             style={{
-              color: currentColors.tint,
+              color: textColor,
               marginBottom: 5,
-              fontFamily: "Comfortaa",
+              fontFamily: "Comfortaa-Regular",
             }}
           >
             * Required
@@ -273,10 +274,10 @@ const RequestRide = () => {
             color: currentColors.text,
             marginBottom: 10,
             marginTop: 15,
-            fontFamily: "Comfortaa",
+            fontFamily: "Comfortaa-Regular",
           }}
         >
-          Select which kid will join the ride
+          Select who will join the ride
         </Text>
 
         <ChildSelector
@@ -332,17 +333,19 @@ const RequestRide = () => {
               borderRadius: 10,
             }}
           >
-            <Text>
-              {errorMessage ||
-                successMessage ||
-                "There is no driver available. We'll notify you when one is ready 👍"}
-            </Text>
-            <Layout style={styles.content}>
-              <Text style={{ color: currentColors.text }}>
-                There is no driver available, we'll send you a notification when
-                one is ready👍
+            <View>
+              <Text>
+                {errorMessage ||
+                  successMessage ||
+                  "There is no driver available. We'll notify you when one is ready 👍"}
               </Text>
-            </Layout>
+              <Layout style={styles.content}>
+                <Text style={{ color: currentColors.text }}>
+                  There is no driver available, we'll send you a notification
+                  when one is ready👍
+                </Text>
+              </Layout>
+            </View>
           </Popover>
         </View>
       </ScrollView>

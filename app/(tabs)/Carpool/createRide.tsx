@@ -15,7 +15,7 @@ import {
 import { haversineDistance } from "@/utils/distance";
 import { useDirections } from "@/hooks/map/useDirections";
 import { areCoordinatesEqual } from "@/utils/equalCoorordinates";
-import CarFeaturesCheckbox from "@/components/carpool/carFeaturesCheckbox";
+import PricingCheckbox from "@/components/carpool/pricingCheckbox";
 import RideDateTimePicker from "@/components/carpool/dateAndTimePicker";
 import MapAiInfo from "@/components/carpool/mapAiInfo";
 import RideMap from "@/components/carpool/rideMap";
@@ -70,10 +70,10 @@ const CreateRide = () => {
     setDateAndTime,
     canSubmit,
     setCanSubmit,
-    extraCarseatChecked,
-    setExtraCarseatChecked,
-    winterTiresChecked,
-    setWinterTiresChecked,
+    voluntaryChecked,
+    setVoluntaryChecked,
+    shareCostChecked,
+    setShareCostChecked,
     showTimePicker,
     setShowTimePicker,
     time,
@@ -558,9 +558,10 @@ const CreateRide = () => {
               style={{
                 fontSize: 32,
                 marginBottom: 20,
-                fontFamily: "Comfortaa-semibold",
+                fontFamily: "Comfortaa-Bold",
                 fontWeight: 700,
                 color: currentColors.text,
+                letterSpacing: -1,
               }}
             >
               Create a ride
@@ -572,6 +573,7 @@ const CreateRide = () => {
               fontSize: 22,
               marginBottom: 15,
               fontFamily: "Comfortaa",
+              letterSpacing: -1,
             }}
           >
             Itinerary
@@ -580,9 +582,31 @@ const CreateRide = () => {
             selectedIndex={selectedIndex}
             setSelectedIndex={setSelectedIndex}
           />
-          <Text style={{ color: currentColors.text, marginBottom: 5 }}>
-            From
-          </Text>
+
+          <View
+            style={{ flexDirection: "row", justifyContent: "space-between" }}
+          >
+            <Text
+              style={{
+                color: textColor,
+                marginTop: 15,
+                marginBottom: 5,
+                fontFamily: "Comfortaa-Regular",
+              }}
+            >
+              From
+            </Text>
+            <Text
+              style={{
+                color: textColor,
+                marginTop: 15,
+                marginBottom: 5,
+                fontFamily: "Comfortaa-Regular",
+              }}
+            >
+              * Required
+            </Text>
+          </View>
           <ThemedAddressCompletionInput
             value={startingAddress}
             onChangeText={(text) => setStartingAddress(text)}
@@ -594,15 +618,30 @@ const CreateRide = () => {
             }}
             placeholder="Enter Origin"
           />
-          <Text
-            style={{
-              color: currentColors.text,
-              marginBottom: 5,
-              marginTop: 15,
-            }}
+          <View
+            style={{ flexDirection: "row", justifyContent: "space-between" }}
           >
-            To
-          </Text>
+            <Text
+              style={{
+                color: textColor,
+                marginBottom: 5,
+                marginTop: 15,
+                fontFamily: "Comfortaa-Regular",
+              }}
+            >
+              To
+            </Text>
+            <Text
+              style={{
+                color: textColor,
+                marginTop: 15,
+                marginBottom: 5,
+                fontFamily: "Comfortaa-Regular",
+              }}
+            >
+              * Required
+            </Text>
+          </View>
           <ThemedAddressCompletionInput
             value={endingAddress}
             onChangeText={(text) => {
@@ -623,13 +662,13 @@ const CreateRide = () => {
           />
           <Text
             style={{
-              color: currentColors.text,
+              color: textColor,
               marginBottom: 10,
               marginTop: 15,
-              fontFamily: "Comfortaa",
+              fontFamily: "Comfortaa-Regular",
             }}
           >
-            Select which kid will join the ride
+            Select which kid will join with you
           </Text>
           <ChildSelector onSelectedChildrenChange={setSelectedChildren} />
           <GroupPicker
@@ -650,7 +689,7 @@ const CreateRide = () => {
               { color: currentColors.text },
             ]}
           >
-            You choose the below passenger(s)
+            Select the request to match
           </Text>
           <View style={{ width: "100%", marginBottom: 40 }}>
             <CarpoolPickerBar
@@ -706,11 +745,11 @@ const CreateRide = () => {
             >
               You choose the below passenger(s)
             </Text>
-            <CarFeaturesCheckbox
-              extraCarseatChecked={extraCarseatChecked}
-              winterTiresChecked={winterTiresChecked}
-              setExtraCarseatChecked={setExtraCarseatChecked}
-              setWinterTiresChecked={setWinterTiresChecked}
+            <PricingCheckbox
+              voluntaryChecked={voluntaryChecked}
+              shareCostChecked={shareCostChecked}
+              setVoluntaryChecked={setVoluntaryChecked}
+              setShareCostChecked={setShareCostChecked}
             />
             <PaymentInfo />
             <Text
@@ -751,7 +790,49 @@ const CreateRide = () => {
                 overflow: "hidden",
               }}
             >
-              {renderToggleButton()}
+              {/* {renderToggleButton()} */}
+              <Button
+                style={{
+                  width: "100%",
+                  paddingVertical: 12,
+                }}
+                appearance="ghost"
+                onPress={() => {
+                  handleModelSubmit();
+                  createCarpool({
+                    variables: {
+                      input: {
+                        driverId: userId!,
+                        startLat: startingLatLng.lat,
+                        startLon: startingLatLng.lon,
+                        endLat: endingLatLng.lat,
+                        endLon: endingLatLng.lon,
+                        startAddress: startingAddress,
+                        endAddress: endingAddress,
+                        departureDate: dateAndTime,
+                        departureTime: time,
+                        tripPreferences: description,
+                        vehicleId: vehicles[selectedVehicleIndex.row].id,
+                        requestIds: selectedWaypoints.map((child) => child.id),
+                        driverChildIds: selectedChildren.map((child) => child),
+                        groupId: groupId!,
+                      },
+                    },
+                  });
+                }}
+              >
+                {() => (
+                  <Text
+                    style={{
+                      color: "#fff",
+                      fontSize: 16,
+                      fontFamily: "Comfortaa",
+                    }}
+                  >
+                    Submit
+                  </Text>
+                )}
+              </Button>
             </LinearGradient>
             <Popover
               backdropStyle={styles.backdrop}
