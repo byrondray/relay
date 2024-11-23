@@ -1,0 +1,56 @@
+{
+  "components": {
+    "Select": {
+      "meta": {
+        "name": "Select",
+        "version": "1.0.0",
+        "scope": "global"
+      },
+      "appearances": {
+        "default": {
+          "mapping": {
+            "borderRadius": 20,
+            "backgroundColor": "#F7F9FC"
+          },
+          "states": {
+            "disabled": {
+              "mapping": {
+                "backgroundColor": "#E4E9F",
+                "borderRadius": 20
+              }
+            },
+            "active": {
+              "mapping": {
+                "backgroundColor": "#D1D1D1",
+                "borderRadius": 20
+              }
+            }
+          },
+          "variantGroups": {
+            "status": {
+              "basic": {
+                "backgroundColor": "#F7F9FC",
+                "borderColor": "#E4E9F2",
+                "borderRadius": 20
+              }
+            },
+            "size": {
+              "small": {
+                "paddingVertical": 3,
+                "borderRadius": 20
+              },
+              "medium": {
+                "paddingVertical": 7,
+                "borderRadius": 20
+              },
+              "large": {
+                "paddingVertical": 11,
+                "borderRadius": 20
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

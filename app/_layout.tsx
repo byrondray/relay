@@ -24,6 +24,7 @@ import { useFonts } from "expo-font";
 import { LogBox } from "react-native";
 import { DarkTheme, DefaultTheme } from "@react-navigation/native";
 import { FOREGROUND_NOTIFICATION_SUBSCRIPTION } from "@/graphql/map/queries";
+import customMapping from "@/components/customStyling/custom-mapping.json";
 
 const { width } = Dimensions.get("window");
 import { ThemeProvider, useTheme } from "@/contexts/ThemeContext";
@@ -112,6 +113,7 @@ export default function RootLayout() {
                 ? { ...eva.dark, ...myTheme }
                 : { ...eva.light, ...myTheme }
             }
+            customMapping={customMapping as any}
           >
             <ThemeProvider>
               <View
