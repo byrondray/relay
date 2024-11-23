@@ -29,16 +29,15 @@ export const useCarpoolProximity = ({
           currentStop.startLon,
           () => {
             console.log("Reached stop:", currentStop);
-            onStopReached(currentStop); // Notify the parent
+            onStopReached(currentStop);
             currentIndex++;
-            monitorNextStop(); // Start monitoring the next stop
+            monitorNextStop();
           }
         );
       } else {
-        // Final destination logic
         subscription = await monitorProximity(endingLat, endingLon, () => {
           console.log("Arrived at the final destination!");
-          onTripCompleted(); // Notify the parent that the trip is over
+          onTripCompleted();
         });
       }
     };
@@ -46,24 +45,23 @@ export const useCarpoolProximity = ({
     monitorNextStop();
 
     return () => {
-      if (subscription) subscription.remove(); // Cleanup subscription
+      if (subscription) subscription.remove();
     };
   }, [requests, endingLat, endingLon, onStopReached, onTripCompleted]);
 };
 
-// Monitor proximity function
 const monitorProximity = async (
   targetLat: number,
   targetLon: number,
   onArrive: () => void
 ): Promise<Location.LocationSubscription> => {
-  const distanceThreshold = 50; // 50 meters
+  const distanceThreshold = 50;
 
   const subscription = await Location.watchPositionAsync(
     {
       accuracy: Location.Accuracy.High,
-      timeInterval: 1000, // Check every second
-      distanceInterval: 1, // Trigger when the user moves 1 meter
+      timeInterval: 1000,
+      distanceInterval: 1,
     },
     (location) => {
       const { latitude, longitude } = location.coords;
@@ -75,8 +73,8 @@ const monitorProximity = async (
 
       if (distance <= distanceThreshold) {
         console.log("User is within 50 meters of the target location!");
-        onArrive(); // Notify that the target has been reached
-        subscription.remove(); // Stop monitoring
+        onArrive();
+        subscription.remove();
       }
     }
   );
@@ -84,14 +82,13 @@ const monitorProximity = async (
   return subscription;
 };
 
-// Haversine Distance Function
 const haversineDistance = (
   coords1: { lat: number; lon: number },
   coords2: { lat: number; lon: number }
 ): number => {
   const toRad = (value: number) => (value * Math.PI) / 180;
 
-  const R = 6371; // Earth's radius in kilometers
+  const R = 6371;
   const dLat = toRad(coords2.lat - coords1.lat);
   const dLon = toRad(coords2.lon - coords1.lon);
   const lat1 = toRad(coords1.lat);
@@ -103,5 +100,5 @@ const haversineDistance = (
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
   const distance = R * c;
 
-  return distance * 1000; // Distance in meters
+  return distance * 1000;
 };

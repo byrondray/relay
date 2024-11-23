@@ -317,12 +317,16 @@ const CreateRide = () => {
   }, [selectedRequests]);
 
   useEffect(() => {
-    if (startingAddress && endingAddress && selectedWaypoints.length > 0) {
-      const waypointsForDirections = selectedWaypoints.map((wp) => ({
-        latitude: parseFloat(wp.startingLat),
-        longitude: parseFloat(wp.startingLon),
-      }));
+    if (startingAddress && endingAddress) {
+      // Process waypoints only if selectedWaypoints exist
+      const waypointsForDirections = selectedWaypoints.length
+        ? selectedWaypoints.map((wp) => ({
+            latitude: parseFloat(wp.startingLat),
+            longitude: parseFloat(wp.startingLon),
+          }))
+        : [];
 
+      // Fetch directions
       getDirections(
         startingLatLng,
         endingLatLng,
@@ -346,6 +350,7 @@ const CreateRide = () => {
 
           setActiveRoute({ coordinates: newCoordinates, predictedTime });
 
+          // Fit the map view to the new route
           if (mapRef.current) {
             mapRef.current.fitToCoordinates(newCoordinates, {
               edgePadding: { top: 50, right: 50, bottom: 50, left: 50 },
@@ -360,10 +365,9 @@ const CreateRide = () => {
   }, [
     startingAddress,
     endingAddress,
-    selectedWaypoints,
+    selectedWaypoints, // Ensure waypoints update re-runs the effect
     startingLatLng,
     endingLatLng,
-    // vehicles,
   ]);
 
   const getAddress = async (

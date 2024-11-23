@@ -141,46 +141,38 @@ const DriverMapView: React.FC<DriverMapViewProps> = ({
           style={styles.map}
           initialRegion={defaultRegion}
           onLayout={() => {
-            console.log("Map layout completed");
             if (!mapInitialized) {
               setMapInitialized(true); // Fallback
             }
           }}
           onMapReady={() => {
-            console.log("Map is ready");
             setMapInitialized(true);
           }}
         >
-          {carpoolData?.startLat &&
-            carpoolData?.startLon &&
-            (console.log(carpoolData.startLat, "rendering start marker"),
-            (
-              <Marker
-                key={carpoolData.startAddress}
-                coordinate={{
-                  latitude: carpoolData.startLat,
-                  longitude: carpoolData.startLon,
-                }}
-                title={carpoolData.startAddress}
-                pinColor="#FF6A00"
-                zIndex={2}
-              />
-            ))}
-          {carpoolData?.endLat &&
-            carpoolData?.endLon &&
-            (console.log(carpoolData.endLat, "rendering end marker"),
-            (
-              <Marker
-                key={carpoolData.endAddress}
-                coordinate={{
-                  latitude: carpoolData.endLat,
-                  longitude: carpoolData.endLon,
-                }}
-                title={carpoolData.endAddress}
-                pinColor="#DE4141"
-                zIndex={2}
-              />
-            ))}
+          {carpoolData?.startLat && carpoolData?.startLon && (
+            <Marker
+              key={carpoolData.startAddress}
+              coordinate={{
+                latitude: carpoolData.startLat,
+                longitude: carpoolData.startLon,
+              }}
+              title={carpoolData.startAddress}
+              pinColor="#FF6A00"
+              zIndex={2}
+            />
+          )}
+          {carpoolData?.endLat && carpoolData?.endLon && (
+            <Marker
+              key={carpoolData.endAddress}
+              coordinate={{
+                latitude: carpoolData.endLat,
+                longitude: carpoolData.endLon,
+              }}
+              title={carpoolData.endAddress}
+              pinColor="#DE4141"
+              zIndex={2}
+            />
+          )}
           {driverLocation && (
             <Marker
               coordinate={{

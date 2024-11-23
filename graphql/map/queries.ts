@@ -85,3 +85,27 @@ export const FOREGROUND_NOTIFICATION_SUBSCRIPTION = gql`
     }
   }
 `;
+
+export const SEND_NOTIFICATION_INFO = gql`
+  mutation SendNotificationInfo(
+    $carpoolId: String!
+    $notificationType: NotificationType!
+    $lat: Float!
+    $lon: Float!
+    $nextStop: NextStopInput!
+    $timeToNextStop: String!
+    $timeUntilNextStop: String!
+    $isFinalDestination: Boolean!
+  ) {
+    sendNotificationInfo(
+      carpoolId: $carpoolId
+      notificationType: $notificationType
+      lat: $lat
+      lon: $lon
+      nextStop: $nextStop
+      timeToNextStop: $timeToNextStop
+      timeUntilNextStop: $timeUntilNextStop
+      isFinalDestination: $isFinalDestination
+    )
+  }
+`;

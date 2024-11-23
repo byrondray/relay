@@ -31,11 +31,11 @@ import { ThemeProvider, useTheme } from "@/contexts/ThemeContext";
 export default function RootLayout() {
   const [fontsLoaded] = useFonts({
     Comfortaa: require("@/assets/fonts/Comfortaa-VariableFont_wght.ttf"),
-    ComfortaaLight: require("../../assets/fonts/Comfortaa-Light.ttf"),
-    ComfortaaRegular: require("../../assets/fonts/Comfortaa-Regular.ttf"),
-    ComfortaaMedium: require("../../assets/fonts/Comfortaa-Medium.ttf"),
-    ComfortaaSemiBold: require("../../assets/fonts/Comfortaa-SemiBold.ttf"),
-    ComfortaaBold: require("../../assets/fonts/Comfortaa-Bold.ttf"),
+    // ComfortaaLight: require("../../assets/fonts/Comfortaa-Light.ttf"),
+    // ComfortaaRegular: require("../../assets/fonts/Comfortaa-Regular.ttf"),
+    // ComfortaaMedium: require("../../assets/fonts/Comfortaa-Medium.ttf"),
+    // ComfortaaSemiBold: require("../../assets/fonts/Comfortaa-SemiBold.ttf"),
+    // ComfortaaBold: require("../../assets/fonts/Comfortaa-Bold.ttf"),
   });
   const colorScheme = useColorScheme();
   const isLoading = useFirebaseAuth();
@@ -61,6 +61,7 @@ export default function RootLayout() {
       variables: { recipientId: userId },
       skip: !userId,
       onError: (err) => console.error("Subscription Error:", err.message),
+      onComplete: (): void => console.log("notification", notificationData),
       client: client,
     }
   );
@@ -152,6 +153,16 @@ export default function RootLayout() {
                     <Stack.Screen name="+not-found" />
                   </Stack>
                 </NavigationThemeProvider>
+                {showNotification && (
+                  <Animated.View
+                    style={[
+                      styles.notificationContainer,
+                      { transform: [{ translateY: slideAnim }] },
+                    ]}
+                  >
+                    <Text style={styles.notificationText}>{notification}</Text>
+                  </Animated.View>
+                )}
               </View>
             </ThemeProvider>
           </ApplicationProvider>
@@ -178,21 +189,23 @@ const styles = StyleSheet.create({
   notificationContainer: {
     position: "absolute",
     top: 0,
-    width: width - 40,
-    marginHorizontal: 20,
-    padding: 15,
-    backgroundColor: "#333",
-    borderRadius: 10,
+    width: width - 20,
+    marginHorizontal: 10,
+    padding: 20,
+    backgroundColor: "#444",
+    borderRadius: 15,
     zIndex: 10,
-    elevation: 5,
+    elevation: 10,
     shadowColor: "#000",
-    shadowOpacity: 0.3,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 4,
+    shadowOpacity: 0.4,
+    shadowOffset: { width: 0, height: 4 },
+    shadowRadius: 6,
   },
   notificationText: {
     color: "#fff",
-    fontSize: 16,
+    fontSize: 18,
+    lineHeight: 24,
+    fontWeight: "bold",
     textAlign: "center",
     fontFamily: "Comfortaa",
   },

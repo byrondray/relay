@@ -13,7 +13,10 @@ function Header() {
     <View
       style={[
         styles.headerContainer,
-        { borderBottomColor: currentColors.placeholder, backgroundColor: currentColors.placeholder },
+        {
+          borderBottomColor: currentColors.placeholder,
+          backgroundColor: currentColors.placeholder,
+        },
       ]}
     >
       <Image
@@ -37,7 +40,13 @@ export default function TabLayout() {
       screenOptions={{
         tabBarActiveTintColor: currentColors.tint,
         tabBarInactiveTintColor: currentColors.text,
-        tabBarStyle: [styles.navContainer, { backgroundColor: currentColors.background, borderTopColor: currentColors.placeholder }],
+        tabBarStyle: [
+          styles.navContainer,
+          {
+            backgroundColor: currentColors.background,
+            borderTopColor: currentColors.placeholder,
+          },
+        ],
         tabBarLabelStyle: [styles.navText, { color: currentColors.text }],
         headerShown: true,
         header: () => <Header />,
@@ -57,7 +66,7 @@ export default function TabLayout() {
       />
 
       <Tabs.Screen
-        name="trips/listcarpool"
+        name="temp"
         options={{
           title: "Trips",
           tabBarIcon: ({ color, focused }) => (
@@ -70,7 +79,7 @@ export default function TabLayout() {
       />
 
       <Tabs.Screen
-        name="Carpool/createRide"
+        name="chooseRide"
         options={{
           title: "New Ride",
           tabBarIcon: ({ color, focused }) => (
@@ -162,8 +171,9 @@ export default function TabLayout() {
       />
 
       <Tabs.Screen
-        name="temp"
+        name="Carpool/createRide"
         options={{
+          title: "NewRide",
           href: null,
         }}
       />

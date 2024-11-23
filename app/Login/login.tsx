@@ -50,31 +50,6 @@ export default function LoginScreen(): JSX.Element {
 
         <StatusBar barStyle="light-content" translucent backgroundColor="transparent" />
 
-        {Platform.OS === "ios" || Platform.OS === "android" ? (
-          // <Video
-          //   source={require('../../assets/images/bg_video.mp4')}
-          //   rate={1.0}
-          //   volume={1.0}
-          //   resizeMode={ResizeMode.COVER}
-          //   isMuted = {true}
-          //   isLooping
-          //   shouldPlay
-          //   style={styles.backgroundVideo}
-          //   onError={(e) => console.error('Video Error: ', e)}
-          // />
-          <ImageBackground
-          source={require('../../assets/images/bg_video.png')}
-          style={styles.background}
-          resizeMode="cover"
-        />
-        ) : (
-          <ImageBackground
-            source={require('../../assets/images/bg_video.png')}
-            style={styles.background}
-            resizeMode="cover"
-          />
-        )}
-
 
         {/* <ImageBackground
       source={require("../../assets/images/bg_video.png")}

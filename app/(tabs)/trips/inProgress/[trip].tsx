@@ -7,7 +7,7 @@ import {
   ScrollView,
   TextInput,
 } from "react-native";
-import { useQuery, useLazyQuery } from "@apollo/client";
+import { useQuery, useLazyQuery, useMutation } from "@apollo/client";
 import { GET_USER, GET_VEHICLE } from "@/graphql/user/queries";
 import { GET_CARPOOL_WITH_REQUESTS } from "@/graphql/carpool/queries";
 import { Spinner } from "@ui-kitten/components";
@@ -24,7 +24,6 @@ import ShareFakeLocationButton from "@/components/rideInProgress/shareFakeLocati
 import { useLocationSubscription } from "@/hooks/map/useGetLocation";
 import DriverMapView from "@/components/rideInProgress/driverMapView";
 import RequestMapView from "@/components/rideInProgress/requestMapView";
-import { fakeDirections } from "@/utils/fakeRouteData";
 import { formatDate } from "@/utils/currentDate";
 import DriverCardInProgress from "@/components/rideInProgress/driverCardInProgress";
 import GpsTrackingInfo from "@/components/rideInProgress/gpsTrackingInfo";
@@ -37,14 +36,18 @@ import { haversineDistance } from "@/utils/distance";
 import { useCarpoolProximity } from "@/hooks/map/detectIfDriverIsClose";
 import { useRealtimeDirections } from "@/hooks/map/useRealtimeDirections";
 import { useTheme } from "@/contexts/ThemeContext";
+import { SEND_NOTIFICATION_INFO } from "@/graphql/map/queries";
 
 const CarpoolScreen: React.FC = () => {
+  const currentUser = auth.currentUser;
   const [error, setError] = useState<string | null>(null);
   const [driverData, setDriverData] = useState<User | null>(null);
   const [vehicleData, setVehicleData] = useState<Vehicle | null>(null);
   const [carpoolData, setCarpoolData] = useState<CarpoolWithRequests | null>(
     null
   );
+  const [sendNotificationInfo] = useMutation(SEND_NOTIFICATION_INFO);
+  const isDriver = carpoolData?.driverId === currentUser?.uid;
 
   const processedRequestsRef = useRef<string | null>(null);
 
@@ -89,6 +92,73 @@ const CarpoolScreen: React.FC = () => {
     setIsTripCompleted(true);
   };
 
+  useEffect(() => {
+    if (isDriver && hasStartedSharingLocation && isLeaving) {
+      sendNotificationInfo({
+        variables: {
+          carpoolId: tripId,
+          notificationType: "LEAVING",
+          lat: driverLocation?.latitude,
+          lon: driverLocation?.longitude,
+          nextStop: nextStop
+            ? { address: nextStop.startAddress, requestId: nextStop.id }
+            : null,
+          timeToNextStop: timeToNextStop || "",
+          timeUntilNextStop: totalPredictedTime || "",
+          isFinalDestination: false,
+        },
+      }).catch((err) =>
+        console.error("Error sending start notification:", err)
+      );
+    }
+  }, [
+    hasStartedSharingLocation,
+    isLeaving,
+    nextStop,
+  ]);
+
+  useEffect(() => {
+    if (
+      isDriver &&
+      nextStop?.startAddress &&
+      nextStop?.id &&
+      driverLocation?.latitude &&
+      driverLocation?.longitude
+    ) {
+      sendNotificationInfo({
+        variables: {
+          carpoolId: tripId,
+          notificationType: "NEAR_STOP",
+          lat: driverLocation?.latitude,
+          lon: driverLocation?.longitude,
+          nextStop: { address: nextStop.startAddress, requestId: nextStop.id },
+          timeToNextStop: timeToNextStop || "",
+          timeUntilNextStop: totalPredictedTime || "",
+          isFinalDestination: false,
+        },
+      }).catch((err) =>
+        console.error("Error sending next stop notification:", err)
+      );
+    }
+  }, [isDriver, nextStop, driverLocation]);
+
+  useEffect(() => {
+    if (isDriver && isTripCompleted) {
+      sendNotificationInfo({
+        variables: {
+          carpoolId: tripId,
+          notificationType: "FINAL_DESTINATION",
+          lat: driverLocation?.latitude,
+          lon: driverLocation?.longitude,
+          nextStop: carpoolData?.endAddress,
+          timeToNextStop: "0",
+          timeUntilNextStop: "0",
+          isFinalDestination: true,
+        },
+      }).catch((err) => console.error("Error sending end notification:", err));
+    }
+  }, [isDriver, isTripCompleted, driverLocation]);
+
   useCarpoolProximity({
     requests: sortedRequests,
     endingLat: carpoolData?.endLat ?? 0,
@@ -103,7 +173,6 @@ const CarpoolScreen: React.FC = () => {
     }
   }, [sortedRequests]);
 
-  const currentUser = auth.currentUser;
   const tripId = useLocalSearchParams().trip;
 
   const {
@@ -414,7 +483,11 @@ const CarpoolScreen: React.FC = () => {
           }}
         >
           <Text
-            style={{ fontSize: 20, fontFamily: "Comfortaa", color: currentColors.icon }}
+            style={{
+              fontSize: 20,
+              fontFamily: "Comfortaa",
+              color: currentColors.icon,
+            }}
           >
             {date}
           </Text>
@@ -432,7 +505,9 @@ const CarpoolScreen: React.FC = () => {
             }}
           >
             <Image source={require("@/assets/images/processing-icon.png")} />
-            <Text style={{ color: currentColors.text, marginLeft: 3 }}>Processing</Text>
+            <Text style={{ color: currentColors.text, marginLeft: 3 }}>
+              Processing
+            </Text>
           </View>
         </View>
         <View style={{ paddingHorizontal: 15, marginTop: 20 }}>
