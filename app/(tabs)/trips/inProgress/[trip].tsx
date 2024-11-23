@@ -28,7 +28,7 @@ import { fakeDirections } from "@/utils/fakeRouteData";
 import { formatDate } from "@/utils/currentDate";
 import DriverCardInProgress from "@/components/rideInProgress/driverCardInProgress";
 import GpsTrackingInfo from "@/components/rideInProgress/gpsTrackingInfo";
-import TimeCard from "@/components/rideInProgress/driveTime";
+import TimeCard from "@/components/cards/timeCard";
 import LocationCard from "@/components/rideInProgress/carpoolAddress";
 import RequestCard from "@/components/rideInProgress/carpoolRequest";
 import ReviewInfo from "@/components/rideInProgress/reviewInfo";
@@ -37,6 +37,8 @@ import { haversineDistance } from "@/utils/distance";
 import { useCarpoolProximity } from "@/hooks/map/detectIfDriverIsClose";
 import { useRealtimeDirections } from "@/hooks/map/useRealtimeDirections";
 import { useTheme } from "@/contexts/ThemeContext";
+import ClockIcon from "@/assets/images/whiteClock.svg";
+import DriverInfo from "@/components/cards/driverCard";
 
 const CarpoolScreen: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
@@ -414,30 +416,41 @@ const CarpoolScreen: React.FC = () => {
           }}
         >
           <Text
-            style={{ fontSize: 20, fontFamily: "Comfortaa", color: currentColors.icon }}
+            style={{
+              fontSize: 20,
+              fontFamily: "Comfortaa",
+              color: currentColors.icon,
+            }}
           >
             {date}
           </Text>
           <View
             style={{
-              width: 110,
               backgroundColor: "#35BA00",
-              marginRight: 20,
               borderRadius: 16,
+              paddingHorizontal: 10,
+              paddingVertical: 5,
               flexDirection: "row",
               alignItems: "center",
-              justifyContent: "center",
-              paddingHorizontal: 10,
-              paddingVertical: 7,
+              marginRight: 20,
             }}
           >
-            <Image source={require("@/assets/images/processing-icon.png")} />
-            <Text style={{ color: currentColors.text, marginLeft: 3 }}>Processing</Text>
+            <ClockIcon width={16} height={16} style={{ marginRight: 5 }} />
+            <Text
+              style={{
+                fontSize: 10,
+                fontFamily: "Comfortaa",
+                fontWeight: "700",
+                color: "#FFFFFF",
+              }}
+            >
+              Processing
+            </Text>
           </View>
         </View>
         <View style={{ paddingHorizontal: 15, marginTop: 20 }}>
           {driverData && vehicleData && carpoolData && (
-            <DriverCardInProgress
+            <DriverInfo
               driverData={driverData}
               vehicleData={vehicleData}
               carpoolData={carpoolData}
@@ -488,8 +501,8 @@ const CarpoolScreen: React.FC = () => {
         <View style={{ paddingHorizontal: 15, marginBottom: 15 }}>
           <GpsTrackingInfo />
         </View>
-        <View style={{ paddingHorizontal: 15, marginBottom: 15 }}>
-          <TimeCard startTime="8:30" endTime="9:32" />
+        <View style={{ padding: 20 }}>
+          <TimeCard startTime="08: 30 AM" endTime="09: 32 AM" />
         </View>
         <View style={{ paddingHorizontal: 15, marginBottom: 15 }}>
           {carpoolData && <LocationCard carpoolData={carpoolData} />}

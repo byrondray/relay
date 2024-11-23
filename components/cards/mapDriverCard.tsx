@@ -1,5 +1,12 @@
 import React from "react";
-import { View, Text, TouchableOpacity, Platform, Linking } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  Platform,
+  Linking,
+  Image,
+} from "react-native";
 import LikeIcon from "@/assets/images/heart.svg";
 import ClockIcon from "@/assets/images/whiteClock.svg";
 import DriverIcon from "@/assets/images/drives.svg";
@@ -16,6 +23,7 @@ interface ScheduleActiveCardProps {
   id: string;
   driverName: string;
   driveCount: number;
+  driverImage: string | null | undefined;
   likes: number;
   date: Date;
   duration: string;
@@ -50,6 +58,7 @@ const MapDriverCard = ({
   id,
   driverName,
   driveCount,
+  driverImage,
   likes,
   date,
   duration,
@@ -124,7 +133,12 @@ const MapDriverCard = ({
           </Text>
         </TouchableOpacity>
       </View>
-
+      <View style={{ alignItems: "center" }}>
+        <Image
+          source={{ uri: driverImage || undefined }}
+          style={{ width: 100, height: 100, borderRadius: 100 }}
+        />
+      </View>
       <View
         style={{
           flexDirection: "row",
@@ -211,7 +225,7 @@ const MapDriverCard = ({
         <Text
           style={{
             fontSize: 12,
-            fontFamily: "Comfortaa",
+            fontFamily: "Comfortaa-Bold",
             fontWeight: "700",
             color: "#666666",
           }}

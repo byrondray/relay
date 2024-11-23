@@ -3,20 +3,18 @@ import { View, Text, Image, TouchableOpacity } from "react-native";
 import MessageCircle from "@/assets/images/message-circle.svg";
 import HeartIcon from "@/assets/images/heart.svg";
 import { useTheme } from "@/contexts/ThemeContext"; // Importing useTheme
-
-interface DriverInfoProps {
-  driverImage: string;
-  driverName: string;
-  carPlate: string;
-  vehicleModel: string;
-}
+import { User, Vehicle, CarpoolWithRequests } from "@/graphql/generated";
+import { auth } from "@/firebaseConfig"; // Firebase for checking current user
 
 const DriverInfo = ({
-  driverImage,
-  driverName,
-  carPlate,
-  vehicleModel,
-}: DriverInfoProps) => {
+  driverData,
+  vehicleData,
+  carpoolData,
+}: {
+  driverData: User;
+  vehicleData: Vehicle;
+  carpoolData: CarpoolWithRequests;
+}) => {
   const randomLikes = Math.floor(Math.random() * (750 - 50 + 1)) + 50;
   const { currentColors } = useTheme(); // Accessing theme colors
 
@@ -24,20 +22,32 @@ const DriverInfo = ({
     <View
       style={{
         flexDirection: "row",
-        alignItems: "flex-start",
-        paddingVertical: 20,
-        paddingLeft: 0,
+        alignItems: "center",
+        justifyContent: "space-between",
+        height: 200,
+        backgroundColor: currentColors.background,
+        borderRadius: 12,
+        shadowColor: currentColors.text,
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+        elevation: 4,
+        paddingHorizontal: 20,
+        width: "100%",
       }}
     >
-      <View style={{ alignItems: "center", marginRight: 20 }}>
-        <Image
-          source={{ uri: driverImage }}
-          style={{
-            width: 60,
-            height: 60,
-            borderRadius: 30,
-          }}
-        />
+      {/* Driver Image */}
+      <View style={{ alignItems: "center", marginRight: 20, marginBottom: 50 }}>
+        {driverData?.imageUrl && (
+          <Image
+            source={{ uri: driverData.imageUrl }}
+            style={{
+              width: 60,
+              height: 60,
+              borderRadius: 30,
+            }}
+          />
+        )}
 
         <View
           style={{
@@ -52,7 +62,7 @@ const DriverInfo = ({
               fontSize: 12,
               fontWeight: "500",
               color: "#FF6A00",
-              fontFamily: "Comfortaa",
+              fontFamily: "Comfortaa-Bold",
             }}
           >
             {randomLikes} likes
@@ -60,6 +70,7 @@ const DriverInfo = ({
         </View>
       </View>
 
+      {/* Driver Info */}
       <View style={{ flex: 1 }}>
         <Text
           style={{
@@ -77,17 +88,18 @@ const DriverInfo = ({
             fontWeight: "700",
             marginBottom: 5,
             color: currentColors.text, // Using theme color
-            fontFamily: "Comfortaa",
+            fontFamily: "Comfortaa-Bold",
           }}
         >
-          {driverName}
+          {driverData?.firstName[0].toUpperCase()}
+          {driverData?.firstName.slice(1)} {driverData?.lastName}
         </Text>
 
         <Text
           style={{
             fontSize: 12,
             fontWeight: "bold",
-            color: currentColors.placeholder, // Using theme color
+            color: "#8F9BB3", // Using theme color
             fontFamily: "Comfortaa",
           }}
         >
@@ -99,17 +111,17 @@ const DriverInfo = ({
             fontWeight: "700",
             marginBottom: 5,
             color: currentColors.text, // Using theme color
-            fontFamily: "Comfortaa",
+            fontFamily: "Comfortaa-Bold",
           }}
         >
-          {carPlate}
+          {vehicleData?.licensePlate}
         </Text>
 
         <Text
           style={{
             fontSize: 12,
             fontWeight: "bold",
-            color: currentColors.text, // Using theme color
+            color: "#8F9BB3", // Using theme color
             fontFamily: "Comfortaa",
           }}
         >
@@ -120,29 +132,31 @@ const DriverInfo = ({
             fontSize: 17,
             fontWeight: "700",
             color: currentColors.text, // Using theme color
-            fontFamily: "Comfortaa",
+            fontFamily: "Comfortaa-Bold",
           }}
         >
-          {vehicleModel}
+          {vehicleData?.model}
         </Text>
       </View>
 
-      <TouchableOpacity
-        style={{
-          width: 40,
-          height: 40,
-          backgroundColor: currentColors.background,
-          borderRadius: 26,
-          justifyContent: "center",
-          alignItems: "center",
-          padding: 10,
-        }}
-        onPress={() => {
-          console.log("Button Pressed");
-        }}
-      >
-        <MessageCircle width={24} height={24} />
-      </TouchableOpacity>
+      {driverData?.id !== auth.currentUser?.uid && (
+        <TouchableOpacity
+          style={{
+            width: 40,
+            height: 40,
+            backgroundColor: "#FB812A",
+            borderRadius: 26,
+            justifyContent: "center",
+            alignItems: "center",
+            padding: 10,
+          }}
+          onPress={() => {
+            console.log("Message button pressed");
+          }}
+        >
+          <MessageCircle width={24} height={24} />
+        </TouchableOpacity>
+      )}
     </View>
   );
 };
