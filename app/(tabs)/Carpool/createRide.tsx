@@ -463,7 +463,7 @@ const CreateRide = () => {
     }
   };
 
-  const textColor = currentColors.placeholder;
+  const textColor = currentColors.text;
 
   return (
     <KeyboardAvoidingView
@@ -677,25 +677,7 @@ const CreateRide = () => {
             setSelectedGroupIndex={setSelectedGroupIndex}
           />
 
-          <Text
-            style={[
-              {
-                color: "#8F9BB3",
-                textAlign: "left",
-                marginTop: 5,
-                marginBottom: 5,
-                fontFamily: "Comfortaa",
-              },
-              { color: currentColors.text },
-            ]}
-          >
-            Select the request to match
-          </Text>
           <View style={{ width: "100%", marginBottom: 40 }}>
-            <CarpoolPickerBar
-              selectedWaypoints={selectedWaypoints}
-              sortedRequests={requests}
-            />
             <VehicleDetailsPicker
               selectedVehicleIndex={selectedVehicleIndex}
               selectedSeatsIndex={selectedSeatsIndex}
@@ -723,15 +705,6 @@ const CreateRide = () => {
               areCoordinatesEqual={areCoordinatesEqual}
               setSelectedWaypoints={setSelectedWaypoints}
             />
-            <WaypointSelector
-              requests={requests}
-              selectedWaypoints={selectedWaypoints}
-              seatsAvailable={seatsLeft}
-              setSelectedWaypoints={setSelectedWaypoints}
-              vehicles={vehicles}
-              selectedVehicleIndex={selectedVehicleIndex}
-              selectedChildren={selectedChildren}
-            />
             <Text
               style={[
                 {
@@ -745,6 +718,20 @@ const CreateRide = () => {
             >
               You choose the below passenger(s)
             </Text>
+            <WaypointSelector
+              requests={requests}
+              selectedWaypoints={selectedWaypoints}
+              seatsAvailable={seatsLeft}
+              setSelectedWaypoints={setSelectedWaypoints}
+              vehicles={vehicles}
+              selectedVehicleIndex={selectedVehicleIndex}
+              selectedChildren={selectedChildren}
+            />
+            <CarpoolPickerBar
+              selectedWaypoints={selectedWaypoints}
+              sortedRequests={requests}
+            />
+
             <PricingCheckbox
               voluntaryChecked={voluntaryChecked}
               shareCostChecked={shareCostChecked}
