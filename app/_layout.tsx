@@ -31,11 +31,11 @@ import { ThemeProvider, useTheme } from "@/contexts/ThemeContext";
 export default function RootLayout() {
   const [fontsLoaded] = useFonts({
     Comfortaa: require("@/assets/fonts/Comfortaa-VariableFont_wght.ttf"),
-    // ComfortaaLight: require("../../assets/fonts/Comfortaa-Light.ttf"),
-    // ComfortaaRegular: require("../../assets/fonts/Comfortaa-Regular.ttf"),
-    // ComfortaaMedium: require("../../assets/fonts/Comfortaa-Medium.ttf"),
-    // ComfortaaSemiBold: require("../../assets/fonts/Comfortaa-SemiBold.ttf"),
-    // ComfortaaBold: require("../../assets/fonts/Comfortaa-Bold.ttf"),
+    ComfortaaLight: require("../../assets/fonts/Comfortaa-Light.ttf"),
+    ComfortaaRegular: require("../../assets/fonts/Comfortaa-Regular.ttf"),
+    ComfortaaMedium: require("../../assets/fonts/Comfortaa-Medium.ttf"),
+    ComfortaaSemiBold: require("../../assets/fonts/Comfortaa-SemiBold.ttf"),
+    ComfortaaBold: require("../../assets/fonts/Comfortaa-Bold.ttf"),
   });
   const colorScheme = useColorScheme();
   const isLoading = useFirebaseAuth();
