@@ -17,6 +17,7 @@ import {
 import { Image } from "react-native";
 import { Spinner } from "@ui-kitten/components";
 import { useTheme } from "@/contexts/ThemeContext";
+import { auth } from "@/firebaseConfig";
 
 interface DriverMapViewProps {
   driverLocation: {
@@ -173,7 +174,7 @@ const DriverMapView: React.FC<DriverMapViewProps> = ({
               zIndex={2}
             />
           )}
-          {driverLocation && (
+          {driverLocation && auth.currentUser && carpoolData.driverId === auth.currentUser.uid && (
             <Marker
               coordinate={{
                 latitude: driverLocation.latitude,

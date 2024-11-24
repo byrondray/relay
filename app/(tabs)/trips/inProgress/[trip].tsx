@@ -49,7 +49,9 @@ const CarpoolScreen: React.FC = () => {
     null
   );
   const [sendNotificationInfo] = useMutation(SEND_NOTIFICATION_INFO);
-  const isDriver = carpoolData?.driverId === currentUser?.uid;
+  const isDriver = React.useMemo(() => {
+    return carpoolData?.driverId === currentUser?.uid;
+  }, [carpoolData, currentUser]);
 
   const processedRequestsRef = useRef<string | null>(null);
 
@@ -214,6 +216,9 @@ const CarpoolScreen: React.FC = () => {
       setSortedRequests([]);
       setNextStop(null);
       setIsTripCompleted(false);
+      setDriverLocation(null);
+      setIsLeaving(false);
+      setHasStartedSharingLocation(false);
 
       refetchCarpoolData();
     }

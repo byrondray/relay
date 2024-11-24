@@ -5,6 +5,7 @@ import HeartIcon from "@/assets/images/heart.svg";
 import { useTheme } from "@/contexts/ThemeContext"; // Importing useTheme
 import { User, Vehicle, CarpoolWithRequests } from "@/graphql/generated";
 import { auth } from "@/firebaseConfig"; // Firebase for checking current user
+import { Link, useRouter } from "expo-router";
 
 const DriverInfo = ({
   driverData,
@@ -17,6 +18,7 @@ const DriverInfo = ({
 }) => {
   const randomLikes = Math.floor(Math.random() * (750 - 50 + 1)) + 50;
   const { currentColors } = useTheme(); // Accessing theme colors
+  const router = useRouter();
 
   return (
     <View
@@ -143,22 +145,27 @@ const DriverInfo = ({
       </View>
 
       {driverData?.id !== auth.currentUser?.uid && (
-        <TouchableOpacity
-          style={{
-            width: 40,
-            height: 40,
-            backgroundColor: "#FB812A",
-            borderRadius: 26,
-            justifyContent: "center",
-            alignItems: "center",
-            padding: 10,
+        <Link
+          href={{
+            pathname: "/messages/[userId]",
+            params: { userId: driverData?.id },
           }}
-          onPress={() => {
-            console.log("Message button pressed");
-          }}
+          asChild
         >
-          <MessageCircle width={24} height={24} />
-        </TouchableOpacity>
+          <TouchableOpacity
+            style={{
+              width: 40,
+              height: 40,
+              backgroundColor: "#FB812A",
+              borderRadius: 26,
+              justifyContent: "center",
+              alignItems: "center",
+              padding: 10,
+            }}
+          >
+            <MessageCircle width={24} height={24} />
+          </TouchableOpacity>
+        </Link>
       )}
     </View>
   );

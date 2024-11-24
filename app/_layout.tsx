@@ -45,6 +45,7 @@ export default function RootLayout() {
   const slideAnim = useState(new Animated.Value(-100))[0];
   const user = auth.currentUser;
   const userId = user?.uid;
+  console.log("userId in rootlayout", userId);
 
   LogBox.ignoreAllLogs();
 
@@ -91,7 +92,7 @@ export default function RootLayout() {
         }).start(() => {
           setShowNotification(false);
         });
-      }, 5000); // Show for 5 seconds
+      }, 7000); 
     });
   };
 
