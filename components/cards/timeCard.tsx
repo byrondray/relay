@@ -58,7 +58,7 @@ const TimeCard = ({ startTime, endTime }: TimeCardProps) => {
               fontSize: 8,
               fontFamily: "Comfortaa",
               fontWeight: "700",
-              color: "#666666",
+              color: currentColors.text,
               marginBottom: 5,
             }}
           >
@@ -106,7 +106,7 @@ const TimeCard = ({ startTime, endTime }: TimeCardProps) => {
               fontSize: 8,
               fontFamily: "Comfortaa",
               fontWeight: "700",
-              color: "#666666",
+              color: currentColors.text,
               marginBottom: 5,
             }}
           >
