@@ -14,8 +14,8 @@ function Header() {
       style={[
         styles.headerContainer,
         {
-          borderBottomColor: currentColors.placeholder,
-          backgroundColor: currentColors.placeholder,
+          borderBottomColor: currentColors.background,
+          backgroundColor: currentColors.background,
         },
       ]}
     >
