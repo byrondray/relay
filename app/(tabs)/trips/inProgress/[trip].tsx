@@ -15,6 +15,7 @@ import { auth } from "@/firebaseConfig";
 import { useLocalSearchParams } from "expo-router";
 import {
   CarpoolWithRequests,
+  Child,
   RequestWithParentAndChild,
   User,
   Vehicle,
@@ -25,7 +26,6 @@ import { useLocationSubscription } from "@/hooks/map/useGetLocation";
 import DriverMapView from "@/components/rideInProgress/driverMapView";
 import RequestMapView from "@/components/rideInProgress/requestMapView";
 import { formatDate } from "@/utils/currentDate";
-import DriverCardInProgress from "@/components/rideInProgress/driverCardInProgress";
 import GpsTrackingInfo from "@/components/rideInProgress/gpsTrackingInfo";
 import TimeCard from "@/components/cards/timeCard";
 import LocationCard from "@/components/rideInProgress/carpoolAddress";
@@ -76,46 +76,117 @@ const CarpoolScreen: React.FC = () => {
     (request) => request.parent.id === auth.currentUser?.uid
   );
 
-  const handleStopReached = (stop: RequestWithParentAndChild) => {
+  const handleStopReached = (
+    stop: RequestWithParentAndChild & { timeToNextStop?: string | null }
+  ) => {
     console.log("Stop reached:", stop);
 
-    const nextIndex = currentIndex + 1;
+    sendNotificationInfo({
+      variables: {
+        carpoolId: tripId,
+        notificationType: "NEAR_STOP",
+        lat: stop.startLat,
+        lon: stop.startLon,
+        nextStop: { address: stop.startAddress, requestId: stop.id },
+        timeToNextStop: stop.timeToNextStop || "",
+        timeUntilNextStop: "",
+        isFinalDestination: false,
+      },
+    })
+      .then(() => console.log("NEAR_STOP notification sent."))
+      .catch((err) =>
+        console.error("Error sending NEAR_STOP notification:", err)
+      );
 
-    if (nextIndex < sortedRequests.length) {
-      setCurrentIndex(nextIndex);
-      setNextStop(sortedRequests[nextIndex]);
-    } else {
-      console.log("No more stops left, reaching final destination.");
-      setNextStop(null);
-    }
+    setCurrentIndex((prevIndex) => prevIndex + 1); // Use callback to avoid stale state
   };
 
   const handleTripCompleted = () => {
     console.log("Trip completed!");
+
+    sendNotificationInfo({
+      variables: {
+        carpoolId: tripId,
+        notificationType: "FINAL_DESTINATION",
+        lat: carpoolData?.endLat || 0,
+        lon: carpoolData?.endLon || 0,
+        nextStop: null,
+        timeToNextStop: "0",
+        timeUntilNextStop: "0",
+        isFinalDestination: true,
+      },
+    })
+      .then(() => console.log("FINAL_DESTINATION notification sent."))
+      .catch((err) =>
+        console.error("Error sending FINAL_DESTINATION notification:", err)
+      );
+
     setNextStop(null);
     setIsTripCompleted(true);
   };
 
-  useEffect(() => {
-    if (isDriver && hasStartedSharingLocation && isLeaving) {
+  const sendLeavingNotification = useCallback(() => {
+    if (isDriver && hasStartedSharingLocation && isLeaving && driverLocation) {
+      console.log("Sending LEAVING notification with nextStop:", nextStop);
       sendNotificationInfo({
         variables: {
           carpoolId: tripId,
           notificationType: "LEAVING",
-          lat: driverLocation?.latitude,
-          lon: driverLocation?.longitude,
+          lat: driverLocation.latitude,
+          lon: driverLocation.longitude,
           nextStop: nextStop
             ? { address: nextStop.startAddress, requestId: nextStop.id }
             : null,
-          timeToNextStop: timeToNextStop || "",
+          timeToNextStop: nextStop?.timeToNextStop || "",
           timeUntilNextStop: totalPredictedTime || "",
           isFinalDestination: false,
         },
-      }).catch((err) =>
-        console.error("Error sending start notification:", err)
-      );
+      })
+        .then(() => console.log("LEAVING notification sent."))
+        .catch((err) =>
+          console.error("Error sending LEAVING notification:", err)
+        );
     }
-  }, [hasStartedSharingLocation, isLeaving, nextStop]);
+  }, [
+    isDriver,
+    hasStartedSharingLocation,
+    isLeaving,
+    driverLocation,
+    nextStop,
+  ]);
+
+  useEffect(() => {
+    if (currentIndex < sortedRequests.length) {
+      setNextStop(sortedRequests[currentIndex]);
+    } else if (carpoolData?.endLat && carpoolData?.endLon) {
+      setNextStop({
+        id: "final-destination",
+        startAddress: carpoolData.endAddress ?? "Final Destination",
+        startLat: carpoolData.endLat,
+        startLon: carpoolData.endLon,
+        child: {} as Child,
+        parent: {} as User,
+        pickupTime: "",
+        timeToNextStop: null,
+      });
+      console.log("Next stop set to Final Destination");
+    } else {
+      setNextStop(null);
+      console.log("No more stops left.");
+    }
+  }, [currentIndex, sortedRequests, carpoolData]);
+
+  useEffect(() => {
+    if (isDriver && hasStartedSharingLocation && isLeaving && driverLocation) {
+      sendLeavingNotification();
+    }
+  }, [
+    isDriver,
+    hasStartedSharingLocation,
+    isLeaving,
+    driverLocation,
+    sendLeavingNotification,
+  ]);
 
   useEffect(() => {
     if (
@@ -125,6 +196,7 @@ const CarpoolScreen: React.FC = () => {
       driverLocation?.latitude &&
       driverLocation?.longitude
     ) {
+      console.log("Sending next stop notification:", nextStop);
       sendNotificationInfo({
         variables: {
           carpoolId: tripId,
@@ -136,11 +208,13 @@ const CarpoolScreen: React.FC = () => {
           timeUntilNextStop: totalPredictedTime || "",
           isFinalDestination: false,
         },
-      }).catch((err) =>
-        console.error("Error sending next stop notification:", err)
-      );
+      })
+        .then(() => console.log("NEAR_STOP notification sent."))
+        .catch((err) =>
+          console.error("Error sending next stop notification:", err)
+        );
     }
-  }, [isDriver, nextStop, driverLocation]);
+  }, [isDriver, nextStop]);
 
   useEffect(() => {
     if (isDriver && isTripCompleted) {
@@ -155,7 +229,9 @@ const CarpoolScreen: React.FC = () => {
           timeUntilNextStop: "0",
           isFinalDestination: true,
         },
-      }).catch((err) => console.error("Error sending end notification:", err));
+      })
+        .then(() => console.log("FINAL notification sent."))
+        .catch((err) => console.error("Error sending end notification:", err));
     }
   }, [isDriver, isTripCompleted, driverLocation]);
 
@@ -163,8 +239,16 @@ const CarpoolScreen: React.FC = () => {
     requests: sortedRequests,
     endingLat: carpoolData?.endLat ?? 0,
     endingLon: carpoolData?.endLon ?? 0,
-    onStopReached: handleStopReached,
-    onTripCompleted: handleTripCompleted,
+    currentIndex,
+    onStopReached: (stop) => {
+      console.log("Stop reached:", stop);
+      setCurrentIndex((prev) => prev + 1); // Move to the next stop
+    },
+    onTripCompleted: () => {
+      console.log("Trip completed!");
+      setIsTripCompleted(true); // Mark trip as complete
+    },
+    driverLocation,
   });
 
   useEffect(() => {
@@ -186,7 +270,6 @@ const CarpoolScreen: React.FC = () => {
     onCompleted: (data) => {
       if (data?.getCarpoolWithRequests) {
         const carpool = data.getCarpoolWithRequests;
-        console.log("Carpool data:", carpool);
         setCarpoolData(carpool);
 
         if (carpool.requests) {
@@ -258,16 +341,11 @@ const CarpoolScreen: React.FC = () => {
     carpoolRequests: RequestWithParentAndChild[],
     startingLatLng: LatLng
   ): RequestWithParentAndChild[] => {
-    console.log("Sorting requests with startingLatLng:", startingLatLng);
-
     const uniqueRequests = Array.from(
       new Map(carpoolRequests.map((request) => [request.id, request])).values()
     );
 
     return uniqueRequests.sort((a, b) => {
-      console.log("Request A:", a.startLat, a.startLon);
-      console.log("Request B:", b.startLat, b.startLon);
-
       const distanceA = haversineDistance(
         { lat: startingLatLng.latitude, lon: startingLatLng.longitude },
         { lat: a.startLat, lon: a.startLon }
@@ -277,7 +355,6 @@ const CarpoolScreen: React.FC = () => {
         { lat: b.startLat, lon: b.startLon }
       );
 
-      console.log(`Distance A: ${distanceA}, Distance B: ${distanceB}`);
       return distanceA - distanceB;
     });
   };
@@ -336,16 +413,32 @@ const CarpoolScreen: React.FC = () => {
     : { data: null, error: null };
 
   useEffect(() => {
+    console.log("Location subscription data:", locationData);
+
     if (locationData && locationData.locationReceived) {
       const { lat, lon } = locationData.locationReceived;
 
       setDriverLocation({ latitude: lat, longitude: lon });
 
       if (!hasStartedSharingLocation) {
+        console.log("Starting location sharing...");
         setHasStartedSharingLocation(true);
         setIsLeaving(true);
-      } else {
-        setIsLeaving(false);
+
+        setTimeout(() => {
+          console.log("Resetting isLeaving...");
+          setIsLeaving(false);
+        }, 5000); // Reset after 5 seconds
+      }
+    } else if (!locationData) {
+      console.warn("Using fallback driver location...");
+      if (!hasStartedSharingLocation && !isLeaving) {
+        setHasStartedSharingLocation(true);
+        setIsLeaving(true);
+
+        setTimeout(() => {
+          setIsLeaving(false);
+        }, 5000); // Reset after 5 seconds
       }
     }
   }, [locationData, hasStartedSharingLocation]);

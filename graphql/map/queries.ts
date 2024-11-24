@@ -109,3 +109,9 @@ export const SEND_NOTIFICATION_INFO = gql`
     )
   }
 `;
+
+export const RESET_NOTIFICATION_TRACKING = gql`
+  mutation ResetNotificationTracking {
+    resetNotificationTracking
+  }
+`;

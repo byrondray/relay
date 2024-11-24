@@ -92,7 +92,7 @@ export default function RootLayout() {
         }).start(() => {
           setShowNotification(false);
         });
-      }, 7000); 
+      }, 10000); 
     });
   };
 

@@ -9,7 +9,6 @@ interface TimeCardProps {
 }
 
 const TimeCard = ({ startTime, endTime }: TimeCardProps) => {
-  console.log(startTime, endTime);
   const { currentColors } = useTheme();
 
   const splitStartTime = startTime.split(" ");

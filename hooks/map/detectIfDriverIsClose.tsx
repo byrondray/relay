@@ -1,94 +1,123 @@
-import { useEffect } from "react";
-import * as Location from "expo-location";
+import { useEffect, useRef } from "react";
 import { RequestWithParentAndChild } from "@/graphql/generated";
 
 interface UseCarpoolProximityArgs {
   requests: RequestWithParentAndChild[];
   endingLat: number;
   endingLon: number;
+  currentIndex: number;
   onStopReached: (stop: RequestWithParentAndChild) => void;
   onTripCompleted: () => void;
+  driverLocation?: { latitude: number; longitude: number } | null;
 }
 
 export const useCarpoolProximity = ({
   requests,
   endingLat,
   endingLon,
+  currentIndex,
   onStopReached,
   onTripCompleted,
+  driverLocation,
 }: UseCarpoolProximityArgs) => {
+  const intervalRef = useRef<number | null>(null);
+  const lastCheckedLocationRef = useRef<{
+    latitude: number;
+    longitude: number;
+  } | null>(null);
+
   useEffect(() => {
-    let currentIndex = 0;
-    let subscription: Location.LocationSubscription | null = null;
+    console.log("useCarpoolProximity triggered:", {
+      currentIndex,
+      driverLocation,
+    });
 
-    const monitorNextStop = async () => {
-      if (currentIndex < requests.length) {
-        const currentStop = requests[currentIndex];
-        subscription = await monitorProximity(
-          currentStop.startLat,
-          currentStop.startLon,
-          () => {
-            console.log("Reached stop:", currentStop);
-            onStopReached(currentStop);
-            currentIndex++;
-            monitorNextStop();
-          }
-        );
-      } else {
-        subscription = await monitorProximity(endingLat, endingLon, () => {
-          console.log("Arrived at the final destination!");
-          onTripCompleted();
-        });
+    if (!driverLocation) {
+      console.log(
+        "Driver location not available. Skipping proximity monitoring."
+      );
+      return;
+    }
+
+    const currentStop =
+      currentIndex < requests.length ? requests[currentIndex] : null;
+    const targetLat = currentStop?.startLat || endingLat;
+    const targetLon = currentStop?.startLon || endingLon;
+
+    const proximityCheck = () => {
+      const { latitude, longitude } = driverLocation;
+
+      // Skip if the driver location hasn't significantly changed
+      if (
+        lastCheckedLocationRef.current &&
+        haversineDistance(
+          {
+            lat: lastCheckedLocationRef.current.latitude,
+            lon: lastCheckedLocationRef.current.longitude,
+          },
+          { lat: latitude, lon: longitude }
+        ) < 20
+      ) {
+        return;
       }
-    };
 
-    monitorNextStop();
-
-    return () => {
-      if (subscription) subscription.remove();
-    };
-  }, [requests, endingLat, endingLon, onStopReached, onTripCompleted]);
-};
-
-const monitorProximity = async (
-  targetLat: number,
-  targetLon: number,
-  onArrive: () => void
-): Promise<Location.LocationSubscription> => {
-  const distanceThreshold = 50;
-
-  const subscription = await Location.watchPositionAsync(
-    {
-      accuracy: Location.Accuracy.High,
-      timeInterval: 1000,
-      distanceInterval: 1,
-    },
-    (location) => {
-      const { latitude, longitude } = location.coords;
+      lastCheckedLocationRef.current = { latitude, longitude }; // Update last checked location
 
       const distance = haversineDistance(
         { lat: latitude, lon: longitude },
         { lat: targetLat, lon: targetLon }
       );
 
-      if (distance <= distanceThreshold) {
-        console.log("User is within 50 meters of the target location!");
-        onArrive();
-        subscription.remove();
-      }
-    }
-  );
+      console.log(`Distance to target (${targetLat}, ${targetLon}):`, distance);
 
-  return subscription;
+      if (distance <= 150) {
+        if (currentStop) {
+          console.log("Stop reached:", currentStop);
+          onStopReached(currentStop);
+        } else {
+          console.log("Final destination reached.");
+          onTripCompleted();
+        }
+        clearMonitoring(); // Stop monitoring once target is reached
+      }
+    };
+
+    const clearMonitoring = () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        console.log("Clearing interval with ID:", intervalRef.current);
+        intervalRef.current = null;
+      }
+    };
+
+    // Start monitoring
+    if (!intervalRef.current) {
+      intervalRef.current = window.setInterval(proximityCheck, 1000);
+      console.log("Interval created with ID:", intervalRef.current);
+    }
+
+    return () => {
+      clearMonitoring(); // Cleanup on unmount or effect re-run
+    };
+  }, [
+    currentIndex,
+    driverLocation,
+    requests,
+    endingLat,
+    endingLon,
+    onStopReached,
+    onTripCompleted,
+  ]);
 };
 
+// Haversine Distance Calculation
 const haversineDistance = (
   coords1: { lat: number; lon: number },
   coords2: { lat: number; lon: number }
 ): number => {
   const toRad = (value: number) => (value * Math.PI) / 180;
 
-  const R = 6371;
+  const R = 6371; // Earth's radius in km
   const dLat = toRad(coords2.lat - coords1.lat);
   const dLon = toRad(coords2.lon - coords1.lon);
   const lat1 = toRad(coords1.lat);
@@ -96,9 +125,7 @@ const haversineDistance = (
 
   const a =
     Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-    Math.sin(dLon / 2) * Math.sin(dLon / 2) * Math.cos(lat1) * Math.cos(lat2);
+    Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-  const distance = R * c;
-
-  return distance * 1000;
+  return R * c * 1000; // Convert to meters
 };
