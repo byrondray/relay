@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, Image, TouchableOpacity } from "react-native";
 import MessageCircle from "@/assets/images/message-circle.svg";
 import HeartIcon from "@/assets/images/heart.svg";
@@ -16,8 +16,13 @@ const DriverInfo = ({
   vehicleData: Vehicle;
   carpoolData: CarpoolWithRequests;
 }) => {
-  const randomLikes = Math.floor(Math.random() * (750 - 50 + 1)) + 50;
-  const { currentColors } = useTheme(); // Accessing theme colors
+  const [randomLikes, setRandomLikes] = useState(0);
+
+  useEffect(() => {
+    setRandomLikes(Math.floor(Math.random() * (750 - 50 + 1)) + 50);
+  }, []);
+
+  const { currentColors } = useTheme();
   const router = useRouter();
 
   return (

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { View, Text, Image } from "react-native";
 import { RequestWithParentAndChild } from "@/graphql/generated";
 import TimeCard from "../cards/timeCard";
@@ -18,8 +18,12 @@ const RequestCard = ({
   const { currentColors } = useTheme();
   let code;
   if (isCurrentUser) {
-    const randomNumber = Math.floor(100000 + Math.random() * 900000).toString();
-    code = randomNumber.split("");
+    code = useMemo(() => {
+      const randomNumber = Math.floor(
+        100000 + Math.random() * 900000
+      ).toString();
+      return randomNumber.split("");
+    }, []);
   }
 
   return (
@@ -111,7 +115,7 @@ const RequestCard = ({
               fontSize: 14,
               marginBottom: 8,
               fontFamily: "Comfortaa",
-              color: currentColors.placeholder,
+              color: currentColors.text,
             }}
           >
             Your security matching code
@@ -140,7 +144,7 @@ const RequestCard = ({
                   style={{
                     fontSize: 16,
                     fontFamily: "Comfortaa",
-                    color: currentColors.text,
+                    color: "#FFFFFF",
                   }}
                 >
                   {digit}
