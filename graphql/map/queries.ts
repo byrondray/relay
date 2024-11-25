@@ -66,6 +66,7 @@ export const LOCATION_RECEIVED_SUBSCRIPTION = gql`
     locationReceived(recipientId: $recipientId) {
       senderId
       carpoolId
+      driverId
       lat
       lon
       timestamp

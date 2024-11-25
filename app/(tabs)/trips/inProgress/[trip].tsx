@@ -49,9 +49,7 @@ const CarpoolScreen: React.FC = () => {
     null
   );
   const [sendNotificationInfo] = useMutation(SEND_NOTIFICATION_INFO);
-  const isDriver = React.useMemo(() => {
-    return carpoolData?.driverId === currentUser?.uid;
-  }, [carpoolData, currentUser]);
+  const [isDriver, setIsDriver] = useState<boolean>(false);
 
   const processedRequestsRef = useRef<string | null>(null);
 
@@ -270,6 +268,11 @@ const CarpoolScreen: React.FC = () => {
     onCompleted: (data) => {
       if (data?.getCarpoolWithRequests) {
         const carpool = data.getCarpoolWithRequests;
+        if (carpool.driverId === currentUser?.uid) {
+          setIsDriver(true);
+        } else {
+          setIsDriver(false);
+        }
         setCarpoolData(carpool);
 
         if (carpool.requests) {
@@ -427,6 +430,15 @@ const CarpoolScreen: React.FC = () => {
     ) {
       const { lat, lon } = locationData.locationReceived;
 
+      // Check if the current user is not the driver
+      if (locationData.locationReceived.senderId !== currentUser?.uid) {
+        console.log("User is not the driver. Setting isDriver to false.");
+        setIsDriver(false); // Update isDriver to false
+      } else {
+        console.log("User is the driver. Setting isDriver to true.");
+        setIsDriver(true); // Update isDriver to true
+      }
+
       setDriverLocation({ latitude: lat, longitude: lon });
 
       if (!hasStartedSharingLocation) {
@@ -454,6 +466,7 @@ const CarpoolScreen: React.FC = () => {
         currentTripId,
         receivedCarpoolId,
       });
+      setIsDriver(false); // Set isDriver to false in case of mismatch
     }
   }, [locationData, tripId, hasStartedSharingLocation]);
 
