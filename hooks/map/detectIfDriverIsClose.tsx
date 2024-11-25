@@ -27,15 +27,7 @@ export const useCarpoolProximity = ({
   } | null>(null);
 
   useEffect(() => {
-    console.log("useCarpoolProximity triggered:", {
-      currentIndex,
-      driverLocation,
-    });
-
     if (!driverLocation) {
-      console.log(
-        "Driver location not available. Skipping proximity monitoring."
-      );
       return;
     }
 
@@ -68,14 +60,10 @@ export const useCarpoolProximity = ({
         { lat: targetLat, lon: targetLon }
       );
 
-      console.log(`Distance to target (${targetLat}, ${targetLon}):`, distance);
-
       if (distance <= 150) {
         if (currentStop) {
-          console.log("Stop reached:", currentStop);
           onStopReached(currentStop);
         } else {
-          console.log("Final destination reached.");
           onTripCompleted();
         }
         clearMonitoring(); // Stop monitoring once target is reached
@@ -85,7 +73,6 @@ export const useCarpoolProximity = ({
     const clearMonitoring = () => {
       if (intervalRef.current) {
         clearInterval(intervalRef.current);
-        console.log("Clearing interval with ID:", intervalRef.current);
         intervalRef.current = null;
       }
     };
@@ -93,7 +80,6 @@ export const useCarpoolProximity = ({
     // Start monitoring
     if (!intervalRef.current) {
       intervalRef.current = window.setInterval(proximityCheck, 1000);
-      console.log("Interval created with ID:", intervalRef.current);
     }
 
     return () => {

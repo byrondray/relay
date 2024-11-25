@@ -415,7 +415,16 @@ const CarpoolScreen: React.FC = () => {
   useEffect(() => {
     console.log("Location subscription data:", locationData);
 
-    if (locationData && locationData.locationReceived) {
+    const receivedCarpoolId = locationData?.locationReceived?.carpoolId?.trim();
+    const currentTripId = Array.isArray(tripId)
+      ? tripId[0].trim()
+      : tripId?.trim();
+
+    if (
+      receivedCarpoolId &&
+      currentTripId &&
+      receivedCarpoolId === currentTripId
+    ) {
       const { lat, lon } = locationData.locationReceived;
 
       setDriverLocation({ latitude: lat, longitude: lon });
@@ -440,8 +449,13 @@ const CarpoolScreen: React.FC = () => {
           setIsLeaving(false);
         }, 5000); // Reset after 5 seconds
       }
+    } else {
+      console.warn("Carpool ID mismatch. Skipping location update.", {
+        currentTripId,
+        receivedCarpoolId,
+      });
     }
-  }, [locationData, hasStartedSharingLocation]);
+  }, [locationData, tripId, hasStartedSharingLocation]);
 
   const {
     polyline,
