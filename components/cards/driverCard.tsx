@@ -16,7 +16,7 @@ const DriverInfo = ({
   carpoolData: CarpoolWithRequests;
 }) => {
   const randomLikes = Math.floor(Math.random() * (750 - 50 + 1)) + 50;
-  const { currentColors } = useTheme(); // Accessing theme colors
+  const { currentColors } = useTheme();
 
   return (
     <View
@@ -26,12 +26,6 @@ const DriverInfo = ({
         justifyContent: "space-between",
         height: 200,
         backgroundColor: currentColors.background,
-        borderRadius: 12,
-        shadowColor: currentColors.text,
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.25,
-        shadowRadius: 4,
-        elevation: 4,
         paddingHorizontal: 20,
         width: "100%",
       }}
