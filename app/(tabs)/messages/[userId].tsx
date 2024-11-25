@@ -139,6 +139,7 @@ export default function MessageScreen() {
       navigation.setParams({ recipientName });
     }, [recipientData, navigation])
   );
+  
   if (recipientLoading || senderLoading) {
     return (
       <View style={styles.spinnerContainer}>
