@@ -32,8 +32,12 @@ function HomeScreen() {
   // const { isLargeText, textScaleFactor } = useTextSize();
 
   return (
-    <View style={[styles.container, { backgroundColor: currentColors.background }]}>
-      <Text style={[styles.heading, { color: currentColors.text }]}>New Ride</Text>
+    <View
+      style={[styles.container, { backgroundColor: currentColors.background }]}
+    >
+      <Text style={[styles.heading, { color: currentColors.text }]}>
+        New Ride
+      </Text>
       <View style={{ marginBottom: 20 }}>
         <TouchableOpacity
           onPress={() => router.push("/(tabs)/Carpool/createRide")}
@@ -41,16 +45,22 @@ function HomeScreen() {
           <View
             style={[
               styles.buttonContainer,
-              { backgroundColor: currentColors.background, borderColor: currentColors.tint },
+              {
+                backgroundColor: currentColors.background,
+                borderColor: currentColors.tint,
+              },
             ]}
           >
             <View style={{ flexDirection: "column", justifyContent: "center" }}>
-              <Text style={[
-                styles.buttonText, 
-                { 
-                  color: currentColors.text, 
-                  fontSize: 20 
-                }]}>
+              <Text
+                style={[
+                  styles.buttonText,
+                  {
+                    color: currentColors.text,
+                    fontSize: 20,
+                  },
+                ]}
+              >
                 I'm a driver
               </Text>
               <Text style={[styles.subText, { color: currentColors.text }]}>
@@ -75,12 +85,15 @@ function HomeScreen() {
           <View
             style={[
               styles.buttonContainer,
-              { backgroundColor: currentColors.background, borderColor: currentColors.tint },
+              {
+                backgroundColor: currentColors.background,
+                borderColor: currentColors.tint,
+              },
             ]}
           >
             <View style={{ flexDirection: "column", justifyContent: "center" }}>
               <Text style={[styles.buttonText, { color: currentColors.text }]}>
-                Looking for a ride for my kid
+                Need a ride for my kid"
               </Text>
               <Text style={[styles.subText, { color: currentColors.text }]}>
                 Notify me when a ride matches

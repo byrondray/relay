@@ -82,10 +82,13 @@ function HomeScreen() {
         </Text>
 
         <View style={styles.content}>
-        <TouchableOpacity
+          <TouchableOpacity
             style={[
               styles.requestButton,
-              { borderColor: currentColors.tint, backgroundColor: currentColors.background },
+              {
+                borderColor: currentColors.tint,
+                backgroundColor: currentColors.background,
+              },
               !hasFilledDriverInfo && styles.disabledButton, // Apply disabled styles conditionally
             ]}
             disabled={!hasFilledDriverInfo} // Disable button if hasFilledDriverInfo is false
@@ -93,10 +96,17 @@ function HomeScreen() {
           >
             <View style={[styles.buttonContent]}>
               <View style={styles.textContainer}>
-                <Text style={[styles.requestButtonText, { color: currentColors.text }]}>
+                <Text
+                  style={[
+                    styles.requestButtonText,
+                    { color: currentColors.text },
+                  ]}
+                >
                   I'm a driver
                 </Text>
-                <Text style={[styles.requestSubText, { color: currentColors.text }]}>
+                <Text
+                  style={[styles.requestSubText, { color: currentColors.text }]}
+                >
                   I'm available to carpool other kids.
                 </Text>
               </View>
@@ -109,7 +119,6 @@ function HomeScreen() {
               />
             </View>
           </TouchableOpacity>
-
 
           {!hasFilledDriverInfo && (
             <>
@@ -151,7 +160,7 @@ function HomeScreen() {
                     { color: currentColors.text },
                   ]}
                 >
-                  Looking for a ride for my kid
+                  Need a ride for my kid"
                 </Text>
                 <Text
                   style={[styles.requestSubText, { color: currentColors.text }]}

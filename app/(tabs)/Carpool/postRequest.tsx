@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import {
   View,
   Text,
@@ -26,7 +26,7 @@ import { CREATE_REQUEST } from "@/graphql/carpool/queries";
 import { CreateRequestInput, Group } from "@/graphql/generated";
 import GroupPicker from "@/components/carpool/groupSelector";
 import { auth } from "@/firebaseConfig";
-import { router } from "expo-router";
+import { router, useFocusEffect } from "expo-router";
 import { useTheme } from "@/contexts/ThemeContext";
 
 const RequestRide = () => {
@@ -79,7 +79,10 @@ const RequestRide = () => {
       }
     },
   });
-  const [createRequest] = useMutation<Request>(CREATE_REQUEST);
+
+  const [createRequest] = useMutation<{ createRequest: Request }>(
+    CREATE_REQUEST
+  );
 
   const handleTimeConfirm = ({
     hours,
@@ -122,10 +125,36 @@ const RequestRide = () => {
         childIds: selectedChildren.map((child) => child),
       };
 
-      await createRequest({ variables: { input } });
+      const { data, errors } = await createRequest({ variables: { input } });
+
+      if (data && data.createRequest) {
+        setStartingAddress("");
+        setEndingAddress("");
+        setStartingLatLon({ lat: 0, lon: 0 });
+        setEndingLatLon({ lat: 0, lon: 0 });
+        setTime("");
+        setDescription("");
+        setSelectedChildren([]);
+        setSelectedGroupIndex(new IndexPath(0));
+        setDate(new Date());
+        router.push({
+          pathname: "/(tabs)",
+          params: { success: "true", type: "request" },
+        });
+      }
+
+      if (errors) {
+        console.error("Error creating request:", errors);
+        setErrorMessage("An error occurred while creating the request.");
+        setSuccessMessage(null);
+        setVisible(true);
+        return;
+      }
+
       setErrorMessage(null);
-      setSuccessMessage("A driver has been found! 🎉");
-      setVisible(true);
+
+      // setSuccessMessage("A driver has been found! 🎉");
+      // setVisible(true);
     } catch (error) {
       console.error("Error creating request:", error);
       setErrorMessage(

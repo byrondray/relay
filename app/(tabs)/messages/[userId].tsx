@@ -17,7 +17,6 @@ import {
   TouchableOpacity,
 } from "react-native";
 import {
-  router,
   useFocusEffect,
   useLocalSearchParams,
   useNavigation,

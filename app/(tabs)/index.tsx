@@ -1,20 +1,30 @@
-import React from "react";
-import { Text, StyleSheet, FlatList, View, ScrollView } from "react-native";
+import React, { useEffect, useState } from "react";
+import {
+  Text,
+  StyleSheet,
+  FlatList,
+  View,
+  ScrollView,
+  Alert,
+} from "react-native";
 import { useQuery } from "@apollo/client";
 import { GET_USER_CARPOOL_WITH_REQUESTS } from "@/graphql/carpool/queries";
 import { Spinner } from "@ui-kitten/components";
 import { auth } from "@/firebaseConfig";
-import { Link, useFocusEffect } from "expo-router";
+import { Link, useFocusEffect, useLocalSearchParams } from "expo-router";
 import { GetUserCarpoolsAndRequestsQuery } from "@/graphql/generated";
 import { useCallback } from "react";
 import MapDriverCard from "@/components/cards/mapDriverCard";
 import ActiveRiderCard from "@/components/cards/activeCard";
 import { useTheme } from "@/contexts/ThemeContext";
-import DriverInfo from "@/components/cards/driverCard";
 
 const CarpoolListScreen: React.FC = () => {
   const { currentColors } = useTheme();
   const currentUser = auth.currentUser;
+
+  const { success, type } = useLocalSearchParams();
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
 
   const { data, loading, error, refetch } =
     useQuery<GetUserCarpoolsAndRequestsQuery>(GET_USER_CARPOOL_WITH_REQUESTS, {
@@ -27,6 +37,24 @@ const CarpoolListScreen: React.FC = () => {
       refetch();
     }, [refetch])
   );
+
+  useEffect(() => {
+    if (success === "true") {
+      if (type === "carpool") {
+        setSuccessMessage("Carpool created successfully!");
+      } else if (type === "request") {
+        setSuccessMessage("Request submitted successfully!");
+      }
+      setShowSuccessMessage(true);
+
+      // Automatically hide the message after 3 seconds
+      const timer = setTimeout(() => {
+        setShowSuccessMessage(false);
+      }, 3000);
+
+      return () => clearTimeout(timer); // Cleanup timer on unmount
+    }
+  }, [success, type]);
 
   if (loading) return <Spinner />;
   if (error)
@@ -61,6 +89,11 @@ const CarpoolListScreen: React.FC = () => {
     <>
       <ScrollView>
         <View style={{ paddingHorizontal: 16 }}>
+          {showSuccessMessage && (
+            <View style={styles.successMessage}>
+              <Text style={styles.successText}>{successMessage}</Text>
+            </View>
+          )}
           <Text
             style={{
               fontFamily: "Comfortaa",
@@ -171,31 +204,15 @@ const CarpoolListScreen: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
-  carpoolCard: {
-    padding: 16,
-    borderRadius: 8,
-    marginBottom: 16,
-    shadowColor: "#000",
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    shadowOffset: { width: 0, height: 2 },
+  successMessage: {
+    backgroundColor: "#d4edda",
+    padding: 10,
+    marginVertical: 10,
+    borderRadius: 5,
   },
-  carpoolTitle: {
-    fontSize: 18,
-    fontWeight: "bold",
-    marginBottom: 8,
-  },
-  carpoolDetail: {
-    fontSize: 14,
-    marginBottom: 4,
-  },
-  requestCard: {
-    padding: 12,
-    borderRadius: 6,
-    marginBottom: 16,
-  },
-  requestDetail: {
-    fontSize: 12,
+  successText: {
+    color: "#155724",
+    fontSize: 16,
   },
   sectionTitle: {
     fontSize: 16,
