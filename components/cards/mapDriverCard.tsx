@@ -221,7 +221,7 @@ const MapDriverCard = ({
             letterSpacing: 0.2,
           }}
         >
-          {formatDate(date)}
+          {formatDate(new Date())}
         </Text>
         <Text
           style={{

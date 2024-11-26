@@ -142,33 +142,6 @@ const CarpoolScreen: React.FC = () => {
   }, [nextStop]);
 
   useEffect(() => {
-    if (
-      isDriver &&
-      nextStop?.startAddress &&
-      nextStop?.id &&
-      driverLocation?.latitude &&
-      driverLocation?.longitude
-    ) {
-      sendNotificationInfo({
-        variables: {
-          carpoolId: tripId,
-          notificationType: "NEAR_STOP",
-          lat: driverLocation?.latitude,
-          lon: driverLocation?.longitude,
-          nextStop: { address: nextStop.startAddress, requestId: nextStop.id },
-          timeToNextStop: legs[currentIndex].duration || "",
-          timeUntilNextStop: totalPredictedTime || "",
-          isFinalDestination: false,
-        },
-      })
-        .then(() => console.log("NEAR_STOP notification sent."))
-        .catch((err) =>
-          console.error("Error sending next stop notification:", err)
-        );
-    }
-  }, [isDriver, nextStop]);
-
-  useEffect(() => {
     if (isDriver && isTripCompleted) {
       sendNotificationInfo({
         variables: {
@@ -490,6 +463,51 @@ const CarpoolScreen: React.FC = () => {
       }
     }
   }, [carpoolData, sortedRequests, memoizedGetRealtimeDirections, tripId]);
+
+  useEffect(() => {
+    if (
+      isDriver &&
+      nextStop?.startAddress &&
+      nextStop?.id &&
+      driverLocation?.latitude &&
+      driverLocation?.longitude
+    ) {
+      const timeElapsed = legs.slice(0, currentIndex).reduce((acc, leg) => {
+        const legDuration = parseInt(leg.duration.split(" ")[0], 10);
+        return acc + (isNaN(legDuration) ? 0 : legDuration);
+      }, 0);
+
+      const remainingTime =
+        parseInt(totalPredictedTime.split(" ")[0], 10) - timeElapsed;
+
+      sendNotificationInfo({
+        variables: {
+          carpoolId: tripId,
+          notificationType: "NEAR_STOP",
+          lat: driverLocation?.latitude,
+          lon: driverLocation?.longitude,
+          nextStop: {
+            address: nextStop.startAddress,
+            requestId: nextStop.id,
+          },
+          timeToNextStop: legs[currentIndex].duration || "",
+          timeUntilNextStop: `${remainingTime} min` || totalPredictedTime,
+          isFinalDestination: false,
+        },
+      })
+        .then(() => console.log("NEAR_STOP notification sent."))
+        .catch((err) =>
+          console.error("Error sending next stop notification:", err)
+        );
+    }
+  }, [
+    isDriver,
+    nextStop,
+    currentIndex,
+    totalPredictedTime,
+    driverLocation,
+    legs,
+  ]);
 
   if (error) {
     return (

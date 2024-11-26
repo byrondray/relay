@@ -1,17 +1,15 @@
-import React, { useEffect, useState } from "react";
-import {
-  Text,
-  StyleSheet,
-  FlatList,
-  View,
-  ScrollView,
-  Alert,
-} from "react-native";
+import React, { useEffect, useRef, useState } from "react";
+import { Text, StyleSheet, FlatList, View, ScrollView } from "react-native";
 import { useQuery } from "@apollo/client";
 import { GET_USER_CARPOOL_WITH_REQUESTS } from "@/graphql/carpool/queries";
 import { Spinner } from "@ui-kitten/components";
 import { auth } from "@/firebaseConfig";
-import { Link, useFocusEffect, useLocalSearchParams } from "expo-router";
+import {
+  Link,
+  router,
+  useFocusEffect,
+  useLocalSearchParams,
+} from "expo-router";
 import { GetUserCarpoolsAndRequestsQuery } from "@/graphql/generated";
 import { useCallback } from "react";
 import MapDriverCard from "@/components/cards/mapDriverCard";
@@ -21,10 +19,17 @@ import { useTheme } from "@/contexts/ThemeContext";
 const CarpoolListScreen: React.FC = () => {
   const { currentColors } = useTheme();
   const currentUser = auth.currentUser;
-
-  const { success, type } = useLocalSearchParams();
+  const { success, type, hasOnboarded } = useLocalSearchParams();
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
+  const [onBoarded, setOnBoarded] = useState(false);
+  const hasNavigated = useRef(false);
+
+  useEffect(() => {
+    if (hasOnboarded === "true") {
+      setOnBoarded(true);
+    }
+  }, [hasOnboarded]);
 
   const { data, loading, error, refetch } =
     useQuery<GetUserCarpoolsAndRequestsQuery>(GET_USER_CARPOOL_WITH_REQUESTS, {
@@ -39,6 +44,16 @@ const CarpoolListScreen: React.FC = () => {
   );
 
   useEffect(() => {
+    const timer = setTimeout(() => {
+      if (currentUser?.uid === "VQDrhC1urNVkssfgLc8jZWVRpo32" && !onBoarded) {
+        router.push("/OnboardForms/parent");
+      }
+    }, 100);
+
+    return () => clearTimeout(timer);
+  }, [currentUser, onBoarded]);
+
+  useEffect(() => {
     if (success === "true") {
       if (type === "carpool") {
         setSuccessMessage("Carpool created successfully!");
@@ -47,12 +62,11 @@ const CarpoolListScreen: React.FC = () => {
       }
       setShowSuccessMessage(true);
 
-      // Automatically hide the message after 3 seconds
       const timer = setTimeout(() => {
         setShowSuccessMessage(false);
       }, 3000);
 
-      return () => clearTimeout(timer); // Cleanup timer on unmount
+      return () => clearTimeout(timer);
     }
   }, [success, type]);
 
@@ -88,7 +102,7 @@ const CarpoolListScreen: React.FC = () => {
   return (
     <>
       <ScrollView>
-        <View style={{ paddingHorizontal: 16 }}>
+        <View style={{ paddingHorizontal: 16, marginTop: 10 }}>
           {showSuccessMessage && (
             <View style={styles.successMessage}>
               <Text style={styles.successText}>{successMessage}</Text>

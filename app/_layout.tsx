@@ -92,7 +92,7 @@ export default function RootLayout() {
         }).start(() => {
           setShowNotification(false);
         });
-      }, 10000); 
+      }, 10000);
     });
   };
 
@@ -203,6 +203,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.4,
     shadowOffset: { width: 0, height: 4 },
     shadowRadius: 6,
+    marginTop: 10,
   },
   notificationText: {
     color: "#fff",
