@@ -1,11 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  TextInput,
-} from "react-native";
+import { View, Text, StyleSheet, ScrollView, TextInput } from "react-native";
 import { useQuery, useLazyQuery, useMutation } from "@apollo/client";
 import { GET_USER, GET_VEHICLE } from "@/graphql/user/queries";
 import { GET_CARPOOL_WITH_REQUESTS } from "@/graphql/carpool/queries";
@@ -38,6 +32,7 @@ import { useTheme } from "@/contexts/ThemeContext";
 import { SEND_NOTIFICATION_INFO } from "@/graphql/map/queries";
 import ClockIcon from "@/assets/images/whiteClock.svg";
 import DriverInfo from "@/components/cards/driverCard";
+import { set } from "date-fns";
 
 const CarpoolScreen: React.FC = () => {
   const currentUser = auth.currentUser;
@@ -73,64 +68,15 @@ const CarpoolScreen: React.FC = () => {
     (request) => request.parent.id === auth.currentUser?.uid
   );
 
-  const handleStopReached = (
-    stop: RequestWithParentAndChild & { timeToNextStop?: string | null }
-  ) => {
-    console.log("Stop reached:", stop);
-
-    sendNotificationInfo({
-      variables: {
-        carpoolId: tripId,
-        notificationType: "NEAR_STOP",
-        lat: stop.startLat,
-        lon: stop.startLon,
-        nextStop: { address: stop.startAddress, requestId: stop.id },
-        timeToNextStop: stop.timeToNextStop || "",
-        timeUntilNextStop: "",
-        isFinalDestination: false,
-      },
-    })
-      .then(() => console.log("NEAR_STOP notification sent."))
-      .catch((err) =>
-        console.error("Error sending NEAR_STOP notification:", err)
-      );
-
-    setCurrentIndex((prevIndex) => prevIndex + 1); // Use callback to avoid stale state
-  };
-
-  const handleTripCompleted = () => {
-    console.log("Trip completed!");
-
-    sendNotificationInfo({
-      variables: {
-        carpoolId: tripId,
-        notificationType: "FINAL_DESTINATION",
-        lat: carpoolData?.endLat || 0,
-        lon: carpoolData?.endLon || 0,
-        nextStop: null,
-        timeToNextStop: "0",
-        timeUntilNextStop: "0",
-        isFinalDestination: true,
-      },
-    })
-      .then(() => console.log("FINAL_DESTINATION notification sent."))
-      .catch((err) =>
-        console.error("Error sending FINAL_DESTINATION notification:", err)
-      );
-
-    setNextStop(null);
-    setIsTripCompleted(true);
-  };
-
   const sendLeavingNotification = useCallback(() => {
-    if (isDriver && hasStartedSharingLocation && isLeaving && driverLocation) {
+    if (isDriver && hasStartedSharingLocation && isLeaving) {
       console.log("Sending LEAVING notification with nextStop:", nextStop);
       sendNotificationInfo({
         variables: {
           carpoolId: tripId,
           notificationType: "LEAVING",
-          lat: driverLocation.latitude,
-          lon: driverLocation.longitude,
+          lat: driverLocation!.latitude,
+          lon: driverLocation!.longitude,
           nextStop: nextStop
             ? { address: nextStop.startAddress, requestId: nextStop.id }
             : null,
@@ -139,7 +85,10 @@ const CarpoolScreen: React.FC = () => {
           isFinalDestination: false,
         },
       })
-        .then(() => console.log("LEAVING notification sent."))
+        .then(() => {
+          console.log("LEAVING notification sent.");
+          setIsLeaving(false);
+        })
         .catch((err) =>
           console.error("Error sending LEAVING notification:", err)
         );
@@ -154,9 +103,11 @@ const CarpoolScreen: React.FC = () => {
 
   useEffect(() => {
     if (currentIndex < sortedRequests.length) {
-      setNextStop(sortedRequests[currentIndex]);
+      const newStop = sortedRequests[currentIndex];
+      console.log(`Next stop updated: ${newStop?.startAddress}`);
+      setNextStop(newStop);
     } else if (carpoolData?.endLat && carpoolData?.endLon) {
-      setNextStop({
+      const finalDestination = {
         id: "final-destination",
         startAddress: carpoolData.endAddress ?? "Final Destination",
         startLat: carpoolData.endLat,
@@ -165,11 +116,12 @@ const CarpoolScreen: React.FC = () => {
         parent: {} as User,
         pickupTime: "",
         timeToNextStop: null,
-      });
-      console.log("Next stop set to Final Destination");
+      };
+      console.log("Setting final destination:", finalDestination);
+      setNextStop(finalDestination);
     } else {
-      setNextStop(null);
       console.log("No more stops left.");
+      setNextStop(null);
     }
   }, [currentIndex, sortedRequests, carpoolData]);
 
@@ -186,6 +138,10 @@ const CarpoolScreen: React.FC = () => {
   ]);
 
   useEffect(() => {
+    console.log(nextStop?.startAddress);
+  }, [nextStop]);
+
+  useEffect(() => {
     if (
       isDriver &&
       nextStop?.startAddress &&
@@ -193,7 +149,6 @@ const CarpoolScreen: React.FC = () => {
       driverLocation?.latitude &&
       driverLocation?.longitude
     ) {
-      console.log("Sending next stop notification:", nextStop);
       sendNotificationInfo({
         variables: {
           carpoolId: tripId,
@@ -201,7 +156,7 @@ const CarpoolScreen: React.FC = () => {
           lat: driverLocation?.latitude,
           lon: driverLocation?.longitude,
           nextStop: { address: nextStop.startAddress, requestId: nextStop.id },
-          timeToNextStop: timeToNextStop || "",
+          timeToNextStop: legs[currentIndex].duration || "",
           timeUntilNextStop: totalPredictedTime || "",
           isFinalDestination: false,
         },
@@ -239,20 +194,21 @@ const CarpoolScreen: React.FC = () => {
     currentIndex,
     onStopReached: (stop) => {
       console.log("Stop reached:", stop);
-      setCurrentIndex((prev) => prev + 1); // Move to the next stop
+      setCurrentIndex((prevIndex) => prevIndex + 1);
+      setNextStop(sortedRequests[currentIndex + 1] || null);
     },
     onTripCompleted: () => {
       console.log("Trip completed!");
-      setIsTripCompleted(true); // Mark trip as complete
+      setIsTripCompleted(true);
     },
     driverLocation,
   });
 
-  useEffect(() => {
-    if (sortedRequests.length > 0) {
-      setNextStop(sortedRequests[0]);
-    }
-  }, [sortedRequests]);
+  // useEffect(() => {
+  //   if (sortedRequests.length > 0) {
+  //     setNextStop(sortedRequests[0]);
+  //   }
+  // }, [sortedRequests]);
 
   const tripId = useLocalSearchParams().trip;
 
@@ -415,42 +371,42 @@ const CarpoolScreen: React.FC = () => {
     : { data: null, error: null };
 
   useEffect(() => {
-    console.log("Location subscription data:", locationData);
+    const updateDriverLocation = () => {
+      if (!locationData?.locationReceived) return;
 
-    const receivedCarpoolId = locationData?.locationReceived?.carpoolId?.trim();
-    const currentTripId = Array.isArray(tripId)
-      ? tripId[0].trim()
-      : tripId?.trim();
-
-    if (
-      receivedCarpoolId &&
-      currentTripId &&
-      receivedCarpoolId === currentTripId
-    ) {
       const { lat, lon } = locationData.locationReceived;
-
-      // Check if the current user is not the driver
-      if (locationData.locationReceived.senderId !== currentUser?.uid) {
-        console.log("User is not the driver. Setting isDriver to false.");
-        setIsDriver(false); // Update isDriver to false
-      } else {
-        console.log("User is the driver. Setting isDriver to true.");
-        setIsDriver(true); // Update isDriver to true
-      }
-
       setDriverLocation({ latitude: lat, longitude: lon });
 
       if (!hasStartedSharingLocation) {
-        console.log("Starting location sharing...");
         setHasStartedSharingLocation(true);
         setIsLeaving(true);
-
-        setTimeout(() => {
-          console.log("Resetting isLeaving...");
-          setIsLeaving(false);
-        }, 5000); // Reset after 5 seconds
       }
-    } else if (!locationData) {
+    };
+
+    const updateDriverStatus = () => {
+      const receivedCarpoolId =
+        locationData?.locationReceived?.carpoolId?.trim();
+      const currentTripId = Array.isArray(tripId)
+        ? tripId[0].trim()
+        : tripId?.trim();
+
+      if (receivedCarpoolId === currentTripId) {
+        setIsDriver(
+          locationData.locationReceived.senderId === currentUser?.uid
+        );
+      } else {
+        console.warn("Carpool ID mismatch. Skipping driver status update.", {
+          currentTripId,
+          receivedCarpoolId,
+        });
+        setIsDriver(false);
+      }
+    };
+
+    if (locationData) {
+      updateDriverLocation();
+      updateDriverStatus();
+    } else {
       console.warn("Using fallback driver location...");
       if (!hasStartedSharingLocation && !isLeaving) {
         setHasStartedSharingLocation(true);
@@ -460,12 +416,6 @@ const CarpoolScreen: React.FC = () => {
           setIsLeaving(false);
         }, 5000); // Reset after 5 seconds
       }
-    } else {
-      console.warn("Carpool ID mismatch. Skipping location update.", {
-        currentTripId,
-        receivedCarpoolId,
-      });
-      setIsDriver(false); // Set isDriver to false in case of mismatch
     }
   }, [locationData, tripId, hasStartedSharingLocation]);
 
@@ -477,6 +427,15 @@ const CarpoolScreen: React.FC = () => {
     legs,
     getRealtimeDirections,
   } = useRealtimeDirections();
+
+  useEffect(() => {
+    if (legs.length > 0) {
+      console.log(
+        "Legs updated:",
+        legs.map((leg) => leg.request?.startAddress)
+      );
+    }
+  }, [directionsLog]);
 
   const memoizedGetRealtimeDirections = useCallback(getRealtimeDirections, [
     getRealtimeDirections,
@@ -516,7 +475,7 @@ const CarpoolScreen: React.FC = () => {
             if (result && result.legs.length > 0) {
               const updatedRequests = sortedRequests.map((request, index) => ({
                 ...request,
-                timeToNextStop: result.legs[index]?.duration || "",
+                timeToNextStop: result.legs[index + 1]?.duration || "",
               }));
 
               setSortedRequests(updatedRequests);
@@ -696,7 +655,7 @@ const CarpoolScreen: React.FC = () => {
         <View style={{ paddingHorizontal: 15, marginBottom: 5 }}>
           {carpoolData && <LocationCard carpoolData={carpoolData} />}
         </View>
-        {uniqueRequests?.map((request: any, index: number) => {
+        {uniqueRequests.reverse()?.map((request: any, index: number) => {
           const isCurrentUser = request.parent.id === currentUser?.uid;
 
           return (

@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { RequestWithParentAndChild } from "@/graphql/generated";
 
 interface UseCarpoolProximityArgs {
@@ -21,13 +21,11 @@ export const useCarpoolProximity = ({
   driverLocation,
 }: UseCarpoolProximityArgs) => {
   const intervalRef = useRef<number | null>(null);
-  const lastCheckedLocationRef = useRef<{
-    latitude: number;
-    longitude: number;
-  } | null>(null);
+  const [hasReachedStop, setHasReachedStop] = useState(false);
 
   useEffect(() => {
     if (!driverLocation) {
+      console.warn("Driver location not available. Skipping proximity check.");
       return;
     }
 
@@ -37,63 +35,58 @@ export const useCarpoolProximity = ({
     const targetLon = currentStop?.startLon || endingLon;
 
     const proximityCheck = () => {
+      if (!driverLocation) return;
+
       const { latitude, longitude } = driverLocation;
-
-      // Skip if the driver location hasn't significantly changed
-      if (
-        lastCheckedLocationRef.current &&
-        haversineDistance(
-          {
-            lat: lastCheckedLocationRef.current.latitude,
-            lon: lastCheckedLocationRef.current.longitude,
-          },
-          { lat: latitude, lon: longitude }
-        ) < 20
-      ) {
-        return;
-      }
-
-      lastCheckedLocationRef.current = { latitude, longitude }; // Update last checked location
-
       const distance = haversineDistance(
         { lat: latitude, lon: longitude },
         { lat: targetLat, lon: targetLon }
       );
 
-      if (distance <= 150) {
+      console.log(`Distance to target: ${distance} meters`);
+
+      if (distance <= 300) {
+        if (intervalRef.current !== null) {
+          clearInterval(intervalRef.current);
+        }
+        intervalRef.current = null;
+
         if (currentStop) {
+          console.log(`Stop reached: ${currentStop.startAddress}`);
           onStopReached(currentStop);
         } else {
+          console.log("Final destination reached.");
           onTripCompleted();
         }
-        clearMonitoring(); // Stop monitoring once target is reached
       }
     };
 
-    const clearMonitoring = () => {
+    if (!intervalRef.current) {
+      console.log("Initializing proximity interval...");
+      intervalRef.current = window.setInterval(proximityCheck, 500);
+    }
+
+    return () => {
       if (intervalRef.current) {
+        console.log("Clearing proximity interval...");
         clearInterval(intervalRef.current);
         intervalRef.current = null;
       }
     };
-
-    // Start monitoring
-    if (!intervalRef.current) {
-      intervalRef.current = window.setInterval(proximityCheck, 1000);
-    }
-
-    return () => {
-      clearMonitoring(); // Cleanup on unmount or effect re-run
-    };
   }, [
     currentIndex,
-    driverLocation,
     requests,
     endingLat,
     endingLon,
     onStopReached,
     onTripCompleted,
+    driverLocation?.latitude, // Only latitude and longitude as dependencies
+    driverLocation?.longitude,
   ]);
+  // Reset `hasReachedStop` when the `currentIndex` changes
+  useEffect(() => {
+    setHasReachedStop(false);
+  }, [currentIndex]);
 };
 
 // Haversine Distance Calculation

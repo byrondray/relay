@@ -160,7 +160,7 @@ const CarpoolListScreen: React.FC = () => {
           keyExtractor={(request) => request.id}
           renderItem={({ item: request }) => (
             <View style={{ marginTop: 10, paddingHorizontal: 5 }}>
-              {request.carpoolId ? (
+              {request.carpoolId && (
                 <Link
                   href={{
                     pathname: "/trips/inProgress/[trip]",
@@ -179,18 +179,6 @@ const CarpoolListScreen: React.FC = () => {
                     recurrence="one time"
                   />
                 </Link>
-              ) : (
-                <ActiveRiderCard
-                  id={request.id}
-                  state="pending"
-                  date={new Date()}
-                  startLocation={request.startAddress || "Unknown"}
-                  startTime={request.pickupTime || "Unknown"}
-                  endLocation={request.startAddress || "Unknown"}
-                  endTime={request.pickupTime || "Unknown"}
-                  images={[vanessaChildImage]}
-                  recurrence="one time"
-                />
               )}
             </View>
           )}
