@@ -15,7 +15,7 @@ const ParentFormLabel: React.FC<LabelProps> = ({ label }) => {
         style={[
           styles.labelText,
           {
-            color: currentColors.placeholder,
+            color: currentColors.text,
           },
         ]}
       >
@@ -25,7 +25,7 @@ const ParentFormLabel: React.FC<LabelProps> = ({ label }) => {
         style={[
           styles.requiredText,
           {
-            color: currentColors.placeholder, 
+            color: currentColors.tint, 
           },
         ]}
       >

@@ -70,7 +70,7 @@ function HomeScreen() {
   }
 
   return (
-    <ScrollView>
+    <ScrollView style={{ height: "100%" }}>
       <View
         style={[
           styles.container,
@@ -160,7 +160,7 @@ function HomeScreen() {
                     { color: currentColors.text },
                   ]}
                 >
-                  Need a ride for my kid"
+                  Need a ride for my kid
                 </Text>
                 <Text
                   style={[styles.requestSubText, { color: currentColors.text }]}

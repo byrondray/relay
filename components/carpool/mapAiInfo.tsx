@@ -44,8 +44,7 @@ const MapAiInfo = () => {
           fontFamily: "Comfortaa",
         }}
       >
-        Here are some carpool requests with routes matched to you according to
-        our AI module.
+        Here are some carpool requests with routes matched to you.
       </Text>
 
       {/* Divider */}
