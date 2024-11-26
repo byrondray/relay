@@ -26,7 +26,7 @@ function ParentFormInput({
           },
         ]}
         placeholder={placeholder}
-        placeholderTextColor={currentColors.placeholder}
+        placeholderTextColor={currentColors.icon}
         value={value ?? ""} 
         onChangeText={onChangeText} 
       />

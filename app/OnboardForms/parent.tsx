@@ -192,7 +192,7 @@ function ParentForm(): JSX.Element {
           ) : (
             <Text
               style={{
-                color: currentColors.text,
+                color: "white",
                 textAlign: "center",
                 fontSize: 20,
                 fontFamily: "Comfortaa-semibold",

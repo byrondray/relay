@@ -1,6 +1,7 @@
 import React from "react";
 import { View, TouchableOpacity, Image, Text, StyleSheet } from "react-native";
 import UploadIcon from "@/assets/images/uploadIcon.svg";
+import { useTheme } from "@/contexts/ThemeContext";
 
 interface ImageUploadProps {
   profileImage: string | null;
@@ -11,15 +12,16 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
   profileImage,
   pickImage,
 }) => {
+  const { currentColors } = useTheme();
   return (
-    <View style={styles.container}>
-      <TouchableOpacity onPress={pickImage} style={styles.uploadButton}>
+    <View style={[styles.container, {backgroundColor: currentColors.background, borderColor: currentColors.tint}]}>
+      <TouchableOpacity onPress={pickImage} style={[styles.uploadButton, {backgroundColor: currentColors.background}]}>
         {profileImage ? (
-          <Image source={{ uri: profileImage }} style={styles.profileImage} />
+          <Image source={{ uri: profileImage }} style={[styles.profileImage, {backgroundColor: currentColors.text}]} />
         ) : (
           <View style={styles.uploadPlaceholder}>
             <UploadIcon width={80} height={40} />
-            <Text style={styles.uploadText}>Take or Upload your image</Text>
+            <Text style={[styles.uploadText, {color: currentColors.text}]}>Take or Upload your image</Text>
           </View>
         )}
       </TouchableOpacity>
