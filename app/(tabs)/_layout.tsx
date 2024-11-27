@@ -5,11 +5,7 @@ import { useTheme } from "@/contexts/ThemeContext";
 import { StyleSheet, View, Image, TouchableOpacity, Text } from "react-native";
 import Relay from "@/assets/images/Relay.svg";
 import RelayWhite from "@/assets/images/Relay-white.svg";
-<<<<<<< HEAD
-import RelaySvg from "@/components/icons/RelaySvg";
-=======
-import { Ionicons } from "@expo/vector-icons";
->>>>>>> 56356b4030cad0493103a431c0983542d8b965a5
+import RelaySvg from "@/components/icons/RelaySvg.svg";
 
 function Header() {
   const { currentColors } = useTheme();
