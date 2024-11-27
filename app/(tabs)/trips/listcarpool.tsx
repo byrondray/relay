@@ -10,6 +10,7 @@ import { useCallback } from "react";
 import MapDriverCard from "@/components/cards/mapDriverCard";
 import ActiveRiderCard from "@/components/cards/activeCard";
 import { useTheme } from "@/contexts/ThemeContext";
+import DriverInfo from "@/components/cards/driverCard";
 
 const CarpoolListScreen: React.FC = () => {
   const { currentColors } = useTheme();
@@ -27,9 +28,11 @@ const CarpoolListScreen: React.FC = () => {
     }, [refetch])
   );
 
-
   if (loading) return <Spinner />;
-  if (error) return <Text style={{ color: currentColors.text }}>Error loading carpools</Text>;
+  if (error)
+    return (
+      <Text style={{ color: currentColors.text }}>Error loading carpools</Text>
+    );
 
   const carpools = data?.getUserCarpoolsAndRequests?.carpools || [];
   const requests = data?.getUserCarpoolsAndRequests?.requests || [];
@@ -43,12 +46,44 @@ const CarpoolListScreen: React.FC = () => {
       index === self.findIndex((r) => r.id === request.id)
   );
 
+  const currentHour = new Date().getHours();
+  let timeOfDay = "Morning";
+  if (currentHour >= 12 && currentHour < 18) {
+    timeOfDay = "Afternoon";
+  } else if (currentHour >= 18) {
+    timeOfDay = "Evening";
+  }
+
+  const driverName =
+    carpools.length > 0 ? carpools[0].driver.firstName : "User";
+
   return (
     <>
       <ScrollView>
-        <View style={{}}>
+        <View style={{ paddingHorizontal: 16 }}>
+          <Text
+            style={{
+              fontFamily: "Comfortaa",
+              fontWeight: "500",
+              fontSize: 20,
+              marginBottom: -10,
+            }}
+          >
+            {timeOfDay}
+          </Text>
+          <Text
+            style={{
+              fontFamily: "Comfortaa-Bold",
+              fontWeight: "700",
+              fontSize: 34,
+              marginBottom: 16,
+            }}
+          >
+            {driverName}
+          </Text>
           <FlatList
             data={carpools}
+            style={{ borderRadius: 20 }}
             keyExtractor={(item) => item.id}
             renderItem={({ item }) => {
               return (
@@ -60,6 +95,7 @@ const CarpoolListScreen: React.FC = () => {
                 >
                   <MapDriverCard
                     driverName={item.driver.firstName}
+                    driverImage={item.driver.imageUrl}
                     id={item.id}
                     driveCount={22}
                     likes={300}

@@ -54,8 +54,9 @@ const Sidebar = () => {
     },
   });
   const { currentColors } = useTheme();
+
   return (
-    <View style={{ backgroundColor: currentColors.background}}>
+    <View style={{ backgroundColor: currentColors.background }}>
       <Layout
         style={{
           display: "flex",
@@ -240,7 +241,7 @@ const Community = () => {
     data: friendsData,
     loading,
     error,
-    refetch
+    refetch,
   } = useQuery(GET_FRIENDS, {
     onCompleted: (data) => {
       console.log(data, "friends");
@@ -249,10 +250,10 @@ const Community = () => {
   });
 
   useFocusEffect(
-  useCallback(() => {
-    refetch();
-  }, [refetch])
-);
+    useCallback(() => {
+      refetch();
+    }, [refetch])
+  );
 
   const [searchText, setSearchText] = useState("");
   const textColor = useThemeColor({}, "placeholder");
@@ -271,10 +272,17 @@ const Community = () => {
     );
   }
   const { currentColors } = useTheme();
+
   return (
     <Layout style={{ flex: 1, flexDirection: "row" }}>
       <Sidebar />
-      <ScrollView style={{ flex: 1, padding: 16, backgroundColor: currentColors.background }}>
+      <ScrollView
+        style={{
+          flex: 1,
+          padding: 16,
+          backgroundColor: currentColors.background,
+        }}
+      >
         <FriendsList profiles={friends} />
         <Text category="h1" style={{ marginTop: 0, fontFamily: "Comfortaa", color: currentColors.text }}>
           Friends

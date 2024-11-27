@@ -2,6 +2,8 @@ import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { CarpoolWithRequests } from "@/graphql/generated";
 import { useTheme } from "@/contexts/ThemeContext";
+import OrangeMarker from "@/assets/images/OrangeMarker.svg"; // Icon for start location
+import RedMarker from "@/assets/images/RedMarker.svg"; // Icon for destination
 
 const LocationCard = ({
   carpoolData,
@@ -13,56 +15,26 @@ const LocationCard = ({
   return (
     <View style={[styles.card, { backgroundColor: currentColors.background }]}>
       {/* Start Location */}
+      <Text style={[styles.label, { color: currentColors.text }]}>
+        Start Location
+      </Text>
       <View style={styles.locationRow}>
-        <View
-          style={[
-            styles.icon,
-            { backgroundColor: currentColors.tint }, // Dynamic color for the start location icon
-          ]}
-        />
-        <View>
-          <Text
-            style={[
-              styles.label,
-              { color: currentColors.text }, // Dynamic label color
-            ]}
-          >
-            Start Location
-          </Text>
-          <Text
-            style={[
-              styles.address,
-              { color: currentColors.text }, // Dynamic address color
-            ]}
-          >
+        <OrangeMarker width={20} height={20} style={styles.icon} />
+        <View style={styles.locationText}>
+          <Text style={[styles.address, { color: currentColors.text }]}>
             {carpoolData?.startAddress}
           </Text>
         </View>
       </View>
 
       {/* Destination */}
+      <Text style={[styles.label, { color: currentColors.text }]}>
+        Destination
+      </Text>
       <View style={styles.locationRow}>
-        <View
-          style={[
-            styles.icon,
-            { backgroundColor: currentColors.tint }, // Dynamic color for the destination icon
-          ]}
-        />
-        <View>
-          <Text
-            style={[
-              styles.label,
-              { color: currentColors.text }, // Dynamic label color
-            ]}
-          >
-            Destination
-          </Text>
-          <Text
-            style={[
-              styles.address,
-              { color: currentColors.text }, // Dynamic address color
-            ]}
-          >
+        <RedMarker width={20} height={20} style={styles.icon} />
+        <View style={styles.locationText}>
+          <Text style={[styles.address, { color: currentColors.text }]}>
             {carpoolData?.endAddress}
           </Text>
         </View>
@@ -80,24 +52,26 @@ const styles = StyleSheet.create({
   locationRow: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 16,
+    marginBottom: 10,
   },
   icon: {
-    width: 16,
-    height: 16,
-    borderRadius: 8,
-    marginRight: 12,
+    marginRight: 8,
+  },
+  locationText: {
+    flexDirection: "column",
+    justifyContent: "flex-start",
   },
   label: {
+    fontFamily: "Comfortaa",
+    color: "black",
     fontSize: 14,
     marginBottom: 4,
-    fontFamily: "Comfortaa",
-    textAlign: "left",
-    alignSelf: "flex-start",
+    alignItems: "center",
   },
   address: {
-    fontSize: 16,
     fontFamily: "Comfortaa",
+    color: "black",
+    fontSize: 16,
   },
 });
 

@@ -8,7 +8,7 @@ import RedMarker from "@/assets/images/RedMarker.svg";
 import StackedProfilePictures from "./stackedProfile";
 import RepeatIcon from "@/assets/images/repeat.svg";
 import ArrowUp from "@/assets/images/arrow-up.svg";
-import { useTheme } from "@/contexts/ThemeContext";  // Importing useTheme
+import { useTheme } from "@/contexts/ThemeContext"; // Importing useTheme
 
 interface CardData {
   id: string;
@@ -33,7 +33,7 @@ const ActiveRiderCard = ({
   images,
   recurrence,
 }: CardData) => {
-  const { currentColors } = useTheme();  // Accessing theme colors
+  const { currentColors } = useTheme(); // Accessing theme colors
 
   const isodate = new Date(date); // delete this later when db is connected cause I forget.
 
@@ -58,10 +58,9 @@ const ActiveRiderCard = ({
         height: 200,
         backgroundColor: currentColors.background,
         paddingHorizontal: 16,
-        paddingVertical: 15,
       }}
     >
-      <View style={{ paddingHorizontal: 16, paddingVertical: 10 }}>
+      <View style={{ paddingHorizontal: 16, paddingVertical: 20 }}>
         <View
           style={{
             flexDirection: "row",
@@ -72,12 +71,12 @@ const ActiveRiderCard = ({
           <Text
             style={{
               fontSize: 10,
-              alignSelf: "center",
               fontFamily: "Comfortaa",
+              fontWeight: "700",
               color: currentColors.text,
             }}
           >
-            RN: {id}
+            RN: {id.slice(0, 8)}
           </Text>
 
           <View
@@ -89,53 +88,48 @@ const ActiveRiderCard = ({
             {state === "pending" ? (
               <View
                 style={{
-                  flexDirection: "row",
-                  justifyContent: "flex-end",
-                  alignItems: "center",
-                  alignSelf: "flex-end",
-                  backgroundColor: currentColors.background,
+                  backgroundColor: "#3366FF",
                   borderRadius: 16,
-                  paddingHorizontal: 16,
+                  paddingHorizontal: 18,
                   paddingVertical: 6,
-                  borderWidth: 0,
-                  marginRight: 8,
+                  flexDirection: "row",
+                  alignItems: "center",
+                  marginRight: 10,
                 }}
               >
                 <TimeIcon width={16} height={16} style={{ marginRight: 5 }} />
                 <Text
                   style={{
-                    color: currentColors.text,
-                    alignSelf: "center",
+                    fontSize: 10,
                     fontFamily: "Comfortaa",
+                    fontWeight: "700",
+                    color: "#FFFFFF",
                   }}
                 >
-                  {state}
+                  {state.charAt(0).toUpperCase() + state.slice(1)}
                 </Text>
               </View>
             ) : (
               <View
                 style={{
-                  flexDirection: "row",
-                  justifyContent: "flex-end",
-                  alignItems: "center",
-                  alignSelf: "flex-end",
-                  backgroundColor: currentColors.background,
+                  backgroundColor: "#D2D2D2",
                   borderRadius: 16,
-                  paddingHorizontal: 16,
+                  paddingHorizontal: 10,
                   paddingVertical: 6,
-                  borderWidth: 0,
-                  marginRight: 8,
+                  flexDirection: "row",
+                  alignItems: "center",
                 }}
               >
                 <TimeIcon width={16} height={16} style={{ marginRight: 5 }} />
                 <Text
                   style={{
-                    color: currentColors.text,
-                    alignSelf: "center",
+                    fontSize: 10,
                     fontFamily: "Comfortaa",
+                    fontWeight: "700",
+                    color: "#FFFFFF",
                   }}
                 >
-                  {state}
+                  {state.charAt(0).toUpperCase() + state.slice(1)}
                 </Text>
               </View>
             )}
@@ -153,85 +147,121 @@ const ActiveRiderCard = ({
 
         <Text
           style={{
-            color: currentColors.text,
             fontSize: 20,
-            fontWeight: "bold",
+            fontFamily: "Comfortaa-Bold",
+            fontWeight: "700",
+            color: "#666666",
             letterSpacing: 0.2,
-            fontFamily: "Comfortaa",
+            marginBottom: 5,
           }}
         >
           {formatThisDate}
         </Text>
 
-        <View style={{ flexDirection: "row", alignItems: "center" }}>
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            marginBottom: 5,
+          }}
+        >
           <OrangeMarker
             width={20}
             height={20}
             style={{ marginRight: 8, width: 120 }}
           />
           <Text style={{ fontFamily: "Comfortaa", color: currentColors.text }}>
-            {startLocation}
+            {startLocation.split(" ").slice(0, 3).join(" ")}
           </Text>
           <Text
             style={{
               marginLeft: "auto",
-              color: currentColors.text,
+              color: "#FF6A00",
               fontFamily: "Comfortaa",
             }}
           >
-            Est: {startTime}
+            Est: {startTime.toLowerCase()}
           </Text>
         </View>
 
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           <RedMarker width={20} height={20} style={{ marginRight: 8 }} />
           <Text style={{ fontFamily: "Comfortaa", color: currentColors.text }}>
-            {endLocation}
+            {endLocation.split(" ").slice(0, 3).join(" ")}
           </Text>
           <Text
             style={{
               marginLeft: "auto",
-              color: currentColors.text,
+              color: "#E24949",
               fontFamily: "Comfortaa",
             }}
           >
-            Est: {endTime}
+            Est: {endTime.toLowerCase()}
           </Text>
         </View>
-
-        <StackedProfilePictures images={images} />
 
         <View
           style={{
             flexDirection: "row",
-            alignSelf: "flex-end",
+            justifyContent: "space-between",
             alignItems: "center",
-            backgroundColor: currentColors.background,
-            borderRadius: 16,
-            paddingHorizontal: 10,
-            paddingVertical: 5,
-            borderWidth: 0,
             marginTop: 10,
           }}
         >
+          <StackedProfilePictures images={images} />
+
           {recurrence === "one time" ? (
-            <>
-              <RepeatIcon
-                width={16}
-                height={16}
-                style={{ marginHorizontal: 10 }}
-              />
-              <Text style={{ color: currentColors.text, fontFamily: "Comfortaa" }}>
-                {recurrence}
+            <View
+              style={{
+                backgroundColor: "rgba(255, 136, 51, 0.1)",
+                borderRadius: 16,
+                paddingHorizontal: 20,
+                paddingVertical: 6,
+                flexDirection: "row",
+                alignItems: "center",
+              }}
+            >
+              <RepeatIcon width={16} height={16} style={{ marginRight: 5 }} />
+              <Text
+                style={{
+                  fontSize: 10,
+                  fontFamily: "Comfortaa",
+                  fontWeight: "700",
+                  color: "#FF6A00",
+                }}
+              >
+                {recurrence
+                  .split(" ")
+                  .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+                  .join(" ")}
               </Text>
-            </>
+            </View>
           ) : (
-            <>
-              <ArrowUp width={16} height={16} style={{ marginRight: 10 }} />
-              <Text style={{ color: currentColors.text, fontFamily: "Comfortaa" }}>
-                {recurrence}
+            <View
+              style={{
+                backgroundColor: "#D2D2D2",
+                borderRadius: 16,
+                paddingHorizontal: 18,
+                paddingVertical: 6,
+                flexDirection: "row",
+                alignItems: "center",
+              }}
+            >
+              <ArrowUp width={16} height={16} style={{ marginRight: 5 }} />
+              <Text
+                style={{
+                  fontSize: 10,
+                  fontFamily: "Comfortaa",
+                  fontWeight: "700",
+                  color: "#FFFFFF",
+                }}
+              >
+                {recurrence
+                  .split(" ")
+                  .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+                  .join(" ")}
               </Text>
-            </>
+            </View>
           )}
         </View>
       </View>

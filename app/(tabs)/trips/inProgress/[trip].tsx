@@ -1,13 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
-import {
-  View,
-  Text,
-  Image,
-  StyleSheet,
-  ScrollView,
-  TextInput,
-} from "react-native";
-import { useQuery, useLazyQuery } from "@apollo/client";
+import { View, Text, StyleSheet, ScrollView, TextInput } from "react-native";
+import { useQuery, useLazyQuery, useMutation } from "@apollo/client";
 import { GET_USER, GET_VEHICLE } from "@/graphql/user/queries";
 import { GET_CARPOOL_WITH_REQUESTS } from "@/graphql/carpool/queries";
 import { Spinner } from "@ui-kitten/components";
@@ -15,6 +8,7 @@ import { auth } from "@/firebaseConfig";
 import { useLocalSearchParams } from "expo-router";
 import {
   CarpoolWithRequests,
+  Child,
   RequestWithParentAndChild,
   User,
   Vehicle,
@@ -24,11 +18,9 @@ import ShareFakeLocationButton from "@/components/rideInProgress/shareFakeLocati
 import { useLocationSubscription } from "@/hooks/map/useGetLocation";
 import DriverMapView from "@/components/rideInProgress/driverMapView";
 import RequestMapView from "@/components/rideInProgress/requestMapView";
-import { fakeDirections } from "@/utils/fakeRouteData";
 import { formatDate } from "@/utils/currentDate";
-import DriverCardInProgress from "@/components/rideInProgress/driverCardInProgress";
 import GpsTrackingInfo from "@/components/rideInProgress/gpsTrackingInfo";
-import TimeCard from "@/components/rideInProgress/driveTime";
+import TimeCard from "@/components/cards/timeCard";
 import LocationCard from "@/components/rideInProgress/carpoolAddress";
 import RequestCard from "@/components/rideInProgress/carpoolRequest";
 import ReviewInfo from "@/components/rideInProgress/reviewInfo";
@@ -37,14 +29,21 @@ import { haversineDistance } from "@/utils/distance";
 import { useCarpoolProximity } from "@/hooks/map/detectIfDriverIsClose";
 import { useRealtimeDirections } from "@/hooks/map/useRealtimeDirections";
 import { useTheme } from "@/contexts/ThemeContext";
+import { SEND_NOTIFICATION_INFO } from "@/graphql/map/queries";
+import ClockIcon from "@/assets/images/whiteClock.svg";
+import DriverInfo from "@/components/cards/driverCard";
+import { set } from "date-fns";
 
 const CarpoolScreen: React.FC = () => {
+  const currentUser = auth.currentUser;
   const [error, setError] = useState<string | null>(null);
   const [driverData, setDriverData] = useState<User | null>(null);
   const [vehicleData, setVehicleData] = useState<Vehicle | null>(null);
   const [carpoolData, setCarpoolData] = useState<CarpoolWithRequests | null>(
     null
   );
+  const [sendNotificationInfo] = useMutation(SEND_NOTIFICATION_INFO);
+  const [isDriver, setIsDriver] = useState<boolean>(false);
 
   const processedRequestsRef = useRef<string | null>(null);
 
@@ -69,41 +68,121 @@ const CarpoolScreen: React.FC = () => {
     (request) => request.parent.id === auth.currentUser?.uid
   );
 
-  const handleStopReached = (stop: RequestWithParentAndChild) => {
-    console.log("Stop reached:", stop);
+  const sendLeavingNotification = useCallback(() => {
+    if (isDriver && hasStartedSharingLocation && isLeaving) {
+      console.log("Sending LEAVING notification with nextStop:", nextStop);
+      sendNotificationInfo({
+        variables: {
+          carpoolId: tripId,
+          notificationType: "LEAVING",
+          lat: driverLocation!.latitude,
+          lon: driverLocation!.longitude,
+          nextStop: nextStop
+            ? { address: nextStop.startAddress, requestId: nextStop.id }
+            : null,
+          timeToNextStop: nextStop?.timeToNextStop || "",
+          timeUntilNextStop: totalPredictedTime || "",
+          isFinalDestination: false,
+        },
+      })
+        .then(() => {
+          console.log("LEAVING notification sent.");
+          setIsLeaving(false);
+        })
+        .catch((err) =>
+          console.error("Error sending LEAVING notification:", err)
+        );
+    }
+  }, [
+    isDriver,
+    hasStartedSharingLocation,
+    isLeaving,
+    driverLocation,
+    nextStop,
+  ]);
 
-    const nextIndex = currentIndex + 1;
-
-    if (nextIndex < sortedRequests.length) {
-      setCurrentIndex(nextIndex);
-      setNextStop(sortedRequests[nextIndex]);
+  useEffect(() => {
+    if (currentIndex < sortedRequests.length) {
+      const newStop = sortedRequests[currentIndex];
+      console.log(`Next stop updated: ${newStop?.startAddress}`);
+      setNextStop(newStop);
+    } else if (carpoolData?.endLat && carpoolData?.endLon) {
+      const finalDestination = {
+        id: "final-destination",
+        startAddress: carpoolData.endAddress ?? "Final Destination",
+        startLat: carpoolData.endLat,
+        startLon: carpoolData.endLon,
+        child: {} as Child,
+        parent: {} as User,
+        pickupTime: "",
+        timeToNextStop: null,
+      };
+      console.log("Setting final destination:", finalDestination);
+      setNextStop(finalDestination);
     } else {
-      console.log("No more stops left, reaching final destination.");
+      console.log("No more stops left.");
       setNextStop(null);
     }
-  };
+  }, [currentIndex, sortedRequests, carpoolData]);
 
-  const handleTripCompleted = () => {
-    console.log("Trip completed!");
-    setNextStop(null);
-    setIsTripCompleted(true);
-  };
+  useEffect(() => {
+    if (isDriver && hasStartedSharingLocation && isLeaving && driverLocation) {
+      sendLeavingNotification();
+    }
+  }, [
+    isDriver,
+    hasStartedSharingLocation,
+    isLeaving,
+    driverLocation,
+    sendLeavingNotification,
+  ]);
+
+  useEffect(() => {
+    console.log(nextStop?.startAddress);
+  }, [nextStop]);
+
+  useEffect(() => {
+    if (isDriver && isTripCompleted) {
+      sendNotificationInfo({
+        variables: {
+          carpoolId: tripId,
+          notificationType: "FINAL_DESTINATION",
+          lat: driverLocation?.latitude,
+          lon: driverLocation?.longitude,
+          nextStop: carpoolData?.endAddress,
+          timeToNextStop: "0",
+          timeUntilNextStop: "0",
+          isFinalDestination: true,
+        },
+      })
+        .then(() => console.log("FINAL notification sent."))
+        .catch((err) => console.error("Error sending end notification:", err));
+    }
+  }, [isDriver, isTripCompleted, driverLocation]);
 
   useCarpoolProximity({
     requests: sortedRequests,
     endingLat: carpoolData?.endLat ?? 0,
     endingLon: carpoolData?.endLon ?? 0,
-    onStopReached: handleStopReached,
-    onTripCompleted: handleTripCompleted,
+    currentIndex,
+    onStopReached: (stop) => {
+      console.log("Stop reached:", stop);
+      setCurrentIndex((prevIndex) => prevIndex + 1);
+      setNextStop(sortedRequests[currentIndex + 1] || null);
+    },
+    onTripCompleted: () => {
+      console.log("Trip completed!");
+      setIsTripCompleted(true);
+    },
+    driverLocation,
   });
 
-  useEffect(() => {
-    if (sortedRequests.length > 0) {
-      setNextStop(sortedRequests[0]);
-    }
-  }, [sortedRequests]);
+  // useEffect(() => {
+  //   if (sortedRequests.length > 0) {
+  //     setNextStop(sortedRequests[0]);
+  //   }
+  // }, [sortedRequests]);
 
-  const currentUser = auth.currentUser;
   const tripId = useLocalSearchParams().trip;
 
   const {
@@ -117,7 +196,11 @@ const CarpoolScreen: React.FC = () => {
     onCompleted: (data) => {
       if (data?.getCarpoolWithRequests) {
         const carpool = data.getCarpoolWithRequests;
-        console.log("Carpool data:", carpool);
+        if (carpool.driverId === currentUser?.uid) {
+          setIsDriver(true);
+        } else {
+          setIsDriver(false);
+        }
         setCarpoolData(carpool);
 
         if (carpool.requests) {
@@ -147,6 +230,9 @@ const CarpoolScreen: React.FC = () => {
       setSortedRequests([]);
       setNextStop(null);
       setIsTripCompleted(false);
+      setDriverLocation(null);
+      setIsLeaving(false);
+      setHasStartedSharingLocation(false);
 
       refetchCarpoolData();
     }
@@ -186,16 +272,11 @@ const CarpoolScreen: React.FC = () => {
     carpoolRequests: RequestWithParentAndChild[],
     startingLatLng: LatLng
   ): RequestWithParentAndChild[] => {
-    console.log("Sorting requests with startingLatLng:", startingLatLng);
-
     const uniqueRequests = Array.from(
       new Map(carpoolRequests.map((request) => [request.id, request])).values()
     );
 
     return uniqueRequests.sort((a, b) => {
-      console.log("Request A:", a.startLat, a.startLon);
-      console.log("Request B:", b.startLat, b.startLon);
-
       const distanceA = haversineDistance(
         { lat: startingLatLng.latitude, lon: startingLatLng.longitude },
         { lat: a.startLat, lon: a.startLon }
@@ -205,7 +286,6 @@ const CarpoolScreen: React.FC = () => {
         { lat: b.startLat, lon: b.startLon }
       );
 
-      console.log(`Distance A: ${distanceA}, Distance B: ${distanceB}`);
       return distanceA - distanceB;
     });
   };
@@ -264,19 +344,53 @@ const CarpoolScreen: React.FC = () => {
     : { data: null, error: null };
 
   useEffect(() => {
-    if (locationData && locationData.locationReceived) {
-      const { lat, lon } = locationData.locationReceived;
+    const updateDriverLocation = () => {
+      if (!locationData?.locationReceived) return;
 
+      const { lat, lon } = locationData.locationReceived;
       setDriverLocation({ latitude: lat, longitude: lon });
 
       if (!hasStartedSharingLocation) {
         setHasStartedSharingLocation(true);
         setIsLeaving(true);
+      }
+    };
+
+    const updateDriverStatus = () => {
+      const receivedCarpoolId =
+        locationData?.locationReceived?.carpoolId?.trim();
+      const currentTripId = Array.isArray(tripId)
+        ? tripId[0].trim()
+        : tripId?.trim();
+
+      if (receivedCarpoolId === currentTripId) {
+        setIsDriver(
+          locationData.locationReceived.senderId === currentUser?.uid
+        );
       } else {
-        setIsLeaving(false);
+        console.warn("Carpool ID mismatch. Skipping driver status update.", {
+          currentTripId,
+          receivedCarpoolId,
+        });
+        setIsDriver(false);
+      }
+    };
+
+    if (locationData) {
+      updateDriverLocation();
+      updateDriverStatus();
+    } else {
+      console.warn("Using fallback driver location...");
+      if (!hasStartedSharingLocation && !isLeaving) {
+        setHasStartedSharingLocation(true);
+        setIsLeaving(true);
+
+        setTimeout(() => {
+          setIsLeaving(false);
+        }, 5000); // Reset after 5 seconds
       }
     }
-  }, [locationData, hasStartedSharingLocation]);
+  }, [locationData, tripId, hasStartedSharingLocation]);
 
   const {
     polyline,
@@ -286,6 +400,15 @@ const CarpoolScreen: React.FC = () => {
     legs,
     getRealtimeDirections,
   } = useRealtimeDirections();
+
+  useEffect(() => {
+    if (legs.length > 0) {
+      console.log(
+        "Legs updated:",
+        legs.map((leg) => leg.request?.startAddress)
+      );
+    }
+  }, [directionsLog]);
 
   const memoizedGetRealtimeDirections = useCallback(getRealtimeDirections, [
     getRealtimeDirections,
@@ -325,7 +448,7 @@ const CarpoolScreen: React.FC = () => {
             if (result && result.legs.length > 0) {
               const updatedRequests = sortedRequests.map((request, index) => ({
                 ...request,
-                timeToNextStop: result.legs[index]?.duration || "",
+                timeToNextStop: result.legs[index + 1]?.duration || "",
               }));
 
               setSortedRequests(updatedRequests);
@@ -340,6 +463,51 @@ const CarpoolScreen: React.FC = () => {
       }
     }
   }, [carpoolData, sortedRequests, memoizedGetRealtimeDirections, tripId]);
+
+  useEffect(() => {
+    if (
+      isDriver &&
+      nextStop?.startAddress &&
+      nextStop?.id &&
+      driverLocation?.latitude &&
+      driverLocation?.longitude
+    ) {
+      const timeElapsed = legs.slice(0, currentIndex).reduce((acc, leg) => {
+        const legDuration = parseInt(leg.duration.split(" ")[0], 10);
+        return acc + (isNaN(legDuration) ? 0 : legDuration);
+      }, 0);
+
+      const remainingTime =
+        parseInt(totalPredictedTime.split(" ")[0], 10) - timeElapsed;
+
+      sendNotificationInfo({
+        variables: {
+          carpoolId: tripId,
+          notificationType: "NEAR_STOP",
+          lat: driverLocation?.latitude,
+          lon: driverLocation?.longitude,
+          nextStop: {
+            address: nextStop.startAddress,
+            requestId: nextStop.id,
+          },
+          timeToNextStop: legs[currentIndex].duration || "",
+          timeUntilNextStop: `${remainingTime} min` || totalPredictedTime,
+          isFinalDestination: false,
+        },
+      })
+        .then(() => console.log("NEAR_STOP notification sent."))
+        .catch((err) =>
+          console.error("Error sending next stop notification:", err)
+        );
+    }
+  }, [
+    isDriver,
+    nextStop,
+    currentIndex,
+    totalPredictedTime,
+    driverLocation,
+    legs,
+  ]);
 
   if (error) {
     return (
@@ -414,30 +582,41 @@ const CarpoolScreen: React.FC = () => {
           }}
         >
           <Text
-            style={{ fontSize: 20, fontFamily: "Comfortaa", color: currentColors.icon }}
+            style={{
+              fontSize: 20,
+              fontFamily: "Comfortaa",
+              color: currentColors.icon,
+            }}
           >
             {date}
           </Text>
           <View
             style={{
-              width: 110,
               backgroundColor: "#35BA00",
-              marginRight: 20,
               borderRadius: 16,
+              paddingHorizontal: 10,
+              paddingVertical: 5,
               flexDirection: "row",
               alignItems: "center",
-              justifyContent: "center",
-              paddingHorizontal: 10,
-              paddingVertical: 7,
+              marginRight: 20,
             }}
           >
-            <Image source={require("@/assets/images/processing-icon.png")} />
-            <Text style={{ color: currentColors.text, marginLeft: 3 }}>Processing</Text>
+            <ClockIcon width={16} height={16} style={{ marginRight: 5 }} />
+            <Text
+              style={{
+                fontSize: 10,
+                fontFamily: "Comfortaa",
+                fontWeight: "700",
+                color: "#FFFFFF",
+              }}
+            >
+              Processing
+            </Text>
           </View>
         </View>
         <View style={{ paddingHorizontal: 15, marginTop: 20 }}>
           {driverData && vehicleData && carpoolData && (
-            <DriverCardInProgress
+            <DriverInfo
               driverData={driverData}
               vehicleData={vehicleData}
               carpoolData={carpoolData}
@@ -485,16 +664,16 @@ const CarpoolScreen: React.FC = () => {
             </>
           )}
         </View>
-        <View style={{ paddingHorizontal: 15, marginBottom: 15 }}>
+        <View style={{ paddingHorizontal: 15, marginBottom: 5 }}>
           <GpsTrackingInfo />
         </View>
-        <View style={{ paddingHorizontal: 15, marginBottom: 15 }}>
-          <TimeCard startTime="8:30" endTime="9:32" />
+        <View style={{ paddingHorizontal: 15 }}>
+          <TimeCard startTime="08: 30 AM" endTime="09: 32 AM" />
         </View>
-        <View style={{ paddingHorizontal: 15, marginBottom: 15 }}>
+        <View style={{ paddingHorizontal: 15, marginBottom: 5 }}>
           {carpoolData && <LocationCard carpoolData={carpoolData} />}
         </View>
-        {uniqueRequests?.map((request: any, index: number) => {
+        {uniqueRequests.reverse()?.map((request: any, index: number) => {
           const isCurrentUser = request.parent.id === currentUser?.uid;
 
           return (
@@ -515,24 +694,15 @@ const CarpoolScreen: React.FC = () => {
         </View>
         <Text
           style={{
-            color: currentColors.placeholder,
+            color: currentColors.text,
             paddingHorizontal: 15,
             fontFamily: "Comfortaa",
+            marginBottom: 10,
           }}
         >
           Review to Driver
         </Text>
         <View style={{ paddingHorizontal: 15, marginBottom: 10 }}>
-          <Text
-            style={{
-              color: currentColors.text,
-              marginBottom: 5,
-              marginTop: 10,
-              fontFamily: "Comfortaa",
-            }}
-          >
-            Description
-          </Text>
           <TextInput
             style={{
               width: "100%",

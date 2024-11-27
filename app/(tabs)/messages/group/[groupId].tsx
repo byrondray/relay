@@ -11,7 +11,11 @@ import {
   Keyboard,
   TouchableOpacity,
 } from "react-native";
-import { useFocusEffect, useLocalSearchParams } from "expo-router";
+import {
+  useFocusEffect,
+  useLocalSearchParams,
+  useNavigation,
+} from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Notifications from "expo-notifications";
 import { auth } from "@/firebaseConfig";
@@ -24,12 +28,15 @@ import { GroupMessage } from "@/graphql/generated";
 import Message from "@/components/messaging/message";
 import { Spinner } from "@ui-kitten/components";
 import { LinearGradient } from "expo-linear-gradient";
-import { useTheme } from "@/contexts/ThemeContext"; // Import useTheme
+import { useTheme } from "@/contexts/ThemeContext";
+import { useQuery } from "@apollo/client";
+import { GET_GROUP } from "@/graphql/group/queries";
 
 export default function GroupMessageScreen() {
   const [messages, setMessages] = useState<GroupMessage[]>([]);
   const [newMessage, setNewMessage] = useState("");
   const { groupId } = useLocalSearchParams();
+  const navigation = useNavigation();
   const groupIdString = Array.isArray(groupId) ? groupId[0] : groupId;
   const currentUser = auth.currentUser;
   const userId = currentUser?.uid || "";
@@ -44,6 +51,24 @@ export default function GroupMessageScreen() {
     useCallback(() => {
       refetch();
     }, [refetch])
+  );
+
+  const {
+    data: groupData,
+    error: groupError,
+    loading: groupLoading,
+  } = useQuery(GET_GROUP, {
+    variables: { id: groupIdString },
+  });
+
+  useFocusEffect(
+    useCallback(() => {
+      if (groupData && groupData.getGroup) {
+        const groupName = groupData.getGroup.name || "Group";
+        // @ts-ignore
+        navigation.setParams({ groupName });
+      }
+    }, [groupData, navigation])
   );
 
   const { sendMessage } = useSendGroupMessage(
@@ -129,7 +154,12 @@ export default function GroupMessageScreen() {
       />
 
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <View style={[styles.container, { backgroundColor: currentColors.background }]}>
+        <View
+          style={[
+            styles.container,
+            { backgroundColor: currentColors.background },
+          ]}
+        >
           <FlatList
             data={messages}
             keyExtractor={(item) => item.id}
@@ -137,7 +167,12 @@ export default function GroupMessageScreen() {
             contentContainerStyle={{ paddingBottom: 10 }}
           />
 
-          <View style={[styles.inputContainer, { backgroundColor: currentColors.background }]}>
+          <View
+            style={[
+              styles.inputContainer,
+              { backgroundColor: currentColors.background },
+            ]}
+          >
             <TextInput
               value={newMessage}
               onChangeText={setNewMessage}
@@ -146,13 +181,17 @@ export default function GroupMessageScreen() {
                 {
                   backgroundColor: currentColors.background,
                   color: currentColors.text,
+                  borderColor: currentColors.placeholder,
+                  borderWidth: 1, 
                 },
               ]}
               placeholder="Message..."
               placeholderTextColor={currentColors.placeholder}
             />
             <TouchableOpacity onPress={() => sendMessage()}>
-              <Text style={[styles.sendButtonText, { color: currentColors.text }]}>
+              <Text
+                style={[styles.sendButtonText, { color: currentColors.tint }]}
+              >
                 Send
               </Text>
             </TouchableOpacity>

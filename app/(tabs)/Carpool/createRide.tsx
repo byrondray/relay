@@ -45,12 +45,11 @@ import RadioGroupComponent from "@/components/carpool/carpoolFrequency";
 import { CreateCarpoolInput } from "@/graphql/generated";
 import GroupPicker from "@/components/carpool/groupSelector";
 import WaypointSelector from "@/components/carpool/waypointSelector";
-import GestureMap from "@/components/carpool/gestureMap";
-import CarpoolOverview from "@/components/carpool/carpoolOverview";
-
 const { height: deviceHeight } = Dimensions.get("window");
 import { useTheme } from "@/contexts/ThemeContext";
 import TripDescriptionInput from "@/components/carpool/carpoolDescription";
+import { router } from "expo-router";
+import { getUniqueRequestsByParent } from "@/utils/sortRequests";
 
 const CreateRide = () => {
   const {
@@ -257,7 +256,8 @@ const CreateRide = () => {
           data.getCarpoolersByGroupWithoutApprovedRequests,
           startingLatLng
         );
-        setRequests(sortedRequests);
+        const uniqueRequests = getUniqueRequestsByParent(sortedRequests);
+        setRequests(uniqueRequests.slice(0, 5));
       }
     },
     onError: (error) => {
@@ -268,7 +268,8 @@ const CreateRide = () => {
   useEffect(() => {
     if (requests.length > 0) {
       const sortedRequests = sortRequestsByDistance(requests, startingLatLng);
-      setRequests(sortedRequests);
+      const uniqueRequests = getUniqueRequestsByParent(sortedRequests);
+      setRequests(uniqueRequests.slice(0, 5));
     }
   }, [startingLatLng]);
 
@@ -317,12 +318,16 @@ const CreateRide = () => {
   }, [selectedRequests]);
 
   useEffect(() => {
-    if (startingAddress && endingAddress && selectedWaypoints.length > 0) {
-      const waypointsForDirections = selectedWaypoints.map((wp) => ({
-        latitude: parseFloat(wp.startingLat),
-        longitude: parseFloat(wp.startingLon),
-      }));
+    if (startingAddress && endingAddress) {
+      // Process waypoints only if selectedWaypoints exist
+      const waypointsForDirections = selectedWaypoints.length
+        ? selectedWaypoints.map((wp) => ({
+            latitude: parseFloat(wp.startingLat),
+            longitude: parseFloat(wp.startingLon),
+          }))
+        : [];
 
+      // Fetch directions
       getDirections(
         startingLatLng,
         endingLatLng,
@@ -346,6 +351,7 @@ const CreateRide = () => {
 
           setActiveRoute({ coordinates: newCoordinates, predictedTime });
 
+          // Fit the map view to the new route
           if (mapRef.current) {
             mapRef.current.fitToCoordinates(newCoordinates, {
               edgePadding: { top: 50, right: 50, bottom: 50, left: 50 },
@@ -360,10 +366,9 @@ const CreateRide = () => {
   }, [
     startingAddress,
     endingAddress,
-    selectedWaypoints,
+    selectedWaypoints, // Ensure waypoints update re-runs the effect
     startingLatLng,
     endingLatLng,
-    // vehicles,
   ]);
 
   const getAddress = async (
@@ -480,78 +485,6 @@ const CreateRide = () => {
           { backgroundColor: currentColors.background },
         ]}
       >
-        {/* <GestureMap
-          mapHeight={mapHeight}
-        <View>
-        <Text style={[{ fontSize: 32, fontWeight: "bold", marginBottom: 20, fontFamily: "Comfortaa-semibold", }, { color: currentColors.text }]}>
-          Create a ride
-        </Text>
-
-        </View>
-        <Text style={{ color: "#FF6A00", fontSize: 22, marginBottom: 15 }}>
-          Itinerary
-        </Text>
-        <Text style={[{ color: textColor, marginBottom: 5 }, { color: currentColors.text }]}>From</Text>
-        <ThemedAddressCompletionInput
-          value={startingAddress}
-          onChangeText={(text) => setStartingAddress(text)}
-          onSuggestionSelect={(address) => {
-            setStartingAddress(address);
-          }}
-          onLatLonSelect={(lat, lon) => {
-            setStartingLatLng({ lat, lon });
-          }}
-          placeholder="Enter Origin"
-        />
-        <Text style={[{ color: textColor, marginBottom: 5, marginTop: 15 }, { color: currentColors.text }]}>
-          To
-        </Text>
-        <ThemedAddressCompletionInput
-          value={endingAddress}
-          onChangeText={(text) => {
-            setEndingAddress(text);
-          }}
-          onSuggestionSelect={setEndingAddress}
-          onLatLonSelect={(lat, lon) => {
-            setEndingLatLng({ lat, lon });
-          }}
-          placeholder="Enter Destination"
-        />
-        <RideDateTimePicker
-          selectedDate={selectedDate}
-          handleDateSelect={handleDateSelect}
-          selectedTime={time}
-          handleTimeSelect={handleTimeConfirm}
-          textColor={textColor}
-        />
-
-        <Text style={[{ color: textColor, marginBottom: 10, marginTop: 15 },  { color: currentColors.text }]}>
-          Seats Occupied
-        </Text>
-        <ChildSelector onSelectedChildrenChange={setSelectedChildren} />
-        <MapAiInfo />
-        <RideMap
-          mapRef={mapRef}
-          requests={requests}
-          startingLatLng={startingLatLng}
-          endingLatLng={endingLatLng}
-          startingAddress={startingAddress}
-          endingAddress={endingAddress}
-          previousRoutes={previousRoutes}
-          coordinates={coordinates}
-          activeRoute={activeRoute}
-          coordinates={coordinates}
-          endingAddress={endingAddress}
-          endingLatLng={endingLatLng}
-          handleLongPress={handleLongPress}
-          isFullScreen={isFullScreen}
-          panResponder={panResponder}
-          previousRoutes={previousRoutes}
-          requests={requests}
-          startingAddress={startingAddress}
-          startingLatLng={startingLatLng}
-          toggleFullScreen={toggleFullScreen}
-        /> */}
         <View style={{}}>
           <View>
             <Text
@@ -784,9 +717,9 @@ const CreateRide = () => {
                   paddingVertical: 12,
                 }}
                 appearance="ghost"
-                onPress={() => {
-                  handleModelSubmit();
-                  createCarpool({
+                onPress={async () => {
+                  // handleModelSubmit();
+                  const { data, errors } = await createCarpool({
                     variables: {
                       input: {
                         driverId: userId!,
@@ -806,6 +739,34 @@ const CreateRide = () => {
                       },
                     },
                   });
+                  if (data?.createCarpool) {
+                    setStartingAddress("");
+                    setEndingAddress("");
+                    setStartingLatLng({ lat: 0, lon: 0 });
+                    setEndingLatLng({ lat: 0, lon: 0 });
+                    setSelectedDate(new Date());
+                    setDateAndTime("Select Date & Time");
+                    setTime("Select Time");
+                    setVoluntaryChecked(false);
+                    setShareCostChecked(false);
+                    setShowTimePicker(false);
+                    setSelectedChildren([]);
+                    setDescription("");
+                    setSelectedVehicleIndex(new IndexPath(0));
+                    setActiveRoute({ coordinates: [], predictedTime: "0" });
+                    setPreviousRoutes([]);
+                    setSelectedIndex(0);
+                    setGroupId(null);
+                    setRequests([]);
+                    setSeatsLeft(0);
+                    setSeatsAvailable([]);
+                    setSelectedSeatsIndex(new IndexPath(0));
+
+                    router.push({
+                      pathname: "/(tabs)",
+                      params: { success: "true", type: "carpool" },
+                    });
+                  }
                 }}
               >
                 {() => (

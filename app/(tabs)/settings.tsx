@@ -1,8 +1,10 @@
-import React from "react";
-import { View, Text, Switch, StyleSheet } from "react-native";
+import React, { useState } from "react";
+import { View, Text, Switch, StyleSheet, Alert } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { useTheme } from "@/contexts/ThemeContext";
 import { useLogout } from "@/hooks/auth/useLogout";
+import { RESET_NOTIFICATION_TRACKING } from "@/graphql/map/queries";
+import { useMutation } from "@apollo/client";
 
 const LogoutButton = () => {
   const { logout, loading } = useLogout();
@@ -14,13 +16,46 @@ const LogoutButton = () => {
   );
 };
 
-const Settings = () => {
-  const { theme, setTheme, currentColors } = useTheme(); 
-  const toggleSwitch = () => setTheme(theme === "light" ? "dark" : "light"); // Toggle between light and dark
+const ResetTrackingButton = () => {
+  const [resetNotificationTracking, { loading }] = useMutation(
+    RESET_NOTIFICATION_TRACKING
+  );
+
+  const handleResetTracking = async () => {
+    try {
+      const { data } = await resetNotificationTracking();
+      if (data.resetNotificationTracking) {
+        Alert.alert("Success", "Tracking reset successfully.");
+      } else {
+        Alert.alert("Error", "Failed to reset tracking.");
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        Alert.alert("Error", error.message || "Failed to reset tracking.");
+      } else {
+        Alert.alert("Error", "Failed to reset tracking.");
+      }
+    }
+  };
 
   return (
-    <View style={[styles.container, { backgroundColor: currentColors.background }]}>
-      <Text style={[styles.header, { color: currentColors.text }]}>Settings</Text>
+    <Text onPress={handleResetTracking} style={{ color: "#fff", padding: 10 }}>
+      {loading ? "Resetting..." : "Reset Tracking"}
+    </Text>
+  );
+};
+
+const Settings = () => {
+  const { theme, setTheme, currentColors } = useTheme();
+  const toggleSwitch = () => setTheme(theme === "light" ? "dark" : "light");
+
+  return (
+    <View
+      style={[styles.container, { backgroundColor: currentColors.background }]}
+    >
+      <Text style={[styles.header, { color: currentColors.text }]}>
+        Settings
+      </Text>
 
       <View style={styles.settingItem}>
         <Text style={[styles.settingText, { color: currentColors.text }]}>
@@ -56,6 +91,21 @@ const Settings = () => {
         }}
       >
         <LogoutButton />
+      </LinearGradient>
+
+      <LinearGradient
+        colors={["#ff8833", "#e24a4a"]}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 0 }}
+        style={{
+          width: "100%",
+          borderRadius: 15,
+          overflow: "hidden",
+          alignItems: "center",
+          marginTop: 20,
+        }}
+      >
+        <ResetTrackingButton />
       </LinearGradient>
     </View>
   );

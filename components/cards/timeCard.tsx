@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
 import { useTheme } from "@/contexts/ThemeContext";
 import { PlacementOptions } from "@ui-kitten/components/ui/popover/type";
 
@@ -10,12 +10,23 @@ interface TimeCardProps {
 
 const TimeCard = ({ startTime, endTime }: TimeCardProps) => {
   const { currentColors } = useTheme();
+
+  const splitStartTime = startTime.split(" ");
+  const splitEndTime = endTime.split(" ");
+
+  const startTimeValue = splitStartTime.slice(0, 2).join(" ");
+  const startPeriod = splitStartTime[2];
+
+  const endTimeValue = splitEndTime.slice(0, 2).join(" ");
+  const endPeriod = splitEndTime[2];
+
   return (
     <View
       style={{
         alignItems: "center",
         justifyContent: "center",
-        padding: 10,
+        paddingVertical: 20,
+        width: "100%",
       }}
     >
       <View
@@ -32,6 +43,7 @@ const TimeCard = ({ startTime, endTime }: TimeCardProps) => {
           shadowRadius: 4,
           elevation: 4,
           paddingHorizontal: 20,
+          width: "100%",
         }}
       >
         <View
@@ -45,7 +57,7 @@ const TimeCard = ({ startTime, endTime }: TimeCardProps) => {
               fontSize: 8,
               fontFamily: "Comfortaa",
               fontWeight: "700",
-              color: currentColors.placeholder,
+              color: currentColors.text,
               marginBottom: 5,
             }}
           >
@@ -54,14 +66,23 @@ const TimeCard = ({ startTime, endTime }: TimeCardProps) => {
           <Text
             style={{
               fontSize: 35,
-              fontFamily: "Comfortaa",
+              fontFamily: "Comfortaa-Bold",
               fontWeight: "700",
-              color: "#tint",
+              color: "#FB812A",
               textAlign: "center",
               letterSpacing: 0.4,
             }}
           >
-            {startTime}
+            {startTimeValue}
+            <Text
+              style={{
+                fontSize: 20,
+                fontFamily: "Comfortaa",
+                fontWeight: "normal",
+              }}
+            >
+              {startPeriod}
+            </Text>
           </Text>
         </View>
 
@@ -69,7 +90,7 @@ const TimeCard = ({ startTime, endTime }: TimeCardProps) => {
           style={{
             width: 1,
             height: "100%",
-            backgroundColor: currentColors.background,
+            backgroundColor: "#CCCCCC",
           }}
         />
 
@@ -84,7 +105,7 @@ const TimeCard = ({ startTime, endTime }: TimeCardProps) => {
               fontSize: 8,
               fontFamily: "Comfortaa",
               fontWeight: "700",
-              color: currentColors.placeholder,
+              color: currentColors.text,
               marginBottom: 5,
             }}
           >
@@ -93,14 +114,23 @@ const TimeCard = ({ startTime, endTime }: TimeCardProps) => {
           <Text
             style={{
               fontSize: 35,
-              fontFamily: "Comfortaa",
+              fontFamily: "Comfortaa-Bold",
               fontWeight: "700",
-              color: currentColors.tint,
+              color: "#E24949",
               textAlign: "center",
               letterSpacing: 0.4,
             }}
           >
-            {endTime}
+            {endTimeValue}
+            <Text
+              style={{
+                fontSize: 20,
+                fontFamily: "Comfortaa",
+                fontWeight: "normal",
+              }}
+            >
+              {endPeriod}
+            </Text>
           </Text>
         </View>
       </View>

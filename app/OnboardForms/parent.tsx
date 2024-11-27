@@ -71,16 +71,16 @@ function ParentForm(): JSX.Element {
     }
 
     try {
-      await updateUser({
-        variables: {
-          id: auth.currentUser?.uid,
-          firstName,
-          lastName,
-          phoneNumber,
-          email,
-          city: location,
-        },
-      });
+      // await updateUser({
+      //   variables: {
+      //     id: auth.currentUser?.uid,
+      //     firstName,
+      //     lastName,
+      //     phoneNumber,
+      //     email,
+      //     city: location,
+      //   },
+      // });
       router.push("/OnboardForms/child");
     } catch (err) {
       setSubmissionError("Failed to update user info. Please try again.");

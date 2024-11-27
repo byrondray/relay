@@ -72,7 +72,7 @@ const ChildSelector = ({
           onPress={() => toggleSelection(child.id)}
         />
       ))}
-      <TouchableOpacity
+      {/* <TouchableOpacity
         onPress={() => router.push("/(tabs)/Carpool/selectPassenger")}
       >
         <View
@@ -95,7 +95,7 @@ const ChildSelector = ({
             source={require("../../assets/images/add-member-icon.png")}
           />
         </View>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
     </View>
   );
 };

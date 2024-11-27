@@ -72,7 +72,12 @@ function VehicleForm(): JSX.Element {
       //   },
       // });
       // await AsyncStorage.setItem("hasOnboarded", "true");
-      router.push("/(tabs)/temp" as Href);
+      router.push({
+        pathname: "/(tabs)",
+        params: {
+          hasOnboarded: "true",
+        },
+      });
     } catch (error) {
       setErrorMessage("Failed to submit vehicle info. Please try again.");
     } finally {
@@ -107,8 +112,18 @@ function VehicleForm(): JSX.Element {
 
   return (
     <ScrollView>
-      <View style={[styles.container, { backgroundColor: currentColors.background }]}>
-        <Text style={[styles.heading, { color: currentColors.text, fontFamily: "Comfortaa" }]}>
+      <View
+        style={[
+          styles.container,
+          { backgroundColor: currentColors.background },
+        ]}
+      >
+        <Text
+          style={[
+            styles.heading,
+            { color: currentColors.text, fontFamily: "Comfortaa" },
+          ]}
+        >
           Vehicle Information
         </Text>
 
@@ -181,10 +196,15 @@ function VehicleForm(): JSX.Element {
                 { backgroundColor: currentColors.background },
               ]}
             >
-              <Text style={{ color: currentColors.text, fontFamily: "Comfortaa" }}>
+              <Text
+                style={{ color: currentColors.text, fontFamily: "Comfortaa" }}
+              >
                 Press here to upload photo of insurance details
               </Text>
-              <ImageUpload profileImage={insuranceImage} pickImage={pickImage} />
+              <ImageUpload
+                profileImage={insuranceImage}
+                pickImage={pickImage}
+              />
             </View>
           </TouchableOpacity>
         </View>
@@ -198,7 +218,10 @@ function VehicleForm(): JSX.Element {
                 { backgroundColor: currentColors.background },
               ]}
             >
-              <ImageUpload profileImage={insuranceImage} pickImage={pickImage} />
+              <ImageUpload
+                profileImage={insuranceImage}
+                pickImage={pickImage}
+              />
             </View>
           </TouchableOpacity>
         </View>
@@ -270,7 +293,7 @@ const styles = StyleSheet.create({
     fontSize: 32,
     fontWeight: "bold",
     marginBottom: 20,
-    fontFamily: "Comfortaa"
+    fontFamily: "Comfortaa",
   },
   errorText: {
     color: "red",

@@ -17,6 +17,7 @@ import {
 import { Image } from "react-native";
 import { Spinner } from "@ui-kitten/components";
 import { useTheme } from "@/contexts/ThemeContext";
+import { auth } from "@/firebaseConfig";
 
 interface DriverMapViewProps {
   driverLocation: {
@@ -51,10 +52,10 @@ const DriverMapView: React.FC<DriverMapViewProps> = ({
 
   const checkPropsReady = () => {
     return (
-      carpoolData?.startLat !== undefined &&
-      carpoolData?.startLon !== undefined &&
-      carpoolData?.endLat !== undefined &&
-      carpoolData?.endLon !== undefined &&
+      carpoolData?.startLat != null &&
+      carpoolData?.startLon != null &&
+      carpoolData?.endLat != null &&
+      carpoolData?.endLon != null &&
       requests.length > 0 &&
       polyline.length > 0
     );
@@ -141,47 +142,39 @@ const DriverMapView: React.FC<DriverMapViewProps> = ({
           style={styles.map}
           initialRegion={defaultRegion}
           onLayout={() => {
-            console.log("Map layout completed");
             if (!mapInitialized) {
-              setMapInitialized(true); // Fallback
+              setTimeout(() => setMapInitialized(true), 100);
             }
           }}
           onMapReady={() => {
-            console.log("Map is ready");
             setMapInitialized(true);
           }}
         >
-          {carpoolData?.startLat &&
-            carpoolData?.startLon &&
-            (console.log(carpoolData.startLat, "rendering start marker"),
-            (
-              <Marker
-                key={carpoolData.startAddress}
-                coordinate={{
-                  latitude: carpoolData.startLat,
-                  longitude: carpoolData.startLon,
-                }}
-                title={carpoolData.startAddress}
-                pinColor="#FF6A00"
-                zIndex={2}
-              />
-            ))}
-          {carpoolData?.endLat &&
-            carpoolData?.endLon &&
-            (console.log(carpoolData.endLat, "rendering end marker"),
-            (
-              <Marker
-                key={carpoolData.endAddress}
-                coordinate={{
-                  latitude: carpoolData.endLat,
-                  longitude: carpoolData.endLon,
-                }}
-                title={carpoolData.endAddress}
-                pinColor="#DE4141"
-                zIndex={2}
-              />
-            ))}
-          {driverLocation && (
+          {carpoolData?.startLat && carpoolData?.startLon && (
+            <Marker
+              key={carpoolData.startAddress}
+              coordinate={{
+                latitude: carpoolData.startLat,
+                longitude: carpoolData.startLon,
+              }}
+              title={carpoolData.startAddress}
+              pinColor="#FF6A00"
+              zIndex={2}
+            />
+          )}
+          {carpoolData?.endLat && carpoolData?.endLon && (
+            <Marker
+              key={carpoolData.endAddress}
+              coordinate={{
+                latitude: carpoolData.endLat,
+                longitude: carpoolData.endLon,
+              }}
+              title={carpoolData.endAddress}
+              pinColor="#DE4141"
+              zIndex={2}
+            />
+          )}
+          {driverLocation && auth.currentUser && carpoolData.driverId === auth.currentUser.uid && (
             <Marker
               coordinate={{
                 latitude: driverLocation.latitude,
@@ -258,6 +251,7 @@ const styles = StyleSheet.create({
   },
   map: {
     flex: 1,
+    width: "100%",
   },
   expandButton: {
     position: "absolute",

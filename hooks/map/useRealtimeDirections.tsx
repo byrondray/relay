@@ -1,15 +1,69 @@
 import { useState } from "react";
 import { decodePolyline } from "@/components/MapUtils";
 
-const mapLegsToRequests = (
+const mapLegsToOriginalRequests = (
   legs: { duration: string; polyline: any }[],
+  originalRequests: { startLat: number; startLon: number }[],
+  filteredRequests: { startLat: number; startLon: number }[],
+  finalDestination: { lat: number; lon: number }
+) => {
+  if (legs.length !== filteredRequests.length + 1) {
+    console.warn(
+      `Mismatch between legs and filtered requests: Legs(${legs.length}), Filtered Requests(${filteredRequests.length + 1})`
+    );
+  }
+
+  const filteredMap = new Map(
+    filteredRequests.map((req, index) => [
+      `${req.startLat},${req.startLon}`,
+      legs[index],
+    ])
+  );
+
+  const mapped = originalRequests.map((req) => {
+    const key = `${req.startLat},${req.startLon}`;
+    const leg = filteredMap.get(key);
+    if (!leg) {
+      console.warn(
+        `No matching leg found for request at ${req.startLat}, ${req.startLon}`
+      );
+    }
+    return {
+      request: req,
+      duration: leg?.duration || "Unknown",
+      polyline: leg?.polyline || [],
+    };
+  });
+
+  const lastLeg = legs[legs.length - 1];
+  if (lastLeg) {
+    mapped.push({
+      request: {
+        startLat: finalDestination.lat,
+        startLon: finalDestination.lon,
+      },
+      duration: lastLeg.duration,
+      polyline: lastLeg.polyline,
+    });
+  } else {
+    console.warn("No last leg found for the final destination.");
+  }
+
+  return mapped;
+};
+
+const removeDuplicateRequests = (
   requests: { startLat: number; startLon: number }[]
 ) => {
-  return legs.map((leg, index) => ({
-    request: requests[index],
-    duration: leg.duration,
-    polyline: leg.polyline,
-  }));
+  const seen = new Set();
+  return requests.filter((req) => {
+    const key = `${req.startLat},${req.startLon}`;
+    if (seen.has(key)) {
+      return false;
+    }
+    seen.add(key);
+    return true;
+  });
 };
 
 export const useRealtimeDirections = () => {
@@ -22,6 +76,7 @@ export const useRealtimeDirections = () => {
     { duration: string; polyline: any; request?: any }[]
   >([]);
   const [directionsLog, setDirectionsLog] = useState<string[]>([]);
+  const [lastLegTime, setLastLegTime] = useState<string>("");
 
   const getRealtimeDirections = async (
     origin: { lat: number; lon: number },
@@ -32,10 +87,18 @@ export const useRealtimeDirections = () => {
   ) => {
     if (origin && destination) {
       try {
+        const originalRequests = [...requests];
+        const filteredRequests = removeDuplicateRequests(requests);
+
+        const filteredWaypoints = filteredRequests.map((req) => ({
+          latitude: req.startLat,
+          longitude: req.startLon,
+        }));
+
         const originCoordinates = `${origin.lat},${origin.lon}`;
         const destinationCoordinates = `${destination.lat},${destination.lon}`;
-        const waypointsEncoded = waypoints.length
-          ? `&waypoints=|${waypoints
+        const waypointsEncoded = filteredWaypoints.length
+          ? `&waypoints=|${filteredWaypoints
               .map((wp) => `${wp.latitude},${wp.longitude}`)
               .join("|")}`
           : "";
@@ -63,12 +126,34 @@ export const useRealtimeDirections = () => {
 
           const routeLegs = route.legs.map((leg: any) => ({
             duration: `${Math.floor(leg.duration.value / 60)} min`,
-            polyline: decodePolyline(
-              leg.steps.map((step: any) => step.polyline.points).join("")
-            ),
+            polyline: leg.steps
+              ? decodePolyline(
+                  leg.steps.map((step: any) => step.polyline.points).join("")
+                )
+              : [],
           }));
 
-          const mappedLegs = mapLegsToRequests(routeLegs, requests);
+          const mappedLegs = mapLegsToOriginalRequests(
+            routeLegs,
+            originalRequests,
+            filteredRequests,
+            destination
+          );
+
+          console.log(
+            "mapped legs",
+            mappedLegs.map((leg) => leg.duration)
+          );
+
+          const lastLeg = routeLegs[routeLegs.length - 1];
+          const lastLegDuration = lastLeg?.duration || "Unknown";
+          setLastLegTime(lastLegDuration);
+
+          console.log(
+            "Mapped Legs to Requests:",
+            mappedLegs.map((leg) => leg.duration)
+          );
+
           setLegs(mappedLegs);
 
           setTotalPredictedTime(
@@ -82,7 +167,11 @@ export const useRealtimeDirections = () => {
           );
           setTimeToNextStop(mappedLegs[0]?.duration || "");
 
-          return { polyline: coords, legs: mappedLegs };
+          return {
+            polyline: coords,
+            legs: mappedLegs,
+            lastLegTime: lastLegDuration,
+          };
         }
       } catch (error) {
         console.error("Error fetching directions:", error);
@@ -96,6 +185,7 @@ export const useRealtimeDirections = () => {
     timeToNextStop,
     directionsLog,
     legs,
+    lastLegTime,
     getRealtimeDirections,
   };
 };
