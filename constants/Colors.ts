@@ -10,6 +10,7 @@ export const Colors = {
   light: {
     text: "#11181C",
     placeholder: "#f0f0f0",
+    placeholderText: "#8F9BB3",
     background: "#ffffff",
     tint: tintColorLight,
     icon: "#687076",
@@ -19,6 +20,7 @@ export const Colors = {
   dark: {
     text: "#FFFF",
     placeholder: "#333333",
+    placeholderText: "#8F9BB3",
     background: "#181818",
     tint: tintColorDark,
     icon: "#C4C4C4",

@@ -491,7 +491,7 @@ const CreateRide = () => {
               style={{
                 fontSize: 32,
                 marginBottom: 20,
-                fontFamily: "Comfortaa-Bold",
+                fontFamily: "ComfortaaBold",
                 fontWeight: 700,
                 color: currentColors.text,
                 letterSpacing: -1,
@@ -505,7 +505,7 @@ const CreateRide = () => {
               color: currentColors.tint,
               fontSize: 22,
               marginBottom: 15,
-              fontFamily: "Comfortaa",
+              fontFamily: "ComfortaaRegular",
               letterSpacing: -1,
             }}
           >

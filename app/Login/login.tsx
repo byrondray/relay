@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   View,
   TextInput,
@@ -18,6 +18,9 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import { Video, ResizeMode } from "expo-av";
 import { useFonts } from "expo-font";
 import { useTheme } from "@/contexts/ThemeContext";
+import RelayhwSvg from "@/components/icons/RelayhwSvg";
+import GoogleSvg from "@/components/icons/GoogleSvg";
+import FacebookSvg from "@/components/icons/FacebookSvg";
 
 export default function LoginScreen(): JSX.Element {
 
@@ -28,7 +31,7 @@ export default function LoginScreen(): JSX.Element {
     ComfortaaSemiBold: require("../../assets/fonts/Comfortaa-SemiBold.ttf"),
     ComfortaaBold: require("../../assets/fonts/Comfortaa-Bold.ttf"),
   });
-
+  
   const { currentColors } = useTheme();
   const {
     email,
@@ -50,28 +53,47 @@ export default function LoginScreen(): JSX.Element {
 
         <StatusBar barStyle="light-content" translucent backgroundColor="transparent" />
 
+<<<<<<< HEAD
+        {Platform.OS === "ios" || Platform.OS === "android" ? (
+          <Video
+            source={require('../../assets/images/bg_video.mp4')}
+            rate={1.0}
+            volume={1.0}
+            resizeMode={ResizeMode.COVER}
+            isMuted = {true}
+            isLooping
+            shouldPlay
+            style={styles.backgroundVideo}
+            onError={(e) => console.error('Video Error: ', e)}
+          />
+        ) : (
+          <ImageBackground
+            source={require('../../assets/images/bg_video.png')}
+            style={styles.background}
+            resizeMode="cover"
+          />
+        )}
+=======
 
         {/* <ImageBackground
       source={require("../../assets/images/bg_video.png")}
       style={styles.background}
       resizeMode="cover"
     > */}
+>>>>>>> 56356b4030cad0493103a431c0983542d8b965a5
 
         <LinearGradient
           colors={["rgba(43,38,51,0.6)", "rgba(226, 74, 74 ,0.6)"]}
           style={styles.gradient}
         >
           <View style={styles.container}>
-            <Image
-              source={require("../../assets/images/relay_logo.png")}
-              style={styles.logo}
-            />
+            <RelayhwSvg width={120} height={120} />
             {loading ? (
               <ActivityIndicator size="large" color="#0000ff" />
             ) : (
               <View style={styles.form}>
                 {/* Email Input */}
-                <Text style={styles.LabelText}>
+                <Text style={styles.labelText}>
                   Email
                 </Text>
                 <TextInput
@@ -79,10 +101,10 @@ export default function LoginScreen(): JSX.Element {
                   onChangeText={setEmail}
                   style={styles.inputText}
                   placeholder="Email"
-                  placeholderTextColor={currentColors.placeholder }
+                  placeholderTextColor={currentColors.placeholderText}
                 />
 
-                <Text style={styles.LabelText}>
+                <Text style={styles.labelText}>
                   Password
                 </Text>
 
@@ -93,7 +115,7 @@ export default function LoginScreen(): JSX.Element {
                   secureTextEntry
                   style={styles.inputText}
                   placeholder="Password"
-                  placeholderTextColor="#8F9BB3"
+                  placeholderTextColor={currentColors.placeholderText}
                 />
 
                 <Text style={styles.ForgotPassword}>
@@ -110,44 +132,28 @@ export default function LoginScreen(): JSX.Element {
                   </Text>
                 </TouchableOpacity>
 
+
                 <View style={styles.otherSignIn}>
-                  <View
-                    style={{
-                      justifyContent: 'center',
-                      alignContent: 'center',
-                      width: '100%',
-                      marginRight: 20,
-                    }}
-                  >
+                  <View style={[styles.signInWithLine, { marginRight: 10 }]}>
                     <View
                       style={{
-                        width: '100%',
                         height: 1,
                         backgroundColor: "#fff",
                       }} 
                     />
                   </View>
 
-                  <Text style={{ display: 'flex', width: "100%", justifyContent: 'center', alignContent: 'center', color: '#fff', fontSize: 12, fontFamily: "ComfortaaBold" }}>
+                  <Text style={styles.signInWithText}>
                     Or Sign In With
                   </Text>
-                  <View
-                    style={{
-                      justifyContent: 'center',
-                      alignContent: 'center',
-                      width: '100%',
-                      marginLeft: 20,
-                    }}
-                  >
+
+                  <View style={[styles.signInWithLine, { marginLeft: 10 }]}>
                     <View
                       style={{
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignContent: 'center',
-                        width: '100%',
                         height: 1,
                         backgroundColor: "#fff",
-                      }} />
+                      }} 
+                    />
                   </View>
                 </View>
 
@@ -156,39 +162,30 @@ export default function LoginScreen(): JSX.Element {
                     flex: 1,
                     flexDirection: "row",
                     marginVertical: 20,
-                    marginLeft: 60,
+                    width: 350,
+                    justifyContent: "space-between",
                   }}
                 >
-                  <TouchableOpacity style={{}}>
-                    <Image
-                      source={require("../../assets/images/google_signin.png")}
-                      style={{
-                        width: 200,
-                        height: 45,
-                        resizeMode: "contain",
-                        marginLeft: 40,
-                      }}
-                    />
+                  <TouchableOpacity>
+                    <View style={styles.signInButton}>
+                      <GoogleSvg width={24} height={24} style={styles.svg} />
+                      <Text style={styles.googleText}>Google</Text>
+                    </View>
                   </TouchableOpacity>
 
-                  <TouchableOpacity style={{}}>
-                    <Image
-                      source={require("../../assets/images/fb_signin.png")}
-                      style={{
-                        width: 200,
-                        height: 45,
-                        resizeMode: "contain",
-                        marginRight: 100,
-                      }}
-                    />
+                  <TouchableOpacity>
+                    <View style={styles.signInButton}>
+                      <FacebookSvg width={24} height={24} style={styles.svg} />
+                      <Text style={styles.googleText}>Facebook</Text>
+                    </View>
                   </TouchableOpacity>
                 </View>
 
-                <View style={{ display: "flex", flexDirection: "row", width: "100%", marginTop: 50 }}>
-                  <Text style={styles.buttonText}>Don't have an account?</Text>
+                <View style={{ flexDirection: 'row', justifyContent: "center", width: 350, marginTop: 50 }}>
+                  <Text style={styles.haveAccountText}>Don't have an account?</Text>
                   <Link
                     href="/Register/register"
-                    style={[styles.link, { color: "#FFCB8A", marginTop: 40 }]}
+                    style={[styles.link, { color: "#FFCB8A"}]}
                   >Sign Up</Link>
                 </View>
 
@@ -203,8 +200,6 @@ export default function LoginScreen(): JSX.Element {
             )}
           </View>
         </LinearGradient>
-
-        {/* </ImageBackground> */}
       </View>
     </KeyboardAvoidingView>
   );
@@ -225,8 +220,9 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   container: {
-    width: "85%",
+    width: "90%",
     alignItems: "center",
+    marginTop: 80,
   },
   logo: {
     width: 140,
@@ -236,15 +232,16 @@ const styles = StyleSheet.create({
     resizeMode: "contain",
   },
   form: {
-    width: "100%",
+    width: 350,
     alignItems: "center",
     marginTop: 40,
   },
-  LabelText: {
+  labelText: {
     color: "white",
     alignSelf: "flex-start",
+    width: 350,
     marginBottom: 5,
-    marginLeft: 10,
+    marginLeft: 5,
     fontSize: 10,
     fontFamily: "ComfortaaRegular",
   },
@@ -259,7 +256,7 @@ const styles = StyleSheet.create({
     fontFamily: "ComfortaaRegular",
   },
   inputText: {
-    width: 300,
+    width: 350,
     height: 44,
     borderWidth: 1,
     paddingTop: 10,
@@ -270,12 +267,12 @@ const styles = StyleSheet.create({
     borderColor: "#D3D3D3",
     borderRadius: 25,
     backgroundColor: "#FFFFFF",
-    color: "#111",
+    color: "#000r",
     fontSize: 13,
     fontFamily: "ComfortaaRegular",
   },
   button: {
-    width: 300, // Ensure button takes up full width
+    width: 350, // Ensure button takes up full width
     height: 44, // Match button height with input height
     backgroundColor: "#F4C542",
     borderRadius: 25,
@@ -288,7 +285,7 @@ const styles = StyleSheet.create({
     color: "black",
     textAlign: "center",
     letterSpacing: -0.5,
-    fontSize: 16,
+    fontSize: 14,
     fontFamily: "ComfortaaBold",
   },
   otherSignIn: {
@@ -296,9 +293,31 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: 'center',
     alignContent: 'center',
-    width: 80,
+    width: 350,
+  },
+  signInWithLine: {
+    width: '25%',
+    justifyContent: 'center',
+    alignContent: 'center',
+  },
+  signInWithText: {
+    width: '40%',
+    textAlign: 'center',
+    fontSize: 12,
+    fontFamily: "ComfortaaRegular",
+    color: "#FFFFFF",
+  },
+  haveAccountText: {
+    marginRight: 5,
+    letterSpacing: -0.5,
+    fontSize: 12,
+    fontFamily: "ComfortaaRegular",
+    color: "#FFFFFF",
   },
   link: {
+    letterSpacing: -0.5,
+    fontSize: 12,
+    fontFamily: "ComfortaaRegular",
     textDecorationLine: "underline",
     marginBottom: 10,
   },
@@ -308,7 +327,7 @@ const styles = StyleSheet.create({
   errBgBox: {
     alignItems: "center",
     justifyContent: "center",
-    width: 300,
+    width: 350,
     padding: 20,
     marginTop: 15,
     borderRadius: 10,
@@ -337,5 +356,27 @@ const styles = StyleSheet.create({
     right: 0,
     width: "100%",
     height: "100%",
+  },
+  svg: {
+    alignItems: "center",
+    justifyContent: "center",
+    marginRight: 10,
+  },
+  googleText: {
+    alignItems: "center",
+    justifyContent: "center",
+    fontFamily: "ComfortaaBold",
+    fontSize: 15,
+    letterSpacing: -0.2
+    ,
+  },
+  signInButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#ffffff",
+    width: 168,
+    height: 44,
+    borderRadius: 25,
   }
 });
