@@ -54,6 +54,13 @@ const Settings = () => {
         <Switch value={false} onValueChange={() => {}} />
       </View>
 
+      <View style={styles.settingItem}>
+        <Text style={[styles.settingText, { color: currentColors.text, fontSize: 18 * textScaleFactor }]}>
+          Haptics
+        </Text>
+        <Switch value={false} onValueChange={() => {}} />
+      </View>
+
       <LinearGradient
         colors={["#ff8833", "#e24a4a"]}
         start={{ x: 0, y: 0 }}
