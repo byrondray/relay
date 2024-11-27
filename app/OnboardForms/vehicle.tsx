@@ -36,25 +36,25 @@ function VehicleForm(): JSX.Element {
   const [insuranceImage, setInsuranceImage] = useState<string | null>(null);
   const [checked, setChecked] = React.useState(false);
 
-  const {
-    data: vehicleData,
-    loading: vehicleLoading,
-    error: vehicleError,
-  } = useQuery(GET_VEHICLE_FOR_USER, {
-    variables: { userId },
-    skip: !userId,
-    onCompleted: (data) => {
-      if (data?.getVehicleForUser) {
-        const vehicle = data.getVehicleForUser;
-        setMake(vehicle.make || "");
-        setModel(vehicle.model || "");
-        setYear(vehicle.year || "");
-        setNumberOfSeats(vehicle.numberOfSeats || "");
-        setLicensePlate(vehicle.licensePlate || "");
-        setColor(vehicle.color || "");
-      }
-    },
-  });
+  // const {
+  //   data: vehicleData,
+  //   loading: vehicleLoading,
+  //   error: vehicleError,
+  // } = useQuery(GET_VEHICLE_FOR_USER, {
+  //   variables: { userId },
+  //   skip: !userId,
+  //   onCompleted: (data) => {
+  //     if (data?.getVehicleForUser) {
+  //       const vehicle = data.getVehicleForUser;
+  //       setMake(vehicle.make || "");
+  //       setModel(vehicle.model || "");
+  //       setYear(vehicle.year || "");
+  //       setNumberOfSeats(vehicle.numberOfSeats || "");
+  //       setLicensePlate(vehicle.licensePlate || "");
+  //       setColor(vehicle.color || "");
+  //     }
+  //   },
+  // });
 
   const [createVehicle] = useMutation(CREATE_VEHICLE);
 
@@ -85,17 +85,17 @@ function VehicleForm(): JSX.Element {
     }
   };
 
-  if (vehicleLoading) {
-    return <ActivityIndicator size="large" color={currentColors.tint} />;
-  }
+  // if (vehicleLoading) {
+  //   return <ActivityIndicator size="large" color={currentColors.tint} />;
+  // }
 
-  if (vehicleError) {
-    return (
-      <Text style={[styles.errorText, { fontFamily: "Comfortaa" }]}>
-        Error loading vehicle data.
-      </Text>
-    );
-  }
+  // if (vehicleError) {
+  //   return (
+  //     <Text style={[styles.errorText, { fontFamily: "Comfortaa" }]}>
+  //       Error loading vehicle data.
+  //     </Text>
+  //   );
+  // }
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
