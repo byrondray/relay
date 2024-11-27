@@ -25,6 +25,7 @@ import { LogBox } from "react-native";
 import { DarkTheme, DefaultTheme } from "@react-navigation/native";
 import { FOREGROUND_NOTIFICATION_SUBSCRIPTION } from "@/graphql/map/queries";
 import customMapping from "@/components/customStyling/custom-mapping.json";
+import { TextSizeProvider } from "@/contexts/TextSizeContext";
 
 const { width } = Dimensions.get("window");
 import { ThemeProvider, useTheme } from "@/contexts/ThemeContext";
@@ -118,6 +119,7 @@ export default function RootLayout() {
             customMapping={customMapping as any}
           >
             <ThemeProvider>
+            <TextSizeProvider>
               <View
                 style={
                   colorScheme === "dark"
@@ -167,6 +169,7 @@ export default function RootLayout() {
                   </Animated.View>
                 )}
               </View>
+              </TextSizeProvider>
             </ThemeProvider>
           </ApplicationProvider>
         </ApolloProvider>

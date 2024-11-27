@@ -5,12 +5,13 @@ import { useTheme } from "@/contexts/ThemeContext";
 import { useLogout } from "@/hooks/auth/useLogout";
 import { RESET_NOTIFICATION_TRACKING } from "@/graphql/map/queries";
 import { useMutation } from "@apollo/client";
+import { useTextSize } from "@/contexts/TextSizeContext";
 
 const LogoutButton = () => {
   const { logout, loading } = useLogout();
-
+  const { isLargeText, toggleTextSize, textScaleFactor } = useTextSize();
   return (
-    <Text onPress={logout} style={{ color: "#fff", padding: 10 }}>
+    <Text onPress={logout} style={{ color: "#fff", padding: 10, fontFamily: "Comfortaa", fontSize: 15 * textScaleFactor }}>
       {loading ? "Logging out..." : "Logout"}
     </Text>
   );
@@ -37,9 +38,9 @@ const ResetTrackingButton = () => {
       }
     }
   };
-
+  const { isLargeText, toggleTextSize, textScaleFactor } = useTextSize();
   return (
-    <Text onPress={handleResetTracking} style={{ color: "#fff", padding: 10 }}>
+    <Text onPress={handleResetTracking} style={{ color: "#fff", padding: 10, fontFamily: "Comfortaa", fontSize: 15 * textScaleFactor }}>
       {loading ? "Resetting..." : "Reset Tracking"}
     </Text>
   );
@@ -47,36 +48,55 @@ const ResetTrackingButton = () => {
 
 const Settings = () => {
   const { theme, setTheme, currentColors } = useTheme();
+  const { isLargeText, toggleTextSize, textScaleFactor } = useTextSize();
   const toggleSwitch = () => setTheme(theme === "light" ? "dark" : "light");
+  const [isNotificationsEnabled, setIsNotificationsEnabled] = useState(false);
+  const [isLocationEnabled, setIsLocationEnabled] = useState(false);
+  const [isHapticsEnabled, setIsHapticsEnabled] = useState(false);
 
   return (
     <View
       style={[styles.container, { backgroundColor: currentColors.background }]}
     >
-      <Text style={[styles.header, { color: currentColors.text }]}>
+      <Text style={[styles.header, { color: currentColors.text, fontSize: 24 * textScaleFactor }]}>
         Settings
       </Text>
 
       <View style={styles.settingItem}>
-        <Text style={[styles.settingText, { color: currentColors.text }]}>
+        <Text style={[styles.settingText, { color: currentColors.text, fontSize: 18 * textScaleFactor }]}>
           Enable Notifications
         </Text>
-        <Switch value={false} onValueChange={() => {}} />
+        <Switch value={isNotificationsEnabled} onValueChange={setIsNotificationsEnabled} />
       </View>
 
       <View style={styles.settingItem}>
-        <Text style={[styles.settingText, { color: currentColors.text }]}>
+        <Text style={[styles.settingText, { color: currentColors.text, fontSize: 18 * textScaleFactor }]}>
           Dark Mode
         </Text>
         <Switch value={theme === "dark"} onValueChange={toggleSwitch} />
       </View>
 
       <View style={styles.settingItem}>
-        <Text style={[styles.settingText, { color: currentColors.text }]}>
+        <Text style={[styles.settingText, { color: currentColors.text, fontSize: 18 * textScaleFactor }]}>
+          Large Text
+        </Text>
+        <Switch value={isLargeText} onValueChange={toggleTextSize} />
+      </View>
+
+      <View style={styles.settingItem}>
+        <Text style={[styles.settingText, { color: currentColors.text, fontSize: 18 * textScaleFactor }]}>
           Location Access
         </Text>
-        <Switch value={false} onValueChange={() => {}} />
+        <Switch value={isLocationEnabled} onValueChange={setIsLocationEnabled} />
       </View>
+
+      <View style={styles.settingItem}>
+        <Text style={[styles.settingText, { color: currentColors.text, fontSize: 18 * textScaleFactor }]}>
+          Haptics
+        </Text>
+        <Switch value={isHapticsEnabled} onValueChange={setIsHapticsEnabled} />
+      </View>
+
 
       <LinearGradient
         colors={["#ff8833", "#e24a4a"]}
@@ -131,6 +151,7 @@ const styles = StyleSheet.create({
   },
   settingText: {
     fontSize: 18,
+    fontFamily: "Comfortaa"
   },
 });
 
