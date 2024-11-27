@@ -36,14 +36,19 @@ const NewRideScreen: React.FC = () => {
   ];
 
   return (
-    <View style={[styles.container, { backgroundColor: currentColors.background }]}>
+    <View
+      style={[styles.container, { backgroundColor: currentColors.background }]}
+    >
       <View style={styles.content}>
-        <Text style={[styles.title, { color: currentColors.text }]}>New Ride</Text>
+        <Text style={[styles.title, { color: currentColors.text }]}>
+          New Ride
+        </Text>
 
         <TouchableOpacity
           style={[
             styles.button,
-            hasFilledDriverInfo ? styles.requestButton : styles.disabledButton, { backgroundColor: currentColors.placeholder }
+            hasFilledDriverInfo ? styles.requestButton : styles.disabledButton,
+            { backgroundColor: currentColors.placeholder },
           ]}
           disabled={!hasFilledDriverInfo}
         >
@@ -81,7 +86,8 @@ const NewRideScreen: React.FC = () => {
         {!hasFilledDriverInfo && (
           <>
             <Text style={[styles.signupText, { color: currentColors.text }]}>
-              Interested in becoming a carpool driver to help drive kids in your community?
+              Interested in becoming a carpool driver to help drive kids in your
+              community?
             </Text>
 
             <TouchableOpacity style={styles.signUpButtonContainer}>
@@ -99,13 +105,25 @@ const NewRideScreen: React.FC = () => {
           </>
         )}
 
-        <TouchableOpacity style={[styles.requestButton, { backgroundColor: currentColors.placeholder }]}>
+        <TouchableOpacity
+          style={[
+            styles.requestButton,
+            { backgroundColor: currentColors.placeholder },
+          ]}
+        >
           <View style={styles.buttonContent}>
             <View style={styles.textContainer}>
-              <Text style={[styles.requestButtonText, { color: currentColors.text }]}>
+              <Text
+                style={[
+                  styles.requestButtonText,
+                  { color: currentColors.text },
+                ]}
+              >
                 Need a ride for my kid
               </Text>
-              <Text style={[styles.requestSubText, { color: currentColors.text }]}>
+              <Text
+                style={[styles.requestSubText, { color: currentColors.text }]}
+              >
                 Notify me when a ride matches
               </Text>
             </View>

@@ -5,7 +5,8 @@ import { useTheme } from "@/contexts/ThemeContext";
 import { StyleSheet, View, Image, TouchableOpacity, Text } from "react-native";
 import Relay from "@/assets/images/Relay.svg";
 import RelayWhite from "@/assets/images/Relay-white.svg";
-import RelaySvg from "@/components/icons/RelaySvg.svg";
+import { Ionicons } from "@expo/vector-icons";
+// import RelaySvg from "@/components/icons/RelaySvg.svg";
 
 function Header() {
   const { currentColors } = useTheme();
@@ -20,7 +21,7 @@ function Header() {
         },
       ]}
     >
-      <RelaySvg width={30} height={30} />
+      {/* <RelaySvg width={30} height={30} /> */}
       {isDarkMode ? (
         <RelayWhite style={{ marginLeft: 10, marginTop: 5 }} />
       ) : (
