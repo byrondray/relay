@@ -5,7 +5,7 @@ import { useTheme } from "@/contexts/ThemeContext";
 import { StyleSheet, View, Image, TouchableOpacity, Text } from "react-native";
 import Relay from "@/assets/images/Relay.svg";
 import RelayWhite from "@/assets/images/Relay-white.svg";
-import RelaySvg from "@/components/icons/RelaySvg.svg";
+import RelaySvg from "@/components/icons/RelaySvg";
 
 function Header() {
   const { currentColors } = useTheme();
