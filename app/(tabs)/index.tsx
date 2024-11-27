@@ -1,16 +1,14 @@
-import React from "react";
-import { Text, StyleSheet, FlatList, View, ScrollView } from "react-native";
-import { useQuery } from "@apollo/client";
-import { GET_USER_CARPOOL_WITH_REQUESTS } from "@/graphql/carpool/queries";
-import { Spinner } from "@ui-kitten/components";
-import { auth } from "@/firebaseConfig";
-import { Link, useFocusEffect } from "expo-router";
-import { GetUserCarpoolsAndRequestsQuery } from "@/graphql/generated";
-import { useCallback } from "react";
-import MapDriverCard from "@/components/cards/mapDriverCard";
 import ActiveRiderCard from "@/components/cards/activeCard";
+import MapDriverCard from "@/components/cards/mapDriverCard";
 import { useTheme } from "@/contexts/ThemeContext";
-import DriverInfo from "@/components/cards/driverCard";
+import { auth } from "@/firebaseConfig";
+import { GET_USER_CARPOOL_WITH_REQUESTS } from "@/graphql/carpool/queries";
+import { GetUserCarpoolsAndRequestsQuery } from "@/graphql/generated";
+import { useQuery } from "@apollo/client";
+import { Spinner } from "@ui-kitten/components";
+import { Link, useFocusEffect } from "expo-router";
+import React, { useCallback } from "react";
+import { FlatList, ScrollView, StyleSheet, Text, View } from "react-native";
 
 const CarpoolListScreen: React.FC = () => {
   const { currentColors } = useTheme();
@@ -106,7 +104,7 @@ const CarpoolListScreen: React.FC = () => {
                     startLocation={item.startAddress}
                     startTime={item.departureTime}
                     endLocation={item.endAddress}
-                    endTime={item.departureTime}
+                    endTime={"03: 53 PM"}
                     passengerImages={[
                       vanessaChildImage,
                       evanChildImage,
@@ -141,7 +139,7 @@ const CarpoolListScreen: React.FC = () => {
                     startLocation={request.startAddress || "Unknown"}
                     startTime={request.pickupTime || "Unknown"}
                     endLocation={request.startAddress || "Unknown"}
-                    endTime={request.pickupTime || "Unknown"}
+                    endTime={"03:53pm" || "Unknown"}
                     images={[vanessaChildImage]}
                     recurrence="one time"
                   />

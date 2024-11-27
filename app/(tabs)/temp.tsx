@@ -1,10 +1,10 @@
-import React, { useState } from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
-import { useTheme } from "@/contexts/ThemeContext";
-import MySchedule from "@/components/trips/mySchedule";
-import RideRequest from "@/components/trips/rideRequests";
 import DriverPost from "@/components/trips/driverPost";
 import MyHistory from "@/components/trips/myHistory";
+import MySchedule from "@/components/trips/mySchedule";
+import RideRequest from "@/components/trips/rideRequests";
+import { useTheme } from "@/contexts/ThemeContext";
+import React, { useState } from "react";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 function HomeScreen() {
   const { currentColors } = useTheme();
@@ -41,98 +41,34 @@ function HomeScreen() {
     >
       {/* Navigation Row */}
       <View style={styles.navRow}>
-        <TouchableOpacity onPress={() => handleNavigation("My Schedule")}>
-          <View style={styles.navItem}>
-            <Text
-              style={[
-                styles.navText,
-                {
-                  color:
-                    currentPage === "My Schedule"
-                      ? "#FF6A00"
-                      : currentColors.text,
-                },
-              ]}
+        {["My Schedule", "Ride Requests", "Driver Post", "My History"].map(
+          (item) => (
+            <TouchableOpacity
+              key={item}
+              onPress={() => handleNavigation(item)}
+              style={styles.navTouchable} // Increased touchable area
             >
-              My Schedule
-            </Text>
-
-            {currentPage === "My Schedule" && (
-              <View
-                style={[styles.activeLine, { backgroundColor: "#FF6A00" }]}
-              />
-            )}
-          </View>
-        </TouchableOpacity>
-
-        <TouchableOpacity onPress={() => handleNavigation("Ride Requests")}>
-          <View style={styles.navItem}>
-            <Text
-              style={[
-                styles.navText,
-                {
-                  color:
-                    currentPage === "Ride Requests"
-                      ? "#FF6A00"
-                      : currentColors.text,
-                },
-              ]}
-            >
-              Ride Requests
-            </Text>
-            {currentPage === "Ride Requests" && (
-              <View
-                style={[styles.activeLine, { backgroundColor: "#FF6A00" }]}
-              />
-            )}
-          </View>
-        </TouchableOpacity>
-
-        <TouchableOpacity onPress={() => handleNavigation("Driver Post")}>
-          <View style={styles.navItem}>
-            <Text
-              style={[
-                styles.navText,
-                {
-                  color:
-                    currentPage === "Driver Post"
-                      ? "#FF6A00"
-                      : currentColors.text,
-                },
-              ]}
-            >
-              Driver Post
-            </Text>
-            {currentPage === "Driver Post" && (
-              <View
-                style={[styles.activeLine, { backgroundColor: "#FF6A00" }]}
-              />
-            )}
-          </View>
-        </TouchableOpacity>
-
-        <TouchableOpacity onPress={() => handleNavigation("My History")}>
-          <View style={styles.navItem}>
-            <Text
-              style={[
-                styles.navText,
-                {
-                  color:
-                    currentPage === "My History"
-                      ? "#FF6A00"
-                      : currentColors.text,
-                },
-              ]}
-            >
-              My History
-            </Text>
-            {currentPage === "My History" && (
-              <View
-                style={[styles.activeLine, { backgroundColor: "#FF6A00" }]}
-              />
-            )}
-          </View>
-        </TouchableOpacity>
+              <View style={styles.navItem}>
+                <Text
+                  style={[
+                    styles.navText,
+                    {
+                      color:
+                        currentPage === item ? "#FF6A00" : currentColors.text,
+                    },
+                  ]}
+                >
+                  {item}
+                </Text>
+                {currentPage === item && (
+                  <View
+                    style={[styles.activeLine, { backgroundColor: "#FF6A00" }]}
+                  />
+                )}
+              </View>
+            </TouchableOpacity>
+          )
+        )}
       </View>
 
       <View style={{ marginBottom: 20 }}>{renderPageContent()}</View>
@@ -149,6 +85,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 20,
   },
+  navTouchable: {
+    paddingVertical: 10,
+  },
   navItem: {
     alignItems: "center",
     justifyContent: "center",
@@ -163,10 +102,5 @@ const styles = StyleSheet.create({
     width: "100%",
     height: 2,
     marginTop: 5,
-  },
-  heading: {
-    fontSize: 32,
-    fontWeight: "bold",
-    marginBottom: 20,
   },
 });

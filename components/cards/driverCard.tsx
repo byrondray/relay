@@ -1,10 +1,10 @@
-import React from "react";
-import { View, Text, Image, TouchableOpacity } from "react-native";
-import MessageCircle from "@/assets/images/message-circle.svg";
 import HeartIcon from "@/assets/images/heart.svg";
+import MessageCircle from "@/assets/images/message-circle.svg";
 import { useTheme } from "@/contexts/ThemeContext"; // Importing useTheme
-import { User, Vehicle, CarpoolWithRequests } from "@/graphql/generated";
 import { auth } from "@/firebaseConfig"; // Firebase for checking current user
+import { CarpoolWithRequests, User, Vehicle } from "@/graphql/generated";
+import React from "react";
+import { Image, Text, TouchableOpacity, View } from "react-native";
 
 const DriverInfo = ({
   driverData,
