@@ -1,7 +1,6 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import {
   View,
-  Text,
   TextInput,
   FlatList,
   StyleSheet,
@@ -10,6 +9,8 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   TouchableOpacity,
+  Text,
+  InteractionManager,
 } from "react-native";
 import {
   useFocusEffect,
@@ -29,46 +30,21 @@ import Message from "@/components/messaging/message";
 import { Spinner } from "@ui-kitten/components";
 import { LinearGradient } from "expo-linear-gradient";
 import { useTheme } from "@/contexts/ThemeContext";
-import { useQuery } from "@apollo/client";
-import { GET_GROUP } from "@/graphql/group/queries";
 
 export default function GroupMessageScreen() {
   const [messages, setMessages] = useState<GroupMessage[]>([]);
   const [newMessage, setNewMessage] = useState("");
+  const [isReady, setIsReady] = useState(false); // Add a flag for layout readiness
   const { groupId } = useLocalSearchParams();
-  const navigation = useNavigation();
   const groupIdString = Array.isArray(groupId) ? groupId[0] : groupId;
   const currentUser = auth.currentUser;
   const userId = currentUser?.uid || "";
-
-  const { currentColors } = useTheme(); // Access currentColors
-  const { loading, error, refetch } = useFetchGroupMessages(
+  const flatListRef = useRef<FlatList>(null);
+  const isUserScrolling = useRef(false);
+  const { currentColors } = useTheme();
+  const { loading, refetch } = useFetchGroupMessages(
     groupIdString,
     setMessages
-  );
-
-  useFocusEffect(
-    useCallback(() => {
-      refetch();
-    }, [refetch])
-  );
-
-  const {
-    data: groupData,
-    error: groupError,
-    loading: groupLoading,
-  } = useQuery(GET_GROUP, {
-    variables: { id: groupIdString },
-  });
-
-  useFocusEffect(
-    useCallback(() => {
-      if (groupData && groupData.getGroup) {
-        const groupName = groupData.getGroup.name || "Group";
-        // @ts-ignore
-        navigation.setParams({ groupName });
-      }
-    }, [groupData, navigation])
   );
 
   const { sendMessage } = useSendGroupMessage(
@@ -83,6 +59,56 @@ export default function GroupMessageScreen() {
 
   useGroupMessageSubscription(groupIdString, setMessages);
 
+  useFocusEffect(
+    useCallback(() => {
+      refetch();
+    }, [refetch])
+  );
+
+  // Automatically scroll to the bottom unless the user is scrolling
+  useEffect(() => {
+    const scrollToBottom = () => {
+      if (
+        flatListRef.current &&
+        !isUserScrolling.current &&
+        isReady &&
+        messages.length
+      ) {
+        flatListRef.current.scrollToEnd({ animated: true });
+      }
+    };
+
+    scrollToBottom();
+
+    const keyboardShowListener = Keyboard.addListener(
+      "keyboardDidShow",
+      scrollToBottom
+    );
+    const keyboardHideListener = Keyboard.addListener(
+      "keyboardDidHide",
+      scrollToBottom
+    );
+
+    return () => {
+      keyboardShowListener.remove();
+      keyboardHideListener.remove();
+    };
+  }, [messages]);
+
+  useEffect(() => {
+    InteractionManager.runAfterInteractions(() => {
+      setIsReady(true);
+    });
+  }, []);
+
+  const handleScrollBeginDrag = () => {
+    isUserScrolling.current = true;
+  };
+
+  const handleScrollEndDrag = () => {
+    isUserScrolling.current = false;
+  };
+
   useEffect(() => {
     const requestNotificationPermission = async () => {
       const { status } = await Notifications.getPermissionsAsync();
@@ -94,9 +120,9 @@ export default function GroupMessageScreen() {
     const handleForegroundNotification =
       Notifications.addNotificationReceivedListener((notification) => {
         const data = notification.request.content.data;
-        const { senderId: messageSenderId, text } = data;
+        const { senderId, text } = data;
 
-        if (messageSenderId && text) {
+        if (senderId && text) {
           const newMessage: GroupMessage = {
             groupId: groupIdString,
             message: text,
@@ -109,17 +135,7 @@ export default function GroupMessageScreen() {
             },
           };
 
-          setMessages((prevMessages) => {
-            const updatedMessages = [...prevMessages, newMessage];
-            const uniqueMessages = Array.from(
-              new Map(updatedMessages.map((msg) => [msg.id, msg])).values()
-            );
-            AsyncStorage.setItem(
-              `group_messages_${groupIdString}`,
-              JSON.stringify(uniqueMessages)
-            );
-            return uniqueMessages;
-          });
+          setMessages((prevMessages) => [...prevMessages, newMessage]);
         }
       });
 
@@ -132,7 +148,7 @@ export default function GroupMessageScreen() {
     };
   }, [groupId, messages]);
 
-  if (loading) {
+  if (loading || !isReady) {
     return (
       <View style={styles.spinnerContainer}>
         <Spinner />
@@ -161,10 +177,14 @@ export default function GroupMessageScreen() {
           ]}
         >
           <FlatList
+            ref={flatListRef}
             data={messages}
             keyExtractor={(item) => item.id}
             renderItem={({ item }) => <Message message={item} />}
             contentContainerStyle={{ paddingBottom: 10 }}
+            onScrollBeginDrag={handleScrollBeginDrag}
+            onScrollEndDrag={handleScrollEndDrag}
+            scrollEnabled={true}
           />
 
           <View
@@ -182,7 +202,7 @@ export default function GroupMessageScreen() {
                   backgroundColor: currentColors.background,
                   color: currentColors.text,
                   borderColor: currentColors.placeholder,
-                  borderWidth: 1, 
+                  borderWidth: 1,
                 },
               ]}
               placeholder="Message..."

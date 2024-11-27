@@ -15,9 +15,9 @@ interface CardData {
   state: "pending" | "timeout";
   date: Date;
   startLocation: string;
-  startTime: string;
+  startTime: string; // Either "3:30 PM" or ISO string "2024-11-26T22:25:00.000Z"
   endLocation: string;
-  endTime: string;
+  endTime: string; // Either "3:30 PM" or ISO string
   images: string[];
   recurrence: "one time" | "recurring";
 }
@@ -35,8 +35,22 @@ const ActiveRiderCard = ({
 }: CardData) => {
   const { currentColors } = useTheme(); // Accessing theme colors
 
-  const isodate = new Date(date); // delete this later when db is connected cause I forget.
+  // Helper to parse and format time
+  const formatTime = (time: string) => {
+    // Check if the time is already formatted (e.g., "3:30 PM")
+    if (/^\d{1,2}:\d{2}\s?(AM|PM)$/i.test(time)) {
+      return time; // Return as is
+    }
 
+    // Parse ISO string and format to "3:30 PM"
+    return new Date(time).toLocaleTimeString("en-US", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+    });
+  };
+
+  const isodate = new Date(date); // Placeholder for date formatting
   const formatThisDate = isodate.toLocaleDateString("en-US", {
     month: "short",
     day: "numeric",
@@ -158,6 +172,7 @@ const ActiveRiderCard = ({
           {formatThisDate}
         </Text>
 
+        {/* Start Location */}
         <View
           style={{
             flexDirection: "row",
@@ -165,13 +180,9 @@ const ActiveRiderCard = ({
             marginBottom: 5,
           }}
         >
-          <OrangeMarker
-            width={20}
-            height={20}
-            style={{ marginRight: 8, width: 120 }}
-          />
+          <OrangeMarker width={20} height={20} style={{ marginRight: 8 }} />
           <Text style={{ fontFamily: "Comfortaa", color: currentColors.text }}>
-            {startLocation.split(" ").slice(0, 3).join(" ")}
+            {startLocation.split(" ").slice(0, 3).join(" ").replace(",", "")}
           </Text>
           <Text
             style={{
@@ -180,14 +191,15 @@ const ActiveRiderCard = ({
               fontFamily: "Comfortaa",
             }}
           >
-            Est: {startTime.toLowerCase()}
+            Est: {formatTime(startTime)}
           </Text>
         </View>
 
+        {/* End Location */}
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           <RedMarker width={20} height={20} style={{ marginRight: 8 }} />
           <Text style={{ fontFamily: "Comfortaa", color: currentColors.text }}>
-            {endLocation.split(" ").slice(0, 3).join(" ")}
+            {endLocation.split(" ").slice(0, 3).join(" ").replace(",", "")}
           </Text>
           <Text
             style={{
@@ -196,7 +208,7 @@ const ActiveRiderCard = ({
               fontFamily: "Comfortaa",
             }}
           >
-            Est: {endTime.toLowerCase()}
+            Est: {formatTime(endTime)}
           </Text>
         </View>
 

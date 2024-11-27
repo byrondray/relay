@@ -1,9 +1,4 @@
-import React, {
-  useState,
-  useEffect,
-  useCallback,
-  useLayoutEffect,
-} from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import {
   View,
   Text,
@@ -44,6 +39,8 @@ export default function MessageScreen() {
   const { userId } = useLocalSearchParams();
   const recipientIdString = Array.isArray(userId) ? userId[0] : userId;
   const currentUser = auth.currentUser;
+
+  const flatListRef = useRef<FlatList>(null); // Ref for the FlatList
 
   const { data: recipientData, loading: recipientLoading } =
     useFetchUser(recipientIdString);
@@ -138,7 +135,31 @@ export default function MessageScreen() {
       navigation.setParams({ recipientName });
     }, [recipientData, navigation])
   );
-  
+
+  useEffect(() => {
+    const scrollToBottom = () => {
+      if (flatListRef.current) {
+        flatListRef.current.scrollToEnd({ animated: true });
+      }
+    };
+
+    scrollToBottom();
+
+    const keyboardShowListener = Keyboard.addListener(
+      "keyboardDidShow",
+      scrollToBottom
+    );
+    const keyboardHideListener = Keyboard.addListener(
+      "keyboardDidHide",
+      scrollToBottom
+    );
+
+    return () => {
+      keyboardShowListener.remove();
+      keyboardHideListener.remove();
+    };
+  }, [messages]);
+
   if (recipientLoading || senderLoading) {
     return (
       <View style={styles.spinnerContainer}>
@@ -168,6 +189,7 @@ export default function MessageScreen() {
           ]}
         >
           <FlatList
+            ref={flatListRef}
             data={messages}
             keyExtractor={(item) => item.id}
             renderItem={({ item }) => <Message message={item} />}
