@@ -19,33 +19,9 @@ const MySchedule = () => {
       endLocation: "Location B",
       endTime: "12:00 PM",
       images: [
-        "https://placekitten.com/200/200",
-        "https://placekitten.com/201/201",
+        require("@/assets/images/user/gloria/child/gloria-child.jpg"),
       ],
       recurrence: "recurring" as "one time" | "recurring",
-      driverDetails: {
-        driverData: {
-          id: "user001",
-          name: "John Doe",
-          email: "john.doe@example.com",
-          profilePicture: "https://via.placeholder.com/100.png?text=JD",
-        },
-        vehicleData: {
-          id: "vehicle001",
-          make: "Honda",
-          model: "Civic",
-          year: 2022,
-          color: "Red",
-        },
-        carpoolData: {
-          id: "carpool001",
-          status: "active",
-          requests: [
-            { id: "req1", status: "approved" },
-            { id: "req2", status: "pending" },
-          ],
-        },
-      },
     },
     {
       id: "987654321",
@@ -56,33 +32,10 @@ const MySchedule = () => {
       endLocation: "Location D",
       endTime: "5:00 PM",
       images: [
-        "https://placekitten.com/202/202",
-        "https://placekitten.com/203/203",
+        require("@/assets/images/user/vanessa/child/vanessa-child.jpg"),
+        require("@/assets/images/user/evan/child/evan-child.jpg"),
       ],
       recurrence: "one time" as "one time" | "recurring",
-      driverDetails: {
-        driverData: {
-          id: "user002",
-          name: "Jane Smith",
-          email: "jane.smith@example.com",
-          profilePicture: "https://via.placeholder.com/100.png?text=JS",
-        },
-        vehicleData: {
-          id: "vehicle002",
-          make: "Toyota",
-          model: "Corolla",
-          year: 2020,
-          color: "Blue",
-        },
-        carpoolData: {
-          id: "carpool002",
-          status: "completed",
-          requests: [
-            { id: "req3", status: "approved" },
-            { id: "req4", status: "declined" },
-          ],
-        },
-      },
     },
   ];
 
@@ -106,38 +59,58 @@ const MySchedule = () => {
           fontFamily: "Comfortaa",
         }}
       />
-      <Text
+      <View
         style={{
-          fontSize: 32,
-          fontWeight: "bold",
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "space-between",
+          marginTop: 20,
           marginBottom: 20,
-          color: currentColors.text,
-          marginTop: 60,
         }}
       >
-        My Schedule
-      </Text>
+        <Text
+          style={{
+            fontSize: 32,
+            fontWeight: "bold",
+            color: currentColors.text,
+          }}
+        >
+          My Schedule
+        </Text>
+        {/* <TouchableOpacity>
+    <Text
+      style={{
+        fontFamily: "Comfortaa",
+        fontSize: 12,
+        textDecorationLine: "underline",
+        color: "rgba(143, 156, 179, 1)",
+      }}
+    >
+      Advanced Search
+    </Text>
+  </TouchableOpacity> */}
+      </View>
 
       {fakeData.map((item) => (
-         <View
-         key={item.id}
-         style={{
-           paddingBottom: 20,
-         }}
-       >
-        <ScheduleMainCard
+        <View
           key={item.id}
-          id={item.id}
-          state={item.state}
-          date={item.date}
-          startLocation={item.startLocation}
-          startTime={item.startTime}
-          endLocation={item.endLocation}
-          endTime={item.endTime}
-          images={item.images}
-          recurrence={item.recurrence}
-          // driverDetails={item.driverDetails}
-        />
+          style={{
+            paddingBottom: 20,
+          }}
+        >
+          <ScheduleMainCard
+            key={item.id}
+            id={item.id}
+            state={item.state}
+            date={item.date}
+            startLocation={item.startLocation}
+            startTime={item.startTime}
+            endLocation={item.endLocation}
+            endTime={item.endTime}
+            images={item.images}
+            recurrence={item.recurrence}
+            // driverDetails={item.driverDetails}
+          />
         </View>
       ))}
     </View>

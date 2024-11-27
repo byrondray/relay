@@ -1,18 +1,15 @@
-import { Button } from "@ui-kitten/components";
-import React from "react";
-import { View, Text, TouchableOpacity } from "react-native";
-import TimeIcon from "@/assets/images/timeIcon.svg";
-import Trash from "@/assets/images/trash.svg";
+import ArrowUp from "@/assets/images/arrow-up.svg";
+import Clock from "@/assets/images/clock.svg";
 import OrangeMarker from "@/assets/images/OrangeMarker.svg";
 import RedMarker from "@/assets/images/RedMarker.svg";
-import StackedProfilePictures from "./stackedProfile";
 import RepeatIcon from "@/assets/images/repeat.svg";
-import ArrowUp from "@/assets/images/arrow-up.svg";
-import DriverInfo from "./driverCard";
-import Clock from "@/assets/images/clock.svg";
-import { useThemeColor } from "@/hooks/useThemeColor";
-import { User, Vehicle, CarpoolWithRequests } from "@/graphql/generated";
 import { useTheme } from "@/contexts/ThemeContext";
+import { CarpoolWithRequests, User, Vehicle } from "@/graphql/generated";
+import { useThemeColor } from "@/hooks/useThemeColor";
+import React from "react";
+import { Text, TouchableOpacity, View } from "react-native";
+import DriverInfo from "./driverCard";
+import StackedProfilePictures from "./stackedProfile";
 
 interface CardData {
   id: string;

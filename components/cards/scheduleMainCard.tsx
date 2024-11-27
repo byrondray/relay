@@ -10,35 +10,34 @@ import { Text, View } from "react-native";
 import DriverInfo from "./driverCard";
 import StackedProfilePictures from "./stackedProfile";
 
-
 interface CardData {
-    id: string;
-    state: "Pending" | "Timeout";
-    date: Date;
-    startLocation: string;
-    startTime: string;
-    endLocation: string;
-    endTime: string;
-    images: string[];
-    recurrence: "one time" | "recurring";
-    driverDetails: {
-      driverData: User;
-      vehicleData: Vehicle;
-      carpoolData: CarpoolWithRequests;
-    };
-  }
+  id: string;
+  state: "Pending" | "Timeout";
+  date: Date;
+  startLocation: string;
+  startTime: string;
+  endLocation: string;
+  endTime: string;
+  images: string[];
+  recurrence: "one time" | "recurring";
+  driverDetails: {
+    driverData: User;
+    vehicleData: Vehicle;
+    carpoolData: CarpoolWithRequests;
+  };
+}
 
 const ScheduleMainCard = ({
-    id,
-    state,
-    date,
-    startLocation,
-    startTime,
-    endLocation,
-    endTime,
-    images,
-    recurrence,
-    driverDetails,
+  id,
+  state,
+  date,
+  startLocation,
+  startTime,
+  endLocation,
+  endTime,
+  images,
+  recurrence,
+  driverDetails,
 }: CardData) => {
   const { currentColors } = useTheme();
 
@@ -53,7 +52,7 @@ const ScheduleMainCard = ({
   return (
     <View
       style={{
-        shadowColor: currentColors.placeholder,
+        shadowColor: currentColors.text,
         shadowOffset: { width: 0, height: 4 },
         shadowOpacity: 0.25,
         shadowRadius: 4,
@@ -62,7 +61,6 @@ const ScheduleMainCard = ({
         borderColor: currentColors.placeholder,
         borderRadius: 15,
         width: "100%",
-        height: 200,
         backgroundColor: currentColors.background,
         paddingHorizontal: 16,
       }}
@@ -95,19 +93,20 @@ const ScheduleMainCard = ({
             {recurrence === "recurring" ? (
               <View
                 style={{
-                    backgroundColor: "rgba(255, 136, 51, 0.1)",
-                    borderRadius: 16,
+                  backgroundColor: "rgba(255, 136, 51, 0.1)",
+                  borderRadius: 16,
                   paddingHorizontal: 18,
                   paddingVertical: 6,
                   flexDirection: "row",
                   alignItems: "center",
                 }}
               >
-  <RepeatIcon
+                <RepeatIcon
                   width={16}
                   height={16}
                   style={{ marginHorizontal: 5 }}
-                />                <Text
+                />{" "}
+                <Text
                   style={{
                     fontSize: 10,
                     fontFamily: "Comfortaa",
@@ -116,13 +115,13 @@ const ScheduleMainCard = ({
                   }}
                 >
                   {recurrence}
-                  </Text>
+                </Text>
               </View>
             ) : (
               <View
                 style={{
-                    backgroundColor: "rgba(255, 136, 51, 0.1)",
-                    borderRadius: 16,
+                  backgroundColor: "rgba(255, 136, 51, 0.1)",
+                  borderRadius: 16,
                   paddingHorizontal: 10,
                   paddingVertical: 6,
                   flexDirection: "row",
@@ -133,53 +132,61 @@ const ScheduleMainCard = ({
                   width={16}
                   height={16}
                   style={{ marginHorizontal: 5 }}
-                />                <Text
+                />{" "}
+                <Text
                   style={{
                     fontSize: 10,
                     fontFamily: "Comfortaa",
                     fontWeight: "700",
                     color: "#FF6A00",
-                }}
+                  }}
                 >
-                                      {recurrence}
-
-                  </Text>
+                  {recurrence}
+                </Text>
               </View>
             )}
-             <View
+            <View
+              style={{
+                backgroundColor: "#FFBB00",
+                borderRadius: 16,
+                paddingHorizontal: 18,
+                paddingVertical: 6,
+                flexDirection: "row",
+                alignItems: "center",
+                marginLeft: 10,
+              }}
+            >
+              <Clock width={16} height={16} style={{ marginHorizontal: 5 }} />{" "}
+              <Text
                 style={{
-                    backgroundColor: "#FFBB00",
-                    borderRadius: 16,
-                  paddingHorizontal: 18,
-                  paddingVertical: 6,
-                  flexDirection: "row",
-                  alignItems: "center",
-                  marginLeft: 10,
+                  fontSize: 10,
+                  fontFamily: "Comfortaa",
+                  fontWeight: "700",
+                  color: "#001323",
                 }}
               >
-<Clock
-              width={16}
-              height={16}
-              style={{ marginHorizontal: 5 }}
-            />                <Text
-                  style={{
-                    fontSize: 10,
-                    fontFamily: "Comfortaa",
-                    fontWeight: "700",
-                    color: "#001323",
-                  }}
-                > Confirmed
-                  </Text>
-              </View>
+                {" "}
+                Confirmed
+              </Text>
+            </View>
           </View>
         </View>
         {driverDetails && (
-              <DriverInfo
-                driverData={driverDetails.driverData}
-                vehicleData={driverDetails.vehicleData}
-                carpoolData={driverDetails.carpoolData}
-              />
-            )}
+          <DriverInfo
+            driverData={driverDetails.driverData}
+            vehicleData={driverDetails.vehicleData}
+            carpoolData={driverDetails.carpoolData}
+          />
+        )}
+        <View
+          style={{
+            width: "100%",
+            borderBottomWidth: 0.5,
+            borderBottomColor: "#8F9BB3",
+            alignSelf: "center",
+            marginVertical: 10,
+          }}
+        />
         <Text
           style={{
             fontSize: 20,
@@ -246,27 +253,29 @@ const ScheduleMainCard = ({
           <StackedProfilePictures images={images} />
 
           <View
-                style={{
-                    backgroundColor: "#FB812A",
-                    borderRadius: 16,
-                  paddingHorizontal: 18,
-                  paddingVertical: 6,
-                  flexDirection: "row",
-                  alignItems: "center",
-                  marginLeft: 10,
-                }}
-              >
-             <Text
-                  style={{
-                    fontSize: 10,
-                    fontFamily: "Comfortaa",
-                    fontWeight: "700",
-                    color: "#FFFFFF",
-                    marginHorizontal: 10,
-                  }}
-                > Read More
-                  </Text>
-              </View>
+            style={{
+              backgroundColor: "#FB812A",
+              borderRadius: 16,
+              paddingHorizontal: 18,
+              paddingVertical: 6,
+              flexDirection: "row",
+              alignItems: "center",
+              marginLeft: 10,
+            }}
+          >
+            <Text
+              style={{
+                fontSize: 10,
+                fontFamily: "Comfortaa",
+                fontWeight: "700",
+                color: "#FFFFFF",
+                marginHorizontal: 10,
+              }}
+            >
+              {" "}
+              Read More
+            </Text>
+          </View>
         </View>
       </View>
     </View>

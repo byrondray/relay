@@ -1,23 +1,23 @@
+import DriverIcon from "@/assets/images/drives.svg";
+import LikeIcon from "@/assets/images/heart.svg";
+import MessageCircle from "@/assets/images/message-circle.svg";
+import OrangeMarker from "@/assets/images/OrangeMarker.svg";
+import PhoneIcon from "@/assets/images/phone.svg";
+import Pin from "@/assets/images/pin.svg";
+import RedMarker from "@/assets/images/RedMarker.svg";
+import ClockIcon from "@/assets/images/whiteClock.svg";
+import { useTheme } from "@/contexts/ThemeContext";
 import React from "react";
 import {
-  View,
+  Image,
+  Linking,
+  Platform,
   Text,
   TouchableOpacity,
-  Platform,
-  Linking,
-  Image,
+  View,
 } from "react-native";
-import LikeIcon from "@/assets/images/heart.svg";
-import ClockIcon from "@/assets/images/whiteClock.svg";
-import DriverIcon from "@/assets/images/drives.svg";
-import TimeCard from "./timeCard";
 import StackedProfilePictures from "./stackedProfile";
-import OrangeMarker from "@/assets/images/OrangeMarker.svg";
-import RedMarker from "@/assets/images/RedMarker.svg";
-import { useTheme } from "@/contexts/ThemeContext";
-import PhoneIcon from "@/assets/images/phone.svg";
-import MessageCircle from "@/assets/images/message-circle.svg";
-import Pin from "@/assets/images/pin.svg";
+import TimeCard from "./timeCard";
 
 interface ScheduleActiveCardProps {
   id: string;

@@ -4,7 +4,13 @@ import MySchedule from "@/components/trips/mySchedule";
 import RideRequest from "@/components/trips/rideRequests";
 import { useTheme } from "@/contexts/ThemeContext";
 import React, { useState } from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
 function HomeScreen() {
   const { currentColors } = useTheme();
@@ -31,48 +37,52 @@ function HomeScreen() {
   };
 
   return (
-    <View
-      style={{
-        flex: 1,
-        padding: 16,
-        marginTop: 0,
-        backgroundColor: currentColors.background,
-      }}
-    >
-      {/* Navigation Row */}
-      <View style={styles.navRow}>
-        {["My Schedule", "Ride Requests", "Driver Post", "My History"].map(
-          (item) => (
-            <TouchableOpacity
-              key={item}
-              onPress={() => handleNavigation(item)}
-              style={styles.navTouchable} // Increased touchable area
-            >
-              <View style={styles.navItem}>
-                <Text
-                  style={[
-                    styles.navText,
-                    {
-                      color:
-                        currentPage === item ? "#FF6A00" : currentColors.text,
-                    },
-                  ]}
-                >
-                  {item}
-                </Text>
-                {currentPage === item && (
-                  <View
-                    style={[styles.activeLine, { backgroundColor: "#FF6A00" }]}
-                  />
-                )}
-              </View>
-            </TouchableOpacity>
-          )
-        )}
-      </View>
+    <ScrollView>
+      <View
+        style={{
+          flex: 1,
+          marginTop: 0,
+          backgroundColor: currentColors.background,
+        }}
+      >
+        {/* Navigation Row */}
+        <View style={styles.navRow}>
+          {["My Schedule", "Ride Requests", "Driver Post", "My History"].map(
+            (item) => (
+              <TouchableOpacity
+                key={item}
+                onPress={() => handleNavigation(item)}
+                style={styles.navTouchable} // Increased touchable area
+              >
+                <View style={styles.navItem}>
+                  <Text
+                    style={[
+                      styles.navText,
+                      {
+                        color:
+                          currentPage === item ? "#FF6A00" : currentColors.text,
+                      },
+                    ]}
+                  >
+                    {item}
+                  </Text>
+                  {currentPage === item && (
+                    <View
+                      style={[
+                        styles.activeLine,
+                        { backgroundColor: "#FF6A00" },
+                      ]}
+                    />
+                  )}
+                </View>
+              </TouchableOpacity>
+            )
+          )}
+        </View>
 
-      <View style={{ marginBottom: 20 }}>{renderPageContent()}</View>
-    </View>
+        <View style={{ marginBottom: 20 }}>{renderPageContent()}</View>
+      </View>
+    </ScrollView>
   );
 }
 

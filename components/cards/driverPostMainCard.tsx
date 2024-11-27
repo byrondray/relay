@@ -2,26 +2,33 @@ import ArrowUp from "@/assets/images/arrow-up.svg";
 import OrangeMarker from "@/assets/images/OrangeMarker.svg";
 import RedMarker from "@/assets/images/RedMarker.svg";
 import RepeatIcon from "@/assets/images/repeat.svg";
-import TimeIcon from "@/assets/images/timeIcon.svg";
 import Trash from "@/assets/images/trach_icon.svg";
-import { useTheme } from "@/contexts/ThemeContext"; // Importing useTheme
+import Clock from "@/assets/images/whiteClock.svg";
+import { useTheme } from "@/contexts/ThemeContext";
+import { CarpoolWithRequests, User, Vehicle } from "@/graphql/generated";
 import React from "react";
 import { Text, TouchableOpacity, View } from "react-native";
+import DriverInfo from "./driverCard";
 import StackedProfilePictures from "./stackedProfile";
 
 interface CardData {
   id: string;
-  state: "pending" | "timeout";
-  date: Date;
+  state: string;
+  date: string;
   startLocation: string;
   startTime: string;
   endLocation: string;
   endTime: string;
   images: string[];
-  recurrence: "one time" | "recurring";
+  recurrence: string;
+  driverDetails: {
+    driverData: User;
+    vehicleData: Vehicle;
+    carpoolData: CarpoolWithRequests;
+  };
 }
 
-const ActiveRiderCard = ({
+const DriverMainCard = ({
   id,
   state,
   date,
@@ -31,6 +38,7 @@ const ActiveRiderCard = ({
   endTime,
   images,
   recurrence,
+  driverDetails,
 }: CardData) => {
   const { currentColors } = useTheme();
 
@@ -83,67 +91,112 @@ const ActiveRiderCard = ({
               alignItems: "center",
             }}
           >
-            {state === "pending" ? (
+            {recurrence === "recurring" ? (
               <View
                 style={{
-                  backgroundColor: "#3366FF",
+                  backgroundColor: "rgba(255, 136, 51, 0.1)",
                   borderRadius: 16,
                   paddingHorizontal: 18,
                   paddingVertical: 6,
                   flexDirection: "row",
                   alignItems: "center",
-                  marginRight: 10,
                 }}
               >
-                <TimeIcon width={16} height={16} style={{ marginRight: 5 }} />
+                <RepeatIcon
+                  width={16}
+                  height={16}
+                  style={{ marginHorizontal: 5 }}
+                />
                 <Text
                   style={{
                     fontSize: 10,
                     fontFamily: "Comfortaa",
                     fontWeight: "700",
-                    color: "#FFFFFF",
+                    color: "#FF6A00",
                   }}
                 >
-                  {state.charAt(0).toUpperCase() + state.slice(1)}
+                  {recurrence}
                 </Text>
               </View>
             ) : (
               <View
                 style={{
-                  backgroundColor: "#D2D2D2",
+                  backgroundColor: "rgba(255, 136, 51, 0.1)",
                   borderRadius: 16,
                   paddingHorizontal: 10,
                   paddingVertical: 6,
                   flexDirection: "row",
                   alignItems: "center",
-                  marginRight: 10,
                 }}
               >
-                <TimeIcon width={16} height={16} style={{ marginRight: 5 }} />
+                <ArrowUp
+                  width={16}
+                  height={16}
+                  style={{ marginHorizontal: 5 }}
+                />
                 <Text
                   style={{
                     fontSize: 10,
                     fontFamily: "Comfortaa",
                     fontWeight: "700",
-                    color: "#FFFFFF",
+                    color: "#FF6A00",
                   }}
                 >
-                  {state.charAt(0).toUpperCase() + state.slice(1)}
+                  {recurrence}
                 </Text>
               </View>
             )}
+            <View
+              style={{
+                backgroundColor: "#3366FF",
+                borderRadius: 16,
+                paddingHorizontal: 18,
+                paddingVertical: 6,
+                flexDirection: "row",
+                alignItems: "center",
+                marginLeft: 10,
+              }}
+            >
+              <Clock width={16} height={16} style={{ marginHorizontal: 5 }} />
+              <Text
+                style={{
+                  fontSize: 10,
+                  fontFamily: "Comfortaa",
+                  fontWeight: "700",
+                  color: "#FFFFFF",
+                }}
+              >
+                Pending
+              </Text>
+            </View>
             <TouchableOpacity
               onPress={() => {}}
               style={{
                 justifyContent: "center",
                 alignItems: "center",
+                marginLeft: 5,
               }}
             >
               <Trash width={24} height={24} />
             </TouchableOpacity>
           </View>
         </View>
-
+        {driverDetails && (
+          <DriverInfo
+            driverData={driverDetails.driverData}
+            vehicleData={driverDetails.vehicleData}
+            carpoolData={driverDetails.carpoolData}
+          />
+        )}
+        <View
+          style={{
+            width: "100%",
+            borderBottomWidth: 0.5,
+            borderBottomColor: "#8F9BB3",
+            alignSelf: "center",
+            marginVertical: 10,
+          }}
+        />
         <Text
           style={{
             fontSize: 20,
@@ -164,11 +217,7 @@ const ActiveRiderCard = ({
             marginBottom: 5,
           }}
         >
-          <OrangeMarker
-            width={20}
-            height={20}
-            style={{ marginRight: 8, width: 120 }}
-          />
+          <OrangeMarker width={20} height={20} style={{ marginRight: 8 }} />
           <Text style={{ fontFamily: "Comfortaa", color: currentColors.text }}>
             {startLocation.split(" ").slice(0, 3).join(" ")}
           </Text>
@@ -209,36 +258,15 @@ const ActiveRiderCard = ({
         >
           <StackedProfilePictures images={images} />
 
-          {recurrence === "one time" ? (
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+            }}
+          >
             <View
               style={{
-                backgroundColor: "rgba(255, 136, 51, 0.1)",
-                borderRadius: 16,
-                paddingHorizontal: 20,
-                paddingVertical: 6,
-                flexDirection: "row",
-                alignItems: "center",
-              }}
-            >
-              <RepeatIcon width={16} height={16} style={{ marginRight: 5 }} />
-              <Text
-                style={{
-                  fontSize: 10,
-                  fontFamily: "Comfortaa",
-                  fontWeight: "700",
-                  color: "#FF6A00",
-                }}
-              >
-                {recurrence
-                  .split(" ")
-                  .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-                  .join(" ")}
-              </Text>
-            </View>
-          ) : (
-            <View
-              style={{
-                backgroundColor: "rgba(255, 136, 51, 0.1)",
+                backgroundColor: "#FB812A",
                 borderRadius: 16,
                 paddingHorizontal: 18,
                 paddingVertical: 6,
@@ -246,26 +274,23 @@ const ActiveRiderCard = ({
                 alignItems: "center",
               }}
             >
-              <ArrowUp width={16} height={16} style={{ marginRight: 5 }} />
               <Text
                 style={{
                   fontSize: 10,
                   fontFamily: "Comfortaa",
                   fontWeight: "700",
-                  color: "#FF6A00",
+                  color: "#FFFFFF",
+                  marginHorizontal: 10,
                 }}
               >
-                {recurrence
-                  .split(" ")
-                  .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-                  .join(" ")}
+                Read Invitation
               </Text>
             </View>
-          )}
+          </View>
         </View>
       </View>
     </View>
   );
 };
 
-export default ActiveRiderCard;
+export default DriverMainCard;

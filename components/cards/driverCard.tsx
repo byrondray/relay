@@ -87,7 +87,9 @@ const DriverInfo = ({
           }}
         >
           {driverData?.firstName[0].toUpperCase()}
-          {driverData?.firstName.slice(1)} {driverData?.lastName}
+          {driverData?.firstName.slice(
+            1
+          )} {driverData?.lastName}
         </Text>
 
         <Text
