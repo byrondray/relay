@@ -53,7 +53,6 @@ export default function LoginScreen(): JSX.Element {
 
         <StatusBar barStyle="light-content" translucent backgroundColor="transparent" />
 
-<<<<<<< HEAD
         {Platform.OS === "ios" || Platform.OS === "android" ? (
           <Video
             source={require('../../assets/images/bg_video.mp4')}
@@ -73,14 +72,6 @@ export default function LoginScreen(): JSX.Element {
             resizeMode="cover"
           />
         )}
-=======
-
-        {/* <ImageBackground
-      source={require("../../assets/images/bg_video.png")}
-      style={styles.background}
-      resizeMode="cover"
-    > */}
->>>>>>> 56356b4030cad0493103a431c0983542d8b965a5
 
         <LinearGradient
           colors={["rgba(43,38,51,0.6)", "rgba(226, 74, 74 ,0.6)"]}
