@@ -1,6 +1,7 @@
 import React from "react";
 import { View, Text } from "react-native";
 import { CheckBox } from "@ui-kitten/components";
+import { useTheme } from "@/contexts/ThemeContext";
 
 const PricingCheckbox = ({
   voluntaryChecked,
@@ -13,6 +14,7 @@ const PricingCheckbox = ({
   setVoluntaryChecked: (nextChecked: boolean) => void;
   setShareCostChecked: (nextChecked: boolean) => void;
 }) => {
+  const { currentColors } = useTheme();
   return (
     <View
       style={{
@@ -33,7 +35,7 @@ const PricingCheckbox = ({
           checked={voluntaryChecked}
           onChange={(nextChecked) => setVoluntaryChecked(nextChecked)}
         />
-        <Text style={{ marginLeft: 8, fontFamily: "Comfortaa-Regular" }}>Voluntary</Text>
+        <Text style={{ marginLeft: 8, fontFamily: "Comfortaa-Regular", color: currentColors.text }}>Voluntary</Text>
       </View>
 
       <View style={{ flexDirection: "row", alignItems: "center" }}>
@@ -41,7 +43,7 @@ const PricingCheckbox = ({
           checked={shareCostChecked}
           onChange={(nextChecked) => setShareCostChecked(nextChecked)}
         />
-        <Text style={{ marginLeft: 8, fontFamily: "Comfortaa-Regular" }}>
+        <Text style={{ marginLeft: 8, fontFamily: "Comfortaa-Regular", color: currentColors.text }}>
           Share Cost
         </Text>
       </View>

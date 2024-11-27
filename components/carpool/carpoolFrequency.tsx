@@ -22,9 +22,9 @@ const RadioGroupComponent: React.FC<RadioGroupComponentProps> = ({
         style={{ width: "100%", flexDirection: "row", justifyContent: "left", gap: 10 }}
       >
         <Radio style={{ marginRight: 10 }}>
-          {() => <Text style={styles.radioText}>One time</Text>}
+          {() => <Text style={[styles.radioText, {color: currentColors.text}]}>One time</Text>}
         </Radio>
-        <Radio>{() => <Text style={styles.radioText}>Recurring</Text>}</Radio>
+        <Radio>{() => <Text style={[styles.radioText, {color: currentColors.text}]}>Recurring</Text>}</Radio>
       </RadioGroup>
     </View>
   );
