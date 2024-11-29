@@ -28,6 +28,7 @@ import { TextSizeProvider } from "@/contexts/TextSizeContext";
 
 const { width } = Dimensions.get("window");
 import { ThemeProvider } from "@/contexts/ThemeContext";
+import { playNotificationSound } from "@/utils/playSound";
 
 export default function RootLayout() {
   const [fontsLoaded] = useFonts({
@@ -38,6 +39,7 @@ export default function RootLayout() {
     ComfortaaSemiBold: require("@/assets/fonts/Comfortaa-SemiBold.ttf"),
     ComfortaaBold: require("@/assets/fonts/Comfortaa-Bold.ttf"),
   });
+
   const colorScheme = useColorScheme();
   const isLoading = useFirebaseAuth();
   const [notification, setNotification] = useState<string | null>(null);
@@ -45,7 +47,6 @@ export default function RootLayout() {
   const slideAnim = useState(new Animated.Value(-100))[0];
   const user = auth.currentUser;
   const userId = user?.uid;
-  console.log("userId in rootlayout", userId);
 
   LogBox.ignoreAllLogs();
 
@@ -72,6 +73,7 @@ export default function RootLayout() {
     if (notificationData?.foregroundNotification) {
       const { message } = notificationData.foregroundNotification;
       showAnimatedNotification(message);
+      playNotificationSound();
     }
   }, [notificationData]);
 

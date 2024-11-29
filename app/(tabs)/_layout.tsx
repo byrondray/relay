@@ -269,11 +269,11 @@ const styles = StyleSheet.create({
   customHeaderContainer: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between", // Space between for alignment
+    justifyContent: "space-between", 
     paddingHorizontal: 10,
     height: 50,
     borderBottomWidth: 1,
-    borderBottomColor: "#ddd", // Optional for border
+    borderBottomColor: "#ddd", 
   },
   navContainer: {
     flexDirection: "row",
@@ -285,7 +285,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
   backButton: {
-    width: 24, // Fixed size for consistent alignment
+    width: 24, 
   },
   backText: {
     fontSize: 16,
@@ -294,6 +294,6 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold",
     textAlign: "center",
-    flex: 1, // Ensures centering in the available space
+    flex: 1, 
   },
 });
