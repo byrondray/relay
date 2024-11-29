@@ -83,6 +83,7 @@ const WaypointSelector = ({
       .substring(0, 2);
 
     const profileImageUrl = request.children[0].parent.imageUrl;
+    const childImageUrl = request.children[0]?.imageUrl;
 
     const seatRequestCount = request.children.length;
     const isSelected = selectedWaypointIds.includes(request.id);
@@ -105,34 +106,47 @@ const WaypointSelector = ({
           )}
         </View>
 
-        {request.children[0].parent.imageUrl ? (
-          <Image
-            source={{
-              uri: profileImageUrl || undefined,
-            }}
-            style={[
-              styles.initialsCircle,
-              { borderWidth: 1, borderColor: "#FF6A00" },
-            ]}
-          />
-        ) : (
-          <View
-            style={[
-              styles.initialsCircle,
-              {
-                backgroundColor: "#fff",
-                borderWidth: 1,
-                borderColor: "#FF6A00",
-              },
-            ]}
-          >
-            <Text style={[styles.initialsText, { fontFamily: "Comfortaa" }]}>
-              {initials}
-            </Text>
-          </View>
-        )}
+        <View style={styles.imageWrapper}>
+          {profileImageUrl ? (
+            <Image
+              source={{
+                uri: profileImageUrl || undefined,
+              }}
+              style={[styles.parentImage]}
+            />
+          ) : (
+            <View
+              style={[
+                styles.parentImage,
+                {
+                  backgroundColor: "#fff",
+                  borderWidth: 1,
+                  borderColor: "#FF6A00",
+                },
+              ]}
+            >
+              <Text style={[styles.initialsText, { fontFamily: "Comfortaa" }]}>
+                {initials}
+              </Text>
+            </View>
+          )}
 
-        <Text style={[styles.seatRequestText, { fontFamily: "Comfortaa" }]}>
+          {childImageUrl && (
+            <Image
+              source={{
+                uri: childImageUrl,
+              }}
+              style={styles.childImage}
+            />
+          )}
+        </View>
+
+        <Text
+          style={[
+            styles.seatRequestText,
+            { fontFamily: "Comfortaa", marginTop: 4 },
+          ]}
+        >
           {seatRequestCount} seat request{seatRequestCount > 1 ? "s" : ""}
         </Text>
       </TouchableOpacity>
@@ -207,5 +221,25 @@ const styles = StyleSheet.create({
     width: 30,
     height: 30,
     color: "#fff",
+  },
+  imageWrapper: {
+    position: "relative",
+  },
+  parentImage: {
+    width: 90,
+    height: 90,
+    borderRadius: 45,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  childImage: {
+    width: 40,
+    height: 40,
+    borderRadius: 50,
+    position: "absolute",
+    bottom: 0,
+    right: -10,
+    borderWidth: 1,
+    borderColor: "#fff",
   },
 });

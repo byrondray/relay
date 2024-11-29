@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { Touchable, TouchableOpacity, View } from "react-native";
+import { View } from "react-native";
 import ChildImage from "./childImage";
 import { useQuery } from "@apollo/client";
 import { GET_CHILDREN_FOR_USER } from "@/graphql/user/queries";
 import { Spinner } from "@ui-kitten/components";
-import { Image } from "react-native";
 import { Child } from "@/graphql/generated";
-import { router } from "expo-router";
 import { useTheme } from "@/contexts/ThemeContext";
 
 const ChildSelector = ({
@@ -25,18 +23,13 @@ const ChildSelector = ({
           (child: Child) => child.imageUrl !== null
         );
         setChildrenWithImages(filteredChildren);
-        const initialSelected = filteredChildren.map(
-          (child: Child) => child.id
-        );
-        setSelectedChildren(initialSelected);
       },
     }
   );
 
   useEffect(() => {
-    if (selectedChildren.length > 0) {
-      onSelectedChildrenChange(selectedChildren);
-    }
+    // Notify the parent component whenever selectedChildren changes
+    onSelectedChildrenChange(selectedChildren);
   }, [selectedChildren, onSelectedChildrenChange]);
 
   if (childrenLoading)
@@ -72,7 +65,14 @@ const ChildSelector = ({
           onPress={() => toggleSelection(child.id)}
         />
       ))}
-      {/* <TouchableOpacity
+    </View>
+  );
+};
+
+export default ChildSelector;
+
+{
+  /* <TouchableOpacity
         onPress={() => router.push("/(tabs)/Carpool/selectPassenger")}
       >
         <View
@@ -95,9 +95,5 @@ const ChildSelector = ({
             source={require("../../assets/images/add-member-icon.png")}
           />
         </View>
-      </TouchableOpacity> */}
-    </View>
-  );
-};
-
-export default ChildSelector;
+      </TouchableOpacity> */
+}

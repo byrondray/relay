@@ -11,14 +11,13 @@ import {
 } from "react-native";
 import { ApolloProvider, useSubscription } from "@apollo/client";
 import client from "../graphql/client";
-import { router, SplashScreen, Stack } from "expo-router";
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SplashScreen, Stack } from "expo-router";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { ApplicationProvider } from "@ui-kitten/components";
 import * as eva from "@eva-design/eva";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { useFirebaseAuth } from "@/firebaseConfig";
 import { auth } from "@/firebaseConfig";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { myTheme } from "./theme";
 import { useFonts } from "expo-font";
 import { LogBox } from "react-native";
@@ -28,7 +27,7 @@ import customMapping from "@/components/customStyling/custom-mapping.json";
 import { TextSizeProvider } from "@/contexts/TextSizeContext";
 
 const { width } = Dimensions.get("window");
-import { ThemeProvider, useTheme } from "@/contexts/ThemeContext";
+import { ThemeProvider } from "@/contexts/ThemeContext";
 
 export default function RootLayout() {
   const [fontsLoaded] = useFonts({
@@ -81,13 +80,13 @@ export default function RootLayout() {
     setShowNotification(true);
 
     Animated.timing(slideAnim, {
-      toValue: 0, // Slide in
+      toValue: 0,
       duration: 500,
       useNativeDriver: true,
     }).start(() => {
       setTimeout(() => {
         Animated.timing(slideAnim, {
-          toValue: -100, // Slide out
+          toValue: -100,
           duration: 500,
           useNativeDriver: true,
         }).start(() => {
@@ -119,56 +118,58 @@ export default function RootLayout() {
             customMapping={customMapping as any}
           >
             <ThemeProvider>
-            <TextSizeProvider>
-              <View
-                style={
-                  colorScheme === "dark"
-                    ? styles.darkContainer
-                    : styles.lightContainer
-                }
-              >
-                <NavigationThemeProvider
-                  value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
+              <TextSizeProvider>
+                <View
+                  style={
+                    colorScheme === "dark"
+                      ? styles.darkContainer
+                      : styles.lightContainer
+                  }
                 >
-                  <Stack>
-                    <Stack.Screen
-                      name="(tabs)"
-                      options={{ headerShown: false }}
-                    />
-                    <Stack.Screen
-                      name="Login/login"
-                      options={{ headerShown: false }}
-                    />
-                    <Stack.Screen
-                      name="Register/register"
-                      options={{ headerShown: false }}
-                    />
-                    <Stack.Screen
-                      name="OnboardForms/parent"
-                      options={{ headerShown: false }}
-                    />
-                    <Stack.Screen
-                      name="OnboardForms/child"
-                      options={{ headerShown: false }}
-                    />
-                    <Stack.Screen
-                      name="OnboardForms/vehicle"
-                      options={{ headerShown: false }}
-                    />
-                    <Stack.Screen name="+not-found" />
-                  </Stack>
-                </NavigationThemeProvider>
-                {showNotification && (
-                  <Animated.View
-                    style={[
-                      styles.notificationContainer,
-                      { transform: [{ translateY: slideAnim }] },
-                    ]}
+                  <NavigationThemeProvider
+                    value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
                   >
-                    <Text style={styles.notificationText}>{notification}</Text>
-                  </Animated.View>
-                )}
-              </View>
+                    <Stack>
+                      <Stack.Screen
+                        name="(tabs)"
+                        options={{ headerShown: false }}
+                      />
+                      <Stack.Screen
+                        name="Login/login"
+                        options={{ headerShown: false }}
+                      />
+                      <Stack.Screen
+                        name="Register/register"
+                        options={{ headerShown: false }}
+                      />
+                      <Stack.Screen
+                        name="OnboardForms/parent"
+                        options={{ headerShown: false }}
+                      />
+                      <Stack.Screen
+                        name="OnboardForms/child"
+                        options={{ headerShown: false }}
+                      />
+                      <Stack.Screen
+                        name="OnboardForms/vehicle"
+                        options={{ headerShown: false }}
+                      />
+                      <Stack.Screen name="+not-found" />
+                    </Stack>
+                  </NavigationThemeProvider>
+                  {showNotification && (
+                    <Animated.View
+                      style={[
+                        styles.notificationContainer,
+                        { transform: [{ translateY: slideAnim }] },
+                      ]}
+                    >
+                      <Text style={styles.notificationText}>
+                        {notification}
+                      </Text>
+                    </Animated.View>
+                  )}
+                </View>
               </TextSizeProvider>
             </ThemeProvider>
           </ApplicationProvider>

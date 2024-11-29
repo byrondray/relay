@@ -33,6 +33,8 @@ import { SEND_NOTIFICATION_INFO } from "@/graphql/map/queries";
 import ClockIcon from "@/assets/images/whiteClock.svg";
 import DriverInfo from "@/components/cards/driverCard";
 import { set } from "date-fns";
+import GpsTrackingInfoDriver from "@/components/rideInProgress/gpsTrackingInfo";
+import GpsTrackingInfoPassenger from "@/components/rideInProgress/gpsTrackingInfoPassenger";
 
 const CarpoolScreen: React.FC = () => {
   const currentUser = auth.currentUser;
@@ -534,7 +536,17 @@ const CarpoolScreen: React.FC = () => {
   );
   const { currentColors } = useTheme();
   return (
-    <ScrollView>
+    <ScrollView style={{ backgroundColor: currentColors.background }}>
+      <Text
+        style={{
+          fontSize: 22,
+          fontFamily: "comfortaa",
+          fontWeight: 600,
+          padding: 15,
+        }}
+      >
+        Live location of driver
+      </Text>
       {carpoolData &&
         (carpoolData?.driverId === currentUser?.uid ? (
           <DriverMapView
@@ -665,7 +677,7 @@ const CarpoolScreen: React.FC = () => {
           )}
         </View>
         <View style={{ paddingHorizontal: 15, marginBottom: 5 }}>
-          <GpsTrackingInfo />
+          {isDriver ? <GpsTrackingInfoDriver /> : <GpsTrackingInfoPassenger />}
         </View>
         <View style={{ paddingHorizontal: 15 }}>
           <TimeCard startTime="08: 30 AM" endTime="09: 32 AM" />

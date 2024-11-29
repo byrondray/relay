@@ -189,6 +189,7 @@ const RideMap: React.FC<RideMapProps> = ({
               coordinates={coordinates}
               strokeColor={"#FF6A00"}
               strokeWidth={5}
+              zIndex={100}
             />
           )}
 

@@ -2,7 +2,7 @@ import React from "react";
 import { View, Text } from "react-native";
 import { useTheme } from "@/contexts/ThemeContext";
 
-const GpsTrackingInfoDriver = () => {
+const GpsTrackingInfoPassenger = () => {
   const { currentColors } = useTheme();
   return (
     <View
@@ -29,11 +29,10 @@ const GpsTrackingInfoDriver = () => {
           fontFamily: "Comfortaa",
         }}
       >
-        Note: GPS tracking starts when you press 'Start Ride' and stops at the
-        end of the ride.
+        Driver’s location will be shared once the trip starts.
       </Text>
     </View>
   );
 };
 
-export default GpsTrackingInfoDriver;
+export default GpsTrackingInfoPassenger;

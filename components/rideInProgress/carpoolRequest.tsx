@@ -50,9 +50,9 @@ const RequestCard = ({
         }}
       >
         <View style={{ flexDirection: "row", alignItems: "center" }}>
-          {request.parent.imageUrl && (
+          {request.child.imageUrl && (
             <Image
-              source={{ uri: request.parent.imageUrl }}
+              source={{ uri: request.child.imageUrl }}
               style={{
                 width: 50,
                 height: 50,
@@ -79,7 +79,7 @@ const RequestCard = ({
                 color: currentColors.text,
               }}
             >
-              {request.parent.firstName} {request.parent.lastName}
+              {request.child.firstName}
             </Text>
           </View>
         </View>

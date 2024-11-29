@@ -130,11 +130,19 @@ const CreateRide = () => {
     new IndexPath(0)
   );
 
+  console.log(selectedChildren, "selectedChildren");
+
   useEffect(() => {
-    const newSeatsLeft =
-      (vehicles[selectedVehicleIndex.row]?.seats || 0) -
-      selectedChildren.length -
-      totalSeatsTakenByWaypoints;
+    const vehicleSeats = vehicles[selectedVehicleIndex.row]?.seats || 0;
+    const childrenCount = selectedChildren.length;
+    const waypointsSeats = totalSeatsTakenByWaypoints;
+
+    console.log("Vehicle seats:", vehicleSeats);
+    console.log("Selected children count:", childrenCount);
+    console.log("Total seats taken by waypoints:", waypointsSeats);
+
+    const newSeatsLeft = vehicleSeats - childrenCount - waypointsSeats;
+    console.log("New seats left:", newSeatsLeft);
 
     setSeatsLeft(newSeatsLeft);
 
@@ -142,6 +150,8 @@ const CreateRide = () => {
       newSeatsLeft > 0
         ? Array.from({ length: newSeatsLeft + 1 }, (_, i) => newSeatsLeft - i)
         : [0];
+
+    console.log("New seats available:", newSeatsAvailable);
 
     setSeatsAvailable(newSeatsAvailable);
 
@@ -154,10 +164,10 @@ const CreateRide = () => {
         : new IndexPath(newSeatsAvailable.length - 1);
     });
   }, [
-    selectedVehicleIndex,
     selectedChildren,
-    totalSeatsTakenByWaypoints,
     vehicles,
+    selectedVehicleIndex,
+    totalSeatsTakenByWaypoints,
   ]);
 
   interface LatLng {
@@ -291,31 +301,6 @@ const CreateRide = () => {
 
   const { coordinates, getDirections, predictedTime } = useDirections();
   const mapRef = useRef<MapView>(null);
-
-  const selectedRequests = useMemo(() => {
-    const selected = [];
-    let cumulativeSeatsTaken = 0;
-    const seatLimit = seatsAvailable[selectedSeatsIndex.row];
-
-    for (const request of requests) {
-      const seatsTakenByRequest = request.children.length;
-      if (cumulativeSeatsTaken + seatsTakenByRequest <= seatLimit) {
-        selected.push(request);
-        cumulativeSeatsTaken += seatsTakenByRequest;
-      }
-      if (cumulativeSeatsTaken >= seatLimit) break;
-    }
-    return selected;
-  }, [requests, seatsAvailable[selectedSeatsIndex.row]]);
-
-  const isInitialLoad = useRef(true);
-
-  useEffect(() => {
-    if (isInitialLoad.current && selectedRequests.length > 0) {
-      setSelectedWaypoints(selectedRequests);
-      isInitialLoad.current = false;
-    }
-  }, [selectedRequests]);
 
   useEffect(() => {
     if (startingAddress && endingAddress) {
