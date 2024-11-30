@@ -13,7 +13,7 @@ import DriverInfo from "./driverCard";
 
 interface CardData {
   id: string;
-  state: "pending" | "timeout";
+  state: "confirmed" | "timeout";
   date: Date;
   startLocation: string;
   startTime: string;

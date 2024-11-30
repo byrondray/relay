@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, ScrollView, TextInput } from "react-native";
 import { useQuery, useLazyQuery, useMutation } from "@apollo/client";
 import { GET_USER, GET_VEHICLE } from "@/graphql/user/queries";
 import { GET_CARPOOL_WITH_REQUESTS } from "@/graphql/carpool/queries";
-import { Spinner } from "@ui-kitten/components";
+import { Layout, Popover, Spinner } from "@ui-kitten/components";
 import { auth } from "@/firebaseConfig";
 import { useLocalSearchParams } from "expo-router";
 import {
@@ -33,6 +33,8 @@ import { SEND_NOTIFICATION_INFO } from "@/graphql/map/queries";
 import ClockIcon from "@/assets/images/whiteClock.svg";
 import DriverInfo from "@/components/cards/driverCard";
 import { set } from "date-fns";
+import { LinearGradient } from "expo-linear-gradient";
+import { Button } from "@ui-kitten/components";
 
 const CarpoolScreen: React.FC = () => {
   const currentUser = auth.currentUser;
@@ -44,6 +46,7 @@ const CarpoolScreen: React.FC = () => {
   );
   const [sendNotificationInfo] = useMutation(SEND_NOTIFICATION_INFO);
   const [isDriver, setIsDriver] = useState<boolean>(false);
+  const [visible, setVisible] = useState(false);
 
   const processedRequestsRef = useRef<string | null>(null);
 
@@ -223,6 +226,27 @@ const CarpoolScreen: React.FC = () => {
       }
     },
   });
+  const renderToggleButton = (): React.ReactElement => (
+    <Button
+      style={{
+        width: "100%",
+        paddingVertical: 12,
+      }}
+      appearance="ghost"
+    >
+      {() => (
+        <Text
+          style={{
+            color: currentColors.background,
+            fontSize: 16,
+            fontFamily: "Comfortaa",
+          }}
+        >
+          Submit
+        </Text>
+      )}
+    </Button>
+  );
 
   useEffect(() => {
     if (tripId) {
@@ -532,6 +556,7 @@ const CarpoolScreen: React.FC = () => {
       (carpoolData?.requests ?? []).map((request) => [request.id, request])
     ).values()
   );
+
   const { currentColors } = useTheme();
   return (
     <ScrollView>
@@ -689,38 +714,105 @@ const CarpoolScreen: React.FC = () => {
             </View>
           );
         })}
-        <View style={{ paddingHorizontal: 15, marginBottom: 15 }}>
-          <ReviewInfo />
-        </View>
-        <Text
-          style={{
-            color: currentColors.text,
-            paddingHorizontal: 15,
-            fontFamily: "Comfortaa",
-            marginBottom: 10,
-          }}
-        >
-          Review to Driver
-        </Text>
-        <View style={{ paddingHorizontal: 15, marginBottom: 10 }}>
-          <TextInput
-            style={{
-              width: "100%",
-              backgroundColor: currentColors.background,
-              borderColor: currentColors.tint,
-              borderWidth: 1,
-              borderRadius: 15,
-              height: 100,
-              paddingLeft: 30,
-              paddingRight: 30,
-              fontFamily: "Comfortaa",
-              color: currentColors.placeholder,
-            }}
-            placeholder="Any preferences for trips? (e.g., preferred age range of kids, allowed stopovers, special requests)"
-            placeholderTextColor={currentColors.text}
-            multiline={true}
-          />
-        </View>
+        {!isDriver && (
+          <>
+            <View style={{ paddingHorizontal: 15, marginBottom: 15 }}>
+              <ReviewInfo
+                carpoolId={carpoolData?.id}
+                driverId={carpoolData?.driverId}
+                userId={auth.currentUser?.uid}
+              />
+            </View>
+            <Text
+              style={{
+                color: currentColors.text,
+                paddingHorizontal: 15,
+                fontFamily: "Comfortaa",
+                marginBottom: 10,
+              }}
+            >
+              Review to Driver
+            </Text>
+            <View style={{ paddingHorizontal: 15, marginBottom: 10 }}>
+              <TextInput
+                style={{
+                  width: "100%",
+                  backgroundColor: currentColors.background,
+                  borderColor: currentColors.tint,
+                  borderWidth: 1,
+                  borderRadius: 15,
+                  height: 100,
+                  paddingLeft: 30,
+                  paddingRight: 30,
+                  fontFamily: "Comfortaa",
+                  color: currentColors.placeholder,
+                }}
+                placeholder="Any preferences for trips? (e.g., preferred age range of kids, allowed stopovers, special requests)"
+                placeholderTextColor={currentColors.text}
+                multiline={true}
+              />
+            </View>
+            <View style={{ paddingHorizontal: 15, marginBottom: 10 }}>
+              <LinearGradient
+                colors={["#ff8833", "#e24a4a"]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }}
+                style={{
+                  width: "100%",
+                  borderRadius: 15,
+                  overflow: "hidden",
+                }}
+              >
+                <Button
+                  style={{
+                    width: "100%",
+                    paddingVertical: 12,
+                  }}
+                  appearance="ghost"
+                  onPress={() => {
+                    setVisible(true);
+                  }}
+                >
+                  {() => (
+                    <Text
+                      style={{
+                        color: "#fff",
+                        fontSize: 16,
+                        fontFamily: "Comfortaa",
+                      }}
+                    >
+                      Submit
+                    </Text>
+                  )}
+                </Button>
+              </LinearGradient>
+              <Popover
+                backdropStyle={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
+                visible={visible}
+                anchor={() => renderToggleButton()}
+                onBackdropPress={() => setVisible(false)}
+                style={{
+                  marginBottom: 400,
+                  maxWidth: 330,
+                  height: 80,
+                  padding: 20,
+                  borderRadius: 10,
+                }}
+              >
+                <Layout
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    paddingHorizontal: 4,
+                    paddingVertical: 8,
+                  }}
+                >
+                  <Text>Thank you for confirming your ride👍</Text>
+                </Layout>
+              </Popover>
+            </View>
+          </>
+        )}
       </View>
     </ScrollView>
   );

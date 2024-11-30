@@ -129,6 +129,7 @@ const CarpoolListScreen: React.FC = () => {
           >
             {driverName}
           </Text>
+          <Text style={styles.sectionTitle}>Today’s ride</Text>
           <FlatList
             data={carpools}
             style={{ borderRadius: 20 }}
@@ -168,12 +169,12 @@ const CarpoolListScreen: React.FC = () => {
             showsHorizontalScrollIndicator={false}
           />
         </View>
-        <Text style={styles.sectionTitle}>All Requests</Text>
+        <Text style={styles.sectionTitle}>Upcoming Trips</Text>
         <FlatList
-          data={uniqueRequests}
+          data={uniqueRequests.splice(3, 4)} // only shows 3th requets
           keyExtractor={(request) => request.id}
           renderItem={({ item: request }) => (
-            <View style={{ marginTop: 10, paddingHorizontal: 5 }}>
+            <View style={{ paddingHorizontal: 5 }}>
               {request.carpoolId && (
                 <Link
                   href={{
@@ -183,7 +184,7 @@ const CarpoolListScreen: React.FC = () => {
                 >
                   <ActiveRiderCard
                     id={request.id}
-                    state="pending"
+                    state="confirmed"
                     date={new Date()}
                     startLocation={request.startAddress || "Unknown"}
                     startTime={request.pickupTime || "Unknown"}

@@ -147,7 +147,7 @@ const CarpoolListScreen: React.FC = () => {
             showsHorizontalScrollIndicator={false}
           />
         </View>
-        <Text style={styles.sectionTitle}>All Requests</Text>
+        <Text style={styles.sectionTitle}>Confirmed</Text>
         <FlatList
           data={uniqueRequests}
           keyExtractor={(request) => request.id}
@@ -162,7 +162,7 @@ const CarpoolListScreen: React.FC = () => {
                 >
                   <ActiveRiderCard
                     id={request.id}
-                    state="pending"
+                    state="confirmed"
                     date={new Date()}
                     startLocation={request.startAddress || "Unknown"}
                     startTime={request.pickupTime || "Unknown"}
