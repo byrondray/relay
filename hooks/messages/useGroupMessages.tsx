@@ -89,7 +89,6 @@ export const useSendGroupMessage = (
       };
 
       try {
-        console.log("Sending group message:", messageData);
         const { data } = await createGroupMessage({ variables: messageData });
 
         const createdMessage = data?.createGroupMessage;

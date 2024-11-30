@@ -118,7 +118,6 @@ export const useSendMessage = (
       };
 
       try {
-        console.log("Sending message:", messageData);
         const { data } = await createMessage({ variables: messageData });
 
         const createdMessage = data?.createMessage;

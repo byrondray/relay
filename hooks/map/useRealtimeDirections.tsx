@@ -140,19 +140,9 @@ export const useRealtimeDirections = () => {
             destination
           );
 
-          console.log(
-            "mapped legs",
-            mappedLegs.map((leg) => leg.duration)
-          );
-
           const lastLeg = routeLegs[routeLegs.length - 1];
           const lastLegDuration = lastLeg?.duration || "Unknown";
           setLastLegTime(lastLegDuration);
-
-          console.log(
-            "Mapped Legs to Requests:",
-            mappedLegs.map((leg) => leg.duration)
-          );
 
           setLegs(mappedLegs);
 

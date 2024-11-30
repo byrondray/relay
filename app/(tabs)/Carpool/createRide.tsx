@@ -130,19 +130,12 @@ const CreateRide = () => {
     new IndexPath(0)
   );
 
-  console.log(selectedChildren, "selectedChildren");
-
   useEffect(() => {
     const vehicleSeats = vehicles[selectedVehicleIndex.row]?.seats || 0;
     const childrenCount = selectedChildren.length;
     const waypointsSeats = totalSeatsTakenByWaypoints;
 
-    console.log("Vehicle seats:", vehicleSeats);
-    console.log("Selected children count:", childrenCount);
-    console.log("Total seats taken by waypoints:", waypointsSeats);
-
     const newSeatsLeft = vehicleSeats - childrenCount - waypointsSeats;
-    console.log("New seats left:", newSeatsLeft);
 
     setSeatsLeft(newSeatsLeft);
 
@@ -150,8 +143,6 @@ const CreateRide = () => {
       newSeatsLeft > 0
         ? Array.from({ length: newSeatsLeft + 1 }, (_, i) => newSeatsLeft - i)
         : [0];
-
-    console.log("New seats available:", newSeatsAvailable);
 
     setSeatsAvailable(newSeatsAvailable);
 
@@ -229,7 +220,6 @@ const CreateRide = () => {
   const { data, loading: groupsLoading } = useQuery(GET_GROUPS, {
     onCompleted: (data) => {
       if (data) {
-        console.log("Groups data:", data.getGroups);
         setGroups(data.getGroups);
       }
     },
@@ -438,7 +428,6 @@ const CreateRide = () => {
 
   const handleLongPress = async (e: LongPressEvent) => {
     const { latitude, longitude } = e.nativeEvent.coordinate;
-    console.log("Long press detected at:", latitude, longitude);
 
     if (startingLatLng.lat === 0 && startingLatLng.lon === 0) {
       setStartingLatLng({ lat: latitude, lon: longitude });

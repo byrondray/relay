@@ -11,11 +11,11 @@ import * as ImagePicker from "expo-image-picker";
 import { Toggle } from "@ui-kitten/components";
 import { LinearGradient } from "expo-linear-gradient";
 import ImageUpload from "@/components/carpool/uploadImageInput";
-import { useTheme } from "@/contexts/ThemeContext";  // Access the theme
+import { useTheme } from "@/contexts/ThemeContext"; // Access the theme
 
 function ParentForm(): JSX.Element {
   const auth = getAuth();
-  const { currentColors } = useTheme();  // Access current theme colors
+  const { currentColors } = useTheme(); // Access current theme colors
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("6043421096");
@@ -33,8 +33,6 @@ function ParentForm(): JSX.Element {
       aspect: [4, 3],
       quality: 1,
     });
-
-    console.log(result);
 
     if (!result.canceled) {
       setProfileImage(result.assets[0].uri);
@@ -91,24 +89,37 @@ function ParentForm(): JSX.Element {
     return <ActivityIndicator size="large" color={currentColors.tint} />; // Use theme color
   }
 
-  const onCheckedChange = (isChecked: boolean | ((prevState: boolean) => boolean)): void => {
+  const onCheckedChange = (
+    isChecked: boolean | ((prevState: boolean) => boolean)
+  ): void => {
     setChecked(isChecked);
   };
 
   return (
-    <View style={[styles.container, { backgroundColor: currentColors.background }]}>
-      <Text style={[styles.heading, { fontFamily: "Comfortaa", color: currentColors.text }]}>
+    <View
+      style={[styles.container, { backgroundColor: currentColors.background }]}
+    >
+      <Text
+        style={[
+          styles.heading,
+          { fontFamily: "Comfortaa", color: currentColors.text },
+        ]}
+      >
         Parent Info
       </Text>
 
       {errorMessage && (
-        <Text style={[styles.errorText, { fontFamily: "Comfortaa", color: "red" }]}>
+        <Text
+          style={[styles.errorText, { fontFamily: "Comfortaa", color: "red" }]}
+        >
           {errorMessage}
         </Text>
       )}
 
       {submissionError && (
-        <Text style={[styles.errorText, { fontFamily: "Comfortaa", color: "red" }]}>
+        <Text
+          style={[styles.errorText, { fontFamily: "Comfortaa", color: "red" }]}
+        >
           {submissionError}
         </Text>
       )}
@@ -159,11 +170,26 @@ function ParentForm(): JSX.Element {
           onChangeText={setLocation}
         />
       </View>
-      
+
       <View style={{ flexDirection: "row", marginVertical: 10 }}>
-        <Text style={{ flex: 1, flexWrap: "wrap", width: "98%", fontFamily: "Comfortaa", color: currentColors.text }}>
-          If you're a parent interested in becoming a carpool driver to help pick up and drop off kids in your community.{" "}
-          <Text style={{ color: currentColors.tint, textDecorationLine: "none", fontFamily: "Comfortaa" }}>
+        <Text
+          style={{
+            flex: 1,
+            flexWrap: "wrap",
+            width: "98%",
+            fontFamily: "Comfortaa",
+            color: currentColors.text,
+          }}
+        >
+          If you're a parent interested in becoming a carpool driver to help
+          pick up and drop off kids in your community.{" "}
+          <Text
+            style={{
+              color: currentColors.tint,
+              textDecorationLine: "none",
+              fontFamily: "Comfortaa",
+            }}
+          >
             Sign up to be a Driver!
           </Text>
         </Text>

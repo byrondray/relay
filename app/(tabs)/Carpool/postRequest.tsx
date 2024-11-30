@@ -72,9 +72,7 @@ const RequestRide = () => {
 
   const { data, loading, error } = useQuery(GET_GROUPS, {
     onCompleted: (data) => {
-      console.log("Data", data);
       if (data) {
-        console.log("Groups", data.getGroups);
         setGroups(data.getGroups);
       }
     },
@@ -247,7 +245,6 @@ const RequestRide = () => {
           onChangeText={setStartingAddress}
           onSuggestionSelect={(address) => {
             setStartingAddress(address);
-            console.log("Selected Address:", address);
           }}
           onLatLonSelect={(lat, lon) => {
             setStartingLatLon({ lat, lon });

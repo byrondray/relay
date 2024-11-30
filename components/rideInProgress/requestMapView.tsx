@@ -61,7 +61,6 @@ const RequestMapView: React.FC<RequestMapViewProps> = ({
   useEffect(() => {
     const timeout = setTimeout(() => {
       if (checkPropsReady()) {
-        console.log("Props ready after delay");
         setPropsReady(true);
       }
     }, 500);
@@ -111,7 +110,6 @@ const RequestMapView: React.FC<RequestMapViewProps> = ({
 
   useEffect(() => {
     return () => {
-      console.log("Clearing timeout on unmount");
       if (inactivityTimeout.current) {
         clearTimeout(inactivityTimeout.current);
       }

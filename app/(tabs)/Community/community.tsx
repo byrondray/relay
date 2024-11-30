@@ -49,7 +49,6 @@ const Sidebar = () => {
     loading,
   } = useQuery(GET_GROUPS, {
     onCompleted: (data) => {
-      console.log(data, "groups");
       setGroups(data.getGroups);
     },
   });
@@ -231,8 +230,6 @@ const Community = () => {
       quality: 1,
     });
 
-    console.log(result);
-
     if (!result.canceled) {
       setGroupIcon(result.assets[0].uri);
     }
@@ -244,7 +241,6 @@ const Community = () => {
     refetch,
   } = useQuery(GET_FRIENDS, {
     onCompleted: (data) => {
-      console.log(data, "friends");
       setFriends(data.getFriends);
     },
   });

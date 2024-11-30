@@ -74,10 +74,6 @@ export const useDirections = () => {
         return { coordinates: [], predictedTime: "" };
       }
     } else {
-      console.log(
-        "Input Required",
-        "Please enter both origin and destination."
-      );
       return { coordinates: [], predictedTime: "" };
     }
   };

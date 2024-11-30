@@ -168,12 +168,10 @@ const CarpoolScreen: React.FC = () => {
     endingLon: carpoolData?.endLon ?? 0,
     currentIndex,
     onStopReached: (stop) => {
-      console.log("Stop reached:", stop);
       setCurrentIndex((prevIndex) => prevIndex + 1);
       setNextStop(sortedRequests[currentIndex + 1] || null);
     },
     onTripCompleted: () => {
-      console.log("Trip completed!");
       setIsTripCompleted(true);
     },
     driverLocation,
@@ -402,15 +400,6 @@ const CarpoolScreen: React.FC = () => {
     legs,
     getRealtimeDirections,
   } = useRealtimeDirections();
-
-  useEffect(() => {
-    if (legs.length > 0) {
-      console.log(
-        "Legs updated:",
-        legs.map((leg) => leg.request?.startAddress)
-      );
-    }
-  }, [directionsLog]);
 
   const memoizedGetRealtimeDirections = useCallback(getRealtimeDirections, [
     getRealtimeDirections,

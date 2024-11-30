@@ -15,7 +15,6 @@ const MultipleDatePicker = () => {
   const onConfirm = React.useCallback((params: { dates: Date[] }) => {
     setOpen(false);
     setDates(params.dates);
-    console.log("[on-change-multi]", params);
   }, []);
 
   return (
