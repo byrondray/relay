@@ -24,7 +24,7 @@ import {
   useFetchUser,
 } from "../../../hooks/messages/useMessages";
 import { DetailedMessage } from "@/graphql/generated";
-import Message from "@/components/messaging/message"; // Original Message Component
+import Message from "@/components/messaging/message"; 
 import { Spinner } from "@ui-kitten/components";
 import { LinearGradient } from "expo-linear-gradient";
 import { useTheme } from "@/contexts/ThemeContext";

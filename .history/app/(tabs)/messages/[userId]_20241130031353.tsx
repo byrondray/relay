@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
+//I imported ImagePicker
 import * as ImagePicker from "expo-image-picker";
 import {
   View,
@@ -24,7 +25,7 @@ import {
   useFetchUser,
 } from "../../../hooks/messages/useMessages";
 import { DetailedMessage } from "@/graphql/generated";
-import Message from "@/components/messaging/message"; // Original Message Component
+import Message from "@/components/messaging/message"; 
 import { Spinner } from "@ui-kitten/components";
 import { LinearGradient } from "expo-linear-gradient";
 import { useTheme } from "@/contexts/ThemeContext";
@@ -58,6 +59,7 @@ export default function MessageScreen() {
 
   useMessageSubscription(currentUser?.uid || "", setMessages, messages);
 
+  //Add function for media library
   const openMediaLibrary = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== "granted") {
@@ -72,10 +74,11 @@ export default function MessageScreen() {
     });
 
     if (!result.canceled && result.assets.length > 0) {
-      setSelectedImage(result.assets[0].uri); // Set selected image URI
+      setSelectedImage(result.assets[0].uri); 
     }
   };
 
+  //Add function to send message with image
   const sendMessageWithImage = async () => {
     if (!newMessage && !selectedImage) return;
 

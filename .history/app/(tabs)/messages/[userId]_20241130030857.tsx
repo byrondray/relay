@@ -15,7 +15,6 @@ import {
 } from "react-native";
 import { useFocusEffect, useLocalSearchParams, useNavigation } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import * as Notifications from "expo-notifications";
 import { auth } from "@/firebaseConfig";
 import {
   useFetchMessages,
@@ -23,40 +22,22 @@ import {
   useMessageSubscription,
   useFetchUser,
 } from "../../../hooks/messages/useMessages";
-import { DetailedMessage } from "@/graphql/generated";
-import Message from "@/components/messaging/message"; // Original Message Component
-import { Spinner } from "@ui-kitten/components";
 import { LinearGradient } from "expo-linear-gradient";
 import { useTheme } from "@/contexts/ThemeContext";
 
 export default function MessageScreen() {
   const { currentColors } = useTheme();
   const navigation = useNavigation();
-  const [messages, setMessages] = useState<DetailedMessage[]>([]);
+  const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
-  const [selectedImage, setSelectedImage] = useState<string | null>(null); // Image URI
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const { userId } = useLocalSearchParams();
   const recipientIdString = Array.isArray(userId) ? userId[0] : userId;
   const currentUser = auth.currentUser;
   const flatListRef = useRef<FlatList>(null);
 
-  const { data: recipientData, loading: recipientLoading } = useFetchUser(recipientIdString);
-  const senderId = currentUser?.uid || "";
-  const { data: senderData, loading: senderLoading } = useFetchUser(senderId);
-
-  const { loading, error, refetch } = useFetchMessages(
-    currentUser?.uid || "",
-    recipientIdString,
-    setMessages
-  );
-
-  useFocusEffect(
-    useCallback(() => {
-      refetch();
-    }, [refetch])
-  );
-
-  useMessageSubscription(currentUser?.uid || "", setMessages, messages);
+  const { data: recipientData } = useFetchUser(recipientIdString);
+  const { data: senderData } = useFetchUser(currentUser?.uid || "");
 
   const openMediaLibrary = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -72,7 +53,8 @@ export default function MessageScreen() {
     });
 
     if (!result.canceled && result.assets.length > 0) {
-      setSelectedImage(result.assets[0].uri); // Set selected image URI
+      const imageUri = result.assets[0].uri;
+      setSelectedImage(imageUri);
     }
   };
 
@@ -86,7 +68,7 @@ export default function MessageScreen() {
       imageUrl: selectedImage || null,
       createdAt: timestamp,
       sender: {
-        id: senderId,
+        id: currentUser?.uid || "",
         firstName: senderData?.getUser?.firstName || "Unknown",
         lastName: senderData?.getUser?.lastName || "",
         imageUrl: senderData?.getUser?.imageUrl || "",
@@ -103,22 +85,12 @@ export default function MessageScreen() {
     setNewMessage("");
     setSelectedImage(null);
 
+    // Persist messages locally
     await AsyncStorage.setItem(
       `messages_${currentUser?.uid || ""}`,
       JSON.stringify(messages)
     );
   };
-
-  useEffect(() => {
-    const requestNotificationPermission = async () => {
-      const { status } = await Notifications.getPermissionsAsync();
-      if (status !== "granted") {
-        await Notifications.requestPermissionsAsync();
-      }
-    };
-
-    requestNotificationPermission();
-  }, []);
 
   useEffect(() => {
     const scrollToBottom = () => {
@@ -137,14 +109,6 @@ export default function MessageScreen() {
       keyboardHideListener.remove();
     };
   }, [messages]);
-
-  if (recipientLoading || senderLoading) {
-    return (
-      <View style={styles.spinnerContainer}>
-        <Spinner />
-      </View>
-    );
-  }
 
   return (
     <KeyboardAvoidingView
@@ -166,13 +130,14 @@ export default function MessageScreen() {
             data={messages}
             keyExtractor={(item) => item.id}
             renderItem={({ item }) => (
-              <View>
-                <Message message={item} />
+              <View style={styles.messageContainer}>
+                <Text style={styles.senderName}>
+                  {item.sender.firstName} {item.sender.lastName}
+                </Text>
+                <Text style={styles.timestamp}>{new Date(item.createdAt).toLocaleString()}</Text>
+                <Text style={styles.messageText}>{item.text}</Text>
                 {item.imageUrl && (
-                  <Image
-                    source={{ uri: item.imageUrl }}
-                    style={{ width: 200, height: 200, borderRadius: 10, marginTop: 10 }}
-                  />
+                  <Image source={{ uri: item.imageUrl }} style={styles.messageImage} />
                 )}
               </View>
             )}
@@ -223,11 +188,6 @@ const styles = StyleSheet.create({
   flexContainer: {
     flex: 1,
   },
-  spinnerContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
   gradientBackground: {
     position: "absolute",
     width: "100%",
@@ -236,6 +196,28 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 10,
+  },
+  messageContainer: {
+    marginBottom: 15,
+  },
+  senderName: {
+    fontSize: 14,
+    fontWeight: "bold",
+    color: "gray",
+  },
+  timestamp: {
+    fontSize: 12,
+    color: "gray",
+    marginBottom: 5,
+  },
+  messageText: {
+    fontSize: 16,
+    marginBottom: 5,
+  },
+  messageImage: {
+    width: 200,
+    height: 200,
+    borderRadius: 10,
   },
   imagePreviewContainer: {
     flexDirection: "row",
