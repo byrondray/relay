@@ -36,7 +36,7 @@ const InviteFriendDropdown = ({ onInvite }: InviteFriendDropdownProps) => {
           style={[styles.sendButton, { backgroundColor: buttonBackgroundColor }]}
           onPress={() => onInvite(email)}
         >
-          <Text style={[styles.sendButtonText, { color: currentColors.text }]}>Send Invite</Text>
+          <Text style={[styles.sendButtonText, { color: "#fff" }]}>Send Invite</Text>
         </TouchableOpacity>
       </View>
     );

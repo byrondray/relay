@@ -58,6 +58,19 @@ const CarpoolScreen: React.FC = () => {
     timeToNextStop?: string | null;
   };
 
+  const calculateStartTime = (baseTime: string, index: number): string => {
+    const [hour, minute, period] = baseTime.match(/(\d+):(\d+)\s*(AM|PM)/i)!.slice(1);
+    const date = new Date();
+    date.setHours(period === "PM" ? parseInt(hour, 10) + 12 : parseInt(hour, 10));
+    date.setMinutes(parseInt(minute, 10) + index * 10)
+  
+    const adjustedHour = date.getHours() % 12 || 12;
+    const adjustedMinute = date.getMinutes().toString().padStart(2, "0");
+    const adjustedPeriod = date.getHours() >= 12 ? "PM" : "AM";
+  
+    return `${adjustedHour}:${adjustedMinute} ${adjustedPeriod}`;
+  };
+
   const [nextStop, setNextStop] = useState<RequestWithTime | null>(null);
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const [isTripCompleted, setIsTripCompleted] = useState<boolean>(false);
@@ -675,16 +688,15 @@ const CarpoolScreen: React.FC = () => {
         </View>
         {uniqueRequests.reverse()?.map((request: any, index: number) => {
           const isCurrentUser = request.parent.id === currentUser?.uid;
-
+          const startTime = calculateStartTime("8:45 AM", index);
           return (
             <View style={{ paddingHorizontal: 12 }}>
               <RequestCard
-                key={request.id || index}
-                request={{
-                  ...request,
-                }}
+                request={{ ...request }}
                 index={index}
-                isCurrentUser={isCurrentUser}
+                isCurrentUser={true}
+                startTime={startTime}
+                endTime="9:32 AM"
               />
             </View>
           );

@@ -342,43 +342,15 @@ const Community = () => {
           >
             Create New Group
           </Text>
-          <Text
-            style={{
-              fontFamily: "Comfortaa",
-              color: currentColors.text,
-              fontSize: 12,
-              marginBottom: 15,
-            }}
-          >
-            Members Invited
-          </Text>
-          <ScrollView
-            horizontal={true}
-            style={{ marginLeft: 5, marginBottom: 10 }}
-          >
-            <FriendProfile
-              id={""}
-              name={"Bob"}
-              imageUrl={"https://thispersondoesnotexist.com/"}
-            />
-            <FriendProfile
-              id={""}
-              name={"Bob"}
-              imageUrl={"https://thispersondoesnotexist.com/"}
-            />
-            <FriendProfile
-              id={""}
-              name={"Bob"}
-              imageUrl={"https://thispersondoesnotexist.com/"}
-            />
-          </ScrollView>
+          
           <Input
-            placeholder="Group Name"
             style={{
               backgroundColor: currentColors.background,
               borderRadius: 24,
               fontFamily: "Comfortaa",
             }}
+            placeholder="Group Name"
+            
           ></Input>
 
           <Text
@@ -393,31 +365,7 @@ const Community = () => {
             Group Icon
           </Text>
           <ImageUpload profileImage={groupIcon} pickImage={pickImage} />
-          <InviteFriendDropdown onInvite={handleInvite} />
-          <FriendsInviteDescription
-            description={description}
-            setDescription={setDescription}
-          />
-          <Button
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              alignSelf: "flex-end",
-              marginTop: 10,
-              width: 130,
-              height: 25,
-              paddingTop: 10,
-              justifyContent: "center",
-              paddingHorizontal: 10,
-              backgroundColor: currentColors.tint,
-              borderRadius: 24,
-              borderWidth: 0,
-            }}
-          >
-            <Text style={{ fontFamily: "Comfortaa", color: currentColors.text }}>
-              Invite friend
-            </Text>
-          </Button>
+          
           <Text
             style={{
               marginTop: 10,
@@ -434,6 +382,7 @@ const Community = () => {
               flexDirection: "row",
               alignItems: "center",
               backgroundColor: currentColors.background,
+              borderColor: currentColors.placeholder,
               borderRadius: 20,
               paddingHorizontal: 12,
               paddingVertical: 10,
@@ -447,8 +396,15 @@ const Community = () => {
               style={{ marginRight: 8 }}
             />
             <TextInput
-              style={{ flex: 1, height: 20, fontFamily: "Comfortaa" }}
+              style={{
+                height: 40, 
+                flex: 1, 
+                fontSize: 14, 
+                color: currentColors.text,
+                fontFamily: "Comfortaa"                
+              }}
               placeholder="Search friend by name or email address"
+              placeholderTextColor={currentColors.icon}
               value={searchText}
               onChangeText={setSearchText}
             />
@@ -489,8 +445,87 @@ const Community = () => {
               source={"Basketball"}
               imageUrl={"https://thispersondoesnotexist.com/"}
             />
+            
           </ScrollView>
+        <InviteFriendDropdown onInvite={handleInvite} />
+        <FriendsInviteDescription
+            description={description}
+            setDescription={setDescription}
+          />
+          <Button
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              alignSelf: "flex-end",
+              marginTop: 10,
+              width: 130,
+              height: 25,
+              paddingTop: 10,
+              justifyContent: "center",
+              paddingHorizontal: 10,
+              backgroundColor: currentColors.tint,
+              borderRadius: 24,
+              borderWidth: 0,
+            }}
+          >
+            <Text style={{ fontFamily: "Comfortaa", color: currentColors.text }}>
+              Invite friend
+            </Text>
+          </Button>
+          <Text
+            style={{
+              fontFamily: "Comfortaa",
+              color: currentColors.text,
+              fontSize: 12,
+              marginBottom: 15,
+            }}
+          >
+            Members Invited
+          </Text>
+          <ScrollView
+            horizontal={true}
+            style={{ marginLeft: 5, marginBottom: 10 }}
+          >
+            <FriendProfile
+              id={""}
+              name={"Bob"}
+              imageUrl={"https://thispersondoesnotexist.com/"}
+            />
+            <FriendProfile
+              id={""}
+              name={"Bob"}
+              imageUrl={"https://thispersondoesnotexist.com/"}
+            />
+            <FriendProfile
+              id={""}
+              name={"Bob"}
+              imageUrl={"https://thispersondoesnotexist.com/"}
+            />
+          </ScrollView>
+          <View>
+          <Button
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              alignSelf: "flex-end",
+              marginTop: 10,
+              width: 130,
+              height: 25,
+              paddingTop: 10,
+              justifyContent: "center",
+              paddingHorizontal: 10,
+              backgroundColor: currentColors.tint,
+              borderRadius: 24,
+              borderWidth: 0,
+            }}
+          >
+            <Text style={{ fontFamily: "Comfortaa", color: currentColors.text }}>
+              Create
+            </Text>
+          </Button>
+          </View>
         </FriendsExpandablePanel>
+        
         <View style={{ marginTop: 10 }}>
           {friends.length > 0 ? (
             friends.map((profile, index) => (

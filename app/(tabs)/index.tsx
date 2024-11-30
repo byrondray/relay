@@ -101,7 +101,7 @@ const CarpoolListScreen: React.FC = () => {
 
   return (
     <>
-      <ScrollView>
+      <ScrollView style={{ backgroundColor: currentColors.background, flex: 1 }}>
         <View style={{ paddingHorizontal: 16, marginTop: 10 }}>
           {showSuccessMessage && (
             <View style={styles.successMessage}>
@@ -114,6 +114,7 @@ const CarpoolListScreen: React.FC = () => {
               fontWeight: "500",
               fontSize: 14,
               marginBottom: -10,
+              color: currentColors.text
             }}
           >
             {timeOfDay}
@@ -125,9 +126,22 @@ const CarpoolListScreen: React.FC = () => {
               fontSize: 24,
               marginBottom: 16,
               marginTop: 10,
+              color: currentColors.text
             }}
           >
             {driverName}
+          </Text>
+          <Text
+            style={{
+              fontFamily: "Comfortaa-Bold",
+              fontWeight: "700",
+              fontSize: 24,
+              marginBottom: 16,
+              marginTop: 10,
+              color: currentColors.text
+            }}
+          >
+            Today's Ride
           </Text>
           <FlatList
             data={carpools}
@@ -168,7 +182,7 @@ const CarpoolListScreen: React.FC = () => {
             showsHorizontalScrollIndicator={false}
           />
         </View>
-        <Text style={styles.sectionTitle}>All Requests</Text>
+        <Text style={[styles.sectionTitle, {color: currentColors.text}]}>All Requests</Text>
         <FlatList
           data={uniqueRequests}
           keyExtractor={(request) => request.id}
