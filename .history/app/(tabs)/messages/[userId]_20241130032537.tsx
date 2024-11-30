@@ -198,7 +198,7 @@ export default function MessageScreen() {
 
           <View style={styles.inputContainer}>
             <TouchableOpacity onPress={openMediaLibrary} style={{ marginRight: 10 }}>
-              <Text style={{ fontSize: 30, color: currentColors.tint }}>+</Text>
+              <Text style={{ fontSize: 20, color: currentColors.tint }}>+</Text>
             </TouchableOpacity>
             <TextInput
               value={newMessage}
@@ -243,17 +243,17 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   imagePreviewContainer: {
-    flexDirection: "row",
+    flexDirection: "column",
     alignItems: "center",
     marginBottom: 10,
   },
   imagePreview: {
-    width: 200,
-    height: 200,
+    width: 100,
+    height: 100,
     borderRadius: 10,
   },
   removeImageButton: {
-    backgroundColor: "#e24949",
+    backgroundColor: "red",
     padding: 5,
     borderRadius: 5,
     marginLeft: 10,

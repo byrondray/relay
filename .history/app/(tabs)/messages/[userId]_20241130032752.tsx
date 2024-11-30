@@ -248,12 +248,11 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   imagePreview: {
-    width: 200,
-    height: 200,
+
     borderRadius: 10,
   },
   removeImageButton: {
-    backgroundColor: "#e24949",
+    backgroundColor: "red",
     padding: 5,
     borderRadius: 5,
     marginLeft: 10,

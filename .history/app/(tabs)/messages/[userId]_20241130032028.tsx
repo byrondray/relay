@@ -59,7 +59,6 @@ export default function MessageScreen() {
 
   useMessageSubscription(currentUser?.uid || "", setMessages, messages);
 
-  //add media library function
   const openMediaLibrary = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== "granted") {
@@ -92,14 +91,12 @@ export default function MessageScreen() {
         firstName: senderData?.getUser?.firstName || "Unknown",
         lastName: senderData?.getUser?.lastName || "",
         imageUrl: senderData?.getUser?.imageUrl || "",
-        email: senderData?.getUser?.email || "sender@example.com",
       },
       recipient: {
         id: recipientIdString,
         firstName: recipientData?.getUser?.firstName || "Recipient",
         lastName: recipientData?.getUser?.lastName || "",
         imageUrl: recipientData?.getUser?.imageUrl || "",
-        email: recipientData?.getUser?.email || "recipient@example.com",
       },
     };
 
@@ -182,8 +179,7 @@ export default function MessageScreen() {
             )}
             contentContainerStyle={{ paddingBottom: 10 }}
           />
-        
-         {/*Add image preview*/}
+
           {selectedImage && (
             <View style={styles.imagePreviewContainer}>
               <Image source={{ uri: selectedImage }} style={styles.imagePreview} />
@@ -198,7 +194,7 @@ export default function MessageScreen() {
 
           <View style={styles.inputContainer}>
             <TouchableOpacity onPress={openMediaLibrary} style={{ marginRight: 10 }}>
-              <Text style={{ fontSize: 30, color: currentColors.tint }}>+</Text>
+              <Text style={{ fontSize: 20, color: currentColors.tint }}>+</Text>
             </TouchableOpacity>
             <TextInput
               value={newMessage}
@@ -248,12 +244,12 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   imagePreview: {
-    width: 200,
-    height: 200,
+    width: 100,
+    height: 100,
     borderRadius: 10,
   },
   removeImageButton: {
-    backgroundColor: "#e24949",
+    backgroundColor: "red",
     padding: 5,
     borderRadius: 5,
     marginLeft: 10,

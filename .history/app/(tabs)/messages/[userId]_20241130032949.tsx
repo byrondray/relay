@@ -244,7 +244,7 @@ const styles = StyleSheet.create({
   },
   imagePreviewContainer: {
     flexDirection: "row",
-    alignItems: "center",
+    alignItems: "bottom",
     marginBottom: 10,
   },
   imagePreview: {
