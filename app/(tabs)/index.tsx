@@ -153,7 +153,7 @@ const CarpoolListScreen: React.FC = () => {
                     startLocation={item.startAddress}
                     startTime={item.departureTime}
                     endLocation={item.endAddress}
-                    endTime={item.departureTime}
+                    endTime={"03: 53 PM"}
                     passengerImages={[
                       vanessaChildImage,
                       evanChildImage,
@@ -188,7 +188,7 @@ const CarpoolListScreen: React.FC = () => {
                     startLocation={request.startAddress || "Unknown"}
                     startTime={request.pickupTime || "Unknown"}
                     endLocation={request.startAddress || "Unknown"}
-                    endTime={request.pickupTime || "Unknown"}
+                    endTime={"03:53pm"}
                     images={[vanessaChildImage]}
                     recurrence="one time"
                   />

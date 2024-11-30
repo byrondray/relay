@@ -1,15 +1,15 @@
-import React from "react";
-import { View, Text, TouchableOpacity } from "react-native";
-import TimeIcon from "@/assets/images/timeIcon.svg";
-import Trash from "@/assets/images/trash.svg";
-import OrangeMarker from "@/assets/images/OrangeMarker.svg";
-import RedMarker from "@/assets/images/RedMarker.svg";
-import StackedProfilePictures from "./stackedProfile";
-import RepeatIcon from "@/assets/images/repeat.svg";
 import ArrowUp from "@/assets/images/arrow-up.svg";
 import Clock from "@/assets/images/clock.svg";
+import OrangeMarker from "@/assets/images/OrangeMarker.svg";
+import RedMarker from "@/assets/images/RedMarker.svg";
+import RepeatIcon from "@/assets/images/repeat.svg";
 import { useTheme } from "@/contexts/ThemeContext";
+import { CarpoolWithRequests, User, Vehicle } from "@/graphql/generated";
+import { useThemeColor } from "@/hooks/useThemeColor";
+import React from "react";
+import { Text, TouchableOpacity, View } from "react-native";
 import DriverInfo from "./driverCard";
+import StackedProfilePictures from "./stackedProfile";
 
 interface CardData {
   id: string;
@@ -21,6 +21,11 @@ interface CardData {
   endTime: string;
   images: string[];
   recurrence: "one time" | "recurring";
+  driverDetails: {
+    driverData: User;
+    vehicleData: Vehicle;
+    carpoolData: CarpoolWithRequests;
+  };
 }
 
 const ScheduleActiveCard = ({
@@ -33,17 +38,15 @@ const ScheduleActiveCard = ({
   endTime,
   images,
   recurrence,
+  driverDetails,
 }: CardData) => {
-  const isodate = new Date(date);
+  const isodate = new Date(date); // delete this later when db is connected cause I forget.
 
   const formatThisDate = isodate.toLocaleDateString("en-US", {
     month: "short",
     day: "numeric",
     year: "numeric",
   });
-
-  const { currentColors } = useTheme();
-
   const driverData = {
     driverImage:
       "https://assets.crowdstrike.com/is/image/crowdstrikeinc/kevin-boehm3?ts=1726842946671&dpr=off",
@@ -51,22 +54,20 @@ const ScheduleActiveCard = ({
     carPlate: "ABC-123",
     vehicleModel: "Tesla Model 3",
   };
-
+  const textColor = useThemeColor({}, "placeholder");
+  const { currentColors } = useTheme();
   return (
     <View
       style={{
-        shadowColor: currentColors.placeholder,
+        backgroundColor: currentColors.background,
+        borderRadius: 12,
+        shadowColor: currentColors.text,
         shadowOffset: { width: 0, height: 4 },
         shadowOpacity: 0.25,
         shadowRadius: 4,
         elevation: 4,
-        borderWidth: 1,
-        borderColor: currentColors.tint,
-        borderRadius: 15,
+        paddingHorizontal: 20,
         width: "100%",
-        backgroundColor: currentColors.background,
-        paddingHorizontal: 16,
-        paddingVertical: 15,
       }}
     >
       <View style={{ paddingHorizontal: 16, paddingVertical: 10 }}>
@@ -81,20 +82,20 @@ const ScheduleActiveCard = ({
               fontSize: 10,
               alignSelf: "center",
               fontFamily: "Comfortaa",
-              color: currentColors.text,
             }}
           >
-            RN: {id.slice(0, 8)}
+            RN: {id}
           </Text>
 
           <View
             style={{
               flexDirection: "row",
               alignItems: "center",
-              backgroundColor: currentColors.background,
+              backgroundColor: "rgba(255, 136, 51, 0.1)",
               borderRadius: 16,
               paddingHorizontal: 10,
               paddingVertical: 5,
+              borderWidth: 0,
               marginTop: 10,
             }}
           >
@@ -107,8 +108,10 @@ const ScheduleActiveCard = ({
                 />
                 <Text
                   style={{
-                    color: currentColors.tint,
+                    color: "#FF6A00",
                     fontFamily: "Comfortaa",
+                    fontWeight: "700", // Make text bold
+                    fontSize: 14, // Slightly larger font
                   }}
                 >
                   {recurrence}
@@ -116,11 +119,17 @@ const ScheduleActiveCard = ({
               </>
             ) : (
               <>
-                <ArrowUp width={16} height={16} style={{ marginRight: 10 }} />
+                <ArrowUp
+                  width={16}
+                  height={16}
+                  style={{ marginHorizontal: 10 }}
+                />
                 <Text
                   style={{
-                    color: currentColors.tint,
+                    color: "#FF6A00",
                     fontFamily: "Comfortaa",
+                    fontWeight: "700",
+                    fontSize: 14,
                   }}
                 >
                   {recurrence}
@@ -133,11 +142,17 @@ const ScheduleActiveCard = ({
             style={{
               flexDirection: "row",
               alignItems: "center",
-              backgroundColor: currentColors.background,
+              backgroundColor: "#FFBB00",
               borderRadius: 16,
-              paddingHorizontal: 10,
-              paddingVertical: 5,
+              paddingHorizontal: 12, // Increased padding for better spacing
+              paddingVertical: 8, // Adjusted height for better usability
+              borderWidth: 0,
               marginTop: 10,
+              shadowColor: "#000", // Added shadow for a lifted appearance
+              shadowOffset: { width: 0, height: 2 },
+              shadowOpacity: 0.2,
+              shadowRadius: 3,
+              elevation: 3,
             }}
           >
             <Clock
@@ -147,18 +162,21 @@ const ScheduleActiveCard = ({
             />
             <Text
               style={{
-                color: currentColors.text,
+                color: "#001323",
                 fontFamily: "Comfortaa",
+                fontWeight: "600",
+                fontSize: 14, // Slightly larger font
               }}
             >
               Confirmed
             </Text>
           </View>
         </View>
-        <DriverInfo {...driverData} />
+
+        <DriverInfo {...driverDetails} />
         <Text
           style={{
-            color: currentColors.text,
+            color: "#666666",
             fontSize: 20,
             fontWeight: "bold",
             letterSpacing: 0.2,
@@ -176,14 +194,18 @@ const ScheduleActiveCard = ({
             marginBottom: 6,
           }}
         >
-          <OrangeMarker width={20} height={20} style={{ marginRight: 8 }} />
-          <Text style={{ fontFamily: "Comfortaa", color: currentColors.text }}>
+          <OrangeMarker
+            width={20}
+            height={20}
+            style={{ marginRight: 8, width: 120 }}
+          />
+          <Text style={{ fontFamily: "Comfortaa", color: textColor }}>
             {startLocation}
           </Text>
           <Text
             style={{
               marginLeft: "auto",
-              color: currentColors.tint,
+              color: "#FF6A00",
               fontFamily: "Comfortaa",
             }}
           >
@@ -193,13 +215,13 @@ const ScheduleActiveCard = ({
 
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           <RedMarker width={20} height={20} style={{ marginRight: 8 }} />
-          <Text style={{ fontFamily: "Comfortaa", color: currentColors.text }}>
+          <Text style={{ fontFamily: "Comfortaa", color: textColor }}>
             {endLocation}
           </Text>
           <Text
             style={{
               marginLeft: "auto",
-              color: currentColors.tint || "#E24949",
+              color: "#E24949",
               fontFamily: "Comfortaa",
             }}
           >
@@ -215,15 +237,16 @@ const ScheduleActiveCard = ({
           flexDirection: "row",
           alignSelf: "flex-end",
           alignItems: "center",
-          backgroundColor: currentColors.background,
+          backgroundColor: "rgba(255, 136, 51, 0.1)",
           borderRadius: 16,
           paddingHorizontal: 10,
           paddingVertical: 5,
+          borderWidth: 0,
         }}
       >
         <TouchableOpacity
           style={{
-            backgroundColor: currentColors.background,
+            backgroundColor: "#FF8833",
             paddingHorizontal: 40,
             paddingVertical: 6,
             borderRadius: 16,
@@ -232,12 +255,7 @@ const ScheduleActiveCard = ({
             console.log("Read More pressed");
           }}
         >
-          <Text
-            style={{
-              color: currentColors.background,
-              fontFamily: "Comfortaa",
-            }}
-          >
+          <Text style={{ color: "#fff", fontFamily: "Comfortaa" }}>
             Read More
           </Text>
         </TouchableOpacity>

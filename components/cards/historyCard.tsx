@@ -1,29 +1,30 @@
 import ArrowUp from "@/assets/images/arrow-up.svg";
+import HeartIcon from "@/assets/images/heart.svg";
 import OrangeMarker from "@/assets/images/OrangeMarker.svg";
 import RedMarker from "@/assets/images/RedMarker.svg";
 import RepeatIcon from "@/assets/images/repeat.svg";
 import TimeIcon from "@/assets/images/timeIcon.svg";
-import Trash from "@/assets/images/trach_icon.svg";
-import { useTheme } from "@/contexts/ThemeContext"; // Importing useTheme
+import { useTheme } from "@/contexts/ThemeContext";
+import { User } from "@/graphql/generated";
 import React from "react";
-import { Text, TouchableOpacity, View } from "react-native";
+import { Image, Text, View } from "react-native";
 import StackedProfilePictures from "./stackedProfile";
 
 interface CardData {
   id: string;
-  state: "pending" | "timeout";
   date: Date;
   startLocation: string;
-  startTime: string; // Either "3:30 PM" or ISO string "2024-11-26T22:25:00.000Z"
+  startTime: string;
   endLocation: string;
-  endTime: string; // Either "3:30 PM" or ISO string
+  endTime: string;
   images: string[];
   recurrence: "one time" | "recurring";
+  driverData: User;
 }
 
-const ActiveRiderCard = ({
+const DriverHistoryCard = ({
+  driverData,
   id,
-  state,
   date,
   startLocation,
   startTime,
@@ -34,26 +35,15 @@ const ActiveRiderCard = ({
 }: CardData) => {
   const { currentColors } = useTheme();
 
-  // Helper to parse and format time
-  const formatTime = (time: string) => {
-    // Check if the time is already formatted (e.g., "3:30 PM")
-    if (/^\d{1,2}:\d{2}\s?(AM|PM)$/i.test(time)) {
-      return time; // Return as is
-    }
-    // Parse ISO string and format to "3:30 PM"
-    return new Date(time).toLocaleTimeString("en-US", {
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: true,
-    });
-  };
+  const isodate = new Date(date);
 
-  const isodate = new Date(date); // Placeholder for date formatting
   const formatThisDate = isodate.toLocaleDateString("en-US", {
     month: "short",
     day: "numeric",
     year: "numeric",
   });
+
+  const randomLikes = Math.floor(Math.random() * (750 - 50 + 1)) + 50;
 
   return (
     <View
@@ -96,65 +86,91 @@ const ActiveRiderCard = ({
               alignItems: "center",
             }}
           >
-            {state === "pending" ? (
-              <View
-                style={{
-                  backgroundColor: "#3366FF",
-                  borderRadius: 16,
-                  paddingHorizontal: 18,
-                  paddingVertical: 6,
-                  flexDirection: "row",
-                  alignItems: "center",
-                  marginRight: 10,
-                }}
-              >
-                <TimeIcon width={16} height={16} style={{ marginRight: 5 }} />
-                <Text
-                  style={{
-                    fontSize: 10,
-                    fontFamily: "Comfortaa",
-                    fontWeight: "700",
-                    color: "#FFFFFF",
-                  }}
-                >
-                  {state.charAt(0).toUpperCase() + state.slice(1)}
-                </Text>
-              </View>
-            ) : (
-              <View
-                style={{
-                  backgroundColor: "#D2D2D2",
-                  borderRadius: 16,
-                  paddingHorizontal: 10,
-                  paddingVertical: 6,
-                  flexDirection: "row",
-                  alignItems: "center",
-                  marginRight: 10,
-                }}
-              >
-                <TimeIcon width={16} height={16} style={{ marginRight: 5 }} />
-                <Text
-                  style={{
-                    fontSize: 10,
-                    fontFamily: "Comfortaa",
-                    fontWeight: "700",
-                    color: "#FFFFFF",
-                  }}
-                >
-                  {state.charAt(0).toUpperCase() + state.slice(1)}
-                </Text>
-              </View>
-            )}
-            <TouchableOpacity
-              onPress={() => {}}
+            <View
               style={{
-                justifyContent: "center",
+                backgroundColor: "#FF5F52",
+                borderRadius: 16,
+                paddingHorizontal: 18,
+                paddingVertical: 6,
+                flexDirection: "row",
                 alignItems: "center",
               }}
             >
-              <Trash width={24} height={24} />
-            </TouchableOpacity>
+              <TimeIcon width={16} height={16} style={{ marginRight: 5 }} />
+              <Text
+                style={{
+                  fontSize: 10,
+                  fontFamily: "Comfortaa",
+                  fontWeight: "700",
+                  color: "#FFFFFF",
+                }}
+              >
+                Finished
+              </Text>
+            </View>
           </View>
+        </View>
+        <View
+          style={{ alignItems: "center", marginRight: 20, marginBottom: 20 }}
+        >
+          {driverData?.imageUrl && (
+            <Image
+              source={{ uri: driverData.imageUrl }}
+              style={{
+                width: 60,
+                height: 60,
+                borderRadius: 30,
+              }}
+            />
+          )}
+
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              marginTop: 8,
+            }}
+          >
+            <HeartIcon width={14} height={14} style={{ marginRight: 1 }} />
+            <Text
+              style={{
+                fontSize: 12,
+                fontWeight: "500",
+                color: "#FF6A00",
+                fontFamily: "Comfortaa-Bold",
+              }}
+            >
+              {randomLikes} likes
+            </Text>
+          </View>
+        </View>
+        <View style={{ flex: 1, marginTop: -15 }}>
+          <Text
+            style={{
+              fontSize: 12,
+              fontWeight: "bold",
+              color: "#8F9BB3",
+              fontFamily: "Comfortaa",
+              marginBottom: 4,
+            }}
+          >
+            Driver
+          </Text>
+          <Text
+            style={{
+              fontSize: 20,
+              fontWeight: "700",
+              marginBottom: 5,
+              color: currentColors.text,
+              fontFamily: "Comfortaa-Bold",
+            }}
+          >
+            {/* {driverData?.firstName[0].toUpperCase()}
+            {driverData?.firstName.slice(
+              1
+            )} {driverData?.lastName} */}
+            {driverData?.firstName}
+          </Text>
         </View>
 
         <Text
@@ -170,7 +186,6 @@ const ActiveRiderCard = ({
           {formatThisDate}
         </Text>
 
-        {/* Start Location */}
         <View
           style={{
             flexDirection: "row",
@@ -178,9 +193,13 @@ const ActiveRiderCard = ({
             marginBottom: 5,
           }}
         >
-          <OrangeMarker width={20} height={20} style={{ marginRight: 8 }} />
+          <OrangeMarker
+            width={20}
+            height={20}
+            style={{ marginRight: 8, width: 120 }}
+          />
           <Text style={{ fontFamily: "Comfortaa", color: currentColors.text }}>
-            {startLocation.split(" ").slice(0, 3).join(" ").replace(",", "")}
+            {startLocation.split(" ").slice(0, 3).join(" ")}
           </Text>
           <Text
             style={{
@@ -189,15 +208,14 @@ const ActiveRiderCard = ({
               fontFamily: "Comfortaa",
             }}
           >
-            Est: {formatTime(startTime)}
+            Est: {startTime.toLowerCase()}
           </Text>
         </View>
 
-        {/* End Location */}
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           <RedMarker width={20} height={20} style={{ marginRight: 8 }} />
           <Text style={{ fontFamily: "Comfortaa", color: currentColors.text }}>
-            {endLocation.split(" ").slice(0, 3).join(" ").replace(",", "")}
+            {endLocation.split(" ").slice(0, 3).join(" ")}
           </Text>
           <Text
             style={{
@@ -206,7 +224,7 @@ const ActiveRiderCard = ({
               fontFamily: "Comfortaa",
             }}
           >
-            Est: {formatTime(endTime)}
+            Est: {endTime.toLowerCase()}
           </Text>
         </View>
 
@@ -279,4 +297,4 @@ const ActiveRiderCard = ({
   );
 };
 
-export default ActiveRiderCard;
+export default DriverHistoryCard;

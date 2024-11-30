@@ -626,14 +626,28 @@ const CarpoolScreen: React.FC = () => {
             </Text>
           </View>
         </View>
-        <View style={{ paddingHorizontal: 15, marginTop: 20 }}>
-          {driverData && vehicleData && carpoolData && (
-            <DriverInfo
-              driverData={driverData}
-              vehicleData={vehicleData}
-              carpoolData={carpoolData}
-            />
-          )}
+        <View style={{ paddingHorizontal: 15 }}>
+          <View
+            style={{
+              paddingHorizontal: 15,
+              marginTop: 20,
+              backgroundColor: currentColors.background,
+              borderRadius: 12,
+              shadowColor: currentColors.text,
+              shadowOffset: { width: 0, height: 4 },
+              shadowOpacity: 0.25,
+              shadowRadius: 4,
+              elevation: 4,
+            }}
+          >
+            {driverData && vehicleData && carpoolData && (
+              <DriverInfo
+                driverData={driverData}
+                vehicleData={vehicleData}
+                carpoolData={carpoolData}
+              />
+            )}
+          </View>
         </View>
         <View style={{ padding: 15 }}>
           {driverData?.id === currentUser?.uid && (

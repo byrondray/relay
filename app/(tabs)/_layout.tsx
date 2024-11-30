@@ -25,7 +25,7 @@ function Header() {
       {isDarkMode ? (
         <RelayWhite style={{ marginLeft: 10, marginTop: 5 }} />
       ) : (
-        <Relay style={{ marginLeft: 10, marginTop: 5  }} />
+        <Relay style={{ marginLeft: 10, marginTop: 5 }} />
       )}
     </View>
   );
@@ -215,7 +215,7 @@ export default function TabLayout() {
                     ? router.back()
                     : router.push("/Community/community")
                 }
-                style={styles.backButton}
+                style={[styles.backButton, { marginLeft: 15 }]}
               >
                 <Ionicons
                   name="arrow-back"
@@ -223,11 +223,25 @@ export default function TabLayout() {
                   color={currentColors.text}
                 />
               </TouchableOpacity>
-
+              <Image
+                source={{
+                  uri: "https://banner2.cleanpng.com/20190125/vlo/kisspng-computer-icons-icon-design-desktop-wallpaper-clip-pepsi-clipart-pinart-coca-cola-stock-photos-i-5c4ab6b0b3b732.2697186115484003047361.jpg",
+                }} // the svg that Zeno gave us is the fallback option
+                style={{
+                  width: 40,
+                  height: 40,
+                  borderRadius: 20,
+                  marginLeft: 5,
+                }}
+              />
               <Text
                 style={[
                   styles.headerTitle,
-                  { color: currentColors.text, fontFamily: "Comfortaa" },
+                  {
+                    color: currentColors.text,
+                    fontFamily: "Comfortaa",
+                    marginLeft: 5,
+                  },
                 ]}
               >
                 {route.params?.groupName || "Group"}
@@ -269,11 +283,10 @@ const styles = StyleSheet.create({
   customHeaderContainer: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between", 
-    paddingHorizontal: 10,
+    justifyContent: "space-between",
     height: 50,
     borderBottomWidth: 1,
-    borderBottomColor: "#ddd", 
+    borderBottomColor: "#ddd",
   },
   navContainer: {
     flexDirection: "row",
@@ -285,7 +298,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
   backButton: {
-    width: 24, 
+    width: 24,
   },
   backText: {
     fontSize: 16,
@@ -294,6 +307,6 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold",
     textAlign: "center",
-    flex: 1, 
+    flex: 1,
   },
 });

@@ -106,7 +106,7 @@ const Sidebar = () => {
             key={group.id}
             href={{
               pathname: "/messages/group/[groupId]",
-              params: { groupId: group.id },
+              params: { groupId: group.id, groupName: group.name },
             }}
             asChild
           >
@@ -284,7 +284,14 @@ const Community = () => {
         }}
       >
         <FriendsList profiles={friends} />
-        <Text category="h1" style={{ marginTop: 0, fontFamily: "Comfortaa", color: currentColors.text }}>
+        <Text
+          category="h1"
+          style={{
+            marginTop: 0,
+            fontFamily: "Comfortaa",
+            color: currentColors.text,
+          }}
+        >
           Friends
         </Text>
         <View
@@ -337,7 +344,7 @@ const Community = () => {
               marginBottom: 12,
               fontFamily: "Comfortaa",
               fontSize: 22,
-              color: currentColors.text
+              color: currentColors.text,
             }}
           >
             Create New Group
@@ -414,7 +421,9 @@ const Community = () => {
               borderWidth: 0,
             }}
           >
-            <Text style={{ fontFamily: "Comfortaa", color: currentColors.text }}>
+            <Text
+              style={{ fontFamily: "Comfortaa", color: currentColors.text }}
+            >
               Invite friend
             </Text>
           </Button>
@@ -424,7 +433,7 @@ const Community = () => {
               marginBottom: 10,
               fontFamily: "Comfortaa",
               fontSize: 18,
-              color: currentColors.text
+              color: currentColors.text,
             }}
           >
             Select From Friend List
@@ -504,7 +513,9 @@ const Community = () => {
               </TouchableOpacity>
             ))
           ) : (
-            <Text style={{ color: currentColors.text, fontFamily: "Comfortaa" }}>
+            <Text
+              style={{ color: currentColors.text, fontFamily: "Comfortaa" }}
+            >
               No friends available
             </Text>
           )}

@@ -34,7 +34,7 @@ import { useTheme } from "@/contexts/ThemeContext";
 export default function GroupMessageScreen() {
   const [messages, setMessages] = useState<GroupMessage[]>([]);
   const [newMessage, setNewMessage] = useState("");
-  const [isReady, setIsReady] = useState(false); // Add a flag for layout readiness
+  const [isReady, setIsReady] = useState(false);
   const { groupId } = useLocalSearchParams();
   const groupIdString = Array.isArray(groupId) ? groupId[0] : groupId;
   const currentUser = auth.currentUser;
@@ -65,7 +65,6 @@ export default function GroupMessageScreen() {
     }, [refetch])
   );
 
-  // Automatically scroll to the bottom unless the user is scrolling
   useEffect(() => {
     const scrollToBottom = () => {
       if (

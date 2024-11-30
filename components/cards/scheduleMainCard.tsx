@@ -1,27 +1,33 @@
 import ArrowUp from "@/assets/images/arrow-up.svg";
+import Clock from "@/assets/images/clock.svg";
 import OrangeMarker from "@/assets/images/OrangeMarker.svg";
 import RedMarker from "@/assets/images/RedMarker.svg";
 import RepeatIcon from "@/assets/images/repeat.svg";
-import TimeIcon from "@/assets/images/timeIcon.svg";
-import Trash from "@/assets/images/trach_icon.svg";
 import { useTheme } from "@/contexts/ThemeContext"; // Importing useTheme
+import { CarpoolWithRequests, User, Vehicle } from "@/graphql/generated";
 import React from "react";
-import { Text, TouchableOpacity, View } from "react-native";
+import { Text, View } from "react-native";
+import DriverInfo from "./driverCard";
 import StackedProfilePictures from "./stackedProfile";
 
 interface CardData {
   id: string;
-  state: "pending" | "timeout";
+  state: "Pending" | "Timeout";
   date: Date;
   startLocation: string;
-  startTime: string; // Either "3:30 PM" or ISO string "2024-11-26T22:25:00.000Z"
+  startTime: string;
   endLocation: string;
-  endTime: string; // Either "3:30 PM" or ISO string
+  endTime: string;
   images: string[];
   recurrence: "one time" | "recurring";
+  driverDetails: {
+    driverData: User;
+    vehicleData: Vehicle;
+    carpoolData: CarpoolWithRequests;
+  };
 }
 
-const ActiveRiderCard = ({
+const ScheduleMainCard = ({
   id,
   state,
   date,
@@ -31,24 +37,12 @@ const ActiveRiderCard = ({
   endTime,
   images,
   recurrence,
+  driverDetails,
 }: CardData) => {
   const { currentColors } = useTheme();
 
-  // Helper to parse and format time
-  const formatTime = (time: string) => {
-    // Check if the time is already formatted (e.g., "3:30 PM")
-    if (/^\d{1,2}:\d{2}\s?(AM|PM)$/i.test(time)) {
-      return time; // Return as is
-    }
-    // Parse ISO string and format to "3:30 PM"
-    return new Date(time).toLocaleTimeString("en-US", {
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: true,
-    });
-  };
+  const isodate = new Date(date);
 
-  const isodate = new Date(date); // Placeholder for date formatting
   const formatThisDate = isodate.toLocaleDateString("en-US", {
     month: "short",
     day: "numeric",
@@ -96,67 +90,102 @@ const ActiveRiderCard = ({
               alignItems: "center",
             }}
           >
-            {state === "pending" ? (
+            {recurrence === "recurring" ? (
               <View
                 style={{
-                  backgroundColor: "#3366FF",
+                  backgroundColor: "rgba(255, 136, 51, 0.1)",
                   borderRadius: 16,
                   paddingHorizontal: 18,
                   paddingVertical: 6,
                   flexDirection: "row",
                   alignItems: "center",
-                  marginRight: 10,
                 }}
               >
-                <TimeIcon width={16} height={16} style={{ marginRight: 5 }} />
+                <RepeatIcon
+                  width={16}
+                  height={16}
+                  style={{ marginHorizontal: 5 }}
+                />
                 <Text
                   style={{
                     fontSize: 10,
                     fontFamily: "Comfortaa",
                     fontWeight: "700",
-                    color: "#FFFFFF",
+                    color: "#FF6A00",
                   }}
                 >
-                  {state.charAt(0).toUpperCase() + state.slice(1)}
+                  {recurrence}
                 </Text>
               </View>
             ) : (
               <View
                 style={{
-                  backgroundColor: "#D2D2D2",
+                  backgroundColor: "rgba(255, 136, 51, 0.1)",
                   borderRadius: 16,
                   paddingHorizontal: 10,
                   paddingVertical: 6,
                   flexDirection: "row",
                   alignItems: "center",
-                  marginRight: 10,
                 }}
               >
-                <TimeIcon width={16} height={16} style={{ marginRight: 5 }} />
+                <ArrowUp
+                  width={16}
+                  height={16}
+                  style={{ marginHorizontal: 5 }}
+                />
                 <Text
                   style={{
                     fontSize: 10,
                     fontFamily: "Comfortaa",
                     fontWeight: "700",
-                    color: "#FFFFFF",
+                    color: "#FF6A00",
                   }}
                 >
-                  {state.charAt(0).toUpperCase() + state.slice(1)}
+                  {recurrence}
                 </Text>
               </View>
             )}
-            <TouchableOpacity
-              onPress={() => {}}
+            <View
               style={{
-                justifyContent: "center",
+                backgroundColor: "#FFBB00",
+                borderRadius: 16,
+                paddingHorizontal: 18,
+                paddingVertical: 6,
+                flexDirection: "row",
                 alignItems: "center",
+                marginLeft: 10,
               }}
             >
-              <Trash width={24} height={24} />
-            </TouchableOpacity>
+              <Clock width={16} height={16} style={{ marginHorizontal: 5 }} />{" "}
+              <Text
+                style={{
+                  fontSize: 10,
+                  fontFamily: "Comfortaa",
+                  fontWeight: "700",
+                  color: "#001323",
+                }}
+              >
+                Confirmed
+              </Text>
+            </View>
           </View>
         </View>
-
+        {driverDetails && (
+          <DriverInfo
+            driverData={driverDetails.driverData}
+            vehicleData={driverDetails.vehicleData}
+            carpoolData={driverDetails.carpoolData}
+          />
+        )}
+        <View
+          style={{
+            width: "100%",
+            borderBottomWidth: 0.5,
+            borderBottomColor: "#8F9BB3",
+            alignSelf: "center",
+            marginVertical: 10,
+          }}
+        />
         <Text
           style={{
             fontSize: 20,
@@ -170,7 +199,6 @@ const ActiveRiderCard = ({
           {formatThisDate}
         </Text>
 
-        {/* Start Location */}
         <View
           style={{
             flexDirection: "row",
@@ -178,9 +206,13 @@ const ActiveRiderCard = ({
             marginBottom: 5,
           }}
         >
-          <OrangeMarker width={20} height={20} style={{ marginRight: 8 }} />
+          <OrangeMarker
+            width={20}
+            height={20}
+            style={{ marginRight: 8, width: 120 }}
+          />
           <Text style={{ fontFamily: "Comfortaa", color: currentColors.text }}>
-            {startLocation.split(" ").slice(0, 3).join(" ").replace(",", "")}
+            {startLocation.split(" ").slice(0, 3).join(" ")}
           </Text>
           <Text
             style={{
@@ -189,15 +221,14 @@ const ActiveRiderCard = ({
               fontFamily: "Comfortaa",
             }}
           >
-            Est: {formatTime(startTime)}
+            Est: {startTime.toLowerCase()}
           </Text>
         </View>
 
-        {/* End Location */}
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           <RedMarker width={20} height={20} style={{ marginRight: 8 }} />
           <Text style={{ fontFamily: "Comfortaa", color: currentColors.text }}>
-            {endLocation.split(" ").slice(0, 3).join(" ").replace(",", "")}
+            {endLocation.split(" ").slice(0, 3).join(" ")}
           </Text>
           <Text
             style={{
@@ -206,7 +237,7 @@ const ActiveRiderCard = ({
               fontFamily: "Comfortaa",
             }}
           >
-            Est: {formatTime(endTime)}
+            Est: {endTime.toLowerCase()}
           </Text>
         </View>
 
@@ -220,63 +251,34 @@ const ActiveRiderCard = ({
         >
           <StackedProfilePictures images={images} />
 
-          {recurrence === "one time" ? (
-            <View
+          <View
+            style={{
+              backgroundColor: "#FB812A",
+              borderRadius: 16,
+              paddingHorizontal: 18,
+              paddingVertical: 6,
+              flexDirection: "row",
+              alignItems: "center",
+              marginLeft: 10,
+            }}
+          >
+            <Text
               style={{
-                backgroundColor: "rgba(255, 136, 51, 0.1)",
-                borderRadius: 16,
-                paddingHorizontal: 20,
-                paddingVertical: 6,
-                flexDirection: "row",
-                alignItems: "center",
+                fontSize: 10,
+                fontFamily: "Comfortaa",
+                fontWeight: "700",
+                color: "#FFFFFF",
+                marginHorizontal: 10,
               }}
             >
-              <RepeatIcon width={16} height={16} style={{ marginRight: 5 }} />
-              <Text
-                style={{
-                  fontSize: 10,
-                  fontFamily: "Comfortaa",
-                  fontWeight: "700",
-                  color: "#FF6A00",
-                }}
-              >
-                {recurrence
-                  .split(" ")
-                  .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-                  .join(" ")}
-              </Text>
-            </View>
-          ) : (
-            <View
-              style={{
-                backgroundColor: "rgba(255, 136, 51, 0.1)",
-                borderRadius: 16,
-                paddingHorizontal: 18,
-                paddingVertical: 6,
-                flexDirection: "row",
-                alignItems: "center",
-              }}
-            >
-              <ArrowUp width={16} height={16} style={{ marginRight: 5 }} />
-              <Text
-                style={{
-                  fontSize: 10,
-                  fontFamily: "Comfortaa",
-                  fontWeight: "700",
-                  color: "#FF6A00",
-                }}
-              >
-                {recurrence
-                  .split(" ")
-                  .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-                  .join(" ")}
-              </Text>
-            </View>
-          )}
+              {" "}
+              Read More
+            </Text>
+          </View>
         </View>
       </View>
     </View>
   );
 };
 
-export default ActiveRiderCard;
+export default ScheduleMainCard;

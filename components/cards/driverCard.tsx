@@ -3,8 +3,8 @@ import { View, Text, Image, TouchableOpacity } from "react-native";
 import MessageCircle from "@/assets/images/message-circle.svg";
 import HeartIcon from "@/assets/images/heart.svg";
 import { useTheme } from "@/contexts/ThemeContext"; // Importing useTheme
-import { User, Vehicle, CarpoolWithRequests } from "@/graphql/generated";
 import { auth } from "@/firebaseConfig"; // Firebase for checking current user
+import { CarpoolWithRequests, User, Vehicle } from "@/graphql/generated";
 import { Link, useRouter } from "expo-router";
 
 const DriverInfo = ({
@@ -33,12 +33,6 @@ const DriverInfo = ({
         justifyContent: "space-between",
         height: 200,
         backgroundColor: currentColors.background,
-        borderRadius: 12,
-        shadowColor: currentColors.text,
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.25,
-        shadowRadius: 4,
-        elevation: 4,
         paddingHorizontal: 20,
         width: "100%",
       }}
