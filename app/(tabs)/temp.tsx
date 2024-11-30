@@ -1,156 +1,206 @@
-import React, { useState, useEffect } from "react";
-import {
-  Button,
-  StyleSheet,
-  ActivityIndicator,
-  Text,
-  View,
-  Image,
-  TouchableOpacity,
-} from "react-native";
-import withAuthCheck from "../../components/WithAuthCheck";
-import MapView, { Marker, Polyline } from "react-native-maps";
-import { ThemedAddressCompletionInput } from "@/components/ThemedAddressCompletionInput";
-import { ThemedView } from "@/components/ThemedView";
-import { ThemedText } from "@/components/ThemedText";
-import { useLocationAndCommunityCenters } from "@/hooks/map/useMap";
-import { useDirections } from "@/hooks/map/useDirections";
-import { CommunityCenter } from "@/graphql/generated";
-import { useLogout } from "@/hooks/auth/useLogout";
-import Reload from "@/assets/images/reload.svg";
+import React, { useEffect, useState } from "react";
+import { Text, StyleSheet, FlatList, View, ScrollView } from "react-native";
 import { useQuery } from "@apollo/client";
-import { HAS_USER_ON_BOARDED } from "@/graphql/user/queries";
-import { router, Href } from "expo-router";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { GET_CHILDREN_FOR_USER } from "@/graphql/user/queries";
+import { GET_USER_CARPOOL_WITH_REQUESTS } from "@/graphql/carpool/queries";
+import { Spinner } from "@ui-kitten/components";
 import { auth } from "@/firebaseConfig";
-import { useTheme } from "@/contexts/ThemeContext";  // Importing ThemeContext
-// import { useTextSize } from "@/contexts/TextSizeContext";
+import { Link, useFocusEffect, useLocalSearchParams } from "expo-router";
+import { GetUserCarpoolsAndRequestsQuery } from "@/graphql/generated";
+import { useCallback } from "react";
+import MapDriverCard from "@/components/cards/mapDriverCard";
+import ActiveRiderCard from "@/components/cards/activeCard";
+import { useTheme } from "@/contexts/ThemeContext";
 
-function HomeScreen() {
-  const { currentColors } = useTheme();  // Accessing current colors from context
-  // const { isLargeText, textScaleFactor } = useTextSize();
+const CarpoolListScreen: React.FC = () => {
+  const { currentColors } = useTheme();
+  const currentUser = auth.currentUser;
+
+  const { success, type } = useLocalSearchParams();
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
+
+  const { data, loading, error, refetch } =
+    useQuery<GetUserCarpoolsAndRequestsQuery>(GET_USER_CARPOOL_WITH_REQUESTS, {
+      skip: !currentUser,
+      variables: { userId: currentUser?.uid },
+    });
+
+  useFocusEffect(
+    useCallback(() => {
+      refetch();
+    }, [refetch])
+  );
+
+  useEffect(() => {
+    if (success === "true") {
+      if (type === "carpool") {
+        setSuccessMessage("Carpool created successfully!");
+      } else if (type === "request") {
+        setSuccessMessage("Request submitted successfully!");
+      }
+      setShowSuccessMessage(true);
+
+      // Automatically hide the message after 3 seconds
+      const timer = setTimeout(() => {
+        setShowSuccessMessage(false);
+      }, 3000);
+
+      return () => clearTimeout(timer); // Cleanup timer on unmount
+    }
+  }, [success, type]);
+
+  if (loading) return <Spinner />;
+  if (error)
+    return (
+      <Text style={{ color: currentColors.text }}>Error loading carpools</Text>
+    );
+
+  const carpools = data?.getUserCarpoolsAndRequests?.carpools || [];
+  const requests = data?.getUserCarpoolsAndRequests?.requests || [];
+
+  const vanessaChildImage = require("@/assets/images/user/vanessa/child/vanessa-child.jpg");
+  const evanChildImage = require("@/assets/images/user/evan/child/evan-child.jpg");
+  const gloriaChildImage = require("@/assets/images/user/gloria/child/gloria-child.jpg");
+
+  const uniqueRequests = requests.filter(
+    (request, index, self) =>
+      index === self.findIndex((r) => r.id === request.id)
+  );
+
+  const currentHour = new Date().getHours();
+  let timeOfDay = "Morning";
+  if (currentHour >= 12 && currentHour < 18) {
+    timeOfDay = "Afternoon";
+  } else if (currentHour >= 18) {
+    timeOfDay = "Evening";
+  }
+
+  const driverName =
+    carpools.length > 0 ? carpools[0].driver.firstName : "User";
 
   return (
-    <View style={[styles.container, { backgroundColor: currentColors.background }]}>
-      <Text style={[styles.heading, { color: currentColors.text }]}>New Ride</Text>
-      <View style={{ marginBottom: 20 }}>
-        <TouchableOpacity
-          onPress={() => router.push("/(tabs)/Carpool/createRide")}
-        >
-          <View
-            style={[
-              styles.buttonContainer,
-              { backgroundColor: currentColors.background, borderColor: currentColors.tint },
-            ]}
-          >
-            <View style={{ flexDirection: "column", justifyContent: "center" }}>
-              <Text style={[
-                styles.buttonText, 
-                { 
-                  color: currentColors.text, 
-                  fontSize: 20 
-                }]}>
-                I'm a driver
-              </Text>
-              <Text style={[styles.subText, { color: currentColors.text }]}>
-                I'm available to carpool other kids.
-              </Text>
+    <>
+      <ScrollView>
+        <View style={{ paddingHorizontal: 16, marginTop: 10 }}>
+          {showSuccessMessage && (
+            <View style={styles.successMessage}>
+              <Text style={styles.successText}>{successMessage}</Text>
             </View>
-            <Image
-              source={require("@/assets/images/arrow-circle-right.png")}
-              style={{
-                width: 40,
-                height: 40,
-                tintColor: currentColors.icon,
-              }}
-            />
-          </View>
-        </TouchableOpacity>
-      </View>
-      <View>
-        <TouchableOpacity
-          onPress={() => router.push("/(tabs)/Carpool/postRequest" as Href)}
-        >
-          <View
-            style={[
-              styles.buttonContainer,
-              { backgroundColor: currentColors.background, borderColor: currentColors.tint },
-            ]}
+          )}
+          <Text
+            style={{
+              fontFamily: "Comfortaa",
+              fontWeight: "500",
+              fontSize: 14,
+              marginBottom: -10,
+            }}
           >
-            <View style={{ flexDirection: "column", justifyContent: "center" }}>
-              <Text style={[styles.buttonText, { color: currentColors.text }]}>
-                Looking for a ride for my kid
-              </Text>
-              <Text style={[styles.subText, { color: currentColors.text }]}>
-                Notify me when a ride matches
-              </Text>
+            {timeOfDay}
+          </Text>
+          <Text
+            style={{
+              fontFamily: "Comfortaa-Bold",
+              fontWeight: "700",
+              fontSize: 24,
+              marginBottom: 16,
+              marginTop: 10,
+            }}
+          >
+            {driverName}
+          </Text>
+          <FlatList
+            data={carpools}
+            style={{ borderRadius: 20 }}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item }) => {
+              return (
+                <Link
+                  href={{
+                    pathname: "/trips/inProgress/[trip]",
+                    params: { trip: item.id },
+                  }}
+                  style={{ marginRight: 10, marginBottom: 10 }}
+                >
+                  <MapDriverCard
+                    driverName={item.driver.firstName}
+                    driverImage={item.driver.imageUrl}
+                    id={item.id}
+                    driveCount={22}
+                    likes={300}
+                    date={new Date(item.departureDate)}
+                    duration={"23 mins"}
+                    startLocation={item.startAddress}
+                    startTime={item.departureTime}
+                    endLocation={item.endAddress}
+                    endTime={item.departureTime}
+                    passengerImages={[
+                      vanessaChildImage,
+                      evanChildImage,
+                      gloriaChildImage,
+                    ]}
+                  />
+                </Link>
+              );
+            }}
+            ListEmptyComponent={<Text>No carpools available.</Text>}
+            horizontal={carpools.length > 1}
+            showsHorizontalScrollIndicator={false}
+          />
+        </View>
+        <Text style={styles.sectionTitle}>All Requests</Text>
+        <FlatList
+          data={uniqueRequests}
+          keyExtractor={(request) => request.id}
+          renderItem={({ item: request }) => (
+            <View style={{ marginTop: 10, paddingHorizontal: 5 }}>
+              {request.carpoolId && (
+                <Link
+                  href={{
+                    pathname: "/trips/inProgress/[trip]",
+                    params: { trip: request.carpoolId },
+                  }}
+                >
+                  <ActiveRiderCard
+                    id={request.id}
+                    state="pending"
+                    date={new Date()}
+                    startLocation={request.startAddress || "Unknown"}
+                    startTime={request.pickupTime || "Unknown"}
+                    endLocation={request.startAddress || "Unknown"}
+                    endTime={request.pickupTime || "Unknown"}
+                    images={[vanessaChildImage]}
+                    recurrence="one time"
+                  />
+                </Link>
+              )}
             </View>
-            <Image
-              source={require("@/assets/images/arrow-circle-right.png")}
-              style={{
-                width: 40,
-                height: 40,
-                tintColor: currentColors.icon,
-              }}
-            />
-          </View>
-        </TouchableOpacity>
-      </View>
-    </View>
+          )}
+          ListEmptyComponent={<Text>No requests available.</Text>}
+          contentContainerStyle={{ padding: 10 }}
+          showsVerticalScrollIndicator={false}
+        />
+      </ScrollView>
+    </>
   );
-}
-
-export default withAuthCheck(HomeScreen);
+};
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 16,
-    marginTop: 0,
+  successMessage: {
+    backgroundColor: "#d4edda",
+    padding: 10,
+    marginVertical: 10,
+    borderRadius: 5,
   },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  errorContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  predictedTimeContainer: {
-    padding: 8,
-    marginVertical: 8,
-  },
-  map: {
-    flex: 1,
-    width: "100%",
-    height: 400,
-  },
-  heading: {
-    fontSize: 32,
-    fontWeight: "bold",
-    marginBottom: 20,
-  },
-  buttonContainer: {
-    flexDirection: "row",
-    borderRadius: 20,
-    paddingVertical: 20,
-    paddingHorizontal: 30,
-    borderWidth: 1,
-    height: 100,
-    alignItems: "center",
-    justifyContent: "space-between",
-    width: "100%",
-  },
-  buttonText: {
-    color: "black",
-    fontSize: 20,
-    fontWeight: "semibold",
-    marginBottom: 3,
-  },
-  subText: {
+  successText: {
+    color: "#155724",
     fontSize: 16,
   },
+  sectionTitle: {
+    fontSize: 16,
+    fontWeight: "bold",
+    marginVertical: 16,
+    marginLeft: 8,
+  },
 });
+
+export default CarpoolListScreen;

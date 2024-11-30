@@ -1,10 +1,12 @@
-import { Tabs } from "expo-router";
+import { router, Tabs } from "expo-router";
 import React from "react";
 import { TabBarIcon } from "@/components/navigation/TabBarIcon";
 import { useTheme } from "@/contexts/ThemeContext";
-import { StyleSheet, View, Image } from "react-native";
+import { StyleSheet, View, Image, TouchableOpacity, Text } from "react-native";
 import Relay from "@/assets/images/Relay.svg";
 import RelayWhite from "@/assets/images/Relay-white.svg";
+import RelaySvg from "@/components/icons/RelaySvg";
+import { Ionicons } from "@expo/vector-icons";
 
 function Header() {
   const { currentColors } = useTheme();
@@ -13,17 +15,17 @@ function Header() {
     <View
       style={[
         styles.headerContainer,
-        { borderBottomColor: currentColors.placeholder, backgroundColor: currentColors.placeholder },
+        {
+          borderBottomColor: currentColors.background,
+          backgroundColor: currentColors.background,
+        },
       ]}
     >
-      <Image
-        source={require("@/assets/images/RelayLogo.png")}
-        style={{ width: 30 }}
-      />
+      <RelaySvg width={30} height={30} />
       {isDarkMode ? (
-        <RelayWhite style={{ marginLeft: 5 }} />
+        <RelayWhite style={{ marginLeft: 10, marginTop: 5 }} />
       ) : (
-        <Relay style={{ marginLeft: 5 }} />
+        <Relay style={{ marginLeft: 10, marginTop: 5  }} />
       )}
     </View>
   );
@@ -37,7 +39,13 @@ export default function TabLayout() {
       screenOptions={{
         tabBarActiveTintColor: currentColors.tint,
         tabBarInactiveTintColor: currentColors.text,
-        tabBarStyle: [styles.navContainer, { backgroundColor: currentColors.background, borderTopColor: currentColors.placeholder }],
+        tabBarStyle: [
+          styles.navContainer,
+          {
+            backgroundColor: currentColors.background,
+            borderTopColor: currentColors.placeholder,
+          },
+        ],
         tabBarLabelStyle: [styles.navText, { color: currentColors.text }],
         headerShown: true,
         header: () => <Header />,
@@ -57,7 +65,7 @@ export default function TabLayout() {
       />
 
       <Tabs.Screen
-        name="trips/listcarpool"
+        name="temp"
         options={{
           title: "Trips",
           tabBarIcon: ({ color, focused }) => (
@@ -70,7 +78,7 @@ export default function TabLayout() {
       />
 
       <Tabs.Screen
-        name="Carpool/createRide"
+        name="chooseRide"
         options={{
           title: "New Ride",
           tabBarIcon: ({ color, focused }) => (
@@ -132,8 +140,44 @@ export default function TabLayout() {
       <Tabs.Screen
         name="messages/[userId]"
         options={{
-          title: "Message",
           href: null,
+          headerShown: true,
+          header: ({ navigation, route }) => (
+            <View
+              style={[
+                styles.customHeaderContainer,
+                { backgroundColor: currentColors.background },
+              ]}
+            >
+              {/* Back Button */}
+              <TouchableOpacity
+                onPress={() =>
+                  router.canGoBack()
+                    ? router.back()
+                    : router.push("/Community/community")
+                }
+                style={styles.backButton}
+              >
+                <Ionicons
+                  name="arrow-back"
+                  size={24}
+                  color={currentColors.text}
+                />
+              </TouchableOpacity>
+
+              {/* Centered Name */}
+              <Text
+                style={[
+                  styles.headerTitle,
+                  { color: currentColors.text, fontFamily: "Comfortaa" },
+                ]}
+              >
+                {route.params?.recipientName || "Message"}
+              </Text>
+
+              <View style={{ width: 24 }} />
+            </View>
+          ),
         }}
       />
 
@@ -146,10 +190,52 @@ export default function TabLayout() {
       />
 
       <Tabs.Screen
-        name="messages/group/[groupId]"
+        name="trips/listcarpool"
         options={{
           title: "Message",
           href: null,
+        }}
+      />
+
+      <Tabs.Screen
+        name="messages/group/[groupId]"
+        options={{
+          headerShown: true,
+          href: null,
+          header: ({ route }) => (
+            <View
+              style={[
+                styles.customHeaderContainer,
+                { backgroundColor: currentColors.background },
+              ]}
+            >
+              <TouchableOpacity
+                onPress={() =>
+                  router.canGoBack()
+                    ? router.back()
+                    : router.push("/Community/community")
+                }
+                style={styles.backButton}
+              >
+                <Ionicons
+                  name="arrow-back"
+                  size={24}
+                  color={currentColors.text}
+                />
+              </TouchableOpacity>
+
+              <Text
+                style={[
+                  styles.headerTitle,
+                  { color: currentColors.text, fontFamily: "Comfortaa" },
+                ]}
+              >
+                {route.params?.groupName || "Group"}
+              </Text>
+
+              <View style={{ width: 24 }} />
+            </View>
+          ),
         }}
       />
 
@@ -162,8 +248,9 @@ export default function TabLayout() {
       />
 
       <Tabs.Screen
-        name="temp"
+        name="Carpool/createRide"
         options={{
+          title: "NewRide",
           href: null,
         }}
       />
@@ -179,6 +266,15 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     height: 50,
   },
+  customHeaderContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between", // Space between for alignment
+    paddingHorizontal: 10,
+    height: 50,
+    borderBottomWidth: 1,
+    borderBottomColor: "#ddd", // Optional for border
+  },
   navContainer: {
     flexDirection: "row",
     justifyContent: "center",
@@ -187,5 +283,17 @@ const styles = StyleSheet.create({
   },
   navText: {
     fontSize: 12,
+  },
+  backButton: {
+    width: 24, // Fixed size for consistent alignment
+  },
+  backText: {
+    fontSize: 16,
+  },
+  headerTitle: {
+    fontSize: 20,
+    fontWeight: "bold",
+    textAlign: "center",
+    flex: 1, // Ensures centering in the available space
   },
 });

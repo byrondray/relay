@@ -33,27 +33,50 @@ const DriverCardInProgress = ({
       <View style={styles.infoContainer}>
         {/* Driver Info */}
         <View>
-          <Text style={[styles.driverLabel, { color: currentColors.placeholder }]}>
+          <Text
+            style={[styles.driverLabel, { color: currentColors.placeholder }]}
+          >
             Driver
           </Text>
-          <Text style={[styles.driverName, { color: currentColors.text, marginTop: 5 }]}>
+          <Text
+            style={[
+              styles.driverName,
+              { color: currentColors.text, marginTop: 5 },
+            ]}
+          >
             {driverData?.firstName[0].toUpperCase()}
             {driverData?.firstName.slice(1)} {driverData?.lastName}
           </Text>
           <Text
-            style={[styles.driverDetails, { color: currentColors.placeholder, marginTop: 5 }]}
+            style={[
+              styles.driverDetails,
+              { color: currentColors.placeholder, marginTop: 5 },
+            ]}
           >
             Car Plate
           </Text>
-          <Text style={[styles.driverName, { color: currentColors.text, marginTop: 5 }]}>
+          <Text
+            style={[
+              styles.driverName,
+              { color: currentColors.text, marginTop: 5 },
+            ]}
+          >
             {vehicleData?.licensePlate}
           </Text>
           <Text
-            style={[styles.driverDetails, { color: currentColors.placeholder, marginTop: 5 }]}
+            style={[
+              styles.driverDetails,
+              { color: currentColors.placeholder, marginTop: 5 },
+            ]}
           >
             Vehicle Model
           </Text>
-          <Text style={[styles.driverName, { color: currentColors.text, marginTop: 5 }]}>
+          <Text
+            style={[
+              styles.driverName,
+              { color: currentColors.text, marginTop: 5 },
+            ]}
+          >
             {vehicleData?.model}
           </Text>
         </View>
@@ -69,7 +92,10 @@ const DriverCardInProgress = ({
         >
           <Image
             source={require("@/assets/images/message-circle.png")}
-            style={[styles.messageIcon, { tintColor: currentColors.background }]}
+            style={[
+              styles.messageIcon,
+              { tintColor: currentColors.background },
+            ]}
           />
         </View>
       )}

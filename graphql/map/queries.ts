@@ -65,6 +65,8 @@ export const LOCATION_RECEIVED_SUBSCRIPTION = gql`
   subscription LocationReceived($recipientId: String!) {
     locationReceived(recipientId: $recipientId) {
       senderId
+      carpoolId
+      driverId
       lat
       lon
       timestamp
@@ -83,5 +85,35 @@ export const FOREGROUND_NOTIFICATION_SUBSCRIPTION = gql`
       timestamp
       senderId
     }
+  }
+`;
+
+export const SEND_NOTIFICATION_INFO = gql`
+  mutation SendNotificationInfo(
+    $carpoolId: String!
+    $notificationType: NotificationType!
+    $lat: Float!
+    $lon: Float!
+    $nextStop: NextStopInput!
+    $timeToNextStop: String!
+    $timeUntilNextStop: String!
+    $isFinalDestination: Boolean!
+  ) {
+    sendNotificationInfo(
+      carpoolId: $carpoolId
+      notificationType: $notificationType
+      lat: $lat
+      lon: $lon
+      nextStop: $nextStop
+      timeToNextStop: $timeToNextStop
+      timeUntilNextStop: $timeUntilNextStop
+      isFinalDestination: $isFinalDestination
+    )
+  }
+`;
+
+export const RESET_NOTIFICATION_TRACKING = gql`
+  mutation ResetNotificationTracking {
+    resetNotificationTracking
   }
 `;

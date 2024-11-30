@@ -89,6 +89,27 @@ export type CarpoolWithDriver = {
   winterTires: Scalars['Boolean']['output'];
 };
 
+export type CarpoolWithDriverAndVehicle = {
+  __typename?: 'CarpoolWithDriverAndVehicle';
+  createdAt: Scalars['String']['output'];
+  departureDate: Scalars['String']['output'];
+  departureTime: Scalars['String']['output'];
+  driver: User;
+  endAddress: Scalars['String']['output'];
+  endLat: Scalars['Float']['output'];
+  endLon: Scalars['Float']['output'];
+  estimatedTime?: Maybe<Scalars['String']['output']>;
+  extraCarSeat: Scalars['Boolean']['output'];
+  groupId: Scalars['String']['output'];
+  id: Scalars['String']['output'];
+  startAddress: Scalars['String']['output'];
+  startLat: Scalars['Float']['output'];
+  startLon: Scalars['Float']['output'];
+  tripPreferences?: Maybe<Scalars['String']['output']>;
+  vehicle: Vehicle;
+  winterTires: Scalars['Boolean']['output'];
+};
+
 export type CarpoolWithRequests = {
   __typename?: 'CarpoolWithRequests';
   departureDate: Scalars['String']['output'];
@@ -278,6 +299,7 @@ export type Mutation = {
   deleteMemberFromGroup: DeleteMemberFromGroupResponse;
   login: AuthPayload;
   sendLocation?: Maybe<LocationData>;
+  sendNotificationInfo?: Maybe<LocationData>;
   updateExpoPushToken: User;
   updateUserInfo: User;
 };
@@ -388,6 +410,18 @@ export type MutationSendLocationArgs = {
 };
 
 
+export type MutationSendNotificationInfoArgs = {
+  carpoolId: Scalars['String']['input'];
+  isFinalDestination: Scalars['Boolean']['input'];
+  lat: Scalars['Float']['input'];
+  lon: Scalars['Float']['input'];
+  nextStop: NextStopInput;
+  notificationType: NotificationType;
+  timeToNextStop: Scalars['String']['input'];
+  timeUntilNextStop: Scalars['String']['input'];
+};
+
+
 export type MutationUpdateExpoPushTokenArgs = {
   expoPushToken: Scalars['String']['input'];
   userId: Scalars['String']['input'];
@@ -416,6 +450,12 @@ export type NextStopInput = {
   address: Scalars['String']['input'];
   requestId: Scalars['String']['input'];
 };
+
+export enum NotificationType {
+  FinalDestination = 'FINAL_DESTINATION',
+  Leaving = 'LEAVING',
+  NearStop = 'NEAR_STOP'
+}
 
 export type Query = {
   __typename?: 'Query';
@@ -648,7 +688,7 @@ export type User = {
 
 export type UserCarpoolsAndRequests = {
   __typename?: 'UserCarpoolsAndRequests';
-  carpools: Array<CarpoolWithDriver>;
+  carpools: Array<CarpoolWithDriverAndVehicle>;
   requests: Array<RequestWithParentAndChild>;
 };
 
@@ -736,7 +776,7 @@ export type GetUserCarpoolsAndRequestsQueryVariables = Exact<{
 }>;
 
 
-export type GetUserCarpoolsAndRequestsQuery = { __typename?: 'Query', getUserCarpoolsAndRequests: { __typename?: 'UserCarpoolsAndRequests', carpools: Array<{ __typename?: 'CarpoolWithDriver', id: string, groupId: string, startAddress: string, endAddress: string, startLat: number, startLon: number, endLat: number, endLon: number, departureDate: string, departureTime: string, extraCarSeat: boolean, tripPreferences?: string | null, estimatedTime?: string | null, vehicle: { __typename?: 'Vehicle', id: string, make: string, model: string, year: string, licensePlate: string }, driver: { __typename?: 'User', id: string, firstName: string, lastName?: string | null, email: string, phoneNumber?: string | null, imageUrl?: string | null } }>, requests: Array<{ __typename?: 'RequestWithParentAndChild', id: string, carpoolId?: string | null, pickupTime: string, startAddress: string, parent: { __typename?: 'User', id: string, firstName: string, email: string, imageUrl?: string | null }, child: { __typename?: 'Child', id: string, firstName: string, schoolId: string, imageUrl?: string | null } }> } };
+export type GetUserCarpoolsAndRequestsQuery = { __typename?: 'Query', getUserCarpoolsAndRequests: { __typename?: 'UserCarpoolsAndRequests', carpools: Array<{ __typename?: 'CarpoolWithDriverAndVehicle', id: string, groupId: string, startAddress: string, endAddress: string, startLat: number, startLon: number, endLat: number, endLon: number, departureDate: string, departureTime: string, extraCarSeat: boolean, tripPreferences?: string | null, estimatedTime?: string | null, vehicle: { __typename?: 'Vehicle', id: string, make: string, model: string, year: string, licensePlate: string }, driver: { __typename?: 'User', id: string, firstName: string, lastName?: string | null, email: string, phoneNumber?: string | null, imageUrl?: string | null } }>, requests: Array<{ __typename?: 'RequestWithParentAndChild', id: string, carpoolId?: string | null, pickupTime: string, startAddress: string, parent: { __typename?: 'User', id: string, firstName: string, email: string, imageUrl?: string | null }, child: { __typename?: 'Child', id: string, firstName: string, schoolId: string, imageUrl?: string | null } }> } };
 
 export type GetFriendQueryVariables = Exact<{
   friendId: Scalars['String']['input'];
@@ -849,6 +889,20 @@ export type ForegroundNotificationSubscriptionVariables = Exact<{
 
 
 export type ForegroundNotificationSubscription = { __typename?: 'Subscription', foregroundNotification?: { __typename?: 'ForegroundNotification', message: string, timestamp: string, senderId: string } | null };
+
+export type SendNotificationInfoMutationVariables = Exact<{
+  carpoolId: Scalars['String']['input'];
+  notificationType: NotificationType;
+  lat: Scalars['Float']['input'];
+  lon: Scalars['Float']['input'];
+  nextStop: NextStopInput;
+  timeToNextStop: Scalars['String']['input'];
+  timeUntilNextStop: Scalars['String']['input'];
+  isFinalDestination: Scalars['Boolean']['input'];
+}>;
+
+
+export type SendNotificationInfoMutation = { __typename?: 'Mutation', sendNotificationInfo?: { __typename?: 'LocationData', senderId: string, lat: number, lon: number, timestamp: string, nextStop?: { __typename?: 'NextStop', address: string, requestId: string } | null } | null };
 
 export type GetConversationsForUserQueryVariables = Exact<{
   userId: Scalars['String']['input'];

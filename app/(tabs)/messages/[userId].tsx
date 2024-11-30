@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import {
   View,
   Text,
@@ -11,7 +11,11 @@ import {
   Keyboard,
   TouchableOpacity,
 } from "react-native";
-import { useFocusEffect, useLocalSearchParams } from "expo-router";
+import {
+  useFocusEffect,
+  useLocalSearchParams,
+  useNavigation,
+} from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Notifications from "expo-notifications";
 import { auth } from "@/firebaseConfig";
@@ -29,11 +33,14 @@ import { useTheme } from "@/contexts/ThemeContext";
 
 export default function MessageScreen() {
   const { currentColors } = useTheme();
+  const navigation = useNavigation();
   const [messages, setMessages] = useState<DetailedMessage[]>([]);
   const [newMessage, setNewMessage] = useState("");
   const { userId } = useLocalSearchParams();
   const recipientIdString = Array.isArray(userId) ? userId[0] : userId;
   const currentUser = auth.currentUser;
+
+  const flatListRef = useRef<FlatList>(null); // Ref for the FlatList
 
   const { data: recipientData, loading: recipientLoading } =
     useFetchUser(recipientIdString);
@@ -121,6 +128,38 @@ export default function MessageScreen() {
     };
   }, [currentUser?.uid || "", messages, senderData, recipientData]);
 
+  useFocusEffect(
+    useCallback(() => {
+      const recipientName = recipientData?.getUser?.firstName || "Message";
+      // @ts-ignore
+      navigation.setParams({ recipientName });
+    }, [recipientData, navigation])
+  );
+
+  useEffect(() => {
+    const scrollToBottom = () => {
+      if (flatListRef.current) {
+        flatListRef.current.scrollToEnd({ animated: true });
+      }
+    };
+
+    scrollToBottom();
+
+    const keyboardShowListener = Keyboard.addListener(
+      "keyboardDidShow",
+      scrollToBottom
+    );
+    const keyboardHideListener = Keyboard.addListener(
+      "keyboardDidHide",
+      scrollToBottom
+    );
+
+    return () => {
+      keyboardShowListener.remove();
+      keyboardHideListener.remove();
+    };
+  }, [messages]);
+
   if (recipientLoading || senderLoading) {
     return (
       <View style={styles.spinnerContainer}>
@@ -143,8 +182,14 @@ export default function MessageScreen() {
       />
 
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <View style={[styles.container, { flex: 1, backgroundColor: currentColors.background }]}>
+        <View
+          style={[
+            styles.container,
+            { flex: 1, backgroundColor: currentColors.background },
+          ]}
+        >
           <FlatList
+            ref={flatListRef}
             data={messages}
             keyExtractor={(item) => item.id}
             renderItem={({ item }) => <Message message={item} />}
@@ -167,7 +212,11 @@ export default function MessageScreen() {
               placeholderTextColor={currentColors.placeholder}
             />
             <TouchableOpacity onPress={() => sendMessage()}>
-              <Text style={[styles.sendButtonText, { color: currentColors.tint }]}>Send</Text>
+              <Text
+                style={[styles.sendButtonText, { color: currentColors.tint }]}
+              >
+                Send
+              </Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -211,5 +260,12 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+  },
+  backButton: {
+    marginLeft: 10,
+  },
+  backText: {
+    fontSize: 16,
+    fontWeight: "500",
   },
 });

@@ -36,25 +36,25 @@ function VehicleForm(): JSX.Element {
   const [insuranceImage, setInsuranceImage] = useState<string | null>(null);
   const [checked, setChecked] = React.useState(false);
 
-  const {
-    data: vehicleData,
-    loading: vehicleLoading,
-    error: vehicleError,
-  } = useQuery(GET_VEHICLE_FOR_USER, {
-    variables: { userId },
-    skip: !userId,
-    onCompleted: (data) => {
-      if (data?.getVehicleForUser) {
-        const vehicle = data.getVehicleForUser;
-        setMake(vehicle.make || "");
-        setModel(vehicle.model || "");
-        setYear(vehicle.year || "");
-        setNumberOfSeats(vehicle.numberOfSeats || "");
-        setLicensePlate(vehicle.licensePlate || "");
-        setColor(vehicle.color || "");
-      }
-    },
-  });
+  // const {
+  //   data: vehicleData,
+  //   loading: vehicleLoading,
+  //   error: vehicleError,
+  // } = useQuery(GET_VEHICLE_FOR_USER, {
+  //   variables: { userId },
+  //   skip: !userId,
+  //   onCompleted: (data) => {
+  //     if (data?.getVehicleForUser) {
+  //       const vehicle = data.getVehicleForUser;
+  //       setMake(vehicle.make || "");
+  //       setModel(vehicle.model || "");
+  //       setYear(vehicle.year || "");
+  //       setNumberOfSeats(vehicle.numberOfSeats || "");
+  //       setLicensePlate(vehicle.licensePlate || "");
+  //       setColor(vehicle.color || "");
+  //     }
+  //   },
+  // });
 
   const [createVehicle] = useMutation(CREATE_VEHICLE);
 
@@ -72,7 +72,12 @@ function VehicleForm(): JSX.Element {
       //   },
       // });
       // await AsyncStorage.setItem("hasOnboarded", "true");
-      router.push("/(tabs)/temp" as Href);
+      router.push({
+        pathname: "/(tabs)",
+        params: {
+          hasOnboarded: "true",
+        },
+      });
     } catch (error) {
       setErrorMessage("Failed to submit vehicle info. Please try again.");
     } finally {
@@ -80,17 +85,17 @@ function VehicleForm(): JSX.Element {
     }
   };
 
-  if (vehicleLoading) {
-    return <ActivityIndicator size="large" color={currentColors.tint} />;
-  }
+  // if (vehicleLoading) {
+  //   return <ActivityIndicator size="large" color={currentColors.tint} />;
+  // }
 
-  if (vehicleError) {
-    return (
-      <Text style={[styles.errorText, { fontFamily: "Comfortaa" }]}>
-        Error loading vehicle data.
-      </Text>
-    );
-  }
+  // if (vehicleError) {
+  //   return (
+  //     <Text style={[styles.errorText, { fontFamily: "Comfortaa" }]}>
+  //       Error loading vehicle data.
+  //     </Text>
+  //   );
+  // }
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -107,8 +112,18 @@ function VehicleForm(): JSX.Element {
 
   return (
     <ScrollView>
-      <View style={[styles.container, { backgroundColor: currentColors.background }]}>
-        <Text style={[styles.heading, { color: currentColors.text, fontFamily: "Comfortaa" }]}>
+      <View
+        style={[
+          styles.container,
+          { backgroundColor: currentColors.background },
+        ]}
+      >
+        <Text
+          style={[
+            styles.heading,
+            { color: currentColors.text, fontFamily: "Comfortaa" },
+          ]}
+        >
           Vehicle Information
         </Text>
 
@@ -181,10 +196,19 @@ function VehicleForm(): JSX.Element {
                 { backgroundColor: currentColors.background },
               ]}
             >
-              <Text style={{ color: currentColors.text, fontFamily: "Comfortaa" }}>
+              <Text
+                style={{
+                  color: currentColors.text,
+                  fontFamily: "Comfortaa",
+                  marginTop: 5,
+                }}
+              >
                 Press here to upload photo of insurance details
               </Text>
-              <ImageUpload profileImage={insuranceImage} pickImage={pickImage} />
+              <ImageUpload
+                profileImage={insuranceImage}
+                pickImage={pickImage}
+              />
             </View>
           </TouchableOpacity>
         </View>
@@ -198,7 +222,10 @@ function VehicleForm(): JSX.Element {
                 { backgroundColor: currentColors.background },
               ]}
             >
-              <ImageUpload profileImage={insuranceImage} pickImage={pickImage} />
+              <ImageUpload
+                profileImage={insuranceImage}
+                pickImage={pickImage}
+              />
             </View>
           </TouchableOpacity>
         </View>
@@ -270,7 +297,7 @@ const styles = StyleSheet.create({
     fontSize: 32,
     fontWeight: "bold",
     marginBottom: 20,
-    fontFamily: "Comfortaa"
+    fontFamily: "Comfortaa",
   },
   errorText: {
     color: "red",

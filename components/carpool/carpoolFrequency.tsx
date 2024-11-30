@@ -15,16 +15,16 @@ const RadioGroupComponent: React.FC<RadioGroupComponentProps> = ({
   const { currentColors } = useTheme();
 
   return (
-    <View style={{ marginBottom: 20, width: "100%", flexDirection: "row" }}>
+    <View style={{ marginBottom: 20, width: "100%", flexDirection: "row"}}>
       <RadioGroup
         selectedIndex={selectedIndex}
         onChange={(index: number) => setSelectedIndex(index)}
-        style={{ width: "100%" }}
+        style={{ width: "100%", flexDirection: "row", justifyContent: "left", gap: 10 }}
       >
         <Radio style={{ marginRight: 10 }}>
-          {() => <Text style={styles.radioText}>One time</Text>}
+          {() => <Text style={[styles.radioText, {color: currentColors.text}]}>One time</Text>}
         </Radio>
-        <Radio>{() => <Text style={styles.radioText}>Recurring</Text>}</Radio>
+        <Radio>{() => <Text style={[styles.radioText, {color: currentColors.text}]}>Recurring</Text>}</Radio>
       </RadioGroup>
     </View>
   );

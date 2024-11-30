@@ -1,43 +1,60 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, Image, TouchableOpacity } from "react-native";
 import MessageCircle from "@/assets/images/message-circle.svg";
 import HeartIcon from "@/assets/images/heart.svg";
-import { useTheme } from "@/contexts/ThemeContext";  // Importing useTheme
-
-interface DriverInfoProps {
-  driverImage: string;
-  driverName: string;
-  carPlate: string;
-  vehicleModel: string;
-}
+import { useTheme } from "@/contexts/ThemeContext"; // Importing useTheme
+import { User, Vehicle, CarpoolWithRequests } from "@/graphql/generated";
+import { auth } from "@/firebaseConfig"; // Firebase for checking current user
+import { Link, useRouter } from "expo-router";
 
 const DriverInfo = ({
-  driverImage,
-  driverName,
-  carPlate,
-  vehicleModel,
-}: DriverInfoProps) => {
-  const randomLikes = Math.floor(Math.random() * (750 - 50 + 1)) + 50;
-  const { currentColors } = useTheme();  // Accessing theme colors
+  driverData,
+  vehicleData,
+  carpoolData,
+}: {
+  driverData: User;
+  vehicleData: Vehicle;
+  carpoolData: CarpoolWithRequests;
+}) => {
+  const [randomLikes, setRandomLikes] = useState(0);
+
+  useEffect(() => {
+    setRandomLikes(Math.floor(Math.random() * (750 - 50 + 1)) + 50);
+  }, []);
+
+  const { currentColors } = useTheme();
+  const router = useRouter();
 
   return (
     <View
       style={{
         flexDirection: "row",
-        alignItems: "flex-start",
-        paddingVertical: 20,
-        paddingLeft: 0,
+        alignItems: "center",
+        justifyContent: "space-between",
+        height: 200,
+        backgroundColor: currentColors.background,
+        borderRadius: 12,
+        shadowColor: currentColors.text,
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+        elevation: 4,
+        paddingHorizontal: 20,
+        width: "100%",
       }}
     >
-      <View style={{ alignItems: "center", marginRight: 20 }}>
-        <Image
-          source={{ uri: driverImage }}
-          style={{
-            width: 60,
-            height: 60,
-            borderRadius: 30,
-          }}
-        />
+      {/* Driver Image */}
+      <View style={{ alignItems: "center", marginRight: 20, marginBottom: 50 }}>
+        {driverData?.imageUrl && (
+          <Image
+            source={{ uri: driverData.imageUrl }}
+            style={{
+              width: 60,
+              height: 60,
+              borderRadius: 30,
+            }}
+          />
+        )}
 
         <View
           style={{
@@ -52,7 +69,7 @@ const DriverInfo = ({
               fontSize: 12,
               fontWeight: "500",
               color: "#FF6A00",
-              fontFamily: "Comfortaa",
+              fontFamily: "Comfortaa-Bold",
             }}
           >
             {randomLikes} likes
@@ -60,89 +77,101 @@ const DriverInfo = ({
         </View>
       </View>
 
-      <View style={{ flex: 1 }}>
+      {/* Driver Info */}
+      <View style={{ flex: 1, marginTop: -15 }}>
         <Text
           style={{
             fontSize: 12,
             fontWeight: "bold",
-            color: currentColors.text,  // Using theme color
+            color: "#8F9BB3", // Using theme color
             fontFamily: "Comfortaa",
+            marginBottom: 4,
           }}
         >
           Driver
         </Text>
         <Text
           style={{
-            fontSize: 17,
+            fontSize: 20,
             fontWeight: "700",
             marginBottom: 5,
-            color: currentColors.text,  // Using theme color
-            fontFamily: "Comfortaa",
+            color: currentColors.text, // Using theme color
+            fontFamily: "Comfortaa-Bold",
           }}
         >
-          {driverName}
+          {driverData?.firstName[0].toUpperCase()}
+          {driverData?.firstName.slice(1)} {driverData?.lastName}
         </Text>
 
         <Text
           style={{
             fontSize: 12,
             fontWeight: "bold",
-            color: currentColors.placeholder,  // Using theme color
+            color: "#8F9BB3", // Using theme color
             fontFamily: "Comfortaa",
+            marginBottom: 4,
           }}
         >
           Car Plate
         </Text>
         <Text
           style={{
-            fontSize: 17,
+            fontSize: 20,
             fontWeight: "700",
             marginBottom: 5,
-            color: currentColors.text,  // Using theme color
-            fontFamily: "Comfortaa",
+            color: currentColors.text, // Using theme color
+            fontFamily: "Comfortaa-Bold",
           }}
         >
-          {carPlate}
+          {vehicleData?.licensePlate}
         </Text>
 
         <Text
           style={{
             fontSize: 12,
             fontWeight: "bold",
-            color: currentColors.text,  // Using theme color
+            color: "#8F9BB3", // Using theme color
             fontFamily: "Comfortaa",
+            marginBottom: 4,
           }}
         >
           Vehicle Model
         </Text>
         <Text
           style={{
-            fontSize: 17,
+            fontSize: 20,
             fontWeight: "700",
-            color: currentColors.text,  // Using theme color
-            fontFamily: "Comfortaa",
+            color: currentColors.text, // Using theme color
+            fontFamily: "Comfortaa-Bold",
           }}
         >
-          {vehicleModel}
+          {vehicleData?.model}
         </Text>
       </View>
 
-      <TouchableOpacity
-        style={{
-          width: 40,
-          height: 40,
-          backgroundColor: currentColors.background,
-          borderRadius: 26,
-          justifyContent: "center",
-          alignItems: "center",
-          padding: 10,
-        }}
-        onPress={() => {
-          console.log("Button Pressed");
-        }}
-      >
-        <MessageCircle width={24} height={24} />
-      </TouchableOpacity>
+      {driverData?.id !== auth.currentUser?.uid && (
+        <Link
+          href={{
+            pathname: "/messages/[userId]",
+            params: { userId: driverData?.id },
+          }}
+          asChild
+        >
+          <TouchableOpacity
+            style={{
+              width: 40,
+              height: 40,
+              backgroundColor: "#FB812A",
+              borderRadius: 26,
+              justifyContent: "center",
+              alignItems: "center",
+              padding: 10,
+            }}
+          >
+            <MessageCircle width={24} height={24} />
+          </TouchableOpacity>
+        </Link>
+      )}
     </View>
   );
 };
