@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -15,12 +15,7 @@ import RideDateTimePicker from "@/components/carpool/dateAndTimePicker";
 import TripDescriptionInput from "@/components/carpool/carpoolDescription";
 import { useRequestState } from "@/hooks/carpoolRequestState";
 import RadioGroupComponent from "@/components/carpool/carpoolFrequency";
-import {
-  ApolloError,
-  createQueryPreloader,
-  useMutation,
-  useQuery,
-} from "@apollo/client";
+import { ApolloError, useMutation, useQuery } from "@apollo/client";
 import { GET_GROUPS } from "@/graphql/group/queries";
 import { CREATE_REQUEST } from "@/graphql/carpool/queries";
 import { CreateRequestInput, Group } from "@/graphql/generated";
@@ -30,7 +25,7 @@ import { router, useFocusEffect } from "expo-router";
 import { useTheme } from "@/contexts/ThemeContext";
 
 const RequestRide = () => {
-  const { currentColors } = useTheme(); // Destructure currentColors from the theme context
+  const { currentColors } = useTheme();
   const {
     startingAddress,
     setStartingAddress,

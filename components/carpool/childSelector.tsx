@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { View } from "react-native";
+import { TouchableOpacity, View, Image } from "react-native";
 import ChildImage from "./childImage";
 import { useQuery } from "@apollo/client";
 import { GET_CHILDREN_FOR_USER } from "@/graphql/user/queries";
 import { Spinner } from "@ui-kitten/components";
 import { Child } from "@/graphql/generated";
 import { useTheme } from "@/contexts/ThemeContext";
+import { router } from "expo-router";
 
 const ChildSelector = ({
   onSelectedChildrenChange,
@@ -65,14 +66,7 @@ const ChildSelector = ({
           onPress={() => toggleSelection(child.id)}
         />
       ))}
-    </View>
-  );
-};
-
-export default ChildSelector;
-
-{
-  /* <TouchableOpacity
+      {/* <TouchableOpacity
         onPress={() => router.push("/(tabs)/Carpool/selectPassenger")}
       >
         <View
@@ -95,5 +89,9 @@ export default ChildSelector;
             source={require("../../assets/images/add-member-icon.png")}
           />
         </View>
-      </TouchableOpacity> */
-}
+      </TouchableOpacity> */}
+    </View>
+  );
+};
+
+export default ChildSelector;
