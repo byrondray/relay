@@ -266,6 +266,8 @@ export type GroupMessage = {
 
 export type LocationData = {
   __typename?: 'LocationData';
+  carpoolId: Scalars['String']['output'];
+  driverId: Scalars['String']['output'];
   lat: Scalars['Float']['output'];
   lon: Scalars['Float']['output'];
   nextStop?: Maybe<NextStop>;
@@ -298,8 +300,9 @@ export type Mutation = {
   deleteFriend: FriendResponse;
   deleteMemberFromGroup: DeleteMemberFromGroupResponse;
   login: AuthPayload;
+  resetNotificationTracking: Scalars['Boolean']['output'];
   sendLocation?: Maybe<LocationData>;
-  sendNotificationInfo?: Maybe<LocationData>;
+  sendNotificationInfo?: Maybe<Scalars['Boolean']['output']>;
   updateExpoPushToken: User;
   updateUserInfo: User;
 };
@@ -634,6 +637,21 @@ export type RequestWithParentAndChild = {
   startLon: Scalars['Float']['output'];
 };
 
+export type RequestWithParentAndChildAndCarpool = {
+  __typename?: 'RequestWithParentAndChildAndCarpool';
+  carpool?: Maybe<Carpool>;
+  carpoolId?: Maybe<Scalars['String']['output']>;
+  child: Child;
+  driver?: Maybe<User>;
+  id: Scalars['String']['output'];
+  parent: User;
+  pickupTime: Scalars['String']['output'];
+  startAddress: Scalars['String']['output'];
+  startLat: Scalars['Float']['output'];
+  startLon: Scalars['Float']['output'];
+  vehicle?: Maybe<Vehicle>;
+};
+
 export type School = {
   __typename?: 'School';
   address: Scalars['String']['output'];
@@ -689,7 +707,7 @@ export type User = {
 export type UserCarpoolsAndRequests = {
   __typename?: 'UserCarpoolsAndRequests';
   carpools: Array<CarpoolWithDriverAndVehicle>;
-  requests: Array<RequestWithParentAndChild>;
+  requests: Array<RequestWithParentAndChildAndCarpool>;
 };
 
 export type Vehicle = {
@@ -776,7 +794,7 @@ export type GetUserCarpoolsAndRequestsQueryVariables = Exact<{
 }>;
 
 
-export type GetUserCarpoolsAndRequestsQuery = { __typename?: 'Query', getUserCarpoolsAndRequests: { __typename?: 'UserCarpoolsAndRequests', carpools: Array<{ __typename?: 'CarpoolWithDriverAndVehicle', id: string, groupId: string, startAddress: string, endAddress: string, startLat: number, startLon: number, endLat: number, endLon: number, departureDate: string, departureTime: string, extraCarSeat: boolean, tripPreferences?: string | null, estimatedTime?: string | null, vehicle: { __typename?: 'Vehicle', id: string, make: string, model: string, year: string, licensePlate: string }, driver: { __typename?: 'User', id: string, firstName: string, lastName?: string | null, email: string, phoneNumber?: string | null, imageUrl?: string | null } }>, requests: Array<{ __typename?: 'RequestWithParentAndChild', id: string, carpoolId?: string | null, pickupTime: string, startAddress: string, parent: { __typename?: 'User', id: string, firstName: string, email: string, imageUrl?: string | null }, child: { __typename?: 'Child', id: string, firstName: string, schoolId: string, imageUrl?: string | null } }> } };
+export type GetUserCarpoolsAndRequestsQuery = { __typename?: 'Query', getUserCarpoolsAndRequests: { __typename?: 'UserCarpoolsAndRequests', carpools: Array<{ __typename?: 'CarpoolWithDriverAndVehicle', id: string, groupId: string, startAddress: string, endAddress: string, startLat: number, startLon: number, endLat: number, endLon: number, departureDate: string, departureTime: string, extraCarSeat: boolean, tripPreferences?: string | null, estimatedTime?: string | null, vehicle: { __typename?: 'Vehicle', id: string, make: string, model: string, year: string, licensePlate: string }, driver: { __typename?: 'User', id: string, firstName: string, lastName?: string | null, email: string, phoneNumber?: string | null, imageUrl?: string | null } }>, requests: Array<{ __typename?: 'RequestWithParentAndChildAndCarpool', id: string, carpoolId?: string | null, pickupTime: string, startAddress: string, parent: { __typename?: 'User', id: string, firstName: string, email: string, imageUrl?: string | null }, child: { __typename?: 'Child', id: string, firstName: string, schoolId: string, imageUrl?: string | null }, carpool?: { __typename?: 'Carpool', id: string, startAddress: string, endAddress: string, departureDate: string, departureTime: string, driverId: string, vehicleId: string, groupId: string, startLat: number, startLon: number, endLat: number, endLon: number } | null, driver?: { __typename?: 'User', id: string, firstName: string, lastName?: string | null, email: string, phoneNumber?: string | null, imageUrl?: string | null } | null, vehicle?: { __typename?: 'Vehicle', id: string, make: string, model: string, year: string, licensePlate: string } | null }> } };
 
 export type GetFriendQueryVariables = Exact<{
   friendId: Scalars['String']['input'];
@@ -881,7 +899,7 @@ export type LocationReceivedSubscriptionVariables = Exact<{
 }>;
 
 
-export type LocationReceivedSubscription = { __typename?: 'Subscription', locationReceived?: { __typename?: 'LocationData', senderId: string, lat: number, lon: number, timestamp: string, nextStop?: { __typename?: 'NextStop', address: string, requestId: string } | null } | null };
+export type LocationReceivedSubscription = { __typename?: 'Subscription', locationReceived?: { __typename?: 'LocationData', senderId: string, carpoolId: string, driverId: string, lat: number, lon: number, timestamp: string, nextStop?: { __typename?: 'NextStop', address: string, requestId: string } | null } | null };
 
 export type ForegroundNotificationSubscriptionVariables = Exact<{
   recipientId: Scalars['String']['input'];
@@ -902,7 +920,12 @@ export type SendNotificationInfoMutationVariables = Exact<{
 }>;
 
 
-export type SendNotificationInfoMutation = { __typename?: 'Mutation', sendNotificationInfo?: { __typename?: 'LocationData', senderId: string, lat: number, lon: number, timestamp: string, nextStop?: { __typename?: 'NextStop', address: string, requestId: string } | null } | null };
+export type SendNotificationInfoMutation = { __typename?: 'Mutation', sendNotificationInfo?: boolean | null };
+
+export type ResetNotificationTrackingMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type ResetNotificationTrackingMutation = { __typename?: 'Mutation', resetNotificationTracking: boolean };
 
 export type GetConversationsForUserQueryVariables = Exact<{
   userId: Scalars['String']['input'];

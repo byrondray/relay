@@ -19,7 +19,6 @@ import { useLocationSubscription } from "@/hooks/map/useGetLocation";
 import DriverMapView from "@/components/rideInProgress/driverMapView";
 import RequestMapView from "@/components/rideInProgress/requestMapView";
 import { formatDate } from "@/utils/currentDate";
-import GpsTrackingInfo from "@/components/rideInProgress/gpsTrackingInfo";
 import TimeCard from "@/components/cards/timeCard";
 import LocationCard from "@/components/rideInProgress/carpoolAddress";
 import RequestCard from "@/components/rideInProgress/carpoolRequest";
@@ -32,7 +31,6 @@ import { useTheme } from "@/contexts/ThemeContext";
 import { SEND_NOTIFICATION_INFO } from "@/graphql/map/queries";
 import ClockIcon from "@/assets/images/whiteClock.svg";
 import DriverInfo from "@/components/cards/driverCard";
-import { set } from "date-fns";
 import GpsTrackingInfoDriver from "@/components/rideInProgress/gpsTrackingInfo";
 import GpsTrackingInfoPassenger from "@/components/rideInProgress/gpsTrackingInfoPassenger";
 
@@ -387,7 +385,7 @@ const CarpoolScreen: React.FC = () => {
 
         setTimeout(() => {
           setIsLeaving(false);
-        }, 5000); // Reset after 5 seconds
+        }, 5000); 
       }
     }
   }, [locationData, tripId, hasStartedSharingLocation]);
@@ -445,7 +443,7 @@ const CarpoolScreen: React.FC = () => {
               setSortedRequests(updatedRequests);
               setNextStop(updatedRequests[0]);
 
-              processedRequestsRef.current = currentRequestsHash; // Update hash
+              processedRequestsRef.current = currentRequestsHash; 
             }
           })
           .catch((error) => {

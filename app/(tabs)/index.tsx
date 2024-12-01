@@ -1,5 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Text, StyleSheet, FlatList, View, ScrollView } from "react-native";
+import {
+  Text,
+  StyleSheet,
+  FlatList,
+  View,
+  ScrollView,
+  Image,
+} from "react-native";
 import { useQuery } from "@apollo/client";
 import { GET_USER_CARPOOL_WITH_REQUESTS } from "@/graphql/carpool/queries";
 import { Spinner } from "@ui-kitten/components";
@@ -15,6 +22,8 @@ import { useCallback } from "react";
 import MapDriverCard from "@/components/cards/mapDriverCard";
 import ActiveRiderCard from "@/components/cards/activeCard";
 import { useTheme } from "@/contexts/ThemeContext";
+import withAuthCheck from "@/components/WithAuthCheck";
+import { GET_USER } from "@/graphql/user/queries";
 
 const CarpoolListScreen: React.FC = () => {
   const { currentColors } = useTheme();
@@ -23,13 +32,14 @@ const CarpoolListScreen: React.FC = () => {
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
   const [onBoarded, setOnBoarded] = useState(false);
-  const hasNavigated = useRef(false);
+
+  console.log("Onboarding status:", { hasOnboarded, onBoarded });
 
   useEffect(() => {
-    if (hasOnboarded === "true") {
+    if (hasOnboarded === "true" || onBoarded) {
       setOnBoarded(true);
     }
-  }, [hasOnboarded]);
+  }, [hasOnboarded, onBoarded]);
 
   const { data, loading, error, refetch } =
     useQuery<GetUserCarpoolsAndRequestsQuery>(GET_USER_CARPOOL_WITH_REQUESTS, {
@@ -44,11 +54,13 @@ const CarpoolListScreen: React.FC = () => {
   );
 
   useEffect(() => {
+    console.log("Onboarding status:", { hasOnboarded, onBoarded });
     const timer = setTimeout(() => {
       if (currentUser?.uid === "VQDrhC1urNVkssfgLc8jZWVRpo32" && !onBoarded) {
+        console.log("Redirecting to Onboarding");
         router.push("/OnboardForms/parent");
       }
-    }, 100);
+    }, 500);
 
     return () => clearTimeout(timer);
   }, [currentUser, onBoarded]);
@@ -70,12 +82,6 @@ const CarpoolListScreen: React.FC = () => {
     }
   }, [success, type]);
 
-  if (loading) return <Spinner />;
-  if (error)
-    return (
-      <Text style={{ color: currentColors.text }}>Error loading carpools</Text>
-    );
-
   const carpools = data?.getUserCarpoolsAndRequests?.carpools || [];
   const requests = data?.getUserCarpoolsAndRequests?.requests || [];
 
@@ -96,8 +102,21 @@ const CarpoolListScreen: React.FC = () => {
     timeOfDay = "Evening";
   }
 
-  const driverName =
-    carpools.length > 0 ? carpools[0].driver.firstName : "User";
+  const skipQuery = !currentUser?.uid;
+  const {
+    data: currentUserDetails,
+    loading: currentUserLoading,
+    error: currentUserError,
+  } = useQuery(GET_USER, {
+    skip: skipQuery,
+    variables: { id: currentUser?.uid || "" },
+  });
+
+  if (loading || currentUserLoading) return <Spinner />;
+  if (error)
+    return (
+      <Text style={{ color: currentColors.text }}>Error loading carpools</Text>
+    );
 
   return (
     <>
@@ -108,27 +127,50 @@ const CarpoolListScreen: React.FC = () => {
               <Text style={styles.successText}>{successMessage}</Text>
             </View>
           )}
-          <Text
+          <View
             style={{
-              fontFamily: "Comfortaa",
-              fontWeight: "500",
-              fontSize: 14,
-              marginBottom: -10,
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-around",
             }}
           >
-            {timeOfDay}
-          </Text>
-          <Text
-            style={{
-              fontFamily: "Comfortaa-Bold",
-              fontWeight: "700",
-              fontSize: 24,
-              marginBottom: 16,
-              marginTop: 10,
-            }}
-          >
-            {driverName}
-          </Text>
+            <View style={{ flexDirection: "column", flexShrink: 1 }}>
+              <Text
+                style={{
+                  fontFamily: "Comfortaa",
+                  fontWeight: "500",
+                  fontSize: 14,
+                  marginBottom: -10,
+                }}
+              >
+                {timeOfDay}
+              </Text>
+              <Text
+                style={{
+                  fontFamily: "Comfortaa-Bold",
+                  fontWeight: "700",
+                  fontSize: 24,
+                  marginBottom: 16,
+                  marginTop: 10,
+                }}
+              >
+                {currentUserDetails?.getUser?.firstName || "User"}
+              </Text>
+            </View>
+            {currentUserDetails?.getUser?.imageUrl && (
+              <Image
+                source={{
+                  uri: currentUserDetails?.getUser?.imageUrl || undefined,
+                }}
+                style={{
+                  width: 100,
+                  height: 100,
+                  borderRadius: 50,
+                }}
+              />
+            )}
+          </View>
+
           <FlatList
             data={carpools}
             style={{ borderRadius: 20 }}
@@ -163,7 +205,6 @@ const CarpoolListScreen: React.FC = () => {
                 </Link>
               );
             }}
-            ListEmptyComponent={<Text>No carpools available.</Text>}
             horizontal={carpools.length > 1}
             showsHorizontalScrollIndicator={false}
           />
@@ -181,16 +222,23 @@ const CarpoolListScreen: React.FC = () => {
                     params: { trip: request.carpoolId },
                   }}
                 >
-                  <ActiveRiderCard
-                    id={request.id}
-                    state="pending"
+                  <MapDriverCard
+                    id={request.carpoolId}
+                    driverName={request.driver?.firstName || "User"}
+                    driveCount={42}
+                    driverImage={request.driver?.imageUrl || ""}
+                    likes={300}
                     date={new Date()}
-                    startLocation={request.startAddress || "Unknown"}
-                    startTime={request.pickupTime || "Unknown"}
-                    endLocation={request.startAddress || "Unknown"}
+                    duration={"23 mins"}
+                    startLocation={request.carpool?.startAddress || "Unknown"}
+                    startTime={request.carpool?.departureTime || "Unknown"}
+                    endLocation={request.carpool?.endAddress || "Unknown"}
                     endTime={"03:53pm"}
-                    images={[vanessaChildImage]}
-                    recurrence="one time"
+                    passengerImages={[
+                      vanessaChildImage,
+                      evanChildImage,
+                      gloriaChildImage,
+                    ]}
                   />
                 </Link>
               )}
@@ -224,4 +272,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CarpoolListScreen;
+export default withAuthCheck(CarpoolListScreen);

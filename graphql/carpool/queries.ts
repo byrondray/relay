@@ -278,6 +278,35 @@ export const GET_USER_CARPOOL_WITH_REQUESTS = gql`
           schoolId
           imageUrl
         }
+        carpool {
+          id
+          startAddress
+          endAddress
+          departureDate
+          departureTime
+          driverId
+          vehicleId
+          groupId
+          startLat
+          startLon
+          endLat
+          endLon
+        }
+        driver {
+          id
+          firstName
+          lastName
+          email
+          phoneNumber
+          imageUrl
+        }
+        vehicle {
+          id
+          make
+          model
+          year
+          licensePlate
+        }
       }
     }
   }
