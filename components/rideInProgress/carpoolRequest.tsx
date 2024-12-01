@@ -6,14 +6,19 @@ import { useTheme } from "@/contexts/ThemeContext";
 import OrangePin from "@/assets/images/orangePin.svg";
 import TimeIcon from "@/assets/images/timeIcon.svg";
 
+// Request Card Component
 const RequestCard = ({
   request,
   index,
   isCurrentUser,
+  startTime,
+  endTime,
 }: {
   request: RequestWithParentAndChild;
   index: number;
   isCurrentUser: boolean;
+  startTime: string;
+  endTime: string;
 }) => {
   const { currentColors } = useTheme();
   let code;
@@ -188,7 +193,8 @@ const RequestCard = ({
         </View>
       </View>
 
-      <TimeCard startTime={`8: 45 AM`} endTime={`9: 32 PM`} />
+      {/* Pass the start and end times dynamically */}
+      <TimeCard startTime={startTime} endTime={endTime} />
     </View>
   );
 };

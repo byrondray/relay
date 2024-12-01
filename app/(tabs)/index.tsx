@@ -120,7 +120,9 @@ const CarpoolListScreen: React.FC = () => {
 
   return (
     <>
-      <ScrollView>
+      <ScrollView
+        style={{ backgroundColor: currentColors.background, flex: 1 }}
+      >
         <View style={{ paddingHorizontal: 16, marginTop: 10 }}>
           {showSuccessMessage && (
             <View style={styles.successMessage}>
@@ -131,7 +133,7 @@ const CarpoolListScreen: React.FC = () => {
             style={{
               flexDirection: "row",
               alignItems: "center",
-              justifyContent: "space-around",
+              justifyContent: "flex-start",
             }}
           >
             <View style={{ flexDirection: "column", flexShrink: 1 }}>
@@ -163,9 +165,10 @@ const CarpoolListScreen: React.FC = () => {
                   uri: currentUserDetails?.getUser?.imageUrl || undefined,
                 }}
                 style={{
-                  width: 100,
-                  height: 100,
+                  width: 70,
+                  height: 70,
                   borderRadius: 50,
+                  marginLeft: 15,
                 }}
               />
             )}
@@ -209,7 +212,9 @@ const CarpoolListScreen: React.FC = () => {
             showsHorizontalScrollIndicator={false}
           />
         </View>
-        <Text style={styles.sectionTitle}>All Requests</Text>
+        <Text style={[styles.sectionTitle, { color: currentColors.text }]}>
+          All Requests
+        </Text>
         <FlatList
           data={uniqueRequests}
           keyExtractor={(request) => request.id}

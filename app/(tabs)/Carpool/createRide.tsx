@@ -638,7 +638,19 @@ const CreateRide = () => {
               selectedWaypoints={selectedWaypoints}
               sortedRequests={requests}
             />
-
+            <Text
+              style={[
+                {
+                  color: "#FF6A00",
+                  fontSize: 22,
+                  marginTop: 15,
+                  fontFamily: "Comfortaa",
+                },
+                { color: currentColors.tint },
+              ]}
+            >
+              Pricing
+            </Text>
             <PricingCheckbox
               voluntaryChecked={voluntaryChecked}
               shareCostChecked={shareCostChecked}
