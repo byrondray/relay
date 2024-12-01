@@ -59,15 +59,19 @@ const CarpoolScreen: React.FC = () => {
   };
 
   const calculateStartTime = (baseTime: string, index: number): string => {
-    const [hour, minute, period] = baseTime.match(/(\d+):(\d+)\s*(AM|PM)/i)!.slice(1);
+    const [hour, minute, period] = baseTime
+      .match(/(\d+):(\d+)\s*(AM|PM)/i)!
+      .slice(1);
     const date = new Date();
-    date.setHours(period === "PM" ? parseInt(hour, 10) + 12 : parseInt(hour, 10));
-    date.setMinutes(parseInt(minute, 10) + index * 10)
-  
+    date.setHours(
+      period === "PM" ? parseInt(hour, 10) + 12 : parseInt(hour, 10)
+    );
+    date.setMinutes(parseInt(minute, 10) + index * 10);
+
     const adjustedHour = date.getHours() % 12 || 12;
     const adjustedMinute = date.getMinutes().toString().padStart(2, "0");
     const adjustedPeriod = date.getHours() >= 12 ? "PM" : "AM";
-  
+
     return `${adjustedHour}:${adjustedMinute} ${adjustedPeriod}`;
   };
 
@@ -398,7 +402,7 @@ const CarpoolScreen: React.FC = () => {
 
         setTimeout(() => {
           setIsLeaving(false);
-        }, 5000); 
+        }, 5000);
       }
     }
   }, [locationData, tripId, hasStartedSharingLocation]);
@@ -456,7 +460,7 @@ const CarpoolScreen: React.FC = () => {
               setSortedRequests(updatedRequests);
               setNextStop(updatedRequests[0]);
 
-              processedRequestsRef.current = currentRequestsHash; 
+              processedRequestsRef.current = currentRequestsHash;
             }
           })
           .catch((error) => {
@@ -707,7 +711,8 @@ const CarpoolScreen: React.FC = () => {
               <RequestCard
                 request={{ ...request }}
                 index={index}
-                isCurrentUser={true}
+                isCurrentUser={isCurrentUser}
+                isDriver={isDriver}
                 startTime={startTime}
                 endTime="9:32 AM"
               />
