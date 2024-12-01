@@ -10,7 +10,7 @@ import {
 import { Datepicker } from "@ui-kitten/components";
 import { TimePickerModal } from "react-native-paper-dates";
 import { useTheme } from "@/contexts/ThemeContext";
-import DateTimePicker from "@react-native-community/datetimepicker";
+// import DateTimePicker from "@react-native-community/datetimepicker";
 import ClockSvg from "../icons/ClockSvg";
 import CalendarSvg from "../icons/CalendarSvg";
 
@@ -29,37 +29,51 @@ const RideDateTimePicker = ({
 }) => {
   const [showTimePicker, setShowTimePicker] = React.useState(false);
   const { currentColors } = useTheme();
-  const [time, setTime] = React.useState<Date | undefined>(undefined);
+  const [time, setTime] = React.useState<{
+    hours: number;
+    minutes: number;
+  } | null>(null);
 
-  const handleTimeChange = (event: any, selectedTime: Date | undefined) => {
-    if (Platform.OS === "android") {
-      // On Android, dismiss the picker after a time is selected or canceled
-      if (event.type === "set" && selectedTime) {
-        // "set" means the user selected a time
-        setTime(selectedTime);
-        const hours = selectedTime.getHours();
-        const minutes = selectedTime.getMinutes();
-        console.log("Selected Time: ", hours, minutes);
-        handleTimeSelect({ hours, minutes });
-      }
-      // Hide the picker in all cases (even if "dismissed")
-      setShowTimePicker(false);
-    } else if (Platform.OS === "ios") {
-      // On iOS, just update the time without hiding the picker
-      if (selectedTime) {
-        setTime(selectedTime);
-        const hours = selectedTime.getHours();
-        const minutes = selectedTime.getMinutes();
-        console.log("Selected Time: ", hours, minutes);
-        handleTimeSelect({ hours, minutes });
-      }
-    }
+  const handleTimeConfirm = (time: { hours: number; minutes: number }) => {
+    setTime(time);
+    handleTimeSelect(time);
+    setShowTimePicker(false);
   };
+  // const handleTimeChange = (event: any, selectedTime: Date | undefined) => {
+  //   if (Platform.OS === "android") {
+  //     // On Android, dismiss the picker after a time is selected or canceled
+  //     if (event.type === "set" && selectedTime) {
+  //       // "set" means the user selected a time
+  //       setTime(selectedTime);
+  //       const hours = selectedTime.getHours();
+  //       const minutes = selectedTime.getMinutes();
+  //       console.log("Selected Time: ", hours, minutes);
+  //       handleTimeSelect({ hours, minutes });
+  //     }
+  //     // Hide the picker in all cases (even if "dismissed")
+  //     setShowTimePicker(false);
+  //   } else if (Platform.OS === "ios") {
+  //     // On iOS, just update the time without hiding the picker
+  //     if (selectedTime) {
+  //       setTime(selectedTime);
+  //       const hours = selectedTime.getHours();
+  //       const minutes = selectedTime.getMinutes();
+  //       console.log("Selected Time: ", hours, minutes);
+  //       handleTimeSelect({ hours, minutes });
+  //     }
+  //   }
+  // };
 
   return (
     <View>
       {/* Date Section */}
-      <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 15 }}>
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "space-between",
+          marginTop: 15,
+        }}
+      >
         <Text
           style={[
             {
@@ -144,12 +158,12 @@ const RideDateTimePicker = ({
               fontFamily: "Comfortaa",
             }}
           >
-            {selectedTime ? selectedTime : "Select Date & Time"}
+            {selectedTime || "Select time"}
           </Text>
         </View>
       </TouchableOpacity>
 
-      {/* Time Picker Modal */}
+      {/* Time Picker Modal
       {showTimePicker && (
         <DateTimePicker
           value={time || new Date()}
@@ -158,7 +172,14 @@ const RideDateTimePicker = ({
           display={Platform.OS === "ios" ? "spinner" : "default"}
           onChange={handleTimeChange}
         />
-      )}
+      )} */}
+      <TimePickerModal
+        visible={showTimePicker}
+        onDismiss={() => setShowTimePicker(false)}
+        onConfirm={handleTimeConfirm}
+        hours={time?.hours ?? 12}
+        minutes={time?.minutes ?? 0}
+      />
     </View>
   );
 };
