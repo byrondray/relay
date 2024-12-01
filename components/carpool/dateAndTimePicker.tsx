@@ -27,6 +27,9 @@ const RideDateTimePicker = ({
   handleTimeSelect: (time: { hours: number; minutes: number }) => void;
   textColor: string;
 }) => {
+  const [selectedDateRide, setSelectedDateRide] = React.useState<Date | null>(
+    null
+  );
   const [showTimePicker, setShowTimePicker] = React.useState(false);
   const { currentColors } = useTheme();
   const [time, setTime] = React.useState<{
@@ -39,6 +42,7 @@ const RideDateTimePicker = ({
     handleTimeSelect(time);
     setShowTimePicker(false);
   };
+
   // const handleTimeChange = (event: any, selectedTime: Date | undefined) => {
   //   if (Platform.OS === "android") {
   //     // On Android, dismiss the picker after a time is selected or canceled
@@ -113,8 +117,12 @@ const RideDateTimePicker = ({
       >
         <CalendarSvg fill="#8F9BB3" width={24} height={24} style={styles.svg} />
         <Datepicker
-          date={selectedDate || undefined}
-          onSelect={handleDateSelect}
+          date={selectedDateRide || undefined}
+          onSelect={(date) => {
+            setSelectedDateRide(date);
+            handleDateSelect(date);
+          }}
+          min={new Date()}
           style={{
             marginRight: 5,
             borderColor: "transparent",
@@ -125,6 +133,7 @@ const RideDateTimePicker = ({
             borderColor: "transparent",
             backgroundColor: currentColors.placeholder,
           }}
+          placeholder={"Select date"}
         />
       </View>
 
@@ -153,7 +162,7 @@ const RideDateTimePicker = ({
           <Text
             style={{
               marginLeft: 15,
-              color: currentColors.text,
+              color: currentColors.placeholderText,
               marginRight: 25,
               fontFamily: "Comfortaa",
             }}

@@ -171,7 +171,7 @@ const CarpoolListScreen: React.FC = () => {
         </View>
         <Text style={styles.sectionTitle}>Upcoming Trips</Text>
         <FlatList
-          data={uniqueRequests.splice(3, 4)} // only shows 3th requets
+          data={uniqueRequests.splice(3, 4)}
           keyExtractor={(request) => request.id}
           renderItem={({ item: request }) => (
             <View style={{ paddingHorizontal: 5 }}>

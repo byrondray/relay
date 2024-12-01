@@ -718,7 +718,7 @@ const CarpoolScreen: React.FC = () => {
           <>
             <View style={{ paddingHorizontal: 15, marginBottom: 15 }}>
               <ReviewInfo
-                carpoolId={carpoolData?.id}
+                carpoolId={carpoolData?.id} 
                 driverId={carpoolData?.driverId}
                 userId={auth.currentUser?.uid}
               />
