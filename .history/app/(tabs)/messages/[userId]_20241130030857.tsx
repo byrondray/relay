@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
-//add imagepicker
 import * as ImagePicker from "expo-image-picker";
 import {
   View,
@@ -16,7 +15,6 @@ import {
 } from "react-native";
 import { useFocusEffect, useLocalSearchParams, useNavigation } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import * as Notifications from "expo-notifications";
 import { auth } from "@/firebaseConfig";
 import {
   useFetchMessages,
@@ -24,44 +22,23 @@ import {
   useMessageSubscription,
   useFetchUser,
 } from "../../../hooks/messages/useMessages";
-import { DetailedMessage } from "@/graphql/generated";
-import Message from "@/components/messaging/message";
-import { Spinner } from "@ui-kitten/components";
 import { LinearGradient } from "expo-linear-gradient";
 import { useTheme } from "@/contexts/ThemeContext";
 
 export default function MessageScreen() {
   const { currentColors } = useTheme();
   const navigation = useNavigation();
-  const [messages, setMessages] = useState<DetailedMessage[]>([]);
+  const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
-  //add selected image state
-  const [selectedImage, setSelectedImage] = useState<string | null>(null); 
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const { userId } = useLocalSearchParams();
   const recipientIdString = Array.isArray(userId) ? userId[0] : userId;
   const currentUser = auth.currentUser;
   const flatListRef = useRef<FlatList>(null);
 
-  const { data: recipientData, loading: recipientLoading } =
-    useFetchUser(recipientIdString);
-  const senderId = currentUser?.uid || "";
-  const { data: senderData, loading: senderLoading } = useFetchUser(senderId);
+  const { data: recipientData } = useFetchUser(recipientIdString);
+  const { data: senderData } = useFetchUser(currentUser?.uid || "");
 
-  const { loading, error, refetch } = useFetchMessages(
-    currentUser?.uid || "",
-    recipientIdString,
-    setMessages
-  );
-
-  useFocusEffect(
-    useCallback(() => {
-      refetch();
-    }, [refetch])
-  );
-
-  useMessageSubscription(currentUser?.uid || "", setMessages, messages);
-
-  //add media library function
   const openMediaLibrary = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== "granted") {
@@ -76,11 +53,11 @@ export default function MessageScreen() {
     });
 
     if (!result.canceled && result.assets.length > 0) {
-      setSelectedImage(result.assets[0].uri); // Set selected image URI
+      const imageUri = result.assets[0].uri;
+      setSelectedImage(imageUri);
     }
   };
 
-  //add send message with image function
   const sendMessageWithImage = async () => {
     if (!newMessage && !selectedImage) return;
 
@@ -91,18 +68,16 @@ export default function MessageScreen() {
       imageUrl: selectedImage || null,
       createdAt: timestamp,
       sender: {
-        id: senderId,
+        id: currentUser?.uid || "",
         firstName: senderData?.getUser?.firstName || "Unknown",
         lastName: senderData?.getUser?.lastName || "",
         imageUrl: senderData?.getUser?.imageUrl || "",
-        email: senderData?.getUser?.email || "sender@example.com",
       },
       recipient: {
         id: recipientIdString,
         firstName: recipientData?.getUser?.firstName || "Recipient",
         lastName: recipientData?.getUser?.lastName || "",
         imageUrl: recipientData?.getUser?.imageUrl || "",
-        email: recipientData?.getUser?.email || "recipient@example.com",
       },
     };
 
@@ -110,76 +85,12 @@ export default function MessageScreen() {
     setNewMessage("");
     setSelectedImage(null);
 
+    // Persist messages locally
     await AsyncStorage.setItem(
       `messages_${currentUser?.uid || ""}`,
       JSON.stringify(messages)
     );
   };
-
-  useEffect(() => {
-    const requestNotificationPermission = async () => {
-      const { status } = await Notifications.getPermissionsAsync();
-      if (status !== "granted") {
-        await Notifications.requestPermissionsAsync();
-      }
-    };
-
-    const handleForegroundNotification =
-      Notifications.addNotificationReceivedListener((notification) => {
-        const data = notification.request.content.data;
-        const { senderId: messageSenderId, text } = data;
-
-        if (messageSenderId && text) {
-          const newMessage = {
-            id: new Date().getTime().toString(),
-            text,
-            createdAt: new Date().toISOString(),
-            sender: {
-              id: messageSenderId,
-              firstName: senderData?.getUser.firstName || "Unknown",
-              lastName: senderData?.getUser.lastName || "",
-              email: senderData?.getUser.email || "",
-              imageUrl: senderData?.getUser.imageUrl || "",
-            },
-            recipient: {
-              id: currentUser?.uid || "",
-              firstName: recipientData?.getUser.firstName || "Recipient",
-              lastName: recipientData?.getUser.lastName || "",
-              email: recipientData?.getUser.email || "",
-              imageUrl: recipientData?.getUser.imageUrl || "",
-            },
-          };
-
-          setMessages((prevMessages) => {
-            const updatedMessages = [...prevMessages, newMessage];
-            const uniqueMessages = Array.from(
-              new Map(updatedMessages.map((msg) => [msg.id, msg])).values()
-            );
-            AsyncStorage.setItem(
-              `messages_${currentUser?.uid || ""}`,
-              JSON.stringify(uniqueMessages)
-            );
-            return uniqueMessages;
-          });
-        }
-      });
-
-    requestNotificationPermission();
-
-    return () => {
-      Notifications.removeNotificationSubscription(
-        handleForegroundNotification
-      );
-    };
-  }, [currentUser?.uid || "", messages, senderData, recipientData]);
-
-  useFocusEffect(
-    useCallback(() => {
-      const recipientName = recipientData?.getUser?.firstName || "Message";
-      // @ts-ignore
-      navigation.setParams({ recipientName });
-    }, [recipientData, navigation])
-  );
 
   useEffect(() => {
     const scrollToBottom = () => {
@@ -199,14 +110,6 @@ export default function MessageScreen() {
     };
   }, [messages]);
 
-  if (recipientLoading || senderLoading) {
-    return (
-      <View style={styles.spinnerContainer}>
-        <Spinner />
-      </View>
-    );
-  }
-
   return (
     <KeyboardAvoidingView
       style={styles.flexContainer}
@@ -220,7 +123,6 @@ export default function MessageScreen() {
         style={styles.gradientBackground}
       />
 
-    {/* Add ImageURL */}
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={[styles.container, { backgroundColor: currentColors.background }]}>
           <FlatList
@@ -228,20 +130,20 @@ export default function MessageScreen() {
             data={messages}
             keyExtractor={(item) => item.id}
             renderItem={({ item }) => (
-              <View>
-                <Message message={item} />
+              <View style={styles.messageContainer}>
+                <Text style={styles.senderName}>
+                  {item.sender.firstName} {item.sender.lastName}
+                </Text>
+                <Text style={styles.timestamp}>{new Date(item.createdAt).toLocaleString()}</Text>
+                <Text style={styles.messageText}>{item.text}</Text>
                 {item.imageUrl && (
-                  <Image
-                    source={{ uri: item.imageUrl }}
-                    style={{ width: 200, height: 200, borderRadius: 10, marginTop: 10 }}
-                  />
+                  <Image source={{ uri: item.imageUrl }} style={styles.messageImage} />
                 )}
               </View>
             )}
             contentContainerStyle={{ paddingBottom: 10 }}
           />
-        
-         {/*Add image preview*/}
+
           {selectedImage && (
             <View style={styles.imagePreviewContainer}>
               <Image source={{ uri: selectedImage }} style={styles.imagePreview} />
@@ -254,10 +156,9 @@ export default function MessageScreen() {
             </View>
           )}
 
-          {/* Add plus icon for image picker */}
           <View style={styles.inputContainer}>
             <TouchableOpacity onPress={openMediaLibrary} style={{ marginRight: 10 }}>
-              <Text style={{ fontSize: 30, color: currentColors.tint }}>+</Text>
+              <Text style={{ fontSize: 20, color: currentColors.tint }}>+</Text>
             </TouchableOpacity>
             <TextInput
               value={newMessage}
@@ -273,8 +174,6 @@ export default function MessageScreen() {
               placeholder="Message..."
               placeholderTextColor={currentColors.placeholder}
             />
-
-            {/* Send Message with Image */}
             <TouchableOpacity onPress={sendMessageWithImage}>
               <Text style={[styles.sendButtonText, { color: currentColors.tint }]}>Send</Text>
             </TouchableOpacity>
@@ -289,11 +188,6 @@ const styles = StyleSheet.create({
   flexContainer: {
     flex: 1,
   },
-  spinnerContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
   gradientBackground: {
     position: "absolute",
     width: "100%",
@@ -303,18 +197,40 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 10,
   },
+  messageContainer: {
+    marginBottom: 15,
+  },
+  senderName: {
+    fontSize: 14,
+    fontWeight: "bold",
+    color: "gray",
+  },
+  timestamp: {
+    fontSize: 12,
+    color: "gray",
+    marginBottom: 5,
+  },
+  messageText: {
+    fontSize: 16,
+    marginBottom: 5,
+  },
+  messageImage: {
+    width: 200,
+    height: 200,
+    borderRadius: 10,
+  },
   imagePreviewContainer: {
     flexDirection: "row",
     alignItems: "center",
     marginBottom: 10,
   },
   imagePreview: {
-    width: 200,
-    height: 200,
+    width: 100,
+    height: 100,
     borderRadius: 10,
   },
   removeImageButton: {
-    backgroundColor: "#e24949",
+    backgroundColor: "red",
     padding: 5,
     borderRadius: 5,
     marginLeft: 10,

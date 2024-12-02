@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
-//add imagepicker
 import * as ImagePicker from "expo-image-picker";
 import {
   View,
@@ -12,9 +11,12 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   TouchableOpacity,
-  Image,
 } from "react-native";
-import { useFocusEffect, useLocalSearchParams, useNavigation } from "expo-router";
+import {
+  useFocusEffect,
+  useLocalSearchParams,
+  useNavigation,
+} from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Notifications from "expo-notifications";
 import { auth } from "@/firebaseConfig";
@@ -35,12 +37,31 @@ export default function MessageScreen() {
   const navigation = useNavigation();
   const [messages, setMessages] = useState<DetailedMessage[]>([]);
   const [newMessage, setNewMessage] = useState("");
-  //add selected image state
-  const [selectedImage, setSelectedImage] = useState<string | null>(null); 
   const { userId } = useLocalSearchParams();
   const recipientIdString = Array.isArray(userId) ? userId[0] : userId;
   const currentUser = auth.currentUser;
-  const flatListRef = useRef<FlatList>(null);
+
+  const flatListRef = useRef<FlatList>(null); // Ref for the FlatList
+
+  const openMediaLibrary = async () => {
+    // Request permissions
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== "granted") {
+      alert("Permission to access media library is required!");
+      return;
+    }
+
+     const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      console.log("Selected Image URI:", result.assets[0].uri);
+      // You can now handle the selected image (e.g., upload it or send it in a message)
+    }
+  };
 
   const { data: recipientData, loading: recipientLoading } =
     useFetchUser(recipientIdString);
@@ -59,62 +80,17 @@ export default function MessageScreen() {
     }, [refetch])
   );
 
+  const { sendMessage } = useSendMessage(
+    senderId,
+    recipientIdString,
+    setMessages,
+    messages,
+    newMessage,
+    setNewMessage,
+    () => {}
+  );
+
   useMessageSubscription(currentUser?.uid || "", setMessages, messages);
-
-  //add media library function
-  const openMediaLibrary = async () => {
-    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (status !== "granted") {
-      alert("Permission to access media library is required!");
-      return;
-    }
-
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      quality: 1,
-    });
-
-    if (!result.canceled && result.assets.length > 0) {
-      setSelectedImage(result.assets[0].uri); // Set selected image URI
-    }
-  };
-
-  //add send message with image function
-  const sendMessageWithImage = async () => {
-    if (!newMessage && !selectedImage) return;
-
-    const timestamp = new Date().toISOString();
-    const message = {
-      id: new Date().getTime().toString(),
-      text: newMessage,
-      imageUrl: selectedImage || null,
-      createdAt: timestamp,
-      sender: {
-        id: senderId,
-        firstName: senderData?.getUser?.firstName || "Unknown",
-        lastName: senderData?.getUser?.lastName || "",
-        imageUrl: senderData?.getUser?.imageUrl || "",
-        email: senderData?.getUser?.email || "sender@example.com",
-      },
-      recipient: {
-        id: recipientIdString,
-        firstName: recipientData?.getUser?.firstName || "Recipient",
-        lastName: recipientData?.getUser?.lastName || "",
-        imageUrl: recipientData?.getUser?.imageUrl || "",
-        email: recipientData?.getUser?.email || "recipient@example.com",
-      },
-    };
-
-    setMessages((prevMessages) => [...prevMessages, message]);
-    setNewMessage("");
-    setSelectedImage(null);
-
-    await AsyncStorage.setItem(
-      `messages_${currentUser?.uid || ""}`,
-      JSON.stringify(messages)
-    );
-  };
 
   useEffect(() => {
     const requestNotificationPermission = async () => {
@@ -190,8 +166,14 @@ export default function MessageScreen() {
 
     scrollToBottom();
 
-    const keyboardShowListener = Keyboard.addListener("keyboardDidShow", scrollToBottom);
-    const keyboardHideListener = Keyboard.addListener("keyboardDidHide", scrollToBottom);
+    const keyboardShowListener = Keyboard.addListener(
+      "keyboardDidShow",
+      scrollToBottom
+    );
+    const keyboardHideListener = Keyboard.addListener(
+      "keyboardDidHide",
+      scrollToBottom
+    );
 
     return () => {
       keyboardShowListener.remove();
@@ -220,45 +202,22 @@ export default function MessageScreen() {
         style={styles.gradientBackground}
       />
 
-    {/* Add ImageURL */}
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <View style={[styles.container, { backgroundColor: currentColors.background }]}>
+        <View
+          style={[
+            styles.container,
+            { flex: 1, backgroundColor: currentColors.background },
+          ]}
+        >
           <FlatList
             ref={flatListRef}
             data={messages}
             keyExtractor={(item) => item.id}
-            renderItem={({ item }) => (
-              <View>
-                <Message message={item} />
-                {item.imageUrl && (
-                  <Image
-                    source={{ uri: item.imageUrl }}
-                    style={{ width: 200, height: 200, borderRadius: 10, marginTop: 10 }}
-                  />
-                )}
-              </View>
-            )}
+            renderItem={({ item }) => <Message message={item} />}
             contentContainerStyle={{ paddingBottom: 10 }}
           />
-        
-         {/*Add image preview*/}
-          {selectedImage && (
-            <View style={styles.imagePreviewContainer}>
-              <Image source={{ uri: selectedImage }} style={styles.imagePreview} />
-              <TouchableOpacity
-                onPress={() => setSelectedImage(null)}
-                style={styles.removeImageButton}
-              >
-                <Text style={{ color: "white" }}>Remove</Text>
-              </TouchableOpacity>
-            </View>
-          )}
 
-          {/* Add plus icon for image picker */}
           <View style={styles.inputContainer}>
-            <TouchableOpacity onPress={openMediaLibrary} style={{ marginRight: 10 }}>
-              <Text style={{ fontSize: 30, color: currentColors.tint }}>+</Text>
-            </TouchableOpacity>
             <TextInput
               value={newMessage}
               onChangeText={setNewMessage}
@@ -273,10 +232,12 @@ export default function MessageScreen() {
               placeholder="Message..."
               placeholderTextColor={currentColors.placeholder}
             />
-
-            {/* Send Message with Image */}
-            <TouchableOpacity onPress={sendMessageWithImage}>
-              <Text style={[styles.sendButtonText, { color: currentColors.tint }]}>Send</Text>
+            <TouchableOpacity onPress={() => sendMessage()}>
+              <Text
+                style={[styles.sendButtonText, { color: currentColors.tint }]}
+              >
+                Send
+              </Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -289,10 +250,9 @@ const styles = StyleSheet.create({
   flexContainer: {
     flex: 1,
   },
-  spinnerContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+  sendButtonText: {
+    fontSize: 16,
+    fontFamily: "Comfortaa",
   },
   gradientBackground: {
     position: "absolute",
@@ -302,22 +262,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 10,
-  },
-  imagePreviewContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 10,
-  },
-  imagePreview: {
-    width: 200,
-    height: 200,
-    borderRadius: 10,
-  },
-  removeImageButton: {
-    backgroundColor: "#e24949",
-    padding: 5,
-    borderRadius: 5,
-    marginLeft: 10,
+    paddingHorizontal: 10,
   },
   inputContainer: {
     flexDirection: "row",
@@ -332,7 +277,16 @@ const styles = StyleSheet.create({
     padding: 10,
     marginRight: 10,
   },
-  sendButtonText: {
+  spinnerContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  backButton: {
+    marginLeft: 10,
+  },
+  backText: {
     fontSize: 16,
+    fontWeight: "500",
   },
 });
