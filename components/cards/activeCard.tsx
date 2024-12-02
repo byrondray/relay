@@ -11,7 +11,7 @@ import StackedProfilePictures from "./stackedProfile";
 
 interface CardData {
   id: string;
-  state: "pending" | "timeout";
+  state: "confirmed" | "timeout";
   date: Date;
   startLocation: string;
   startTime: string; // Either "3:30 PM" or ISO string "2024-11-26T22:25:00.000Z"
@@ -96,7 +96,7 @@ const ActiveRiderCard = ({
               alignItems: "center",
             }}
           >
-            {state === "pending" ? (
+            {state === "confirmed" ? (
               <View
                 style={{
                   backgroundColor: "#3366FF",

@@ -13,7 +13,7 @@ import StackedProfilePictures from "./stackedProfile";
 
 interface CardData {
   id: string;
-  state: "pending" | "timeout";
+  state: "confirmed" | "timeout";
   date: Date;
   startLocation: string;
   startTime: string;
@@ -27,6 +27,43 @@ interface CardData {
     carpoolData: CarpoolWithRequests;
   };
 }
+
+const vehicle: Vehicle = {
+  id: "1",
+  make: "Tesla",
+  model: "Model 3",
+  year: "2021",
+  color: "black",
+  licensePlate: "ABC-123",
+  seats: 5,
+  userId: "1",
+};
+
+const driverImage =
+  "https://assets.crowdstrike.com/is/image/crowdstrikeinc/kevin-boehm3?ts=1726842946671&dpr=off";
+
+const driverData: User = {
+  id: "1",
+  firstName: "John",
+  lastName: "Doe",
+  email: "john@gmail.com",
+  imageUrl: driverImage,
+};
+
+const carpoolData: CarpoolWithRequests = {
+  id: "1",
+  startAddress: "1234 Elm St",
+  endAddress: "5678 Oak St",
+  departureTime: "12:00 PM",
+  departureDate: new Date().toISOString(),
+  endLat: 0,
+  endLon: 0,
+  groupId: "group1",
+  startLat: 0,
+  startLon: 0,
+  driverId: "1",
+  vehicleId: "1",
+};
 
 const ScheduleActiveCard = ({
   id,
@@ -47,13 +84,7 @@ const ScheduleActiveCard = ({
     day: "numeric",
     year: "numeric",
   });
-  const driverData = {
-    driverImage:
-      "https://assets.crowdstrike.com/is/image/crowdstrikeinc/kevin-boehm3?ts=1726842946671&dpr=off",
-    driverName: "John Doe",
-    carPlate: "ABC-123",
-    vehicleModel: "Tesla Model 3",
-  };
+
   const textColor = useThemeColor({}, "placeholder");
   const { currentColors } = useTheme();
   return (
@@ -173,7 +204,11 @@ const ScheduleActiveCard = ({
           </View>
         </View>
 
-        <DriverInfo {...driverDetails} />
+        <DriverInfo
+          driverData={driverData}
+          vehicleData={vehicle}
+          carpoolData={carpoolData}
+        />
         <Text
           style={{
             color: "#666666",
