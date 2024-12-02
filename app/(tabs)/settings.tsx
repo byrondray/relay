@@ -198,8 +198,7 @@ const styles = StyleSheet.create({
   },
   userName: {
     fontSize: 20,
-    fontWeight: "bold",
-    fontFamily: "Comfortaa",
+    fontFamily: "Comfortaa-bold",
   },
   settingsBubble: {
     backgroundColor: "#FFFFFF",
@@ -214,9 +213,9 @@ const styles = StyleSheet.create({
   },
   sectionHeader: {
     fontSize: 18,
-    fontWeight: "bold",
+    // fontWeight: "bold",
     marginBottom: 10,
-    fontFamily: "Comfortaa",
+    fontFamily: "Comfortaa-bold",
   },
   settingItem: {
     flexDirection: "row",
