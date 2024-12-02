@@ -1,17 +1,37 @@
 import React, { useState } from "react";
-import { View, Text, Switch, StyleSheet, Alert } from "react-native";
+import {
+  View,
+  Text,
+  Switch,
+  StyleSheet,
+  Alert,
+  Image,
+  TouchableOpacity,
+} from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { useTheme } from "@/contexts/ThemeContext";
 import { useLogout } from "@/hooks/auth/useLogout";
 import { RESET_NOTIFICATION_TRACKING } from "@/graphql/map/queries";
 import { useMutation } from "@apollo/client";
 import { useTextSize } from "@/contexts/TextSizeContext";
+import { auth } from "@/firebaseConfig";
+import { GET_USER } from "@/graphql/user/queries";
+import { useQuery } from "@apollo/client";
+import { ScrollView } from "react-native-gesture-handler";
 
 const LogoutButton = () => {
   const { logout, loading } = useLogout();
-  const { isLargeText, toggleTextSize, textScaleFactor } = useTextSize();
+  const { isLargeText, textScaleFactor } = useTextSize();
   return (
-    <Text onPress={logout} style={{ color: "#fff", padding: 10, fontFamily: "Comfortaa", fontSize: 15 * textScaleFactor }}>
+    <Text
+      onPress={logout}
+      style={{
+        color: "#fff",
+        padding: 10,
+        fontFamily: "Comfortaa",
+        fontSize: 15 * textScaleFactor,
+      }}
+    >
       {loading ? "Logging out..." : "Logout"}
     </Text>
   );
@@ -38,9 +58,17 @@ const ResetTrackingButton = () => {
       }
     }
   };
-  const { isLargeText, toggleTextSize, textScaleFactor } = useTextSize();
+  const { isLargeText, textScaleFactor } = useTextSize();
   return (
-    <Text onPress={handleResetTracking} style={{ color: "#fff", padding: 10, fontFamily: "Comfortaa", fontSize: 15 * textScaleFactor }}>
+    <Text
+      onPress={handleResetTracking}
+      style={{
+        color: "#fff",
+        padding: 10,
+        fontFamily: "Comfortaa",
+        fontSize: 15 * textScaleFactor,
+      }}
+    >
       {loading ? "Resetting..." : "Reset Tracking"}
     </Text>
   );
@@ -54,92 +82,141 @@ const Settings = () => {
   const [isLocationEnabled, setIsLocationEnabled] = useState(false);
   const [isHapticsEnabled, setIsHapticsEnabled] = useState(false);
 
+  const currentUser = auth.currentUser;
+  const skipQuery = !currentUser?.uid;
+
+  const {
+    data: currentUserDetails,
+    loading: currentUserLoading,
+    error: currentUserError,
+  } = useQuery(GET_USER, {
+    skip: skipQuery,
+    variables: { id: currentUser?.uid || "" },
+  });
+
   return (
+    <ScrollView>
     <View
-      style={[styles.container, { backgroundColor: currentColors.background }]}
+      style={[styles.settingsContainer, { backgroundColor: currentColors.background }]}
     >
-      <Text style={[styles.header, { color: currentColors.text, fontSize: 24 * textScaleFactor }]}>
-        Settings
-      </Text>
-
-      <View style={styles.settingItem}>
-        <Text style={[styles.settingText, { color: currentColors.text, fontSize: 18 * textScaleFactor }]}>
-          Enable Notifications
+      {/* User information */}
+      <View style={styles.userInfo}>
+        {currentUserDetails?.getUser?.imageUrl && (
+          <Image
+            source={{
+              uri: currentUserDetails?.getUser?.imageUrl || undefined,
+            }}
+            style={styles.profileImage}
+          />
+        )}
+        <Text style={[styles.userName, {color: currentColors.text}]}>
+          {`${currentUserDetails?.getUser?.firstName || "User"} ${
+            currentUserDetails?.getUser?.lastName || "Name"
+          }`}
         </Text>
-        <Switch value={isNotificationsEnabled} onValueChange={setIsNotificationsEnabled} />
+        
       </View>
 
-      <View style={styles.settingItem}>
-        <Text style={[styles.settingText, { color: currentColors.text, fontSize: 18 * textScaleFactor }]}>
-          Dark Mode
-        </Text>
-        <Switch value={theme === "dark"} onValueChange={toggleSwitch} />
+      <Text style={[styles.sectionHeader, {color: currentColors.icon}]}>Account Settings</Text>
+      <View style={[styles.settingsBubble, {backgroundColor: currentColors.placeholder}]}>
+        
+        <TouchableOpacity style={[styles.settingItem, {borderBottomColor: currentColors.tint}]} onPress={() => setIsNotificationsEnabled(!isNotificationsEnabled)}>
+          <Text style={[styles.settingText, {color: currentColors.text}]}>Notifications</Text>
+          <Switch
+            value={isNotificationsEnabled}
+            onValueChange={setIsNotificationsEnabled}
+          />
+        </TouchableOpacity>
+        <TouchableOpacity style={[styles.settingItem, {borderBottomColor: currentColors.tint}]} onPress={() => toggleSwitch()}>
+          <Text style={[styles.settingText, {color: currentColors.text}]}>Dark Mode</Text>
+          <Switch value={theme === "dark"} onValueChange={toggleSwitch} />
+        </TouchableOpacity>
+        <TouchableOpacity style={[styles.settingItem, {borderBottomColor: currentColors.tint}]} onPress={() => setIsHapticsEnabled(!isHapticsEnabled)}>
+          <Text style={[styles.settingText, {color: currentColors.text}]}>Sound & Haptics</Text>
+          <Switch
+            value={isHapticsEnabled}
+            onValueChange={setIsHapticsEnabled}
+          />
+        </TouchableOpacity>
       </View>
 
-      <View style={styles.settingItem}>
-        <Text style={[styles.settingText, { color: currentColors.text, fontSize: 18 * textScaleFactor }]}>
-          Large Text
-        </Text>
-        <Switch value={isLargeText} onValueChange={toggleTextSize} />
+      <Text style={[styles.sectionHeader, {color: currentColors.icon}]}>More Support</Text>
+      <View style={[styles.settingsBubble, {backgroundColor: currentColors.placeholder}]}>
+        <TouchableOpacity style={[styles.settingItem, {borderBottomColor: currentColors.tint}]}>
+          <Text style={[styles.settingText, {color: currentColors.text}]}>Support</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={[styles.settingItem, {borderBottomColor: currentColors.tint}]}>
+          <Text style={[styles.settingText, {color: currentColors.text}]}>Privacy Policy</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={[styles.settingItem, {borderBottomColor: currentColors.tint}]}>
+          <Text style={[styles.settingText, {color: currentColors.text}]}>Terms and Conditions</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={[styles.settingItem, {borderBottomColor: currentColors.tint}]}>
+          <Text style={[styles.settingText, {color: currentColors.text}]}>Share Relay with Friends</Text>
+        </TouchableOpacity>
       </View>
 
-      <View style={styles.settingItem}>
-        <Text style={[styles.settingText, { color: currentColors.text, fontSize: 18 * textScaleFactor }]}>
-          Location Access
-        </Text>
-        <Switch value={isLocationEnabled} onValueChange={setIsLocationEnabled} />
-      </View>
-
-      <View style={styles.settingItem}>
-        <Text style={[styles.settingText, { color: currentColors.text, fontSize: 18 * textScaleFactor }]}>
-          Haptics
-        </Text>
-        <Switch value={isHapticsEnabled} onValueChange={setIsHapticsEnabled} />
-      </View>
-
-
+      {/* Logout Button */}
       <LinearGradient
         colors={["#ff8833", "#e24a4a"]}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 0 }}
-        style={{
-          width: "100%",
-          borderRadius: 15,
-          overflow: "hidden",
-          alignItems: "center",
-          marginTop: 20,
-        }}
+        style={styles.gradientButton}
       >
         <LogoutButton />
       </LinearGradient>
 
+      {/* Reset Tracking Button */}
       <LinearGradient
         colors={["#ff8833", "#e24a4a"]}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 0 }}
-        style={{
-          width: "100%",
-          borderRadius: 15,
-          overflow: "hidden",
-          alignItems: "center",
-          marginTop: 20,
-        }}
+        style={styles.gradientButton}
       >
         <ResetTrackingButton />
       </LinearGradient>
     </View>
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
+  settingsContainer: {
     flex: 1,
+    backgroundColor: "#F9F9F9",
     padding: 20,
   },
-  header: {
-    fontSize: 24,
+  userInfo: {
+    alignItems: "center",
+    marginBottom: 30,
+  },
+  profileImage: {
+    width: 100,
+    height: 100,
+    borderRadius: 40,
+    marginBottom: 10,
+  },
+  userName: {
+    fontSize: 20,
     fontWeight: "bold",
+    fontFamily: "Comfortaa",
+  },
+  settingsBubble: {
+    backgroundColor: "#FFFFFF",
+    borderRadius: 15,
+    padding: 15,
     marginBottom: 20,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.2,
+    shadowRadius: 1,
+    paddingTop: -1
+  },
+  sectionHeader: {
+    fontSize: 18,
+    fontWeight: "bold",
+    marginBottom: 10,
+    fontFamily: "Comfortaa",
   },
   settingItem: {
     flexDirection: "row",
@@ -147,11 +224,18 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingVertical: 10,
     borderBottomWidth: 1,
-    borderBottomColor: "#ddd",
+    borderBottomColor: "#EAEAEA",
   },
   settingText: {
-    fontSize: 18,
-    fontFamily: "Comfortaa"
+    fontSize: 16,
+    fontFamily: "Comfortaa",
+  },
+  gradientButton: {
+    width: "100%",
+    borderRadius: 15,
+    overflow: "hidden",
+    alignItems: "center",
+    marginTop: 20,
   },
 });
 
