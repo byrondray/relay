@@ -143,6 +143,7 @@ const CarpoolListScreen: React.FC = () => {
                   fontWeight: "500",
                   fontSize: 14,
                   marginBottom: -10,
+                  color: currentColors.text
                 }}
               >
                 {timeOfDay}
@@ -154,6 +155,7 @@ const CarpoolListScreen: React.FC = () => {
                   fontSize: 24,
                   marginBottom: 16,
                   marginTop: 10,
+                  color: currentColors.text
                 }}
               >
                 {currentUserDetails?.getUser?.firstName || "User"}

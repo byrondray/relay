@@ -27,7 +27,7 @@ const FriendsInviteDescription = ({
           { backgroundColor: currentColors.background, borderColor: currentColors.tint }, // Apply background and border from theme
         ]}
         placeholder="Hi, I’d like to invite you to join my trusted group."
-        placeholderTextColor={currentColors.placeholder} // Apply placeholder color from theme
+        placeholderTextColor={currentColors.icon} 
         multiline={true}
         value={description}
         onChangeText={setDescription}

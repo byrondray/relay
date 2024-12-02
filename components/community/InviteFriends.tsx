@@ -22,12 +22,12 @@ const InviteFriendDropdown = ({ onInvite }: InviteFriendDropdownProps) => {
 
   const renderInviteContent = () => {
     return (
-      <View style={styles.inviteContent}>
+      <View style={[styles.inviteContent, {backgroundColor: currentColors.background}]}>
         <Input
           value={email}
           onChangeText={setEmail}
           placeholder="Friend's email"
-          style={[styles.input, { color: textColor, borderColor: currentColors.tint }]}
+          style={[styles.input, { color: textColor, borderColor: currentColors.tint, backgroundColor: currentColors.placeholder }]}
           accessoryLeft={() => (
             <EmailIcon style={{ width: 20, height: 20, marginLeft: 10 }} />
           )}
@@ -44,7 +44,7 @@ const InviteFriendDropdown = ({ onInvite }: InviteFriendDropdownProps) => {
 
   return (
     <Layout>
-      <TouchableOpacity style={styles.button} onPress={toggleExpand}>
+      <TouchableOpacity style={[styles.button, {backgroundColor: currentColors.background}]} onPress={toggleExpand}>
         <Text style={[styles.buttonText, { color: currentColors.text, fontSize: 12 }]}>
           Invite a Friend by Email
         </Text>
