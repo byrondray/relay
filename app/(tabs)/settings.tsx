@@ -140,6 +140,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: "bold",
     marginBottom: 20,
+    fontFamily: "Comfortaa-bold"
   },
   settingItem: {
     flexDirection: "row",
