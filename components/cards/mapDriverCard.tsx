@@ -253,7 +253,9 @@ const MapDriverCard = ({
             fontSize: 14,
           }}
         >
-          {startLocation}
+          {startLocation.length > 30
+            ? `${startLocation.slice(0, 30)}...`
+            : startLocation}
         </Text>
       </View>
 
@@ -266,7 +268,9 @@ const MapDriverCard = ({
             fontSize: 14,
           }}
         >
-          {endLocation}
+          {endLocation.length > 30
+            ? `${endLocation.slice(0, 30)}...`
+            : endLocation}
         </Text>
       </View>
       <Text
