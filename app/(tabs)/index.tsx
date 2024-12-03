@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Text,
   StyleSheet,
@@ -161,6 +161,7 @@ const CarpoolListScreen: React.FC = () => {
                 {currentUserDetails?.getUser?.firstName || "User"}
               </Text>
             </View>
+
             {currentUserDetails?.getUser?.imageUrl && (
               <Image
                 source={{
@@ -175,7 +176,7 @@ const CarpoolListScreen: React.FC = () => {
               />
             )}
           </View>
-
+          <Text style={[styles.sectionTitle, { fontFamily: "Comfortaa-bold"}]}>Today’s ride</Text>
           <FlatList
             data={carpools}
             style={{ borderRadius: 20 }}
@@ -214,8 +215,8 @@ const CarpoolListScreen: React.FC = () => {
             showsHorizontalScrollIndicator={false}
           />
         </View>
-        <Text style={[styles.sectionTitle, { color: currentColors.text }]}>
-          All Requests
+        <Text style={[styles.sectionTitle, { color: currentColors.text, fontFamily: "Comfortaa-bold" }]}>
+          Upcoming Rides
         </Text>
         <FlatList
           data={uniqueRequests}

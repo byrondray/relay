@@ -11,7 +11,7 @@ import StackedProfilePictures from "./stackedProfile";
 
 interface CardData {
   id: string;
-  state: "pending" | "timeout";
+  state: "confirmed" | "timeout";
   date: Date;
   startLocation: string;
   startTime: string;
@@ -83,7 +83,7 @@ const ActiveRiderCard = ({
               alignItems: "center",
             }}
           >
-            {state === "pending" ? (
+            {state === "confirmed" ? (
               <View
                 style={{
                   flexDirection: "row",
