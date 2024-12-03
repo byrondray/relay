@@ -176,7 +176,7 @@ const CarpoolListScreen: React.FC = () => {
               />
             )}
           </View>
-          <Text style={[styles.sectionTitle, { fontFamily: "Comfortaa-bold"}]}>Today’s ride</Text>
+          <Text style={[styles.sectionTitle, { fontFamily: "Comfortaa-bold", color: currentColors.text}]}>Today’s ride</Text>
           <FlatList
             data={carpools}
             style={{ borderRadius: 20 }}
