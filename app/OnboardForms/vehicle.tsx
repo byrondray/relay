@@ -207,6 +207,7 @@ function VehicleForm(): JSX.Element {
                   color: currentColors.text,
                   fontFamily: "Comfortaa",
                   marginTop: 5,
+                  marginBottom: 5,
                 }}
               >
                 Press here to upload photo of insurance details

@@ -5,11 +5,10 @@ import FriendCard from "@/components/FriendCard";
 import { useTheme } from "@/contexts/ThemeContext";
 
 const NewRideScreen: React.FC = () => {
-  const { currentColors } = useTheme(); // Access the current theme colors
+  const { currentColors } = useTheme(); 
 
   const hasFilledDriverInfo = true;
 
-  // Sample data for friends
   const sampleFriends = [
     {
       id: "1",

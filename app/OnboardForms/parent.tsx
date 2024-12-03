@@ -166,7 +166,8 @@ function ParentForm(): JSX.Element {
         <ParentFormLabel label="Location" />
         <ParentFormInput
           placeholder="City you live in"
-          value={location}
+          // value={location}
+          value={"Burnaby"}
           onChangeText={setLocation}
         />
       </View>
