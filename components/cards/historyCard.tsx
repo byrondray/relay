@@ -18,7 +18,7 @@ interface CardData {
   endLocation: string;
   endTime: string;
   images: string[];
-  recurrence: "one time" | "recurring";
+  recurrence: "One time" | "Recurring";
   driverData: User;
 }
 
@@ -44,6 +44,13 @@ const DriverHistoryCard = ({
   });
 
   const randomLikes = Math.floor(Math.random() * (750 - 50 + 1)) + 50;
+
+  const getImageSource = (image: string | number) => {
+    if (typeof image === "string") {
+      return { uri: image };
+    }
+    return image;
+  };
 
   return (
     <View
@@ -110,69 +117,76 @@ const DriverHistoryCard = ({
             </View>
           </View>
         </View>
-        <View
-          style={{ alignItems: "center", marginRight: 20, marginBottom: 20 }}
-        >
-          {driverData?.imageUrl && (
-            <Image
-              source={{ uri: driverData.imageUrl }}
-              style={{
-                width: 60,
-                height: 60,
-                borderRadius: 30,
-              }}
-            />
-          )}
 
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              marginTop: 8,
-            }}
-          >
-            <HeartIcon width={14} height={14} style={{ marginRight: 1 }} />
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            marginVertical: 10,
+          }}
+        >
+          <View style={{ marginRight: 16 }}>
+            {driverData?.imageUrl && (
+              <Image
+                source={getImageSource(driverData.imageUrl)}
+                style={{
+                  width: 60,
+                  height: 60,
+                  borderRadius: 30,
+                }}
+              />
+            )}
+          </View>
+
+          <View style={{ flex: 1 }}>
             <Text
               style={{
                 fontSize: 12,
-                fontWeight: "500",
-                color: "#FF6A00",
+                fontWeight: "bold",
+                color: "#8F9BB3",
+                fontFamily: "Comfortaa",
+                marginBottom: 4,
+              }}
+            >
+              Driver
+            </Text>
+
+            <Text
+              style={{
+                fontSize: 20,
+                fontWeight: "700",
+                marginBottom: 5,
+                color: currentColors.text,
                 fontFamily: "Comfortaa-Bold",
               }}
             >
-              {randomLikes} likes
+              {driverData?.firstName}
             </Text>
+
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
+              <HeartIcon width={14} height={14} style={{ marginRight: 1 }} />
+              <Text
+                style={{
+                  fontSize: 12,
+                  fontWeight: "500",
+                  color: "#FF6A00",
+                  fontFamily: "Comfortaa-Bold",
+                }}
+              >
+                {randomLikes} likes
+              </Text>
+            </View>
           </View>
         </View>
-        <View style={{ flex: 1, marginTop: -15 }}>
-          <Text
-            style={{
-              fontSize: 12,
-              fontWeight: "bold",
-              color: "#8F9BB3",
-              fontFamily: "Comfortaa",
-              marginBottom: 4,
-            }}
-          >
-            Driver
-          </Text>
-          <Text
-            style={{
-              fontSize: 20,
-              fontWeight: "700",
-              marginBottom: 5,
-              color: currentColors.text,
-              fontFamily: "Comfortaa-Bold",
-            }}
-          >
-            {/* {driverData?.firstName[0].toUpperCase()}
-            {driverData?.firstName.slice(
-              1
-            )} {driverData?.lastName} */}
-            {driverData?.firstName}
-          </Text>
-        </View>
-
+        <View
+          style={{
+            width: "100%",
+            borderBottomWidth: 0.5,
+            borderBottomColor: "#8F9BB3",
+            alignSelf: "center",
+            marginVertical: 10,
+          }}
+        />
         <Text
           style={{
             fontSize: 20,
@@ -238,7 +252,7 @@ const DriverHistoryCard = ({
         >
           <StackedProfilePictures images={images} />
 
-          {recurrence === "one time" ? (
+          {recurrence === "One time" ? (
             <View
               style={{
                 backgroundColor: "rgba(255, 136, 51, 0.1)",

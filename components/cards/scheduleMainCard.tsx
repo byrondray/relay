@@ -19,7 +19,7 @@ interface CardData {
   endLocation: string;
   endTime: string;
   images: string[];
-  recurrence: "one time" | "recurring";
+  recurrence: "One time" | "Recurring";
   driverDetails: {
     driverData: User;
     vehicleData: Vehicle;
@@ -71,6 +71,7 @@ const ScheduleMainCard = ({
             flexDirection: "row",
             justifyContent: "space-between",
             alignItems: "center",
+            marginBottom: 10,
           }}
         >
           <Text
@@ -90,7 +91,7 @@ const ScheduleMainCard = ({
               alignItems: "center",
             }}
           >
-            {recurrence === "recurring" ? (
+            {recurrence === "Recurring" ? (
               <View
                 style={{
                   backgroundColor: "rgba(255, 136, 51, 0.1)",
@@ -183,7 +184,7 @@ const ScheduleMainCard = ({
             borderBottomWidth: 0.5,
             borderBottomColor: "#8F9BB3",
             alignSelf: "center",
-            marginVertical: 10,
+            marginBottom: 10,
           }}
         />
         <Text
