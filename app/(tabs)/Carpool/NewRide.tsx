@@ -159,6 +159,7 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 20,
     justifyContent: "space-between",
+    height: "100%",
   },
   content: {
     flex: 1,

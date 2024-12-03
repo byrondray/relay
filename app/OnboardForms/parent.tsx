@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Text, View, StyleSheet, ActivityIndicator } from "react-native";
 import ParentFormLabel from "@/components/form/inputLabel";
 import ParentFormInput from "@/components/form/inputForm";
-import { TouchableOpacity } from "react-native-gesture-handler";
+import { ScrollView, TouchableOpacity } from "react-native-gesture-handler";
 import { router } from "expo-router";
 import { getAuth } from "firebase/auth";
 import { useQuery, useMutation } from "@apollo/client";
@@ -96,7 +96,7 @@ function ParentForm(): JSX.Element {
   };
 
   return (
-    <View
+    <ScrollView
       style={[styles.container, { backgroundColor: currentColors.background }]}
     >
       <Text
@@ -229,7 +229,7 @@ function ParentForm(): JSX.Element {
           )}
         </TouchableOpacity>
       </LinearGradient>
-    </View>
+    </ScrollView>
   );
 }
 

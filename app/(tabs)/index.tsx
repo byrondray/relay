@@ -215,14 +215,14 @@ const CarpoolListScreen: React.FC = () => {
             showsHorizontalScrollIndicator={false}
           />
         </View>
-        <Text style={[styles.sectionTitle, { color: currentColors.text, fontFamily: "Comfortaa-bold" }]}>
+        {/* <Text style={[styles.sectionTitle, { color: currentColors.text, fontFamily: "Comfortaa-bold" }]}>
           Upcoming Rides
-        </Text>
+        </Text> */}
         <FlatList
           data={uniqueRequests}
           keyExtractor={(request) => request.id}
           renderItem={({ item: request }) => (
-            <View style={{ marginTop: 10, paddingHorizontal: 5 }}>
+            <View style={{ marginTop: 5, paddingHorizontal: 5 }}>
               {request.carpoolId && (
                 <Link
                   href={{

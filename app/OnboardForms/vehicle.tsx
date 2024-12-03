@@ -137,7 +137,8 @@ function VehicleForm(): JSX.Element {
           <ParentFormLabel label="Make" />
           <ParentFormInput
             placeholder="e.g. BMW"
-            value={make}
+            // value={make}
+            value={"Toyota"}
             onChangeText={setMake}
           />
         </View>
@@ -146,7 +147,8 @@ function VehicleForm(): JSX.Element {
           <ParentFormLabel label="Model" />
           <ParentFormInput
             placeholder="e.g. X3"
-            value={model}
+            // value={model}
+            value={"Corolla"}
             onChangeText={setModel}
           />
         </View>
@@ -155,7 +157,8 @@ function VehicleForm(): JSX.Element {
           <ParentFormLabel label="Year" />
           <ParentFormInput
             placeholder="e.g. 2020"
-            value={year}
+            // value={year}
+            value={"2022"}
             onChangeText={setYear}
           />
         </View>
@@ -164,7 +167,8 @@ function VehicleForm(): JSX.Element {
           <ParentFormLabel label="License Plate" />
           <ParentFormInput
             placeholder="License Plate"
-            value={licensePlate}
+            // value={licensePlate}
+            value={"ABC123"}
             onChangeText={setLicensePlate}
           />
         </View>
@@ -173,7 +177,8 @@ function VehicleForm(): JSX.Element {
           <ParentFormLabel label="Vehicle Color" />
           <ParentFormInput
             placeholder="Vehicle Color"
-            value={color}
+            // value={color}
+            value={"Black"}
             onChangeText={setColor}
           />
         </View>
@@ -182,7 +187,8 @@ function VehicleForm(): JSX.Element {
           <ParentFormLabel label="Passenger Seat(s) available" />
           <ParentFormInput
             placeholder="Vehicle Seats"
-            value={color}
+            // value={color}
+            value={"4"}
             onChangeText={setNumberOfSeats}
           />
         </View>

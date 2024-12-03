@@ -30,7 +30,7 @@ function ChildForm(): JSX.Element {
   const [schoolLoading, setSchoolLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [schoolResults, setSchoolResults] = useState<
-    { id: string; name: string; city: string }[] 
+    { id: string; name: string; city: string }[]
   >([]);
   const [profileImage, setProfileImage] = useState<string | null>(null);
 
@@ -130,11 +130,20 @@ function ChildForm(): JSX.Element {
       style={[styles.container, { backgroundColor: currentColors.background }]}
       behavior={Platform.OS === "ios" ? "padding" : undefined}
     >
-      <Text style={[styles.heading, { fontFamily: "Comfortaa", color: currentColors.text }]}>
+      <Text
+        style={[
+          styles.heading,
+          { fontFamily: "Comfortaa", color: currentColors.text },
+        ]}
+      >
         Kid Info
       </Text>
 
-      {errorMessage && <Text style={[styles.errorText, { fontFamily: "Comfortaa" }]}>{errorMessage}</Text>}
+      {errorMessage && (
+        <Text style={[styles.errorText, { fontFamily: "Comfortaa" }]}>
+          {errorMessage}
+        </Text>
+      )}
       <ParentFormLabel label="Profile Image" />
       <ImageUpload profileImage={profileImage} pickImage={pickImage} />
       {children.map((child, index) => (
@@ -143,7 +152,8 @@ function ChildForm(): JSX.Element {
             <ParentFormLabel label={`Child ${index + 1} - First Name`} />
             <ParentFormInput
               placeholder="First Name"
-              value={child.firstName}
+              // value={child.firstName}
+              value={"Anthony"}
               onChangeText={(text) =>
                 handleInputChange(index, "firstName", text)
               }
@@ -154,7 +164,8 @@ function ChildForm(): JSX.Element {
             <ParentFormLabel label="Last Name" />
             <ParentFormInput
               placeholder="Last Name"
-              value={child.lastName}
+              // value={child.lastName}
+              value={"Stark"}
               onChangeText={(text) =>
                 handleInputChange(index, "lastName", text)
               }
@@ -164,7 +175,8 @@ function ChildForm(): JSX.Element {
             <ParentFormLabel label="School" />
             <ParentFormInput
               placeholder="School"
-              value={child.school}
+              // value={child.school}
+              value={"Edmonds Community School"}
               onChangeText={(text) => handleInputChange(index, "school", text)}
             />
             {schoolLoading && (
@@ -179,7 +191,10 @@ function ChildForm(): JSX.Element {
                     onPress={() => handleSchoolSelect(index, item.name)}
                   >
                     <Text
-                      style={[styles.schoolResult, { fontFamily: "Comfortaa", color: currentColors.text }]}
+                      style={[
+                        styles.schoolResult,
+                        { fontFamily: "Comfortaa", color: currentColors.text },
+                      ]}
                     >
                       {item.name} - {item.city}
                     </Text>
@@ -193,7 +208,8 @@ function ChildForm(): JSX.Element {
             <ParentFormLabel label="School Email Address" />
             <ParentFormInput
               placeholder="School Email"
-              value={child.schoolEmail}
+              // value={child.schoolEmail}
+              value={"anthony@sd-39.ca"}
               onChangeText={(text) =>
                 handleInputChange(index, "schoolEmail", text)
               }
