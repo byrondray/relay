@@ -123,7 +123,7 @@ const ActiveRiderCard = ({
             ) : (
               <View
                 style={{
-                  backgroundColor: "#D2D2D2",
+                  backgroundColor: "#3366FF",
                   borderRadius: 16,
                   paddingHorizontal: 10,
                   paddingVertical: 6,
