@@ -501,56 +501,47 @@ const Community = () => {
               Invite friend
             </Text>
           </Button>
-          <Text
-            style={{
-              fontFamily: "Comfortaa",
-              color: currentColors.text,
-              fontSize: 12,
-              marginBottom: 15,
-            }}
-          >
-            Members Invited
-          </Text>
-          <ScrollView
-            horizontal={true}
-            style={{ marginLeft: 5, marginBottom: 10 }}
-          >
-            <FriendProfile
-              id={""}
-              name={"Bob"}
-              imageUrl={"https://thispersondoesnotexist.com/"}
-            />
-            <FriendProfile
-              id={""}
-              name={"Bob"}
-              imageUrl={"https://thispersondoesnotexist.com/"}
-            />
-            <FriendProfile
-              id={""}
-              name={"Bob"}
-              imageUrl={"https://thispersondoesnotexist.com/"}
-            />
-          </ScrollView>
-          <View>
+          <View style={{ flex: 1, padding: 10, backgroundColor: currentColors.background }}>
+            <Text style={{ marginBottom: 10, color: currentColors.text }}>
+              Members Invited
+            </Text>
+
+            <ScrollView
+              horizontal={true}
+              style={{
+                marginLeft: 5,
+                marginBottom: 10, // Space between ScrollView and Button
+              }}
+            >
+              <FriendProfile
+                id={""}
+                name={"Bob"}
+                imageUrl={"https://thispersondoesnotexist.com/"}
+              />
+              <FriendProfile
+                id={""}
+                name={"Bob"}
+                imageUrl={"https://thispersondoesnotexist.com/"}
+              />
+              <FriendProfile
+                id={""}
+                name={"Bob"}
+                imageUrl={"https://thispersondoesnotexist.com/"}
+              />
+            </ScrollView>
+
             <Button
               style={{
-                flexDirection: "row",
-                alignItems: "center",
                 alignSelf: "flex-end",
-                marginTop: 10,
                 width: 130,
-                height: 25,
-                paddingTop: 10,
+                height: 40, 
                 justifyContent: "center",
-                paddingHorizontal: 10,
                 backgroundColor: currentColors.tint,
                 borderRadius: 24,
                 borderWidth: 0,
               }}
             >
-              <Text
-                style={{ fontFamily: "Comfortaa", color: currentColors.text }}
-              >
+              <Text style={{ fontFamily: "Comfortaa", color: currentColors.text }}>
                 Create
               </Text>
             </Button>
