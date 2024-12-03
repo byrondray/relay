@@ -573,6 +573,7 @@ const CarpoolScreen: React.FC = () => {
           fontFamily: "comfortaa",
           fontWeight: 600,
           padding: 15,
+          color: currentColors.text
         }}
       >
         Live location of driver
