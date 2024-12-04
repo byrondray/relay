@@ -20,11 +20,14 @@ import {
 import { GetUserCarpoolsAndRequestsQuery } from "@/graphql/generated";
 import { useCallback } from "react";
 import MapDriverCard from "@/components/cards/mapDriverCard";
-import ActiveRiderCard from "@/components/cards/activeCard";
 import { useTheme } from "@/contexts/ThemeContext";
 import withAuthCheck from "@/components/WithAuthCheck";
 import { GET_USER } from "@/graphql/user/queries";
+<<<<<<< HEAD
 import { LinearGradient } from "expo-linear-gradient";
+=======
+import ActiveRiderCard from "@/components/cards/activeCard";
+>>>>>>> 73d0a493b5e4f5b83b2a63ff09155133e379ece9
 
 const CarpoolListScreen: React.FC = () => {
   const { currentColors } = useTheme();
@@ -113,6 +116,13 @@ const CarpoolListScreen: React.FC = () => {
     variables: { id: currentUser?.uid || "" },
   });
 
+  const getTomorrowDate = () => {
+    const today = new Date();
+    const tomorrow = new Date(today);
+    tomorrow.setDate(today.getDate() + 1);
+    return tomorrow;
+  };
+
   if (loading || currentUserLoading) return <Spinner />;
   if (error)
     return (
@@ -167,7 +177,7 @@ const CarpoolListScreen: React.FC = () => {
                   fontSize: 14,
                   marginTop: 20,
                   marginBottom: -10,
-                  color: currentColors.text
+                  color: currentColors.text,
                 }}
               >
                 {timeOfDay}
@@ -179,7 +189,7 @@ const CarpoolListScreen: React.FC = () => {
                   fontSize: 24,
                   marginBottom: 16,
                   marginTop: 10,
-                  color: currentColors.text
+                  color: currentColors.text,
                 }}
               >
                 {currentUserDetails?.getUser?.firstName || "User"}
@@ -266,7 +276,50 @@ const CarpoolListScreen: React.FC = () => {
           contentContainerStyle={{ padding: 10 }}
           showsVerticalScrollIndicator={false}
         />
+<<<<<<< HEAD
         </LinearGradient>
+=======
+        <View
+          style={{ paddingHorizontal: 15, paddingBottom: 15, marginTop: -20 }}
+        >
+          <Text
+            style={[
+              styles.sectionTitle,
+              {
+                color: currentColors.text,
+                fontFamily: "Comfortaa-bold",
+                marginBottom: 25,
+              },
+            ]}
+          >
+            Upcoming Rides
+          </Text>
+          <View style={{ marginBottom: 15}}>
+            <ActiveRiderCard
+              id={"hjed6903"}
+              state={"confirmed"}
+              date={getTomorrowDate()}
+              startLocation={"5897 Keith Street"}
+              startTime={"3:30pm"}
+              endLocation={"Richmond Olympic Oval"}
+              endTime={"4:15pm"}
+              images={[evanChildImage, vanessaChildImage]}
+              recurrence={"one time"}
+            />
+          </View>
+          <ActiveRiderCard
+            id={"affg1684"}
+            state={"confirmed"}
+            date={getTomorrowDate()}
+            startLocation={"5897 Keith Street"}
+            startTime={"3:30pm"}
+            endLocation={"Richmond Olympic Oval"}
+            endTime={"4:15pm"}
+            images={[evanChildImage, vanessaChildImage]}
+            recurrence={"one time"}
+          />
+        </View>
+>>>>>>> 73d0a493b5e4f5b83b2a63ff09155133e379ece9
       </ScrollView>
     </>
   );
