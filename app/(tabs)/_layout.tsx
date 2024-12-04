@@ -12,21 +12,26 @@ function Header() {
   const { currentColors } = useTheme();
   const isDarkMode = currentColors.background === "#181818";
   return (
-    <View
-      style={[
-        styles.headerContainer,
-        {
-          borderBottomColor: currentColors.background,
-          backgroundColor: currentColors.background,
-        },
-      ]}
-    >
-      <RelaySvg width={30} height={30} />
-      {isDarkMode ? (
-        <RelayWhite style={{ marginLeft: 10, marginTop: 5 }} />
-      ) : (
-        <Relay style={{ marginLeft: 10, marginTop: 5 }} />
-      )}
+    // <View
+    //   style={[
+    //     styles.headerContainer,
+    //     {
+    //       borderBottomColor: currentColors.background,
+    //       backgroundColor: currentColors.headBackground,
+    //     },
+    //   ]}
+    // >
+    <View style={[styles.headerContainer, { backgroundColor: "#FFF", borderBottomWidth: 1, borderColor: "rgba(228, 77, 74, 0.4)" }]}>
+      <View style={{width: "100%", height: "100%", flexDirection: "row", backgroundColor: currentColors.headBackground }}>
+        <View style={{ flex: 1, marginTop: 45, flexDirection: "row", justifyContent: "center"}}>
+          <RelaySvg width={30} height={30} />
+          {isDarkMode ? (
+            <RelayWhite style={{ marginLeft: 10, marginTop: 5 }} />
+          ) : (
+            <Relay style={{ marginLeft: 10, marginTop: 5 }} />
+          )}
+        </View>
+      </View>
     </View>
   );
 }
@@ -277,8 +282,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    borderBottomWidth: 1,
-    height: 50,
+    borderBottomWidth: 0,
+    height: 86,
   },
   customHeaderContainer: {
     flexDirection: "row",
@@ -295,7 +300,8 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   navText: {
-    fontSize: 12,
+    marginTop: 4,
+    fontSize: 10,
   },
   backButton: {
     width: 24,

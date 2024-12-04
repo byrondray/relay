@@ -24,6 +24,7 @@ import ActiveRiderCard from "@/components/cards/activeCard";
 import { useTheme } from "@/contexts/ThemeContext";
 import withAuthCheck from "@/components/WithAuthCheck";
 import { GET_USER } from "@/graphql/user/queries";
+import { LinearGradient } from "expo-linear-gradient";
 
 const CarpoolListScreen: React.FC = () => {
   const { currentColors } = useTheme();
@@ -123,7 +124,14 @@ const CarpoolListScreen: React.FC = () => {
       <ScrollView
         style={{ backgroundColor: currentColors.background, flex: 1 }}
       >
+        <LinearGradient
+          colors={[currentColors.gradient[0], currentColors.gradient[1]]}
+          style={styles.gradientBackground}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 0, y: 1 }} // Diagonal gradient
+        >
         <View style={{ paddingHorizontal: 16, marginTop: 10 }}>
+          
           {showSuccessMessage && (
             <View style={styles.successMessage}>
               <Text style={styles.successText}>{successMessage}</Text>
@@ -136,12 +144,28 @@ const CarpoolListScreen: React.FC = () => {
               justifyContent: "flex-start",
             }}
           >
+
+            {currentUserDetails?.getUser?.imageUrl && (
+              <Image
+                source={{
+                  uri: currentUserDetails?.getUser?.imageUrl || undefined,
+                }}
+                style={{
+                  width: 50,
+                  height: 50,
+                  borderRadius: 50,
+                  marginRight: 15,
+                }}
+              />
+            )}
+            
             <View style={{ flexDirection: "column", flexShrink: 1 }}>
               <Text
                 style={{
                   fontFamily: "Comfortaa",
                   fontWeight: "500",
                   fontSize: 14,
+                  marginTop: 20,
                   marginBottom: -10,
                   color: currentColors.text
                 }}
@@ -161,22 +185,8 @@ const CarpoolListScreen: React.FC = () => {
                 {currentUserDetails?.getUser?.firstName || "User"}
               </Text>
             </View>
-
-            {currentUserDetails?.getUser?.imageUrl && (
-              <Image
-                source={{
-                  uri: currentUserDetails?.getUser?.imageUrl || undefined,
-                }}
-                style={{
-                  width: 70,
-                  height: 70,
-                  borderRadius: 50,
-                  marginLeft: 15,
-                }}
-              />
-            )}
           </View>
-          <Text style={[styles.sectionTitle, { fontFamily: "Comfortaa-bold", color: currentColors.text}]}>Today’s ride</Text>
+          <Text style={[styles.sectionTitle, { fontFamily: "Comfortaa-bold", fontSize: 20, letterSpacing: -1,  color: currentColors.text}]}>Today’s ride</Text>
           <FlatList
             data={carpools}
             style={{ borderRadius: 20 }}
@@ -256,12 +266,16 @@ const CarpoolListScreen: React.FC = () => {
           contentContainerStyle={{ padding: 10 }}
           showsVerticalScrollIndicator={false}
         />
+        </LinearGradient>
       </ScrollView>
     </>
   );
 };
 
 const styles = StyleSheet.create({
+  gradientBackground: {
+    flex: 1,
+  },
   successMessage: {
     backgroundColor: "#d4edda",
     padding: 10,
