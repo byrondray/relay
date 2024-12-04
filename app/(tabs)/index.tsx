@@ -273,50 +273,7 @@ const CarpoolListScreen: React.FC = () => {
           contentContainerStyle={{ padding: 10 }}
           showsVerticalScrollIndicator={false}
         />
-<<<<<<< HEAD
         </LinearGradient>
-=======
-        <View
-          style={{ paddingHorizontal: 15, paddingBottom: 15, marginTop: -20 }}
-        >
-          <Text
-            style={[
-              styles.sectionTitle,
-              {
-                color: currentColors.text,
-                fontFamily: "Comfortaa-bold",
-                marginBottom: 25,
-              },
-            ]}
-          >
-            Upcoming Rides
-          </Text>
-          <View style={{ marginBottom: 15}}>
-            <ActiveRiderCard
-              id={"hjed6903"}
-              state={"confirmed"}
-              date={getTomorrowDate()}
-              startLocation={"5897 Keith Street"}
-              startTime={"3:30pm"}
-              endLocation={"Richmond Olympic Oval"}
-              endTime={"4:15pm"}
-              images={[evanChildImage, vanessaChildImage]}
-              recurrence={"one time"}
-            />
-          </View>
-          <ActiveRiderCard
-            id={"affg1684"}
-            state={"confirmed"}
-            date={getTomorrowDate()}
-            startLocation={"5897 Keith Street"}
-            startTime={"3:30pm"}
-            endLocation={"Richmond Olympic Oval"}
-            endTime={"4:15pm"}
-            images={[evanChildImage, vanessaChildImage]}
-            recurrence={"one time"}
-          />
-        </View>
->>>>>>> 73d0a493b5e4f5b83b2a63ff09155133e379ece9
       </ScrollView>
     </>
   );
