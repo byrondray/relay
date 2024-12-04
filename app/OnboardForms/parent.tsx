@@ -139,7 +139,8 @@ function ParentForm(): JSX.Element {
         <ParentFormLabel label="Last Name" />
         <ParentFormInput
           placeholder="Last Name"
-          value={lastName.slice(0, 1).toUpperCase() + lastName.slice(1)}
+          // value={lastName.slice(0, 1).toUpperCase() + lastName.slice(1)}
+          value="Schatz"
           onChangeText={setLastName}
         />
       </View>

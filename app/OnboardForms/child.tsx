@@ -165,7 +165,7 @@ function ChildForm(): JSX.Element {
             <ParentFormInput
               placeholder="Last Name"
               // value={child.lastName}
-              value={"Stark"}
+              value={"Schatz"}
               onChangeText={(text) =>
                 handleInputChange(index, "lastName", text)
               }
