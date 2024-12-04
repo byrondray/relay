@@ -24,6 +24,7 @@ import { useTheme } from "@/contexts/ThemeContext";
 import withAuthCheck from "@/components/WithAuthCheck";
 import { GET_USER } from "@/graphql/user/queries";
 import ActiveRiderCard from "@/components/cards/activeCard";
+import { set } from "date-fns";
 
 const CarpoolListScreen: React.FC = () => {
   const { currentColors } = useTheme();
@@ -71,7 +72,10 @@ const CarpoolListScreen: React.FC = () => {
         setSuccessMessage("Carpool created successfully!");
       } else if (type === "request") {
         setSuccessMessage("Request submitted successfully!");
+      } else if (type === "review") {
+        setSuccessMessage("Review submitted successfully!");
       }
+
       setShowSuccessMessage(true);
 
       const timer = setTimeout(() => {
@@ -183,7 +187,14 @@ const CarpoolListScreen: React.FC = () => {
               />
             )}
           </View>
-          <Text style={[styles.sectionTitle, { fontFamily: "Comfortaa-bold", color: currentColors.text}]}>Today’s ride</Text>
+          <Text
+            style={[
+              styles.sectionTitle,
+              { fontFamily: "Comfortaa-bold", color: currentColors.text },
+            ]}
+          >
+            Today’s ride
+          </Text>
           <FlatList
             data={carpools}
             style={{ borderRadius: 20 }}
@@ -278,7 +289,7 @@ const CarpoolListScreen: React.FC = () => {
           >
             Upcoming Rides
           </Text>
-          <View style={{ marginBottom: 15}}>
+          <View style={{ marginBottom: 15 }}>
             <ActiveRiderCard
               id={"hjed6903"}
               state={"confirmed"}

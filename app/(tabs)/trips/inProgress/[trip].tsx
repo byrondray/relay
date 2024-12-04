@@ -1,11 +1,18 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
-import { View, Text, StyleSheet, ScrollView, TextInput } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  TextInput,
+  TouchableOpacity,
+} from "react-native";
 import { useQuery, useLazyQuery, useMutation } from "@apollo/client";
 import { GET_USER, GET_VEHICLE } from "@/graphql/user/queries";
 import { GET_CARPOOL_WITH_REQUESTS } from "@/graphql/carpool/queries";
 import { Layout, Popover, Spinner } from "@ui-kitten/components";
 import { auth } from "@/firebaseConfig";
-import { useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import {
   CarpoolWithRequests,
   Child,
@@ -573,7 +580,7 @@ const CarpoolScreen: React.FC = () => {
           fontFamily: "comfortaa",
           fontWeight: 600,
           padding: 15,
-          color: currentColors.text
+          color: currentColors.text,
         }}
       >
         Live location of driver
@@ -680,10 +687,10 @@ const CarpoolScreen: React.FC = () => {
             )}
           </View>
         </View>
-        <View style={{ padding: 15 }}>
+        <View style={{ padding: 15, marginTop: 10 }}>
           {driverData?.id === currentUser?.uid && (
             <>
-              <ShareLocationButton
+              {/* <ShareLocationButton
                 carpoolId={carpoolData?.id ?? ""}
                 onLocationUpdate={(location) => {
                   setDriverLocation(location);
@@ -697,7 +704,7 @@ const CarpoolScreen: React.FC = () => {
                 timeUntilNextStop={nextStop?.timeToNextStop ?? ""}
                 isLeaving={isLeaving}
                 isFinalDestination={isTripCompleted}
-              />
+              /> */}
             </>
           )}
           {driverData && driverData.id === currentUser?.uid && (
@@ -749,9 +756,7 @@ const CarpoolScreen: React.FC = () => {
         {!isDriver && (
           <>
             <View style={{ paddingHorizontal: 15, marginBottom: 15 }}>
-              <ReviewInfo
-                
-              />
+              <ReviewInfo />
             </View>
             <Text
               style={{
@@ -793,29 +798,33 @@ const CarpoolScreen: React.FC = () => {
                   overflow: "hidden",
                 }}
               >
-                <Button
+                <TouchableOpacity
                   style={{
                     width: "100%",
                     paddingVertical: 12,
+                    justifyContent: "center",
+                    alignItems: "center", 
                   }}
-                  appearance="ghost"
                   onPress={() => {
-                    setVisible(true);
+                    router.push({
+                      pathname: "/(tabs)",
+                      params: { success: "true", type: "review" },
+                    });
                   }}
                 >
-                  {() => (
-                    <Text
-                      style={{
-                        color: "#fff",
-                        fontSize: 16,
-                        fontFamily: "Comfortaa",
-                      }}
-                    >
-                      Submit
-                    </Text>
-                  )}
-                </Button>
+                  <Text
+                    style={{
+                      color: "#fff",
+                      fontSize: 16,
+                      fontFamily: "Comfortaa",
+                      textAlign: "center", 
+                    }}
+                  >
+                    Submit
+                  </Text>
+                </TouchableOpacity>
               </LinearGradient>
+
               <Popover
                 backdropStyle={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
                 visible={visible}

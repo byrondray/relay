@@ -79,8 +79,8 @@ const ShareFakeLocationButton: React.FC<ShareFakeLocationButtonProps> = ({
             {loading
               ? "Processing..."
               : isSharing
-                ? "Stop Fake Location"
-                : "Start Fake Location"}
+                ? "Stop Sharing Location"
+                : "Start Sharing Location"}
           </Text>
         </View>
       </TouchableOpacity>
