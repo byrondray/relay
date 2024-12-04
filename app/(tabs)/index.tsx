@@ -23,12 +23,8 @@ import MapDriverCard from "@/components/cards/mapDriverCard";
 import { useTheme } from "@/contexts/ThemeContext";
 import withAuthCheck from "@/components/WithAuthCheck";
 import { GET_USER } from "@/graphql/user/queries";
-<<<<<<< HEAD
 import { LinearGradient } from "expo-linear-gradient";
-=======
 import ActiveRiderCard from "@/components/cards/activeCard";
->>>>>>> 73d0a493b5e4f5b83b2a63ff09155133e379ece9
-
 const CarpoolListScreen: React.FC = () => {
   const { currentColors } = useTheme();
   const currentUser = auth.currentUser;
