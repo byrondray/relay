@@ -7,6 +7,7 @@ import {
   FlatList,
   TouchableOpacity,
   KeyboardAvoidingView,
+  ScrollView,
   Platform,
 } from "react-native";
 import ParentFormLabel from "@/components/form/inputLabel";
@@ -126,144 +127,147 @@ function ChildForm(): JSX.Element {
   };
 
   return (
-    <KeyboardAvoidingView
-      style={[styles.container, { backgroundColor: currentColors.background }]}
-      behavior={Platform.OS === "ios" ? "padding" : undefined}
+    <ScrollView
+    style={[styles.container, { backgroundColor: currentColors.background }]}
     >
-      <Text
-        style={[
-          styles.heading,
-          { fontFamily: "Comfortaa", color: currentColors.text },
-        ]}
-      >
-        Kid Info
-      </Text>
-
-      {errorMessage && (
-        <Text style={[styles.errorText, { fontFamily: "Comfortaa" }]}>
-          {errorMessage}
-        </Text>
-      )}
-      <ParentFormLabel label="Profile Image" />
-      <ImageUpload profileImage={profileImage} pickImage={pickImage} />
-      {children.map((child, index) => (
-        <View key={index} style={{ marginBottom: 20 }}>
-          <View style={{ marginBottom: 20 }}>
-            <ParentFormLabel label={`Child ${index + 1} - First Name`} />
-            <ParentFormInput
-              placeholder="First Name"
-              // value={child.firstName}
-              value={"Anthony"}
-              onChangeText={(text) =>
-                handleInputChange(index, "firstName", text)
-              }
-            />
-          </View>
-
-          <View style={{ marginBottom: 20 }}>
-            <ParentFormLabel label="Last Name" />
-            <ParentFormInput
-              placeholder="Last Name"
-              // value={child.lastName}
-              value={"Stark"}
-              onChangeText={(text) =>
-                handleInputChange(index, "lastName", text)
-              }
-            />
-          </View>
-          <View style={{ marginBottom: 20 }}>
-            <ParentFormLabel label="School" />
-            <ParentFormInput
-              placeholder="School"
-              // value={child.school}
-              value={"Edmonds Community School"}
-              onChangeText={(text) => handleInputChange(index, "school", text)}
-            />
-            {schoolLoading && (
-              <ActivityIndicator size="small" color={currentColors.icon} />
-            )}
-            {schoolResults.length > 0 && (
-              <FlatList
-                data={schoolResults}
-                keyExtractor={(item) => item.id}
-                renderItem={({ item }) => (
-                  <TouchableOpacity
-                    onPress={() => handleSchoolSelect(index, item.name)}
-                  >
-                    <Text
-                      style={[
-                        styles.schoolResult,
-                        { fontFamily: "Comfortaa", color: currentColors.text },
-                      ]}
-                    >
-                      {item.name} - {item.city}
-                    </Text>
-                  </TouchableOpacity>
-                )}
-                style={styles.schoolResultsList}
-              />
-            )}
-          </View>
-          <View style={{ marginBottom: 20 }}>
-            <ParentFormLabel label="School Email Address" />
-            <ParentFormInput
-              placeholder="School Email"
-              // value={child.schoolEmail}
-              value={"anthony@sd-39.ca"}
-              onChangeText={(text) =>
-                handleInputChange(index, "schoolEmail", text)
-              }
-            />
-          </View>
-        </View>
-      ))}
-
-      <View
-        style={{
-          flexDirection: "row",
-          justifyContent: "flex-end",
-          marginBottom: 20,
-        }}
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
       >
         <Text
-          style={[{ color: currentColors.text, fontFamily: "Comfortaa" }]}
-          onPress={handleAddKid}
+          style={[
+            styles.heading,
+            { fontFamily: "Comfortaa", color: currentColors.text },
+          ]}
         >
-          + Add Kid
+          Kid Info
         </Text>
-      </View>
 
-      <LinearGradient
-        colors={["#ff8833", "#e24a4a"]}
-        style={{ width: "100%", borderRadius: 50 }}
-      >
-        <TouchableOpacity
+        {errorMessage && (
+          <Text style={[styles.errorText, { fontFamily: "Comfortaa" }]}>
+            {errorMessage}
+          </Text>
+        )}
+        <ParentFormLabel label="Profile Image" />
+        <ImageUpload profileImage={profileImage} pickImage={pickImage} />
+        {children.map((child, index) => (
+          <View key={index} style={{ marginBottom: 20 }}>
+            <View style={{ marginBottom: 20 }}>
+              <ParentFormLabel label={`Child ${index + 1} - First Name`} />
+              <ParentFormInput
+                placeholder="First Name"
+                // value={child.firstName}
+                value={"Anthony"}
+                onChangeText={(text) =>
+                  handleInputChange(index, "firstName", text)
+                }
+              />
+            </View>
+
+            <View style={{ marginBottom: 20 }}>
+              <ParentFormLabel label="Last Name" />
+              <ParentFormInput
+                placeholder="Last Name"
+                // value={child.lastName}
+                value={"Stark"}
+                onChangeText={(text) =>
+                  handleInputChange(index, "lastName", text)
+                }
+              />
+            </View>
+            <View style={{ marginBottom: 20 }}>
+              <ParentFormLabel label="School" />
+              <ParentFormInput
+                placeholder="School"
+                // value={child.school}
+                value={"Edmonds Community School"}
+                onChangeText={(text) => handleInputChange(index, "school", text)}
+              />
+              {schoolLoading && (
+                <ActivityIndicator size="small" color={currentColors.icon} />
+              )}
+              {schoolResults.length > 0 && (
+                <FlatList
+                  data={schoolResults}
+                  keyExtractor={(item) => item.id}
+                  renderItem={({ item }) => (
+                    <TouchableOpacity
+                      onPress={() => handleSchoolSelect(index, item.name)}
+                    >
+                      <Text
+                        style={[
+                          styles.schoolResult,
+                          { fontFamily: "Comfortaa", color: currentColors.text },
+                        ]}
+                      >
+                        {item.name} - {item.city}
+                      </Text>
+                    </TouchableOpacity>
+                  )}
+                  style={styles.schoolResultsList}
+                />
+              )}
+            </View>
+            <View style={{ marginBottom: 20 }}>
+              <ParentFormLabel label="School Email Address" />
+              <ParentFormInput
+                placeholder="School Email"
+                // value={child.schoolEmail}
+                value={"anthony@sd-39.ca"}
+                onChangeText={(text) =>
+                  handleInputChange(index, "schoolEmail", text)
+                }
+              />
+            </View>
+          </View>
+        ))}
+
+        <View
           style={{
-            paddingVertical: 12,
-            alignItems: "center",
-            justifyContent: "center",
+            flexDirection: "row",
+            justifyContent: "flex-end",
+            marginBottom: 20,
           }}
-          onPress={handleSubmit}
-          disabled={loading}
         >
-          {loading ? (
-            <ActivityIndicator size="small" color={currentColors.text} />
-          ) : (
-            <Text
-              style={{
-                color: "white",
-                textAlign: "center",
-                fontSize: 20,
-                fontWeight: "semibold",
-                fontFamily: "Comfortaa",
-              }}
-            >
-              Next
-            </Text>
-          )}
-        </TouchableOpacity>
-      </LinearGradient>
-    </KeyboardAvoidingView>
+          <Text
+            style={[{ color: currentColors.text, fontFamily: "Comfortaa" }]}
+            onPress={handleAddKid}
+          >
+            + Add Kid
+          </Text>
+        </View>
+
+        <LinearGradient
+          colors={["#ff8833", "#e24a4a"]}
+          style={{ width: "100%", borderRadius: 50 }}
+        >
+          <TouchableOpacity
+            style={{
+              paddingVertical: 12,
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+            onPress={handleSubmit}
+            disabled={loading}
+          >
+            {loading ? (
+              <ActivityIndicator size="small" color={currentColors.text} />
+            ) : (
+              <Text
+                style={{
+                  color: "white",
+                  textAlign: "center",
+                  fontSize: 20,
+                  fontWeight: "semibold",
+                  fontFamily: "Comfortaa",
+                }}
+              >
+                Next
+              </Text>
+            )}
+          </TouchableOpacity>
+        </LinearGradient>
+      </KeyboardAvoidingView>
+    </ScrollView>
   );
 }
 

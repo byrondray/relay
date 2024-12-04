@@ -99,14 +99,16 @@ function ParentForm(): JSX.Element {
     <ScrollView
       style={[styles.container, { backgroundColor: currentColors.background }]}
     >
-      <Text
-        style={[
-          styles.heading,
-          { fontFamily: "Comfortaa", color: currentColors.text },
-        ]}
-      >
-        Parent Info
-      </Text>
+      <View style={{marginTop: 86,}}>
+        <Text
+          style={[
+            styles.heading,
+            { fontFamily: "Comfortaa", color: currentColors.text },
+          ]}
+        >
+          Parent Info
+        </Text>
+      </View>
 
       {errorMessage && (
         <Text

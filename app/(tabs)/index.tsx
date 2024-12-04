@@ -6,6 +6,7 @@ import {
   View,
   ScrollView,
   Image,
+  Platform,
 } from "react-native";
 import { useQuery } from "@apollo/client";
 import { GET_USER_CARPOOL_WITH_REQUESTS } from "@/graphql/carpool/queries";
@@ -25,6 +26,7 @@ import withAuthCheck from "@/components/WithAuthCheck";
 import { GET_USER } from "@/graphql/user/queries";
 import { LinearGradient } from "expo-linear-gradient";
 import ActiveRiderCard from "@/components/cards/activeCard";
+
 const CarpoolListScreen: React.FC = () => {
   const { currentColors } = useTheme();
   const currentUser = auth.currentUser;
@@ -136,160 +138,175 @@ const CarpoolListScreen: React.FC = () => {
           start={{ x: 0, y: 0 }}
           end={{ x: 0, y: 1 }} // Diagonal gradient
         >
-        <View style={{ paddingHorizontal: 16, marginTop: 10 }}>
-          
-          {showSuccessMessage && (
-            <View style={styles.successMessage}>
-              <Text style={styles.successText}>{successMessage}</Text>
-            </View>
-          )}
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "flex-start",
-            }}
-          >
+          <View style={{ marginTop: 20 }}>
 
-            {currentUserDetails?.getUser?.imageUrl && (
-              <Image
-                source={{
-                  uri: currentUserDetails?.getUser?.imageUrl || undefined,
-                }}
-                style={{
-                  width: 50,
-                  height: 50,
-                  borderRadius: 50,
-                  marginRight: 15,
-                }}
-              />
+            {showSuccessMessage && (
+              <View style={styles.successMessage}>
+                <Text style={styles.successText}>{successMessage}</Text>
+              </View>
             )}
-            
-            <View style={{ flexDirection: "column", flexShrink: 1 }}>
-              <Text
-                style={{
-                  fontFamily: "Comfortaa",
-                  fontWeight: "500",
-                  fontSize: 14,
-                  marginTop: 20,
-                  marginBottom: -10,
-                  color: currentColors.text,
-                }}
-              >
-                {timeOfDay}
-              </Text>
-              <Text
-                style={{
-                  fontFamily: "Comfortaa-Bold",
-                  fontWeight: "700",
-                  fontSize: 24,
-                  marginBottom: 16,
-                  marginTop: 10,
-                  color: currentColors.text,
-                }}
-              >
-                {currentUserDetails?.getUser?.firstName || "User"}
-              </Text>
-            </View>
-          </View>
-          <Text style={[styles.sectionTitle, { fontFamily: "Comfortaa-bold", fontSize: 20, letterSpacing: -1,  color: currentColors.text}]}>Today’s ride</Text>
-          <FlatList
-            data={carpools}
-            style={{ borderRadius: 20 }}
-            keyExtractor={(item) => item.id}
-            renderItem={({ item }) => {
-              return (
-                <Link
-                  href={{
-                    pathname: "/trips/inProgress/[trip]",
-                    params: { trip: item.id },
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "flex-start",
+                paddingHorizontal: 16,
+                padding: 20,
+                paddingBottom: 30,
+                height: 50,
+              }}
+            >
+
+              {currentUserDetails?.getUser?.imageUrl && (
+                <Image
+                  source={{
+                    uri: currentUserDetails?.getUser?.imageUrl || undefined,
                   }}
-                  style={{ marginRight: 10, marginBottom: 10 }}
+                  style={{
+                    width: 50,
+                    height: 50,
+                    borderRadius: 50,
+                    marginRight: 15,
+                  }}
+                />
+              )}
+
+              <View style={{ height: 50, justifyContent: "center", flexDirection: "column", flex: 1 }}>
+                <Text
+                  style={[ Platform.OS === "ios" ? { marginBottom: 2 } : { marginBottom: -5}, {
+                    fontFamily: "ComfortaaMedium",
+                    fontWeight: "500",
+                    fontSize: 14,
+                    // marginTop: 20,
+                    // marginBottom: -10,
+                    color: currentColors.text,
+                  }]}
                 >
-                  <MapDriverCard
-                    driverName={item.driver.firstName}
-                    driverImage={item.driver.imageUrl}
-                    id={item.id}
-                    driveCount={22}
-                    likes={300}
-                    date={new Date(item.departureDate)}
-                    duration={"23 mins"}
-                    startLocation={item.startAddress}
-                    startTime={item.departureTime}
-                    endLocation={item.endAddress}
-                    endTime={"03: 53 PM"}
-                    passengerImages={[
-                      vanessaChildImage,
-                      evanChildImage,
-                      gloriaChildImage,
-                    ]}
-                  />
-                </Link>
-              );
-            }}
-            horizontal={carpools.length > 1}
-            showsHorizontalScrollIndicator={false}
-          />
-        </View>
-        {/* <Text style={[styles.sectionTitle, { color: currentColors.text, fontFamily: "Comfortaa-bold" }]}>
+                  {timeOfDay}
+                </Text>
+                <Text
+                  style={[ Platform.OS === "ios" ? { marginBottom: 2 } : { marginTop: 8, lineHeight: 24}, {
+                    fontFamily: "ComfortaaBold",
+                    fontSize: 24,
+                    // marginBottom: 16,
+                    // marginTop: 10,
+                    color: currentColors.text,
+                  }]}
+                >
+                  {currentUserDetails?.getUser?.firstName || "User"}
+                </Text>
+              </View>
+            </View>
+            <Text style={[styles.sectionTitle, { fontFamily: "ComfortaaBold", fontWeight: 600, paddingHorizontal: 16, fontSize: 28, letterSpacing: -0.5, color: currentColors.text }]}>Today's ride</Text>
+            <FlatList
+              data={carpools}
+              style={{ borderRadius: 0, paddingLeft: 16, marginTop: 0, }}
+              keyExtractor={(item) => item.id}
+              renderItem={({ item }) => {
+                return (
+                  <Link
+                    href={{
+                      pathname: "/trips/inProgress/[trip]",
+                      params: { trip: item.id },
+                    }}
+                    style={{ marginRight: 10, marginBottom: 10 }}
+                  >
+                    <MapDriverCard
+                      driverName={item.driver.firstName}
+                      driverImage={item.driver.imageUrl}
+                      id={item.id}
+                      driveCount={22}
+                      likes={300}
+                      date={new Date(item.departureDate)}
+                      duration={"23 mins"}
+                      startLocation={item.startAddress}
+                      startTime={item.departureTime}
+                      endLocation={item.endAddress}
+                      endTime={"03: 53 PM"}
+                      passengerImages={[
+                        vanessaChildImage,
+                        evanChildImage,
+                        gloriaChildImage,
+                      ]}
+                    />
+                  </Link>
+                );
+              }}
+              horizontal={carpools.length > 1}
+              showsHorizontalScrollIndicator={false}
+            />
+          </View>
+          {/* <Text style={[styles.sectionTitle, { color: currentColors.text, fontFamily: "Comfortaa-bold" }]}>
           Upcoming Rides
         </Text> */}
-        <FlatList
-          data={uniqueRequests}
-          keyExtractor={(request) => request.id}
-          renderItem={({ item: request }) => (
-            <View style={{ marginTop: 5, paddingHorizontal: 5 }}>
-              {request.carpoolId && (
-                <Link
-                  href={{
-                    pathname: "/trips/inProgress/[trip]",
-                    params: { trip: request.carpoolId },
-                  }}
-                >
-                  <MapDriverCard
-                    id={request.carpoolId}
-                    driverName={request.driver?.firstName || "User"}
-                    driveCount={42}
-                    driverImage={request.driver?.imageUrl || ""}
-                    likes={300}
-                    date={new Date()}
-                    duration={"23 mins"}
-                    startLocation={request.carpool?.startAddress || "Unknown"}
-                    startTime={request.carpool?.departureTime || "Unknown"}
-                    endLocation={request.carpool?.endAddress || "Unknown"}
-                    endTime={"03:53pm"}
-                    passengerImages={[
-                      vanessaChildImage,
-                      evanChildImage,
-                      gloriaChildImage,
-                    ]}
-                  />
-                </Link>
-              )}
-            </View>
-          )}
-          ListEmptyComponent={<Text>No requests available.</Text>}
-          contentContainerStyle={{ padding: 10 }}
-          showsVerticalScrollIndicator={false}
-        />
-        <View
-          style={{ paddingHorizontal: 15, paddingBottom: 15, marginTop: -20 }}
-        >
-          <Text
-            style={[
-              styles.sectionTitle,
-              {
-                color: currentColors.text,
-                fontFamily: "Comfortaa-bold",
-                marginBottom: 25,
-              },
-            ]}
+          <FlatList
+            data={uniqueRequests}
+            keyExtractor={(request) => request.id}
+            renderItem={({ item: request }) => (
+              <View style={{ marginTop: 0, paddingHorizontal: 0 }}>
+                {request.carpoolId && (
+                  <Link
+                    href={{
+                      pathname: "/trips/inProgress/[trip]",
+                      params: { trip: request.carpoolId },
+                    }}
+                  >
+                    <MapDriverCard
+                      id={request.carpoolId}
+                      driverName={request.driver?.firstName || "User"}
+                      driveCount={42}
+                      driverImage={request.driver?.imageUrl || ""}
+                      likes={300}
+                      date={new Date()}
+                      duration={"23 mins"}
+                      startLocation={request.carpool?.startAddress || "Unknown"}
+                      startTime={request.carpool?.departureTime || "Unknown"}
+                      endLocation={request.carpool?.endAddress || "Unknown"}
+                      endTime={"03:53pm"}
+                      passengerImages={[
+                        vanessaChildImage,
+                        evanChildImage,
+                        gloriaChildImage,
+                      ]}
+                    />
+                  </Link>
+                )}
+              </View>
+            )}
+            ListEmptyComponent={<Text>No requests available.</Text>}
+            contentContainerStyle={{ paddingLeft: 16, paddingBottom: 20 }}
+            showsVerticalScrollIndicator={false}
+          />
+          <View
+            style={{ paddingHorizontal: 15, paddingBottom: 15, marginTop: -20 }}
           >
-            Upcoming Rides
-          </Text>
-          <View style={{ marginBottom: 15}}>
+            <Text
+              style={[
+                styles.sectionTitle,
+                {
+                  color: currentColors.text,
+                  fontFamily: "ComfortaaBold",
+                  marginBottom: 15,
+                },
+              ]}
+            >
+              Upcoming Rides
+            </Text>
+            <View style={{ marginBottom: 15 }}>
+              <ActiveRiderCard
+                id={"HJED6903"}
+                state={"confirmed"}
+                date={getTomorrowDate()}
+                startLocation={"5897 Keith Street"}
+                startTime={"3:30pm"}
+                endLocation={"Richmond Olympic Oval"}
+                endTime={"4:15pm"}
+                images={[evanChildImage, vanessaChildImage]}
+                recurrence={"one time"}
+              />
+            </View>
             <ActiveRiderCard
-              id={"hjed6903"}
+              id={"affg1684"}
               state={"confirmed"}
               date={getTomorrowDate()}
               startLocation={"5897 Keith Street"}
@@ -300,18 +317,7 @@ const CarpoolListScreen: React.FC = () => {
               recurrence={"one time"}
             />
           </View>
-          <ActiveRiderCard
-            id={"affg1684"}
-            state={"confirmed"}
-            date={getTomorrowDate()}
-            startLocation={"5897 Keith Street"}
-            startTime={"3:30pm"}
-            endLocation={"Richmond Olympic Oval"}
-            endTime={"4:15pm"}
-            images={[evanChildImage, vanessaChildImage]}
-            recurrence={"one time"}
-          />
-        </View>
+        </LinearGradient>
       </ScrollView>
     </>
   );
@@ -332,8 +338,11 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   sectionTitle: {
-    fontSize: 16,
-    fontWeight: "bold",
+    fontFamily: "ComfortaaBold",
+    fontSize: 28,
+    letterSpacing: -0.5,
+    marginTop: 30,
+    marginBottom: 10,
     marginVertical: 16,
     marginLeft: 8,
   },

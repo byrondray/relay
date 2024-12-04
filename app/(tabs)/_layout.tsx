@@ -2,7 +2,7 @@ import { router, Tabs } from "expo-router";
 import React from "react";
 import { TabBarIcon } from "@/components/navigation/TabBarIcon";
 import { useTheme } from "@/contexts/ThemeContext";
-import { StyleSheet, View, Image, TouchableOpacity, Text } from "react-native";
+import { StyleSheet, View, Image, TouchableOpacity, Text, StatusBar, Platform } from "react-native";
 import Relay from "@/assets/images/Relay.svg";
 import RelayWhite from "@/assets/images/Relay-white.svg";
 import RelaySvg from "@/components/icons/RelaySvg";
@@ -21,9 +21,10 @@ function Header() {
     //     },
     //   ]}
     // >
-    <View style={[styles.headerContainer, { backgroundColor: "#FFF", borderBottomWidth: 1, borderColor: "rgba(228, 77, 74, 0.4)" }]}>
+    <View style={[styles.headerContainer, Platform.OS === "ios" ? { height: 86 } : { height: 60 }, { backgroundColor: "#FFF", borderBottomWidth: 1, borderColor: "rgba(247, 176, 96, 0.4)" }]}>
+      <StatusBar barStyle={ isDarkMode ? "light-content" : "dark-content" }/>
       <View style={{width: "100%", height: "100%", flexDirection: "row", backgroundColor: currentColors.headBackground }}>
-        <View style={{ flex: 1, marginTop: 45, flexDirection: "row", justifyContent: "center"}}>
+        <View style={[Platform.OS === "ios" ? { marginTop: 45 } : { marginTop: 15 }, { flex: 1, flexDirection: "row", justifyContent: "center"}]}>
           <RelaySvg width={30} height={30} />
           {isDarkMode ? (
             <RelayWhite style={{ marginLeft: 10, marginTop: 5 }} />
@@ -283,7 +284,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     borderBottomWidth: 0,
-    height: 86,
   },
   customHeaderContainer: {
     flexDirection: "row",
