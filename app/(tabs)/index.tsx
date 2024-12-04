@@ -20,10 +20,10 @@ import {
 import { GetUserCarpoolsAndRequestsQuery } from "@/graphql/generated";
 import { useCallback } from "react";
 import MapDriverCard from "@/components/cards/mapDriverCard";
-import ActiveRiderCard from "@/components/cards/activeCard";
 import { useTheme } from "@/contexts/ThemeContext";
 import withAuthCheck from "@/components/WithAuthCheck";
 import { GET_USER } from "@/graphql/user/queries";
+import ActiveRiderCard from "@/components/cards/activeCard";
 
 const CarpoolListScreen: React.FC = () => {
   const { currentColors } = useTheme();
@@ -112,6 +112,13 @@ const CarpoolListScreen: React.FC = () => {
     variables: { id: currentUser?.uid || "" },
   });
 
+  const getTomorrowDate = () => {
+    const today = new Date();
+    const tomorrow = new Date(today);
+    tomorrow.setDate(today.getDate() + 1);
+    return tomorrow;
+  };
+
   if (loading || currentUserLoading) return <Spinner />;
   if (error)
     return (
@@ -143,7 +150,7 @@ const CarpoolListScreen: React.FC = () => {
                   fontWeight: "500",
                   fontSize: 14,
                   marginBottom: -10,
-                  color: currentColors.text
+                  color: currentColors.text,
                 }}
               >
                 {timeOfDay}
@@ -155,7 +162,7 @@ const CarpoolListScreen: React.FC = () => {
                   fontSize: 24,
                   marginBottom: 16,
                   marginTop: 10,
-                  color: currentColors.text
+                  color: currentColors.text,
                 }}
               >
                 {currentUserDetails?.getUser?.firstName || "User"}
@@ -176,7 +183,9 @@ const CarpoolListScreen: React.FC = () => {
               />
             )}
           </View>
-          <Text style={[styles.sectionTitle, { fontFamily: "Comfortaa-bold"}]}>Today’s ride</Text>
+          <Text style={[styles.sectionTitle, { fontFamily: "Comfortaa-bold" }]}>
+            Today’s ride
+          </Text>
           <FlatList
             data={carpools}
             style={{ borderRadius: 20 }}
@@ -256,6 +265,46 @@ const CarpoolListScreen: React.FC = () => {
           contentContainerStyle={{ padding: 10 }}
           showsVerticalScrollIndicator={false}
         />
+        <View
+          style={{ paddingHorizontal: 15, paddingBottom: 15, marginTop: -20 }}
+        >
+          <Text
+            style={[
+              styles.sectionTitle,
+              {
+                color: currentColors.text,
+                fontFamily: "Comfortaa-bold",
+                marginBottom: 25,
+              },
+            ]}
+          >
+            Upcoming Rides
+          </Text>
+          <View style={{ marginBottom: 15}}>
+            <ActiveRiderCard
+              id={"hjed6903"}
+              state={"confirmed"}
+              date={getTomorrowDate()}
+              startLocation={"5897 Keith Street"}
+              startTime={"3:30pm"}
+              endLocation={"Richmond Olympic Oval"}
+              endTime={"4:15pm"}
+              images={[evanChildImage, vanessaChildImage]}
+              recurrence={"one time"}
+            />
+          </View>
+          <ActiveRiderCard
+            id={"affg1684"}
+            state={"confirmed"}
+            date={getTomorrowDate()}
+            startLocation={"5897 Keith Street"}
+            startTime={"3:30pm"}
+            endLocation={"Richmond Olympic Oval"}
+            endTime={"4:15pm"}
+            images={[evanChildImage, vanessaChildImage]}
+            recurrence={"one time"}
+          />
+        </View>
       </ScrollView>
     </>
   );
