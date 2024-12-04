@@ -25,6 +25,13 @@ const DriverInfo = ({
   const { currentColors } = useTheme();
   const router = useRouter();
 
+  const getImageSource = (image: string | number) => {
+    if (typeof image === "string") {
+      return { uri: image };
+    }
+    return image;
+  };
+
   return (
     <View
       style={{
@@ -41,7 +48,7 @@ const DriverInfo = ({
       <View style={{ alignItems: "center", marginRight: 20, marginBottom: 50 }}>
         {driverData?.imageUrl && (
           <Image
-            source={{ uri: driverData.imageUrl }}
+            source={getImageSource(driverData.imageUrl)}
             style={{
               width: 60,
               height: 60,
@@ -94,7 +101,9 @@ const DriverInfo = ({
           }}
         >
           {driverData?.firstName[0].toUpperCase()}
-          {driverData?.firstName.slice(1)} {driverData?.lastName}
+          {driverData?.firstName.slice(
+            1
+          )} {driverData?.lastName}
         </Text>
 
         <Text
@@ -160,6 +169,7 @@ const DriverInfo = ({
               justifyContent: "center",
               alignItems: "center",
               padding: 10,
+              marginBottom: 80,
             }}
           >
             <MessageCircle width={24} height={24} />

@@ -4,29 +4,60 @@ import { Input } from "@ui-kitten/components";
 import React, { useState } from "react";
 import { Text, View } from "react-native";
 import DriverMainCard from "../cards/driverPostMainCard";
+import { CarpoolWithRequests, User, Vehicle } from "@/graphql/generated";
+
+const driverDataVanessa: User = {
+  id: "3",
+  firstName: "Vanessa",
+  lastName: "Nguyen",
+  email: "vanessa.nguyen@gmail.com",
+  imageUrl: require("@/assets/images/user/vanessa/Vanessa.jpg"),
+};
+
+const vehicleVanessa: Vehicle = {
+  id: "3",
+  make: "Honda",
+  model: "Civic",
+  year: "2019",
+  color: "blue",
+  licensePlate: "ABC1234",
+  seats: 4,
+  userId: "3",
+};
+
+const carpoolDataVanessa: CarpoolWithRequests = {
+  id: "3",
+  startAddress: "789 Maple St",
+  endAddress: "345 Cedar Ave",
+  departureTime: "8:30 AM",
+  departureDate: new Date("2024-12-02T08:30:00Z").toISOString(),
+  endLat: 49.283,
+  endLon: -123.121,
+  groupId: "group3",
+  startLat: 49.276,
+  startLon: -123.114,
+  driverId: "3",
+  vehicleId: "3",
+};
 
 const DriverPost = () => {
   const [searchText, setSearchText] = useState("");
   const { currentColors } = useTheme();
 
   const fakeCardData = {
-    id: "12345678",
-    state: "Pending",
-    date: "2024-12-01",
-    startLocation: "123 Main Street, Vancouver",
+    id: "123456789",
+    state: "Pending" as "Pending" | "Timeout",
+    date: new Date("2024-12-02T08:30:00Z"),
+    startLocation: "Maple Grove Park",
     startTime: "8:30 AM",
-    endLocation: "456 Elm Street, Richmond",
-    endTime: "9:45 AM",
-    images: [
-      require("@/assets/images/user/vanessa/child/vanessa-child.jpg"),
-      require("@/assets/images/user/evan/child/evan-child.jpg"),
-      require("@/assets/images/user/gloria/child/gloria-child.jpg"),
-    ],
-    recurrence: "recurring",
+    endLocation: "Downtown Library",
+    endTime: "9:00 AM",
+    images: [require("@/assets/images/user/vanessa/child/vanessa-child.jpg")],
+    recurrence: "One time" as "One time" | "Recurring",
     driverDetails: {
-      driverData: { name: "John Doe" },
-      vehicleData: { make: "Toyota", model: "Camry", year: 2021 },
-      carpoolData: { passengers: 3, maxPassengers: 4 },
+      driverData: driverDataVanessa,
+      vehicleData: vehicleVanessa,
+      carpoolData: carpoolDataVanessa,
     },
   };
 
@@ -66,13 +97,14 @@ const DriverPost = () => {
       <DriverMainCard
         id={fakeCardData.id}
         state={fakeCardData.state}
-        date={fakeCardData.date}
+        date={fakeCardData.date.toISOString()}
         startLocation={fakeCardData.startLocation}
         startTime={fakeCardData.startTime}
         endLocation={fakeCardData.endLocation}
         endTime={fakeCardData.endTime}
         images={fakeCardData.images}
         recurrence={fakeCardData.recurrence}
+        driverDetails={fakeCardData.driverDetails}
       />
     </View>
   );

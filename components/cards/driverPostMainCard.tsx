@@ -72,6 +72,7 @@ const DriverMainCard = ({
             flexDirection: "row",
             justifyContent: "space-between",
             alignItems: "center",
+            marginBottom: 10,
           }}
         >
           <Text
@@ -194,7 +195,7 @@ const DriverMainCard = ({
             borderBottomWidth: 0.5,
             borderBottomColor: "#8F9BB3",
             alignSelf: "center",
-            marginVertical: 10,
+            marginBottom: 10,
           }}
         />
         <Text
