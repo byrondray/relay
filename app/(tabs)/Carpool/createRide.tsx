@@ -177,32 +177,32 @@ const CreateRide = () => {
     );
   };
 
-  const handleModelSubmit = () => {
-    setVisible(true);
-  };
+  // const handleModelSubmit = () => {
+  //   setVisible(true);
+  // };
 
-  const renderToggleButton = (): React.ReactElement => (
-    <Button
-      style={{
-        width: "100%",
-        paddingVertical: 12,
-      }}
-      appearance="ghost"
-      onPress={handleModelSubmit}
-    >
-      {() => (
-        <Text
-          style={{
-            color: currentColors.background,
-            fontSize: 16,
-            fontFamily: "Comfortaa",
-          }}
-        >
-          Submit
-        </Text>
-      )}
-    </Button>
-  );
+  // const renderToggleButton = (): React.ReactElement => (
+  //   <Button
+  //     style={{
+  //       width: "100%",
+  //       paddingVertical: 12,
+  //     }}
+  //     appearance="ghost"
+  //     onPress={handleModelSubmit}
+  //   >
+  //     {() => (
+  //       <Text
+  //         style={{
+  //           color: currentColors.background,
+  //           fontSize: 16,
+  //           fontFamily: "Comfortaa",
+  //         }}
+  //       >
+  //         Submit
+  //       </Text>
+  //     )}
+  //   </Button>
+  // );
 
   useEffect(() => {
     if (
@@ -705,54 +705,54 @@ const CreateRide = () => {
                 appearance="ghost"
                 onPress={async () => {
                   // handleModelSubmit();
-                  const { data, errors } = await createCarpool({
-                    variables: {
-                      input: {
-                        driverId: userId!,
-                        startLat: startingLatLng.lat,
-                        startLon: startingLatLng.lon,
-                        endLat: endingLatLng.lat,
-                        endLon: endingLatLng.lon,
-                        startAddress: startingAddress,
-                        endAddress: endingAddress,
-                        departureDate: dateAndTime,
-                        departureTime: time,
-                        tripPreferences: description,
-                        vehicleId: vehicles[selectedVehicleIndex.row].id,
-                        requestIds: selectedWaypoints.map((child) => child.id),
-                        driverChildIds: selectedChildren.map((child) => child),
-                        groupId: groupId!,
-                      },
-                    },
-                  });
-                  if (data?.createCarpool) {
-                    setStartingAddress("");
-                    setEndingAddress("");
-                    setStartingLatLng({ lat: 0, lon: 0 });
-                    setEndingLatLng({ lat: 0, lon: 0 });
-                    setSelectedDate(new Date());
-                    setDateAndTime("Select Date & Time");
-                    setTime("Select Time");
-                    setVoluntaryChecked(false);
-                    setShareCostChecked(false);
-                    setShowTimePicker(false);
-                    setSelectedChildren([]);
-                    setDescription("");
-                    setSelectedVehicleIndex(new IndexPath(0));
-                    setActiveRoute({ coordinates: [], predictedTime: "0" });
-                    setPreviousRoutes([]);
-                    setSelectedIndex(0);
-                    setGroupId(null);
-                    setRequests([]);
-                    setSeatsLeft(0);
-                    setSeatsAvailable([]);
-                    setSelectedSeatsIndex(new IndexPath(0));
+                  // const { data, errors } = await createCarpool({
+                  //   variables: {
+                  //     input: {
+                  //       driverId: userId!,
+                  //       startLat: startingLatLng.lat,
+                  //       startLon: startingLatLng.lon,
+                  //       endLat: endingLatLng.lat,
+                  //       endLon: endingLatLng.lon,
+                  //       startAddress: startingAddress,
+                  //       endAddress: endingAddress,
+                  //       departureDate: dateAndTime,
+                  //       departureTime: time,
+                  //       tripPreferences: description,
+                  //       vehicleId: vehicles[selectedVehicleIndex.row].id,
+                  //       requestIds: selectedWaypoints.map((child) => child.id),
+                  //       driverChildIds: selectedChildren.map((child) => child),
+                  //       groupId: groupId!,
+                  //     },
+                  //   },
+                  // });
+                  // if (data?.createCarpool) {
+                  //   setStartingAddress("");
+                  //   setEndingAddress("");
+                  //   setStartingLatLng({ lat: 0, lon: 0 });
+                  //   setEndingLatLng({ lat: 0, lon: 0 });
+                  //   setSelectedDate(new Date());
+                  //   setDateAndTime("Select Date & Time");
+                  //   setTime("Select Time");
+                  //   setVoluntaryChecked(false);
+                  //   setShareCostChecked(false);
+                  //   setShowTimePicker(false);
+                  //   setSelectedChildren([]);
+                  //   setDescription("");
+                  //   setSelectedVehicleIndex(new IndexPath(0));
+                  //   setActiveRoute({ coordinates: [], predictedTime: "0" });
+                  //   setPreviousRoutes([]);
+                  //   setSelectedIndex(0);
+                  //   setGroupId(null);
+                  //   setRequests([]);
+                  //   setSeatsLeft(0);
+                  //   setSeatsAvailable([]);
+                  //   setSelectedSeatsIndex(new IndexPath(0));
+                  // }
 
-                    router.push({
-                      pathname: "/(tabs)",
-                      params: { success: "true", type: "carpool" },
-                    });
-                  }
+                  router.push({
+                    pathname: "/(tabs)",
+                    params: { success: "true", type: "carpool" },
+                  });
                 }}
               >
                 {() => (
@@ -768,7 +768,7 @@ const CreateRide = () => {
                 )}
               </Button>
             </LinearGradient>
-            <Popover
+            {/* <Popover
               backdropStyle={styles.backdrop}
               visible={visible}
               anchor={() => renderToggleButton()}
@@ -784,7 +784,7 @@ const CreateRide = () => {
               <Layout style={styles.content}>
                 <Text>Your ride has been successfully created👍</Text>
               </Layout>
-            </Popover>
+            </Popover> */}
           </View>
         </View>
       </ScrollView>

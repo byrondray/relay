@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, TextInput } from "react-native";
+import { View, Text, TextInput, KeyboardAvoidingView } from "react-native";
 import { useTheme } from "@/contexts/ThemeContext";
 
 const TripDescriptionInput = ({
@@ -14,7 +14,7 @@ const TripDescriptionInput = ({
   const { currentColors } = useTheme();
 
   return (
-    <View>
+    <KeyboardAvoidingView>
       {/* Description Label */}
       <Text
         style={{
@@ -48,7 +48,7 @@ const TripDescriptionInput = ({
         value={description}
         onChangeText={setDescription}
       />
-    </View>
+    </KeyboardAvoidingView>
   );
 };
 
