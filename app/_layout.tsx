@@ -215,7 +215,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.4,
     shadowOffset: { width: 0, height: 4 },
     shadowRadius: 6,
-    marginTop: 10,
+    marginTop: 80,
   },
   notificationText: {
     color: "#fff",
