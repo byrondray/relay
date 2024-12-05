@@ -3,7 +3,7 @@ import {
   GroupMessage as GroupMessageType,
 } from "@/graphql/generated";
 import React from "react";
-import { View, Image, Text } from "react-native";
+import { View, Image, Text, } from "react-native";
 import TextWithFont from "../text/textWithFont";
 import { format, isToday, isYesterday } from "date-fns";
 import { useTheme } from "@/contexts/ThemeContext";

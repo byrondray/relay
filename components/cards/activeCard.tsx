@@ -63,12 +63,11 @@ const ActiveRiderCard = ({
         shadowOpacity: 0.25,
         shadowRadius: 4,
         elevation: 4,
-        borderWidth: 1,
+        borderWidth: 0,
         borderColor: currentColors.placeholder,
         borderRadius: 15,
         width: "100%",
         backgroundColor: currentColors.background,
-        paddingHorizontal: 16,
       }}
     >
       <View style={{ paddingHorizontal: 16, paddingVertical: 20 }}>
@@ -77,17 +76,18 @@ const ActiveRiderCard = ({
             flexDirection: "row",
             justifyContent: "space-between",
             alignItems: "center",
+            marginBottom: 16,
           }}
         >
           <Text
             style={{
               fontSize: 10,
-              fontFamily: "Comfortaa",
-              fontWeight: "700",
+              fontFamily: "ComfortaaBold",
+              fontWeight: "600",
               color: currentColors.text,
             }}
           >
-            RN: {id.slice(0, 8)}
+            RN: {id.slice(0, 8).toUpperCase()}
           </Text>
 
           <View
@@ -112,8 +112,8 @@ const ActiveRiderCard = ({
                 <Text
                   style={{
                     fontSize: 10,
-                    fontFamily: "Comfortaa",
-                    fontWeight: "700",
+                    fontFamily: "ComfortaaMedium",
+                    fontWeight: "600",
                     color: "#FFFFFF",
                   }}
                 >
@@ -146,7 +146,7 @@ const ActiveRiderCard = ({
               </View>
             )}
             <TouchableOpacity
-              onPress={() => {}}
+              onPress={() => { }}
               style={{
                 justifyContent: "center",
                 alignItems: "center",
@@ -159,12 +159,12 @@ const ActiveRiderCard = ({
 
         <Text
           style={{
-            fontSize: 20,
-            fontFamily: "Comfortaa-Bold",
-            fontWeight: "700",
+            fontSize: 24,
+            fontFamily: "ComfortaaBold",
+            fontWeight: "600",
             color: "#666666",
-            letterSpacing: 0.2,
-            marginBottom: 5,
+            letterSpacing: -0.8,
+            marginBottom: 15,
           }}
         >
           {formatThisDate}
@@ -175,7 +175,7 @@ const ActiveRiderCard = ({
           style={{
             flexDirection: "row",
             alignItems: "center",
-            marginBottom: 5,
+            marginBottom: 6,
           }}
         >
           <OrangeMarker width={20} height={20} style={{ marginRight: 8 }} />
@@ -186,7 +186,7 @@ const ActiveRiderCard = ({
             style={{
               marginLeft: "auto",
               color: "#FF6A00",
-              fontFamily: "Comfortaa",
+              fontFamily: "ComfortaaRegular",
             }}
           >
             Est: {formatTime(startTime)}
@@ -194,7 +194,7 @@ const ActiveRiderCard = ({
         </View>
 
         {/* End Location */}
-        <View style={{ flexDirection: "row", alignItems: "center" }}>
+        <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 10, }}>
           <RedMarker width={20} height={20} style={{ marginRight: 8 }} />
           <Text style={{ fontFamily: "Comfortaa", color: currentColors.text }}>
             {endLocation.split(" ").slice(0, 3).join(" ").replace(",", "")}
@@ -203,11 +203,19 @@ const ActiveRiderCard = ({
             style={{
               marginLeft: "auto",
               color: "#E24949",
-              fontFamily: "Comfortaa",
+              fontFamily: "ComfortaaRegular",
             }}
           >
             Est: {formatTime(endTime)}
           </Text>
+        </View>
+
+        <View style={{ flexDirection: "row", justifyContent: "flex-start", alignItems: "center", marginTop: 10 }}>
+          <Text style={{
+            fontFamily: "Comfortaa",
+            color: currentColors.text,
+            fontSize: 10,
+          }}>Passengers</Text>
         </View>
 
         <View
@@ -234,9 +242,10 @@ const ActiveRiderCard = ({
               <RepeatIcon width={16} height={16} style={{ marginRight: 5 }} />
               <Text
                 style={{
-                  fontSize: 10,
-                  fontFamily: "Comfortaa",
-                  fontWeight: "700",
+                  fontSize: 12,
+                  fontFamily: "ComfortaaRegular",
+                  fontWeight: "600",
+                  letterSpacing: -0.3,
                   color: "#FF6A00",
                 }}
               >
@@ -261,8 +270,8 @@ const ActiveRiderCard = ({
               <Text
                 style={{
                   fontSize: 10,
-                  fontFamily: "Comfortaa",
-                  fontWeight: "700",
+                  fontFamily: "ComfortaaBold",
+                  fontWeight: "600",
                   color: "#FF6A00",
                 }}
               >

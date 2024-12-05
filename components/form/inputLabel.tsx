@@ -4,13 +4,23 @@ import { useTheme } from "@/contexts/ThemeContext";
 
 interface LabelProps {
   label: string;
+  styleAdd?: object; 
 }
 
-const ParentFormLabel: React.FC<LabelProps> = ({ label }) => {
+const ParentFormLabel: React.FC<LabelProps> = ({ label, styleAdd = {} }) => {
   const { currentColors } = useTheme();
 
   return (
-    <View style={styles.labelContainer}>
+    /**
+     * Renders a view component for a form label with additional styling.
+     * 
+     * @param {object} props - The properties passed to the component.
+     * @param {object} props.styles - The base styles for the label container.
+     * @param {string} props.styleAdd - Additional styles to be applied to the label container.
+     * @returns {React.ReactElement} A View component with combined styles for the label container.
+     */
+    <View style={[styles.labelContainer, styleAdd, {}]}>
+
       <Text
         style={[
           styles.labelText,
@@ -29,29 +39,34 @@ const ParentFormLabel: React.FC<LabelProps> = ({ label }) => {
           },
         ]}
       >
-        Required
+        *Required
       </Text>
     </View>
   );
 };
+
+
 
 const styles = StyleSheet.create({
   labelContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
     width: "100%",
-    marginBottom: 10,
+    marginBottom: 5,
     paddingLeft: 5,
     paddingRight: 5,
+    letterSpacing: -0.3,
   },
   labelText: {
-    fontSize: 16,
-    fontWeight: "600",
-    fontFamily: "Comfortaa",
+    fontSize: 15,
+    fontFamily: "ComfortaaBold",
+    letterSpacing: -0.3,
   },
   requiredText: {
-    fontSize: 14,
-    fontFamily: "Comfortaa",
+    marginTop: 3,
+    fontSize: 12,
+    fontFamily: "ComfortaaRegular",
+    letterSpacing: -0.3,
   },
 });
 

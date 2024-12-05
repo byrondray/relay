@@ -38,10 +38,12 @@ const DriverInfo = ({
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "space-between",
-        height: 200,
-        backgroundColor: currentColors.background,
-        paddingHorizontal: 20,
+        paddingVertical: 10,
+        paddingHorizontal: 0,
+        paddingTop: 20,
         width: "100%",
+        height: "auto",
+        backgroundColor: currentColors.background,
       }}
     >
       {/* Driver Image */}
@@ -70,7 +72,7 @@ const DriverInfo = ({
               fontSize: 12,
               fontWeight: "500",
               color: "#FF6A00",
-              fontFamily: "Comfortaa-Bold",
+              fontFamily: "ComfortaaBold",
             }}
           >
             {randomLikes} likes
@@ -83,9 +85,9 @@ const DriverInfo = ({
         <Text
           style={{
             fontSize: 12,
-            fontWeight: "bold",
+            fontWeight: "600",
             color: "#8F9BB3", // Using theme color
-            fontFamily: "Comfortaa",
+            fontFamily: "ComfortaaBold",
             marginBottom: 4,
           }}
         >
@@ -93,11 +95,12 @@ const DriverInfo = ({
         </Text>
         <Text
           style={{
-            fontSize: 20,
-            fontWeight: "700",
-            marginBottom: 5,
+            fontSize: 18,
+            fontWeight: "600",
+            marginBottom: 8,
             color: currentColors.text, // Using theme color
-            fontFamily: "Comfortaa-Bold",
+            fontFamily: "ComfortaaBold",
+            lineHeight: 22,
           }}
         >
           {driverData?.firstName[0].toUpperCase()}
@@ -109,9 +112,9 @@ const DriverInfo = ({
         <Text
           style={{
             fontSize: 12,
-            fontWeight: "bold",
+            fontWeight: "600",
             color: "#8F9BB3", // Using theme color
-            fontFamily: "Comfortaa",
+            fontFamily: "ComfortaaBold",
             marginBottom: 4,
           }}
         >
@@ -119,11 +122,12 @@ const DriverInfo = ({
         </Text>
         <Text
           style={{
-            fontSize: 20,
-            fontWeight: "700",
-            marginBottom: 5,
+            fontSize: 18,
+            fontWeight: "600",
+            marginBottom: 8,
             color: currentColors.text, // Using theme color
-            fontFamily: "Comfortaa-Bold",
+            fontFamily: "ComfortaaBold",
+            lineHeight: 22,
           }}
         >
           {vehicleData?.licensePlate}
@@ -132,9 +136,9 @@ const DriverInfo = ({
         <Text
           style={{
             fontSize: 12,
-            fontWeight: "bold",
+            fontWeight: "600",
             color: "#8F9BB3", // Using theme color
-            fontFamily: "Comfortaa",
+            fontFamily: "ComfortaaBold",
             marginBottom: 4,
           }}
         >
@@ -142,10 +146,12 @@ const DriverInfo = ({
         </Text>
         <Text
           style={{
-            fontSize: 20,
-            fontWeight: "700",
+            fontSize: 18,
+            fontWeight: "600",
+            marginBottom: 8,
             color: currentColors.text, // Using theme color
-            fontFamily: "Comfortaa-Bold",
+            fontFamily: "ComfortaaBold",
+            lineHeight: 22,
           }}
         >
           {vehicleData?.model}

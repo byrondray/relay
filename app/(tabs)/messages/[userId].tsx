@@ -282,6 +282,7 @@ export default function MessageScreen() {
         </View>
       </TouchableWithoutFeedback>
     </KeyboardAvoidingView>
+    
   );
 }
 

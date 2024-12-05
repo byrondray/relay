@@ -9,6 +9,7 @@ import React from "react";
 import { Text, View } from "react-native";
 import DriverInfo from "./driverCard";
 import StackedProfilePictures from "./stackedProfile";
+import TimeIcon from "@/assets/images/timeIcon.svg";
 
 interface CardData {
   id: string;
@@ -57,12 +58,11 @@ const ScheduleMainCard = ({
         shadowOpacity: 0.25,
         shadowRadius: 4,
         elevation: 4,
-        borderWidth: 1,
+        borderWidth: 0,
         borderColor: currentColors.placeholder,
         borderRadius: 15,
         width: "100%",
         backgroundColor: currentColors.background,
-        paddingHorizontal: 16,
       }}
     >
       <View style={{ paddingHorizontal: 16, paddingVertical: 20 }}>
@@ -71,18 +71,18 @@ const ScheduleMainCard = ({
             flexDirection: "row",
             justifyContent: "space-between",
             alignItems: "center",
-            marginBottom: 10,
+            marginBottom: 5,
           }}
         >
           <Text
             style={{
               fontSize: 10,
-              fontFamily: "Comfortaa",
-              fontWeight: "700",
+              fontFamily: "ComfortaaBold",
+              fontWeight: "600",
               color: currentColors.text,
             }}
           >
-            RN: {id.slice(0, 8)}
+            RN: {id.slice(0, 8).toUpperCase()}
           </Text>
 
           <View
@@ -111,7 +111,7 @@ const ScheduleMainCard = ({
                   style={{
                     fontSize: 10,
                     fontFamily: "Comfortaa",
-                    fontWeight: "700",
+                    fontWeight: "600",
                     color: "#FF6A00",
                   }}
                 >
@@ -137,8 +137,8 @@ const ScheduleMainCard = ({
                 <Text
                   style={{
                     fontSize: 10,
-                    fontFamily: "Comfortaa",
-                    fontWeight: "700",
+                    fontFamily: "ComfortaaBold",
+                    fontWeight: "600",
                     color: "#FF6A00",
                   }}
                 >
@@ -157,12 +157,12 @@ const ScheduleMainCard = ({
                 marginLeft: 10,
               }}
             >
-              <Clock width={16} height={16} style={{ marginHorizontal: 5 }} />{" "}
+              <TimeIcon width={16} height={16} style={{ marginHorizontal: 5 }} />{" "}
               <Text
                 style={{
                   fontSize: 10,
-                  fontFamily: "Comfortaa",
-                  fontWeight: "700",
+                  fontFamily: "ComfortaaBold",
+                  fontWeight: "600",
                   color: "#001323",
                 }}
               >
@@ -191,9 +191,10 @@ const ScheduleMainCard = ({
           style={{
             fontSize: 20,
             fontFamily: "Comfortaa-Bold",
-            fontWeight: "700",
+            fontWeight: "600",
             color: "#666666",
             letterSpacing: 0.2,
+            marginTop: 10,
             marginBottom: 5,
           }}
         >

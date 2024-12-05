@@ -12,16 +12,7 @@ function Header() {
   const { currentColors } = useTheme();
   const isDarkMode = currentColors.background === "#181818";
   return (
-    // <View
-    //   style={[
-    //     styles.headerContainer,
-    //     {
-    //       borderBottomColor: currentColors.background,
-    //       backgroundColor: currentColors.headBackground,
-    //     },
-    //   ]}
-    // >
-    <View style={[styles.headerContainer, Platform.OS === "ios" ? { height: 86 } : { height: 60 }, { backgroundColor: "#FFF", borderBottomWidth: 1, borderColor: "rgba(247, 176, 96, 0.4)" }]}>
+    <View style={[styles.headerContainer, Platform.OS === "ios" ? { height: 86 } : { height: 60 }, isDarkMode ? { backgroundColor: "#000" } : { backgroundColor: "#fff" }, { borderBottomWidth: 1, borderColor: "rgba(247, 176, 96, 0.4)" }]}>
       <StatusBar barStyle={ isDarkMode ? "light-content" : "dark-content" }/>
       <View style={{width: "100%", height: "100%", flexDirection: "row", backgroundColor: currentColors.headBackground }}>
         <View style={[Platform.OS === "ios" ? { marginTop: 45 } : { marginTop: 15 }, { flex: 1, flexDirection: "row", justifyContent: "center"}]}>
@@ -39,6 +30,7 @@ function Header() {
 
 export default function TabLayout() {
   const { currentColors } = useTheme();
+  const isDarkMode = currentColors.background === "#181818";
 
   return (
     <Tabs
@@ -46,13 +38,15 @@ export default function TabLayout() {
         tabBarActiveTintColor: currentColors.tint,
         tabBarInactiveTintColor: currentColors.text,
         tabBarStyle: [
-          styles.navContainer,
+          styles.navContainer, 
+          Platform.OS === "ios" ? { height: 88, } : { height: 70, },
           {
-            backgroundColor: currentColors.background,
+            backgroundColor: currentColors.tabBackground,
             borderTopColor: currentColors.placeholder,
           },
         ],
-        tabBarLabelStyle: [styles.navText, { color: currentColors.text }],
+        tabBarItemStyle: [styles.navItems, Platform.OS === "ios" ? { marginTop: 5, } : { marginTop: 5, }, { height: 100, }],
+        tabBarLabelStyle: [styles.navText, { color: currentColors.text, }],
         headerShown: true,
         header: () => <Header />,
       }}
@@ -274,6 +268,7 @@ export default function TabLayout() {
           href: null,
         }}
       />
+      
     </Tabs>
   );
 }
@@ -298,6 +293,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     borderTopWidth: 1,
     width: "100%",
+    height: 100,
   },
   navText: {
     marginTop: 4,
@@ -313,6 +309,9 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold",
     textAlign: "center",
+    flex: 1,
+  },
+  navItems: {
     flex: 1,
   },
 });
