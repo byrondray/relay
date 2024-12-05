@@ -221,7 +221,7 @@ export default function TabLayout() {
                     ? router.back()
                     : router.push("/Community/community")
                 }
-                style={[styles.backButton, { marginLeft: 15 }]}
+                style={[styles.backButton, { marginLeft: 15, marginTop: 20, }]}
               >
                 <Ionicons
                   name="arrow-back"
@@ -289,7 +289,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    height: 50,
+    height: 100,
     borderBottomWidth: 1,
     borderBottomColor: "#ddd",
   },
