@@ -1,18 +1,17 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  TextInput,
-  TouchableOpacity,
-} from "react-native";
-import { useQuery, useLazyQuery, useMutation } from "@apollo/client";
-import { GET_USER, GET_VEHICLE } from "@/graphql/user/queries";
-import { GET_CARPOOL_WITH_REQUESTS } from "@/graphql/carpool/queries";
-import { Layout, Popover, Spinner } from "@ui-kitten/components";
+import ClockIcon from "@/assets/images/whiteClock.svg";
+import DriverInfo from "@/components/cards/driverCard";
+import TimeCard from "@/components/cards/timeCard";
+import LocationCard from "@/components/rideInProgress/carpoolAddress";
+import RequestCard from "@/components/rideInProgress/carpoolRequest";
+import DriverMapView from "@/components/rideInProgress/driverMapView";
+import GpsTrackingInfoDriver from "@/components/rideInProgress/gpsTrackingInfo";
+import GpsTrackingInfoPassenger from "@/components/rideInProgress/gpsTrackingInfoPassenger";
+import RequestMapView from "@/components/rideInProgress/requestMapView";
+import ReviewInfo from "@/components/rideInProgress/reviewInfo";
+import ShareFakeLocationButton from "@/components/rideInProgress/shareFakeLocationButton";
+import { useTheme } from "@/contexts/ThemeContext";
 import { auth } from "@/firebaseConfig";
-import { router, useLocalSearchParams } from "expo-router";
+import { GET_CARPOOL_WITH_REQUESTS } from "@/graphql/carpool/queries";
 import {
   CarpoolWithRequests,
   Child,
@@ -20,29 +19,27 @@ import {
   User,
   Vehicle,
 } from "@/graphql/generated";
-import ShareLocationButton from "@/components/rideInProgress/shareLocationButton";
-import ShareFakeLocationButton from "@/components/rideInProgress/shareFakeLocationButton";
-import { useLocationSubscription } from "@/hooks/map/useGetLocation";
-import DriverMapView from "@/components/rideInProgress/driverMapView";
-import RequestMapView from "@/components/rideInProgress/requestMapView";
-import { formatDate } from "@/utils/currentDate";
-import TimeCard from "@/components/cards/timeCard";
-import LocationCard from "@/components/rideInProgress/carpoolAddress";
-import RequestCard from "@/components/rideInProgress/carpoolRequest";
-import ReviewInfo from "@/components/rideInProgress/reviewInfo";
-import { LatLng } from "react-native-maps";
-import { haversineDistance } from "@/utils/distance";
-import { useCarpoolProximity } from "@/hooks/map/detectIfDriverIsClose";
-import { useRealtimeDirections } from "@/hooks/map/useRealtimeDirections";
-import { useTheme } from "@/contexts/ThemeContext";
 import { SEND_NOTIFICATION_INFO } from "@/graphql/map/queries";
-import ClockIcon from "@/assets/images/whiteClock.svg";
-import DriverInfo from "@/components/cards/driverCard";
-import GpsTrackingInfoDriver from "@/components/rideInProgress/gpsTrackingInfo";
-import GpsTrackingInfoPassenger from "@/components/rideInProgress/gpsTrackingInfoPassenger";
-import { set } from "date-fns";
+import { GET_USER, GET_VEHICLE } from "@/graphql/user/queries";
+import { useCarpoolProximity } from "@/hooks/map/detectIfDriverIsClose";
+import { useLocationSubscription } from "@/hooks/map/useGetLocation";
+import { useRealtimeDirections } from "@/hooks/map/useRealtimeDirections";
+import { formatDate } from "@/utils/currentDate";
+import { haversineDistance } from "@/utils/distance";
+import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
+import { Button, Layout, Popover, Spinner } from "@ui-kitten/components";
 import { LinearGradient } from "expo-linear-gradient";
-import { Button } from "@ui-kitten/components";
+import { router, useLocalSearchParams } from "expo-router";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { LatLng } from "react-native-maps";
 
 const CarpoolScreen: React.FC = () => {
   const currentUser = auth.currentUser;
@@ -780,10 +777,10 @@ const CarpoolScreen: React.FC = () => {
                   paddingLeft: 30,
                   paddingRight: 30,
                   fontFamily: "Comfortaa",
-                  color: currentColors.placeholder,
+                  color: currentColors.text,
                 }}
-                placeholder="Any preferences for trips? (e.g., preferred age range of kids, allowed stopovers, special requests)"
-                placeholderTextColor={currentColors.text}
+                placeholder="How was the ride?"
+                placeholderTextColor={currentColors.placeholderText}
                 multiline={true}
               />
             </View>
@@ -803,7 +800,7 @@ const CarpoolScreen: React.FC = () => {
                     width: "100%",
                     paddingVertical: 12,
                     justifyContent: "center",
-                    alignItems: "center", 
+                    alignItems: "center",
                   }}
                   onPress={() => {
                     router.push({
@@ -817,7 +814,7 @@ const CarpoolScreen: React.FC = () => {
                       color: "#fff",
                       fontSize: 16,
                       fontFamily: "Comfortaa",
-                      textAlign: "center", 
+                      textAlign: "center",
                     }}
                   >
                     Submit
