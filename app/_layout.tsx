@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { ThemeProvider as NavigationThemeProvider } from "@react-navigation/native";
 import {
+  StatusBar,
   StyleSheet,
   View,
   Text,
@@ -108,7 +109,7 @@ export default function RootLayout() {
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <SafeAreaView style={{ flex: 1 }}>
+      {/* <SafeAreaView style={{ flex: 1 }}> */}
         <ApolloProvider client={client}>
           <ApplicationProvider
             {...eva}
@@ -128,6 +129,11 @@ export default function RootLayout() {
                       : styles.lightContainer
                   }
                 >
+                  <StatusBar barStyle={
+                    colorScheme === "dark"
+                      ? "light-content"
+                      : "dark-content"
+                  }/>
                   <NavigationThemeProvider
                     value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
                   >
@@ -176,7 +182,7 @@ export default function RootLayout() {
             </ThemeProvider>
           </ApplicationProvider>
         </ApolloProvider>
-      </SafeAreaView>
+      {/* </SafeAreaView> */}
     </GestureHandlerRootView>
   );
 }

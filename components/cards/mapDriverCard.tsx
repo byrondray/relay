@@ -15,6 +15,7 @@ import {
   Text,
   TouchableOpacity,
   View,
+  Dimensions,
 } from "react-native";
 import StackedProfilePictures from "./stackedProfile";
 import TimeCard from "./timeCard";
@@ -69,6 +70,7 @@ const MapDriverCard = ({
   passengerImages,
 }: ScheduleActiveCardProps) => {
   const { currentColors } = useTheme();
+  const screenWidth = Dimensions.get('window').width;
 
   const makeCall = () => {
     if (Platform.OS === "android") {
@@ -81,6 +83,7 @@ const MapDriverCard = ({
   return (
     <View
       style={{
+        marginHorizontal: 16,
         shadowColor: currentColors.text,
         shadowOffset: { width: 0, height: 4 },
         shadowOpacity: 0.25,
@@ -89,8 +92,10 @@ const MapDriverCard = ({
         borderRadius: 15,
         backgroundColor: currentColors.background,
         padding: 20,
-        width: "100%",
-        maxWidth: "100%",
+        width: screenWidth - 32,
+        flex: 1,
+        display: "flex",
+        justifyContent: "center",
       }}
     >
       <View
@@ -104,12 +109,12 @@ const MapDriverCard = ({
         <Text
           style={{
             fontSize: 10,
-            fontFamily: "Comfortaa",
-            fontWeight: "700",
+            fontFamily: "ComfortaaBold",
+            letterSpacing: 0.2,
             color: currentColors.text,
           }}
         >
-          RN: {id.slice(0, 8)}
+          RN: {id.slice(0, 8).toUpperCase()}
         </Text>
         <TouchableOpacity
           style={{
@@ -134,6 +139,16 @@ const MapDriverCard = ({
           </Text>
         </TouchableOpacity>
       </View>
+      <View style={{ marginBottom: 10, }}>
+        <Text style={{
+        width: "100%",
+        textAlign: "center",
+        fontSize: 16,
+        fontFamily: "ComfortaaBold",
+        letterSpacing: -0.5,
+        color: currentColors.text,
+        }}>Driver:</Text>
+      </View>
       <View style={{ alignItems: "center" }}>
         <Image
           source={{ uri: driverImage || undefined }}
@@ -156,12 +171,12 @@ const MapDriverCard = ({
             flex: 1,
           }}
         >
-          <DriverIcon width={13} height={13} style={{ marginRight: 5 }} />
+          <DriverIcon width={17} height={17} style={{ marginRight: 5 }} />
           <Text
             style={{
-              fontSize: 10,
-              fontFamily: "Comfortaa",
-              fontWeight: "700",
+              fontSize: 12,
+              fontFamily: "ComfortaaBold",
+              // fontWeight: "700",
               color: currentColors.tint,
             }}
           >
@@ -171,9 +186,9 @@ const MapDriverCard = ({
 
         <Text
           style={{
-            fontSize: 14,
-            fontFamily: "Comfortaa",
-            fontWeight: "500",
+            fontSize: 18,
+            fontFamily: "ComfortaaBold",
+            // fontWeight: "500",
             color: currentColors.text,
             textAlign: "center",
             flex: 2,
@@ -191,12 +206,12 @@ const MapDriverCard = ({
             justifyContent: "flex-end",
           }}
         >
-          <LikeIcon width={13} height={13} style={{ marginRight: 5 }} />
+          <LikeIcon width={17} height={17} style={{ marginRight: 5 }} />
           <Text
             style={{
-              fontSize: 10,
-              fontFamily: "Comfortaa",
-              fontWeight: "700",
+              fontSize: 12,
+              fontFamily: "ComfortaaBold",
+              // fontWeight: "700",
               color: currentColors.tint,
             }}
           >

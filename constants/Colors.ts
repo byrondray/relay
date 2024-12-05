@@ -6,22 +6,30 @@
 const tintColorLight = "#FF6A00";
 const tintColorDark = "#FF6A00";
 
+/* "rgba(228, 77, 74, 0.3)", "rgba(255, 136, 52, 0.3)" */
+
 export const Colors = {
   light: {
     text: "#11181C",
     placeholder: "#f0f0f0",
     placeholderText: "#8F9BB3",
-    background: "#ffffff",
+    headBackground: "#FFF",
+    barBackground: "rgba(247, 176, 96, 0.2)",
+    background: "#FFF",
+    gradient: ["rgba(247, 176, 96, 0.2)", "rgba(230, 87, 76, 0.1)"],
     tint: tintColorLight,
     icon: "#687076",
     tabIconDefault: "#687076",
     tabIconSelected: tintColorLight,
   },
   dark: {
-    text: "#FFFF",
+    text: "#FFF",
     placeholder: "#333333",
     placeholderText: "#8F9BB3",
+    headBackground: "#000",
+    barBackground: "rgba(247, 176, 96, 0.2)",
     background: "#181818",
+    gradient: ["rgba(247, 176, 96, 0.2)", "rgba(230, 87, 76, 0.1)"],
     tint: tintColorDark,
     icon: "#C4C4C4",
     tabIconDefault: "#FFFFFF",

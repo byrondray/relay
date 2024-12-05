@@ -2,7 +2,7 @@ import { router, Tabs } from "expo-router";
 import React from "react";
 import { TabBarIcon } from "@/components/navigation/TabBarIcon";
 import { useTheme } from "@/contexts/ThemeContext";
-import { StyleSheet, View, Image, TouchableOpacity, Text } from "react-native";
+import { StyleSheet, View, Image, TouchableOpacity, Text, StatusBar, Platform } from "react-native";
 import Relay from "@/assets/images/Relay.svg";
 import RelayWhite from "@/assets/images/Relay-white.svg";
 import RelaySvg from "@/components/icons/RelaySvg";
@@ -12,21 +12,27 @@ function Header() {
   const { currentColors } = useTheme();
   const isDarkMode = currentColors.background === "#181818";
   return (
-    <View
-      style={[
-        styles.headerContainer,
-        {
-          borderBottomColor: currentColors.background,
-          backgroundColor: currentColors.background,
-        },
-      ]}
-    >
-      <RelaySvg width={30} height={30} />
-      {isDarkMode ? (
-        <RelayWhite style={{ marginLeft: 10, marginTop: 5 }} />
-      ) : (
-        <Relay style={{ marginLeft: 10, marginTop: 5 }} />
-      )}
+    // <View
+    //   style={[
+    //     styles.headerContainer,
+    //     {
+    //       borderBottomColor: currentColors.background,
+    //       backgroundColor: currentColors.headBackground,
+    //     },
+    //   ]}
+    // >
+    <View style={[styles.headerContainer, Platform.OS === "ios" ? { height: 100 } : { height: 60 }, { backgroundColor: currentColors.headBackground, borderBottomWidth: 1, borderColor: "rgba(247, 176, 96, 0.4)" }]}>
+      <StatusBar barStyle={ isDarkMode ? "light-content" : "dark-content" }/>
+      <View style={{width: "100%", height: "100%", flexDirection: "row", backgroundColor: currentColors.barBackground }}>
+        <View style={[Platform.OS === "ios" ? { marginTop: 60 } : { marginTop: 15 }, { flex: 1, flexDirection: "row", justifyContent: "center"}]}>
+          <RelaySvg width={30} height={30} />
+          {isDarkMode ? (
+            <RelayWhite style={{ marginLeft: 10, marginTop: 5 }} />
+          ) : (
+            <Relay style={{ marginLeft: 10, marginTop: 5 }} />
+          )}
+        </View>
+      </View>
     </View>
   );
 }
@@ -277,8 +283,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    borderBottomWidth: 1,
-    height: 50,
+    borderBottomWidth: 0,
   },
   customHeaderContainer: {
     flexDirection: "row",
@@ -295,7 +300,8 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   navText: {
-    fontSize: 12,
+    marginTop: 4,
+    fontSize: 10,
   },
   backButton: {
     width: 24,
