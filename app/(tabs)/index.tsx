@@ -59,7 +59,7 @@ const CarpoolListScreen: React.FC = () => {
   useEffect(() => {
     console.log("Onboarding status:", { hasOnboarded, onBoarded });
     const timer = setTimeout(() => {
-      if (currentUser?.uid === "VQDrhC1urNVkssfgLc8jZWVRpo32" && !onBoarded) {
+      if (currentUser?.uid === "" && !onBoarded) {
         console.log("Redirecting to Onboarding");
         router.push("/OnboardForms/parent");
       }
