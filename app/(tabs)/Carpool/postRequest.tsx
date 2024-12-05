@@ -118,31 +118,33 @@ const RequestRide = () => {
         childIds: selectedChildren.map((child) => child),
       };
 
-      const { data, errors } = await createRequest({ variables: { input } });
+      // const { data, errors } = await createRequest({ variables: { input } });
 
-      if (data && data.createRequest) {
-        setStartingAddress("");
-        setEndingAddress("");
-        setStartingLatLon({ lat: 0, lon: 0 });
-        setEndingLatLon({ lat: 0, lon: 0 });
-        setTime("");
-        setDescription("");
-        setSelectedChildren([]);
-        setSelectedGroupIndex(new IndexPath(0));
-        setDate(new Date());
-        router.push({
-          pathname: "/(tabs)",
-          params: { success: "true", type: "request" },
-        });
-      }
+      // if (data && data.createRequest) {
+      //   setStartingAddress("");
+      //   setEndingAddress("");
+      //   setStartingLatLon({ lat: 0, lon: 0 });
+      //   setEndingLatLon({ lat: 0, lon: 0 });
+      //   setTime("");
+      //   setDescription("");
+      //   setSelectedChildren([]);
+      //   setSelectedGroupIndex(new IndexPath(0));
+      //   setDate(new Date());
 
-      if (errors) {
-        console.error("Error creating request:", errors);
-        setErrorMessage("An error occurred while creating the request.");
-        setSuccessMessage(null);
-        setVisible(true);
-        return;
-      }
+      // }
+
+      // if (errors) {
+      //   console.error("Error creating request:", errors);
+      //   setErrorMessage("An error occurred while creating the request.");
+      //   setSuccessMessage(null);
+      //   setVisible(true);
+      //   return;
+      // }
+
+      router.push({
+        pathname: "/(tabs)",
+        params: { success: "true", type: "request" },
+      });
 
       setErrorMessage(null);
 
