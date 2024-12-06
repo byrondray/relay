@@ -11,7 +11,8 @@ const tintColorDark = "#FF6A00";
 export const Colors = {
   light: {
     text: "#11181C",
-    placeholder: "rgba(143, 155, 179, 0.5)",
+    // placeholder: "rgba(143, 155, 179, 0.2)",
+    placeholder: "#f0f0f0",
     placeholderText: "#8F9BB3",
     headBackground: "rgba(247, 176, 96, 0.2)",
     tabBackground: "rgb(252, 238, 237)",
