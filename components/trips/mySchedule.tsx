@@ -2,9 +2,10 @@ import SearchIcon from "@/assets/images/search.svg";
 import { useTheme } from "@/contexts/ThemeContext";
 import { Input } from "@ui-kitten/components";
 import React, { useState } from "react";
-import { Text, View } from "react-native";
+import { Text, View, StyleSheet } from "react-native";
 import ScheduleMainCard from "../cards/scheduleMainCard";
 import { CarpoolWithRequests, User, Vehicle } from "@/graphql/generated";
+import { LinearGradient } from "expo-linear-gradient";
 
 const driverData1: User = {
   id: "1",
@@ -120,10 +121,15 @@ const MySchedule = () => {
     <View
       style={{
         width: "100%",
-        paddingHorizontal: 16,
-        marginTop: -5,
+        marginTop: 0,
       }}
     >
+      <LinearGradient
+        colors={[currentColors.gradient[0], currentColors.gradient[1]]}
+        style={[styles.gradientBackground, {}]}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 0, y: 1 }} // Diagonal gradient
+      >
       <Input
         placeholder="Search"
         value={searchText}
@@ -131,49 +137,41 @@ const MySchedule = () => {
         accessoryRight={() => <SearchIcon width={24} height={24} />}
         style={{
           flex: 1,
+          marginTop: 20,
           backgroundColor: currentColors.placeholder,
           borderRadius: 24,
-          fontFamily: "Comfortaa",
+          fontFamily: "ComfortaaBold",
         }}
       />
       <View
         style={{
           flexDirection: "row",
           alignItems: "center",
-          justifyContent: "space-between",
-          marginTop: 20,
-          marginBottom: 20,
+          // justifyContent: "space-between",
         }}
       >
-        <Text
-          style={{
-            fontSize: 32,
-            fontWeight: "bold",
-            fontFamily: "Comfortaa-Bold",
-            color: currentColors.text,
-          }}
-        >
+        <Text style={styles.sectionTitle}>
           My Schedule
         </Text>
         {/* <TouchableOpacity>
-    <Text
-      style={{
-        fontFamily: "Comfortaa",
-        fontSize: 12,
-        textDecorationLine: "underline",
-        color: "rgba(143, 156, 179, 1)",
-      }}
-    >
-      Advanced Search
-    </Text>
-  </TouchableOpacity> */}
+            <Text
+              style={{
+                fontFamily: "Comfortaa",
+                fontSize: 12,
+                textDecorationLine: "underline",
+                color: "rgba(143, 156, 179, 1)",
+              }}
+            >
+              Advanced Search
+            </Text>
+          </TouchableOpacity> */}
       </View>
 
       {fakeData.map((item) => (
         <View
           key={item.id}
           style={{
-            paddingBottom: 20,
+            paddingBottom: 16,
           }}
         >
           <ScheduleMainCard
@@ -191,8 +189,30 @@ const MySchedule = () => {
           />
         </View>
       ))}
+      </LinearGradient>
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  sectionTitle: {
+    flex: 1,
+    width: "100%",
+    marginBottom: 16,
+    marginVertical: 16,
+    marginLeft: 8,
+    paddingHorizontal: 16,
+    fontFamily: "ComfortaaBold",
+    fontWeight: 600,  
+    fontSize: 24,
+    lineHeight: 26, 
+    letterSpacing: -1,
+  },
+  gradientBackground: {
+    paddingHorizontal: 16,
+    flex: 1,
+    height: "100%",
+  },
+});
 
 export default MySchedule;

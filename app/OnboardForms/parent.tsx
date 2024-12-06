@@ -99,158 +99,188 @@ function ParentForm(): JSX.Element {
     <ScrollView
       style={[styles.container, { backgroundColor: currentColors.background }]}
     >
-      <View style={{marginTop: 86,}}>
-        <Text
-          style={[
-            styles.heading,
-            { fontFamily: "Comfortaa", color: currentColors.text },
-          ]}
-        >
-          Parent Info
-        </Text>
-      </View>
+      <LinearGradient
+        colors={[currentColors.gradient[0], currentColors.gradient[1]]}
+        style={styles.gradientBackground}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 0, y: 1 }} // Diagonal gradient
+      >
+        <View style={{ marginTop: 10, }}>
+          <Text
+            style={[
+              styles.heading,
+              { color: currentColors.text },
+            ]}
+          >
+            Sign Up
+          </Text>
+          <View style={{ height: 1, backgroundColor: currentColors.tint, marginBottom: 20, }}></View>
+          <Text style={[styles.subtitle, { color: currentColors.tint }]}>Parent Info</Text>
+        </View>
 
-      {errorMessage && (
-        <Text
-          style={[styles.errorText, { fontFamily: "Comfortaa", color: "red" }]}
-        >
-          {errorMessage}
-        </Text>
-      )}
+        {errorMessage && (
+          <Text
+            style={[styles.errorText, { fontFamily: "Comfortaa", color: "red" }]}
+          >
+            {errorMessage}
+          </Text>
+        )}
 
-      {submissionError && (
-        <Text
-          style={[styles.errorText, { fontFamily: "Comfortaa", color: "red" }]}
-        >
-          {submissionError}
-        </Text>
-      )}
+        {submissionError && (
+          <Text
+            style={[styles.errorText, { fontFamily: "Comfortaa", color: "red" }]}
+          >
+            {submissionError}
+          </Text>
+        )}
 
-      <ParentFormLabel label="Profile Image" />
-      <ImageUpload profileImage={profileImage} pickImage={pickImage} />
-      <View style={{ marginBottom: 20 }}>
-        <ParentFormLabel label="First Name" />
-        <ParentFormInput
-          placeholder="First Name"
-          value={firstName.slice(0, 1).toUpperCase() + firstName.slice(1)}
-          onChangeText={setFirstName}
-        />
-      </View>
+        <ParentFormLabel label="Profile Image" />
+        <ImageUpload profileImage={profileImage} pickImage={pickImage} />
+        <View style={{ marginBottom: 22 }}>
+          <ParentFormLabel label="First Name" />
+          <ParentFormInput
+            placeholder="First Name"
+            value={firstName.slice(0, 1).toUpperCase() + firstName.slice(1)}
+            onChangeText={setFirstName}
+          />
+        </View>
 
-      <View style={{ marginBottom: 20 }}>
-        <ParentFormLabel label="Last Name" />
-        <ParentFormInput
-          placeholder="Last Name"
-          // value={lastName.slice(0, 1).toUpperCase() + lastName.slice(1)}
-          value="Schatz"
-          onChangeText={setLastName}
-        />
-      </View>
+        <View style={{ marginBottom: 22 }}>
+          <ParentFormLabel label="Last Name" />
+          <ParentFormInput
+            placeholder="Last Name"
+            value={lastName.slice(0, 1).toUpperCase() + lastName.slice(1)}
+            onChangeText={setLastName}
+          />
+        </View>
 
-      <View style={{ marginBottom: 20 }}>
-        <ParentFormLabel label="Phone Number" />
-        <ParentFormInput
-          placeholder="Phone Number"
-          value={phoneNumber}
-          onChangeText={setPhoneNumber}
-        />
-      </View>
+        <View style={{ marginBottom: 22 }}>
+          <ParentFormLabel label="Phone Number" />
+          <ParentFormInput
+            placeholder="Phone Number"
+            value={phoneNumber}
+            onChangeText={setPhoneNumber}
+          />
+        </View>
 
-      <View style={{ marginBottom: 20 }}>
-        <ParentFormLabel label="Email" />
-        <ParentFormInput
-          placeholder="Email"
-          value={email}
-          onChangeText={setEmail}
-        />
-      </View>
+        <View style={{ marginBottom: 22 }}>
+          <ParentFormLabel label="Email" />
+          <ParentFormInput
+            placeholder="Email"
+            value={email}
+            onChangeText={setEmail}
+          />
+        </View>
 
-      <View style={{ marginBottom: 10 }}>
-        <ParentFormLabel label="Location" />
-        <ParentFormInput
-          placeholder="City you live in"
-          // value={location}
-          value={"Burnaby"}
-          onChangeText={setLocation}
-        />
-      </View>
+        <View style={{ marginBottom: 22 }}>
+          <ParentFormLabel label="Location" />
+          <ParentFormInput
+            placeholder="City you live in"
+            // value={location}
+            value={"Burnaby"}
+            onChangeText={setLocation}
+          />
+        </View>
 
-      <View style={{ flexDirection: "row", marginVertical: 10 }}>
-        <Text
-          style={{
-            flex: 1,
-            flexWrap: "wrap",
-            width: "98%",
-            fontFamily: "Comfortaa",
-            color: currentColors.text,
-          }}
-        >
-          If you're a parent interested in becoming a carpool driver to help
-          pick up and drop off kids in your community.{" "}
+        <View style={{ flexDirection: "row", justifyContent: "flex-start", marginVertical: 10, marginBottom: 40, }}>
           <Text
             style={{
-              color: currentColors.tint,
-              textDecorationLine: "none",
-              fontFamily: "Comfortaa",
+              flex: 1,
+              flexWrap: "wrap",
+              width: "98%",
+              fontFamily: "ComfortaaRegular",
+              fontSize: 12,
+              lineHeight: 18,
+              letterSpacing: -0.2,
+              paddingRight: 15,
+              color: currentColors.text,
             }}
           >
-            Sign up to be a Driver!
-          </Text>
-        </Text>
-        <Toggle
-          checked={checked}
-          onChange={onCheckedChange}
-          style={{ marginTop: -5 }}
-        />
-      </View>
-
-      <LinearGradient
-        colors={["#ff8833", "#e24a4a"]}
-        style={{ width: "100%", borderRadius: 50 }}
-      >
-        <TouchableOpacity
-          style={{
-            paddingVertical: 12,
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-          onPress={handleSubmit}
-          disabled={loadingUpdate}
-        >
-          {loadingUpdate ? (
-            <ActivityIndicator size="small" color={currentColors.text} />
-          ) : (
+            If you're a parent interested in becoming a carpool driver to help
+            pick up and drop off kids in your community.{" "}
             <Text
               style={{
-                color: "white",
-                textAlign: "center",
-                fontSize: 20,
-                fontFamily: "Comfortaa-semibold",
+                color: currentColors.tint,
+                textDecorationLine: "none",
+                fontFamily: "Comfortaa",
               }}
             >
-              Next
+              Sign up to be a Driver!
             </Text>
-          )}
-        </TouchableOpacity>
+          </Text>
+          <Toggle
+            checked={checked}
+            onChange={onCheckedChange}
+            style={{}}
+          />
+        </View>
+
+        <LinearGradient
+          colors={["#ff8833", "#e24a4a"]}
+          style={{ width: "100%", height: 44, marginTop: 20, borderRadius: 50, }}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+        >
+          <TouchableOpacity
+            style={{
+              paddingVertical: 12,
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+            onPress={handleSubmit}
+            disabled={loadingUpdate}
+          >
+            {loadingUpdate ? (
+              <ActivityIndicator size="small" color={currentColors.text} />
+            ) : (
+              <Text
+                style={{
+                  color: "white",
+                  textAlign: "center",
+                  fontSize: 16,
+                  fontFamily: "Comfortaa-semibold",
+                }}
+              >
+                Next
+              </Text>
+            )}
+          </TouchableOpacity>
+        </LinearGradient>
+        <View style={{ marginBottom: 60 }} />
       </LinearGradient>
-    </ScrollView>
+    </ScrollView>      
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
+    paddingBottom: 200,
   },
   heading: {
-    fontSize: 32,
-    fontWeight: "bold",
-    marginBottom: 20,
-    fontFamily: "Comfortaa",
+    marginTop: 20,
+    marginBottom: 10,
+    fontFamily: "ComfortaaBold",
+    fontSize: 28,
+    fontWeight: 600,
+    letterSpacing: -0.5,
+  },
+  subtitle: {
+    marginTop: 5,
+    marginBottom: 25,
+    fontFamily: "ComfortaaBold",
+    fontSize: 24,
+    fontWeight: 600,
+    letterSpacing: -0.5,
   },
   errorText: {
     marginBottom: 10,
-    fontFamily: "Comfortaa",
+    fontFamily: "ComfortaaRegular",
+    letterSpacing: -0.3,
+  },
+  gradientBackground: {
+    paddingHorizontal: 16,
+    flex: 1,
   },
 });
 

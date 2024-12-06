@@ -46,15 +46,27 @@ function HomeScreen() {
         }}
       >
         {/* Navigation Row */}
-        <View style={styles.navRow}>
+        <ScrollView
+          nestedScrollEnabled={true} // Allows smooth scrolling within nested structures
+          horizontal={true} // Enable horizontal scrolling
+          showsHorizontalScrollIndicator={true} // Optional: Show horizontal scroll indicator
+          contentContainerStyle={{
+            width: "150%",
+            paddingRight: "25%",
+            flexDirection: "row", // Align children horizontally
+            alignItems: "flex-start", // Center items vertically
+            justifyContent: "flex-start", // Align children to the start horizontally
+            paddingHorizontal: 10, // Add some padding for better spacing
+          }}
+        >
           {["My Schedule", "Ride Requests", "Driver Post", "My History"].map(
             (item) => (
               <TouchableOpacity
                 key={item}
                 onPress={() => handleNavigation(item)}
-                style={styles.navTouchable} // Increased touchable area
+                style={[styles.navTouchable, { width: "30%", }]} // Increased touchable area
               >
-                <View style={styles.navItem}>
+                <View style={[styles.navItem, { width: "90%", }]}>
                   <Text
                     style={[
                       styles.navText,
@@ -78,8 +90,7 @@ function HomeScreen() {
               </TouchableOpacity>
             )
           )}
-        </View>
-
+        </ScrollView>
         <View style={{ marginBottom: 20 }}>{renderPageContent()}</View>
       </View>
     </ScrollView>
@@ -91,21 +102,24 @@ export default HomeScreen;
 const styles = StyleSheet.create({
   navRow: {
     flexDirection: "row",
-    justifyContent: "space-around",
-    alignItems: "center",
+    // justifyContent: "space-around",
+    // alignItems: "center",
     marginBottom: 20,
   },
   navTouchable: {
     paddingVertical: 10,
   },
   navItem: {
+    width: 190,
+    height: 44,
     alignItems: "center",
     justifyContent: "center",
   },
   navText: {
-    fontSize: 12,
-    fontFamily: "Comfortaa",
+    fontSize: 14,
+    fontFamily: "ComfortaaMedium",
     fontWeight: "500",
+    letterSpacing: -0.3,
     textAlign: "center",
   },
   activeLine: {

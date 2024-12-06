@@ -9,6 +9,7 @@ import {
   Dimensions,
   ActivityIndicator,
   useColorScheme,
+  Platform,
 } from "react-native";
 import { ApolloProvider, useSubscription } from "@apollo/client";
 import client from "../graphql/client";
@@ -31,7 +32,34 @@ const { width } = Dimensions.get("window");
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import { playNotificationSound } from "@/utils/playSound";
 
+import { useTheme } from "@/contexts/ThemeContext";
+import Relay from "@/assets/images/Relay.svg";
+import RelayWhite from "@/assets/images/Relay-white.svg";
+import RelaySvg from "@/components/icons/RelaySvg";
+import { Ionicons } from "@expo/vector-icons";
+
+
 export default function RootLayout() {
+  function Header() {
+    const { currentColors } = useTheme();
+    const isDarkMode = currentColors.background === "#181818";
+    return (
+      <View style={[styles.headerContainer, Platform.OS === "ios" ? { height: 86 } : { height: 60 }, isDarkMode ? { backgroundColor: "#000" } : { backgroundColor: "#fff" }, { borderBottomWidth: 1, borderColor: "rgba(247, 176, 96, 0.4)" }]}>
+        <StatusBar barStyle={ isDarkMode ? "light-content" : "dark-content" }/>
+        <View style={{width: "100%", height: "100%", flexDirection: "row", backgroundColor: currentColors.headBackground }}>
+          <View style={[Platform.OS === "ios" ? { marginTop: 45 } : { marginTop: 15 }, { flex: 1, flexDirection: "row", justifyContent: "center"}]}>
+            <RelaySvg width={30} height={30} />
+            {isDarkMode ? (
+              <RelayWhite style={{ marginLeft: 10, marginTop: 5 }} />
+            ) : (
+              <Relay style={{ marginLeft: 10, marginTop: 5 }} />
+            )}
+          </View>
+        </View>
+      </View>
+    );
+  }
+
   const [fontsLoaded] = useFonts({
     Comfortaa: require("@/assets/fonts/Comfortaa-VariableFont_wght.ttf"),
     ComfortaaLight: require("@/assets/fonts/Comfortaa-Light.ttf"),
@@ -152,15 +180,15 @@ export default function RootLayout() {
                       />
                       <Stack.Screen
                         name="OnboardForms/parent"
-                        options={{ headerShown: false }}
+                        options={{ headerShown: true, header: () => <Header /> }}
                       />
                       <Stack.Screen
                         name="OnboardForms/child"
-                        options={{ headerShown: false }}
+                        options={{ headerShown: true, header: () => <Header />}}
                       />
                       <Stack.Screen
                         name="OnboardForms/vehicle"
-                        options={{ headerShown: false }}
+                        options={{ headerShown: true, header: () => <Header />}}
                       />
                       <Stack.Screen name="+not-found" />
                     </Stack>
@@ -215,7 +243,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.4,
     shadowOffset: { width: 0, height: 4 },
     shadowRadius: 6,
-    marginTop: 10,
+    marginTop: 80,
   },
   notificationText: {
     color: "#fff",
@@ -224,5 +252,11 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     textAlign: "center",
     fontFamily: "Comfortaa",
+  },
+  headerContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    borderBottomWidth: 0,
   },
 });

@@ -58,6 +58,7 @@ const ResetTrackingButton = () => {
       }
     }
   };
+  
   const { isLargeText, textScaleFactor } = useTextSize();
   return (
     <Text

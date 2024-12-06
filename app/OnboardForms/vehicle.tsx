@@ -111,21 +111,27 @@ function VehicleForm(): JSX.Element {
   };
 
   return (
-    <ScrollView>
-      <View
-        style={[
-          styles.container,
-          { backgroundColor: currentColors.background },
-        ]}
+    <ScrollView
+      style={[styles.container, { backgroundColor: currentColors.background }]}
+    >
+      <LinearGradient
+        colors={[currentColors.gradient[0], currentColors.gradient[1]]}
+        style={styles.gradientBackground}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 0, y: 1 }} // Diagonal gradient
       >
-        <Text
-          style={[
-            styles.heading,
-            { color: currentColors.text, fontFamily: "Comfortaa" },
-          ]}
-        >
-          Vehicle Information
-        </Text>
+        <View style={{ marginTop: 10, }}>
+          <Text
+            style={[
+              styles.heading,
+              { color: currentColors.text },
+            ]}
+          >
+            Sign Up
+          </Text>
+          <View style={{ height: 1, backgroundColor: currentColors.tint, marginBottom: 20, }}></View>
+          <Text style={[styles.subtitle, { color: currentColors.tint }]}>Vehicle Information</Text>
+        </View>
 
         {errorMessage && (
           <Text style={[styles.errorText, { fontFamily: "Comfortaa" }]}>
@@ -133,7 +139,7 @@ function VehicleForm(): JSX.Element {
           </Text>
         )}
 
-        <View style={{ marginBottom: 20 }}>
+        <View style={{ marginBottom: 22 }}>
           <ParentFormLabel label="Make" />
           <ParentFormInput
             placeholder="e.g. BMW"
@@ -143,7 +149,7 @@ function VehicleForm(): JSX.Element {
           />
         </View>
 
-        <View style={{ marginBottom: 20 }}>
+        <View style={{ marginBottom: 22 }}>
           <ParentFormLabel label="Model" />
           <ParentFormInput
             placeholder="e.g. X3"
@@ -153,7 +159,7 @@ function VehicleForm(): JSX.Element {
           />
         </View>
 
-        <View style={{ marginBottom: 20 }}>
+        <View style={{ marginBottom: 22 }}>
           <ParentFormLabel label="Year" />
           <ParentFormInput
             placeholder="e.g. 2020"
@@ -163,7 +169,7 @@ function VehicleForm(): JSX.Element {
           />
         </View>
 
-        <View style={{ marginBottom: 20 }}>
+        <View style={{ marginBottom: 22 }}>
           <ParentFormLabel label="License Plate" />
           <ParentFormInput
             placeholder="License Plate"
@@ -173,7 +179,7 @@ function VehicleForm(): JSX.Element {
           />
         </View>
 
-        <View style={{ marginBottom: 20 }}>
+        <View style={{ marginBottom: 22 }}>
           <ParentFormLabel label="Vehicle Color" />
           <ParentFormInput
             placeholder="Vehicle Color"
@@ -183,7 +189,7 @@ function VehicleForm(): JSX.Element {
           />
         </View>
 
-        <View style={{ marginBottom: 20 }}>
+        <View style={{ marginBottom: 22 }}>
           <ParentFormLabel label="Passenger Seat(s) available" />
           <ParentFormInput
             placeholder="Vehicle Seats"
@@ -193,8 +199,22 @@ function VehicleForm(): JSX.Element {
           />
         </View>
 
-        <View style={{ marginBottom: 20 }}>
-          <ParentFormLabel label="Driver’s License " />
+        <View style={{ marginBottom: 22 }}>
+          <ParentFormLabel 
+            label="Driver's License" 
+            styleAdd={{ marginBottom: 15, }}
+          />
+          <Text
+            style={{
+              marginBottom: 12,
+              marginLeft: 5,
+              fontSize: 12,
+              fontFamily: "ComfortaaRegular",
+              color: currentColors.text,
+            }}
+          >
+            Press here to upload photo of insurance details
+          </Text>
           <TouchableOpacity>
             <View
               style={[
@@ -202,16 +222,6 @@ function VehicleForm(): JSX.Element {
                 { backgroundColor: currentColors.background },
               ]}
             >
-              <Text
-                style={{
-                  color: currentColors.text,
-                  fontFamily: "Comfortaa",
-                  marginTop: 5,
-                  marginBottom: 5,
-                }}
-              >
-                Press here to upload photo of insurance details
-              </Text>
               <ImageUpload
                 profileImage={insuranceImage}
                 pickImage={pickImage}
@@ -220,8 +230,9 @@ function VehicleForm(): JSX.Element {
           </TouchableOpacity>
         </View>
 
-        <View style={{ marginBottom: 10 }}>
-          <ParentFormLabel label="Vehicle Insurance Proof" />
+
+        <View style={{ marginBottom: 22 }}>
+          <ParentFormLabel label="Vehicle Insurance Proof" styleAdd={{ marginBottom: 10, }} />
           <TouchableOpacity>
             <View
               style={[
@@ -241,7 +252,7 @@ function VehicleForm(): JSX.Element {
           style={{
             flexDirection: "row",
             alignItems: "flex-start",
-            marginBottom: 80,
+            marginBottom: 40,
           }}
         >
           <CheckBox
@@ -250,20 +261,26 @@ function VehicleForm(): JSX.Element {
           />
           <Text
             style={{
+              flex: 1,
+              flexWrap: "wrap",
+              width: "98%",
+              fontFamily: "ComfortaaRegular",
               fontSize: 12,
+              lineHeight: 18,
+              letterSpacing: -0.2,
+              paddingLeft: 15,
               color: currentColors.text,
-              marginLeft: 8,
-              fontFamily: "Comfortaa",
             }}
           >
-            By checking this box, you agree to our Terms and Conditions and
-            acknowledge that you have read and understood the Carpool Agreement.
+            By checking this box, you agree to our Terms and Conditions and acknowledge that you have read and understood the Carpool Agreement.
           </Text>
         </View>
 
         <LinearGradient
           colors={["#ff8833", "#e24a4a"]}
-          style={{ width: "100%", borderRadius: 50 }}
+          style={{ width: "100%", height: 44, marginTop: 20, borderRadius: 50, }}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
         >
           <TouchableOpacity
             style={{
@@ -281,7 +298,7 @@ function VehicleForm(): JSX.Element {
                 style={{
                   color: "white",
                   textAlign: "center",
-                  fontSize: 20,
+                  fontSize: 16,
                   fontFamily: "Comfortaa-semibold",
                 }}
               >
@@ -290,7 +307,8 @@ function VehicleForm(): JSX.Element {
             )}
           </TouchableOpacity>
         </LinearGradient>
-      </View>
+        <View style={{ marginBottom: 60 }} />
+      </LinearGradient>
     </ScrollView>
   );
 }
@@ -298,28 +316,42 @@ function VehicleForm(): JSX.Element {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
+    paddingBottom: 200,
   },
   heading: {
-    fontSize: 32,
-    fontWeight: "bold",
-    marginBottom: 20,
-    fontFamily: "Comfortaa",
-  },
-  errorText: {
-    color: "red",
+    marginTop: 20,
     marginBottom: 10,
-    fontFamily: "Comfortaa",
+    fontFamily: "ComfortaaBold",
+    fontSize: 28,
+    fontWeight: 600,
+    letterSpacing: -0.5,
+  },
+  subtitle: {
+    marginTop: 5,
+    marginBottom: 25,
+    fontFamily: "ComfortaaBold",
+    fontSize: 24,
+    fontWeight: 600,
+    letterSpacing: -0.5,
   },
   imageUploadContainer: {
     backgroundColor: "#F7F9FC",
     width: "100%",
     borderRadius: 15,
-    height: 100,
+    height: 90,
     justifyContent: "center",
     alignItems: "center",
     borderColor: "#E4E9F2",
     marginTop: 15,
+  },
+  errorText: {
+    marginBottom: 10,
+    fontFamily: "ComfortaaRegular",
+    letterSpacing: -0.3,
+  },
+  gradientBackground: {
+    paddingHorizontal: 16,
+    flex: 1,
   },
 });
 

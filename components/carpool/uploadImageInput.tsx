@@ -55,9 +55,10 @@ const styles = StyleSheet.create({
   },
   uploadText: {
     color: "#888",
-    fontSize: 16,
+    fontSize: 14,
     textAlign: "center",
-    fontFamily: "Comfortaa",
+    fontFamily: "ComfortaaRegular",
+    letterSpacing: -0.3,
   },
 });
 

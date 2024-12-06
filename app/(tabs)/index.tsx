@@ -7,6 +7,7 @@ import {
   ScrollView,
   Image,
   Platform,
+  TouchableOpacity,
 } from "react-native";
 import { useQuery } from "@apollo/client";
 import { GET_USER_CARPOOL_WITH_REQUESTS } from "@/graphql/carpool/queries";
@@ -138,11 +139,11 @@ const CarpoolListScreen: React.FC = () => {
       >
         <LinearGradient
           colors={[currentColors.gradient[0], currentColors.gradient[1]]}
-          style={styles.gradientBackground}
+          style={[styles.gradientBackground, { paddingBottom: 16, }]}
           start={{ x: 0, y: 0 }}
           end={{ x: 0, y: 1 }} // Diagonal gradient
         >
-          <View style={{ marginTop: 20 }}>
+          <View style={{ marginTop: 30, }}>
 
             {showSuccessMessage && (
               <View style={styles.successMessage}>
@@ -177,21 +178,22 @@ const CarpoolListScreen: React.FC = () => {
 
               <View style={{ height: 50, justifyContent: "center", flexDirection: "column", flex: 1 }}>
                 <Text
-                  style={[ Platform.OS === "ios" ? { marginBottom: 2 } : { marginBottom: -5}, {
+                  style={[ Platform.OS === "ios" ? { marginBottom: 2 } : { marginTop: -4, marginBottom: -5}, {
                     fontFamily: "ComfortaaMedium",
-                    fontWeight: "500",
                     fontSize: 14,
-                    // marginTop: 20,
+                    marginTop: 10,
+                    letterSpacing: -0.3,
                     // marginBottom: -10,
                     color: currentColors.text,
                   }]}
                 >
-                  {timeOfDay}
+                  Good {timeOfDay},
                 </Text>
                 <Text
-                  style={[ Platform.OS === "ios" ? { marginBottom: 2 } : { marginTop: 8, lineHeight: 24}, {
+                  style={[ Platform.OS === "ios" ? { marginBottom: 2 } : { marginTop: 4, lineHeight: 24}, {
                     fontFamily: "ComfortaaBold",
-                    fontSize: 24,
+                    fontSize: 25,
+                    lineHeight: 26,
                     // marginBottom: 16,
                     // marginTop: 10,
                     color: currentColors.text,
@@ -201,7 +203,8 @@ const CarpoolListScreen: React.FC = () => {
                 </Text>
               </View>
             </View>
-            <Text style={[styles.sectionTitle, { fontFamily: "ComfortaaBold", fontWeight: 600, paddingHorizontal: 16, fontSize: 28, letterSpacing: -0.5, color: currentColors.text }]}>Today's ride</Text>
+            <View style={{ height: 1, marginTop: 10, marginBottom: 0, marginLeft: 16, marginRight: 16, backgroundColor: currentColors.tint }} />
+            <Text style={[styles.sectionTitle, { color: currentColors.text }]}>Today's ride</Text>
             <FlatList
               data={carpools}
               style={{ borderRadius: 0, paddingLeft: 16, marginTop: 0, }}
@@ -278,50 +281,82 @@ const CarpoolListScreen: React.FC = () => {
               </View>
             )}
             ListEmptyComponent={<Text>No requests available.</Text>}
-            contentContainerStyle={{ paddingLeft: 16, paddingBottom: 20 }}
+            contentContainerStyle={{ paddingLeft: 16, paddingBottom: 10 }}
             showsVerticalScrollIndicator={false}
           />
+          </LinearGradient>
           <View
-            style={{ paddingHorizontal: 15, paddingBottom: 15, marginTop: -20 }}
+            style={{ paddingBottom: 15, marginTop: 16, }}
           >
-            <Text
-              style={[
-                styles.sectionTitle,
-                {
-                  color: currentColors.text,
-                  fontFamily: "ComfortaaBold",
-                  marginBottom: 15,
-                },
-              ]}
-            >
-              Upcoming Rides
-            </Text>
-            <View style={{ marginBottom: 15 }}>
-              <ActiveRiderCard
-                id={"HJED6903"}
-                state={"confirmed"}
-                date={getTomorrowDate()}
-                startLocation={"5897 Keith Street"}
-                startTime={"3:30pm"}
-                endLocation={"Richmond Olympic Oval"}
-                endTime={"4:15pm"}
-                images={[evanChildImage, vanessaChildImage]}
-                recurrence={"one time"}
-              />
+            <View style={{ flex: 1, flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start", width: "100%" }}>
+              <Text
+                style={[ styles.sectionTitle, { color: currentColors.text, width: "auto", }]}
+              >
+                Upcoming Rides
+              </Text>
+              <TouchableOpacity
+                onPress={() => { }}
+                style={{
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <View
+                  style={{
+                    backgroundColor: "#FB6856",
+                    borderRadius: 24,
+                    paddingHorizontal: 18,
+                    paddingVertical: 6,
+                    flexDirection: "row",
+                    alignItems: "center",
+                    marginRight: 16,
+                  }}
+                >
+                  <Text
+                    style={{
+                      fontSize: 12,
+                      lineHeight: 20,
+                      fontFamily: "ComfortaaBold",
+                      fontWeight: "600",
+                      color: "#FFFFFF",
+                    }}
+                  >
+                    See More
+                  </Text>
+                </View>
+              </TouchableOpacity>
             </View>
-            <ActiveRiderCard
-              id={"affg1684"}
-              state={"confirmed"}
-              date={getTomorrowDate()}
-              startLocation={"5897 Keith Street"}
-              startTime={"3:30pm"}
-              endLocation={"Richmond Olympic Oval"}
-              endTime={"4:15pm"}
-              images={[evanChildImage, vanessaChildImage]}
-              recurrence={"one time"}
-            />
+
+
+            <View style={{ paddingHorizontal: 16 }}>
+              <View style={{ marginBottom: 16 }}>
+                <ActiveRiderCard
+                  id={"HJED6903"}
+                  state={"confirmed"}
+                  date={getTomorrowDate()}
+                  startLocation={"5897 Keith Street"}
+                  startTime={"3:30pm"}
+                  endLocation={"Richmond Olympic Oval"}
+                  endTime={"4:15pm"}
+                  images={[evanChildImage, vanessaChildImage]}
+                  recurrence={"one time"}
+                />
+              </View>
+              <View style={{ marginBottom: 16 }}>
+                <ActiveRiderCard
+                  id={"affg1684"}
+                  state={"confirmed"}
+                  date={getTomorrowDate()}
+                  startLocation={"5897 Keith Street"}
+                  startTime={"3:30pm"}
+                  endLocation={"Richmond Olympic Oval"}
+                  endTime={"4:15pm"}
+                  images={[evanChildImage, vanessaChildImage]}
+                  recurrence={"one time"}
+                />
+              </View>
+            </View>
           </View>
-        </LinearGradient>
       </ScrollView>
     </>
   );
@@ -342,13 +377,14 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   sectionTitle: {
-    fontFamily: "ComfortaaBold",
-    fontSize: 28,
-    letterSpacing: -0.5,
-    marginTop: 30,
-    marginBottom: 10,
+    marginBottom: 16,
     marginVertical: 16,
     marginLeft: 8,
+    paddingHorizontal: 16,
+    fontFamily: "ComfortaaBold",
+    fontWeight: 600,  
+    fontSize: 24, 
+    letterSpacing: -1,
   },
 });
 

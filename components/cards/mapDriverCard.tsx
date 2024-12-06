@@ -130,8 +130,8 @@ const MapDriverCard = ({
           <Text
             style={{
               fontSize: 10,
-              fontFamily: "Comfortaa",
-              fontWeight: "700",
+              fontFamily: "ComfortaaMedium",
+              fontWeight: "600",
               color: "#FFFFFF",
             }}
           >
@@ -145,9 +145,10 @@ const MapDriverCard = ({
         textAlign: "center",
         fontSize: 16,
         fontFamily: "ComfortaaBold",
-        letterSpacing: -0.5,
-        color: currentColors.text,
-        }}>Driver:</Text>
+        fontWeight: "600",
+        letterSpacing: -0.3,
+        color: "#666666",
+        }}>Driver</Text>
       </View>
       <View style={{ alignItems: "center" }}>
         <Image
@@ -176,7 +177,7 @@ const MapDriverCard = ({
             style={{
               fontSize: 12,
               fontFamily: "ComfortaaBold",
-              // fontWeight: "700",
+              fontWeight: "600",
               color: currentColors.tint,
             }}
           >
@@ -188,7 +189,7 @@ const MapDriverCard = ({
           style={{
             fontSize: 18,
             fontFamily: "ComfortaaBold",
-            // fontWeight: "500",
+            fontWeight: "600",
             color: currentColors.text,
             textAlign: "center",
             flex: 2,
@@ -211,7 +212,7 @@ const MapDriverCard = ({
             style={{
               fontSize: 12,
               fontFamily: "ComfortaaBold",
-              // fontWeight: "700",
+              fontWeight: "600",
               color: currentColors.tint,
             }}
           >
@@ -229,20 +230,21 @@ const MapDriverCard = ({
       >
         <Text
           style={{
-            fontSize: 20,
-            fontFamily: "Comfortaa-Bold",
-            fontWeight: "700",
+            fontSize: 24,
+            fontFamily: "ComfortaaBold",
+            fontWeight: "600",
             color: "#666666",
-            letterSpacing: 0.2,
+            letterSpacing: -0.8,
           }}
         >
           {formatDate(new Date())}
         </Text>
         <Text
           style={{
+            marginTop: 5,
             fontSize: 12,
-            fontFamily: "Comfortaa-Bold",
-            fontWeight: "700",
+            fontFamily: "ComfortaaBold",
+            fontWeight: "600",
             color: "#666666",
           }}
         >
@@ -256,14 +258,14 @@ const MapDriverCard = ({
         style={{
           flexDirection: "row",
           alignItems: "center",
-          marginBottom: 10,
+          marginBottom: 6,
           marginTop: 10,
         }}
       >
         <OrangeMarker width={20} height={20} style={{ marginRight: 8 }} />
         <Text
           style={{
-            fontFamily: "Comfortaa",
+            fontFamily: "ComfortaaRegular",
             color: currentColors.text,
             fontSize: 14,
           }}
@@ -274,11 +276,11 @@ const MapDriverCard = ({
         </Text>
       </View>
 
-      <View style={{ flexDirection: "row", alignItems: "center" }}>
+      <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 15, }}>
         <RedMarker width={20} height={20} style={{ marginRight: 8 }} />
         <Text
           style={{
-            fontFamily: "Comfortaa",
+            fontFamily: "ComfortaaRegular",
             color: currentColors.text,
             fontSize: 14,
           }}
@@ -331,7 +333,7 @@ const MapDriverCard = ({
               backgroundColor: "#FB812A",
               borderRadius: 26,
               padding: 8,
-              marginStart: 10,
+              marginStart: 8,
             }}
           >
             <MessageCircle width={24} height={24} style={{ padding: 10 }} />
@@ -344,7 +346,7 @@ const MapDriverCard = ({
               backgroundColor: "#FB812A",
               borderRadius: 26,
               padding: 8,
-              marginStart: 10,
+              marginStart: 8,
             }}
           >
             <Pin width={24} height={24} style={{ padding: 10 }} />
