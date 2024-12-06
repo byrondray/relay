@@ -284,7 +284,7 @@ const CarpoolListScreen: React.FC = () => {
           <View
             style={{ paddingBottom: 15, marginTop: 16, }}
           >
-            <View style={{ flex: 1, flexDirection: "row", justifyContent: "space-between", alignItems: "start", width: "100%", }}>            
+            <View style={{ flex: 1, flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start", width: "100%" }}>
               <Text
                 style={[ styles.sectionTitle, { color: currentColors.text, width: "auto", }]}
               >
@@ -297,31 +297,32 @@ const CarpoolListScreen: React.FC = () => {
                   alignItems: "center",
                 }}
               >
-              <View
-                style={{
-                  backgroundColor: "#FB6856",
-                  borderRadius: 24,
-                  paddingHorizontal: 18,
-                  paddingVertical: 6,
-                  flexDirection: "row",
-                  alignItems: "center",
-                  marginRight: 16,
-                }}
-              >
-                <Text
+                <View
                   style={{
-                    fontSize: 12,
-                    lineHeight: 20,
-                    fontFamily: "ComfortaaBold",
-                    fontWeight: "600",
-                    color: "#FFFFFF",
+                    backgroundColor: "#FB6856",
+                    borderRadius: 24,
+                    paddingHorizontal: 18,
+                    paddingVertical: 6,
+                    flexDirection: "row",
+                    alignItems: "center",
+                    marginRight: 16,
                   }}
                 >
-                  See More
-                </Text>
-              </View>
+                  <Text
+                    style={{
+                      fontSize: 12,
+                      lineHeight: 20,
+                      fontFamily: "ComfortaaBold",
+                      fontWeight: "600",
+                      color: "#FFFFFF",
+                    }}
+                  >
+                    See More
+                  </Text>
+                </View>
               </TouchableOpacity>
             </View>
+
 
             <View style={{ paddingHorizontal: 16 }}>
               <View style={{ marginBottom: 16 }}>
