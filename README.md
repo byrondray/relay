@@ -10,6 +10,8 @@ Relay is Canada’s first ridesharing mobile app for parents, designed to make i
 - **Real-time GPS tracking** ensures you know your child’s location every step of the way.
 - **AI-powered ride updates** provide instant notifications for pickups, drop-offs, and delays.
 - **Smart route matching** connects you with nearby families, saving time and reducing stress.
+  
+https://github.com/user-attachments/assets/619436fc-35f5-437b-a4dd-f1fda87c0855
 
 Relay simplifies carpooling, helping parents and kids build social bonds while ensuring safe, stress-free rides.
 [Check out Relay today!](https://relay.arspera.com/)
